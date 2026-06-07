@@ -1,74 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-06-07" agent="5.0" version="21.5.0" type="device">
   <diagram name="FoodDatabase Use Cases" id="use-case-diagram">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- System Boundary -->
-        <mxCell id="system" value="FoodDatabase System" style="shape=rectangle;html=1;verticalAlign=top;horizontalAlign=center;fontSize=14;fontStyle=1;rounded=0;strokeWidth=2;strokeColor=#000000;dashed=0;fillColor=#f0f0f0;" vertex="1" parent="1">
-          <mxGeometry x="300" y="100" width="600" height="600" as="geometry"/>
+        <mxCell id="system" value="FoodDatabase System" style="shape=rectangle;html=1;verticalAlign=top;horizontalAlign=center;fontSize=16;fontStyle=1;rounded=0;strokeWidth=2;strokeColor=#000000;dashed=0;fillColor=#ffffff;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="800" height="850" as="geometry"/>
         </mxCell>
 
         <!-- Actor: Benutzer -->
-        <mxCell id="actor1" value="Benutzer&#10;(Privat)" style="shape=ellipse;html=1;dashed=0;whitespace=wrap;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;fillColor=#d4e6f1;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="80" y="350" width="120" height="100" as="geometry"/>
+        <mxCell id="actor1" value="Benutzer&#10;(Privat)" style="shape=ellipse;html=1;dashed=0;whitespace=wrap;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="850" y="380" width="100" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- Use Case 1: Lebensmittel verwalten -->
-        <mxCell id="uc1" value="Lebensmittel verwalten&#10;(CRUD + Lagerort)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#fff2cc;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="330" y="140" width="140" height="80" as="geometry"/>
+        <!-- UC1: Lebensmittel verwalten -->
+        <mxCell id="uc1" value="Lebensmittel verwalten&#10;(CRUD + Lagerort)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="70" y="60" width="130" height="70" as="geometry"/>
         </mxCell>
 
-        <!-- Use Case 2: Nährwerte verwalten -->
-        <mxCell id="uc2" value="Nährwerte verwalten&#10;(pro 100g/ml)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#fff2cc;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="530" y="140" width="140" height="80" as="geometry"/>
+        <!-- UC2: Lagerbestand aktualisieren -->
+        <mxCell id="uc2" value="Lagerbestand&#10;aktualisieren" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="280" y="60" width="130" height="70" as="geometry"/>
         </mxCell>
 
-        <!-- Use Case 3: Rezepte verwalten -->
-        <mxCell id="uc3" value="Rezepte verwalten&#10;(CRUD + Zutaten)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#fff2cc;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="330" y="280" width="140" height="80" as="geometry"/>
+        <!-- UC3: Nährwerte verwalten -->
+        <mxCell id="uc3" value="Nährwerte verwalten&#10;(pro 100g/ml)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="490" y="60" width="130" height="70" as="geometry"/>
         </mxCell>
 
-        <!-- Use Case 4: Nährwerte berechnen -->
-        <mxCell id="uc4" value="Nährwerte für Rezept&#10;berechnen" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#c8e6c9;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="530" y="280" width="140" height="80" as="geometry"/>
+        <!-- UC4: Rezepte verwalten -->
+        <mxCell id="uc4" value="Rezepte verwalten&#10;(CRUD + Zutaten)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="70" y="220" width="130" height="70" as="geometry"/>
         </mxCell>
 
-        <!-- Use Case 5: Einkaufslisten erstellen -->
-        <mxCell id="uc5" value="Einkaufslisten&#10;generieren" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#fff2cc;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="330" y="420" width="140" height="80" as="geometry"/>
+        <!-- UC5: Nährwerte für Rezept berechnen -->
+        <mxCell id="uc5" value="Nährwerte für&#10;Rezept berechnen" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="280" y="220" width="130" height="70" as="geometry"/>
         </mxCell>
 
-        <!-- Use Case 6: Lagerort verwalten -->
-        <mxCell id="uc6" value="Lagerorte verwalten&#10;(CRUD)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#fff2cc;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="530" y="420" width="140" height="80" as="geometry"/>
+        <!-- UC6: Verbrauchte Produkte ausbuchen -->
+        <mxCell id="uc6" value="Verbrauchte Produkte&#10;ausbuchen (Scan/Manual)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="490" y="220" width="130" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- UC7: Verfallsdatum-Warnungen anzeigen -->
+        <mxCell id="uc7" value="Verfallsdatum-&#10;Warnungen anzeigen" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="70" y="380" width="130" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- UC8: Einkaufslisten generieren -->
+        <mxCell id="uc8" value="Einkaufslisten&#10;generieren" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="280" y="380" width="130" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- UC9: Lagerorte verwalten -->
+        <mxCell id="uc9" value="Lagerorte verwalten&#10;(CRUD)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="490" y="380" width="130" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- UC10: Produktinstanzen mit MHD verwalten -->
+        <mxCell id="uc10" value="Produktinstanzen&#10;mit MHD verwalten" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="70" y="540" width="130" height="70" as="geometry"/>
         </mxCell>
 
         <!-- Connections from Actor to Use Cases -->
-        <mxCell id="edge1" value="" style="endArrow=none;html=1;rounded=0;entryX=0.2;entryY=0.9;exitX=0.8;exitY=0.3;" edge="1" parent="1" source="actor1" target="uc1"/>
-        <mxCell id="edge2" value="" style="endArrow=none;html=1;rounded=0;entryX=0.2;entryY=0.9;exitX=0.8;exitY=0.5;" edge="1" parent="1" source="actor1" target="uc2"/>
-        <mxCell id="edge3" value="" style="endArrow=none;html=1;rounded=0;entryX=0.1;entryY=0.5;exitX=0.9;exitY=0.5;" edge="1" parent="1" source="actor1" target="uc3"/>
-        <mxCell id="edge4" value="" style="endArrow=none;html=1;rounded=0;entryX=0.2;entryY=0.1;exitX=0.8;exitY=0.7;" edge="1" parent="1" source="actor1" target="uc5"/>
-        <mxCell id="edge5" value="" style="endArrow=none;html=1;rounded=0;entryX=0.2;entryY=0.1;exitX=0.9;exitY=0.9;" edge="1" parent="1" source="actor1" target="uc6"/>
+        <mxCell id="edge1" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc1"/>
+        <mxCell id="edge2" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc2"/>
+        <mxCell id="edge3" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc3"/>
+        <mxCell id="edge4" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc4"/>
+        <mxCell id="edge5" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor:#000000;" edge="1" parent="1" source="actor1" target="uc6"/>
+        <mxCell id="edge6" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor:#000000;" edge="1" parent="1" source="actor1" target="uc7"/>
+        <mxCell id="edge7" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor:#000000;" edge="1" parent="1" source="actor1" target="uc8"/>
+        <mxCell id="edge8" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor:#000000;" edge="1" parent="1" source="actor1" target="uc9"/>
+        <mxCell id="edge9" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor:#000000;" edge="1" parent="1" source="actor1" target="uc10"/>
 
         <!-- Include Relationships -->
-        <!-- UC3 includes UC4 -->
-        <mxCell id="include1" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;" edge="1" parent="1" source="uc3" target="uc4"/>
+        <!-- UC4 includes UC5 -->
+        <mxCell id="include1" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;strokeColor:#000000;fontColor:#000000;" edge="1" parent="1" source="uc4" target="uc5"/>
 
-        <!-- UC3 uses UC2 -->
-        <mxCell id="include2" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;" edge="1" parent="1" source="uc3" target="uc2"/>
+        <!-- UC4 includes UC3 -->
+        <mxCell id="include2" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;strokeColor:#000000;fontColor:#000000;" edge="1" parent="1" source="uc4" target="uc3"/>
 
-        <!-- UC1 uses UC6 -->
-        <mxCell id="include3" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;" edge="1" parent="1" source="uc1" target="uc6"/>
+        <!-- UC1 includes UC9 -->
+        <mxCell id="include3" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;strokeColor=#000000;fontColor:#000000;" edge="1" parent="1" source="uc1" target="uc9"/>
 
-        <!-- UC5 uses UC1 -->
-        <mxCell id="include4" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;" edge="1" parent="1" source="uc5" target="uc1"/>
+        <!-- UC8 includes UC1 -->
+        <mxCell id="include4" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;strokeColor:#000000;fontColor:#000000;" edge="1" parent="1" source="uc8" target="uc1"/>
+
+        <!-- UC10 includes UC1 -->
+        <mxCell id="include5" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;strokeColor:#000000;fontColor:#000000;" edge="1" parent="1" source="uc10" target="uc1"/>
+
+        <!-- UC7 includes UC10 -->
+        <mxCell id="include6" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;strokeColor:#000000;fontColor:#000000;" edge="1" parent="1" source="uc7" target="uc10"/>
+
+        <!-- UC2 includes UC10 -->
+        <mxCell id="include7" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;strokeColor:#000000;fontColor:#000000;" edge="1" parent="1" source="uc2" target="uc10"/>
+
+        <!-- UC6 includes UC10 -->
+        <mxCell id="include8" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;strokeColor:#000000;fontColor:#000000;" edge="1" parent="1" source="uc6" target="uc10"/>
 
         <!-- Legend -->
-        <mxCell id="legend" value="UC-Legende: Gelb = Primäre, Grün = Abgeleitet" style="text;html=1;align=center;verticalAlign=top;fontSize=10;italic=1;" vertex="1" parent="1">
-          <mxGeometry x="320" y="550" width="400" height="30" as="geometry"/>
+        <mxCell id="legend" value="Neutrale Farben: Schwarz=Schrift, Weiß=Hintergrund | UC10 ist zentral: Produktinstanzen mit eigenem MHD" style="text;html=1;align=left;verticalAlign=top;fontSize=10;italic=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="70" y="700" width="730" height="60" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>
