@@ -1,7 +1,9 @@
 using Xunit;
 using Moq;
-using FoodDatabase.App.Services;
+using FoodDatabase.App.Services.Interfaces;
+using FoodDatabase.App.Services.Classes;
 using FoodDatabase.App.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
