@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-06-07" agent="5.0" version="21.5.0" type="device">
+  <diagram name="Class Diagram - FoodDatabase Domain Model" id="class-diagram">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- LebensmittelKatalog -->
+        <mxCell id="class1" value="LebensmittelKatalog&#10;─────────────────&#10;- ID: int (PK)&#10;- Name: string&#10;- Einheit: string (g, ml, Stück)&#10;- Kategorie: string [optional]&#10;- ErstelltAm: DateTime&#10;─────────────────&#10;+ GetProduktInstanzen()&#10;+ GetNährwert()&#10;+ UpdateName(string)&#10;+ Delete()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#e1d5e7;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="200" height="180" as="geometry"/>
+        </mxCell>
+
+        <!-- Nährwert -->
+        <mxCell id="class2" value="Nährwert&#10;─────────────────&#10;- ID: int (PK)&#10;- LebensmittelKatalogID: int (FK)&#10;- Kalorien: decimal (pro 100g/ml)&#10;- Kohlenhydrate: decimal (g)&#10;- Eiweiß: decimal (g)&#10;- Fett: decimal (g)&#10;- Ballaststoffe: decimal [optional]&#10;- Zucker: decimal [optional]&#10;- ReferenzMenge: decimal (100)&#10;─────────────────&#10;+ CalculateSkaliert(menge): Nährwert&#10;+ IsValid(): bool" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#e1d5e7;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="350" y="50" width="240" height="230" as="geometry"/>
+        </mxCell>
+
+        <!-- ProduktInstanz (zentral) -->
+        <mxCell id="class3" value="ProduktInstanz ⭐&#10;─────────────────&#10;- ID: int (PK)&#10;- LebensmittelKatalogID: int (FK)&#10;- LagerortID: int (FK)&#10;- AktuelleM enge: decimal&#10;- MindestbestandMenge: decimal&#10;- EinkaufsDatum: DateTime&#10;- VerfallsDatum: DateTime ⭐&#10;- ErstelltAm: DateTime&#10;- Status: enum (Aktiv, Verbraucht, Abgelaufen)&#10;─────────────────&#10;+ UpdateMenge(decimal)&#10;+ UpdateVerfallsDatum(DateTime)&#10;+ MarkAsConsumed()&#10;+ IsUnterMindestbestand(): bool&#10;+ IsAbgelaufen(): bool&#10;+ IstBaldAbgelaufen(tage): bool&#10;+ Delete()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#ffff99;strokeWidth=3;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="700" y="50" width="260" height="280" as="geometry"/>
+        </mxCell>
+
+        <!-- Lagerort -->
+        <mxCell id="class4" value="Lagerort&#10;─────────────────&#10;- ID: int (PK)&#10;- Name: string&#10;- Beschreibung: string [optional]&#10;─────────────────&#10;+ GetProduktInstanzen()&#10;+ Update(string)&#10;+ Delete()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#e1d5e7;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="50" y="350" width="200" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- VerfallsdatumWarnung -->
+        <mxCell id="class5" value="VerfallsdatumWarnung&#10;─────────────────&#10;- ID: int (PK)&#10;- ProduktInstanzID: int (FK)&#10;- Status: enum (OK, WarningBaldAbgelaufen, Abgelaufen)&#10;- AblaufdatumInTagen: int&#10;- AktualistertAm: DateTime&#10;─────────────────&#10;+ UpdateStatus()&#10;+ GetWarningColor(): Color" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#ffcccc;strokeWidth=2;strokeColor=#cc0000;" vertex="1" parent="1">
+          <mxGeometry x="350" y="350" width="240" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Rezept -->
+        <mxCell id="class6" value="Rezept&#10;─────────────────&#10;- ID: int (PK)&#10;- Name: string&#10;- Portionen: int&#10;- Zubereitung: string&#10;- ErstelltAm: DateTime&#10;─────────────────&#10;+ AddZutat(LebensmittelKatalog, Menge)&#10;+ GetZutaten(): List&lt;RezeptZutat&gt;&#10;+ CalculateNährwerte(): Nährwert&#10;+ UpdateMenge(decimal)&#10;+ Delete()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#cce5ff;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="700" y="400" width="240" height="180" as="geometry"/>
+        </mxCell>
+
+        <!-- RezeptZutat -->
+        <mxCell id="class7" value="RezeptZutat&#10;─────────────────&#10;- ID: int (PK)&#10;- RezeptID: int (FK)&#10;- LebensmittelKatalogID: int (FK)&#10;- Menge: decimal&#10;- Einheit: string&#10;─────────────────&#10;+ CalculateNährwert(portionen): Nährwert&#10;+ Update(Menge, Einheit)" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#cce5ff;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="400" width="220" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Einkaufsliste -->
+        <mxCell id="class8" value="Einkaufsliste&#10;─────────────────&#10;- ID: int (PK)&#10;- ErstelltAm: DateTime&#10;- AktualistertAm: DateTime&#10;─────────────────&#10;+ AddEintrag(ProduktInstanz)&#10;+ RemoveEintrag(ProduktInstanz)&#10;+ GetEinträge(): List&lt;EinkaufsListenEintrag&gt;&#10;+ MarkAsGekauft(ProduktInstanz)&#10;+ Clear()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#d4f1d4;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="50" y="600" width="240" height="180" as="geometry"/>
+        </mxCell>
+
+        <!-- EinkaufsListenEintrag -->
+        <mxCell id="class9" value="EinkaufsListenEintrag&#10;─────────────────&#10;- ID: int (PK)&#10;- EinkaufslisteID: int (FK)&#10;- ProduktInstanzID: int (FK)&#10;- Gekauft: bool&#10;─────────────────&#10;+ MarkAsGekauft()&#10;+ MarkAsNotGekauft()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#d4f1d4;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="350" y="600" width="220" height="140" as="geometry"/>
+        </mxCell>
+
+        <!-- Relationships -->
+        <!-- LebensmittelKatalog -> Nährwert (1:1) -->
+        <mxCell id="rel1" value="hat" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0;entryY=0.5;exitX=1;exitY=0.3;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="class1" target="class2"/>
+
+        <!-- LebensmittelKatalog -> ProduktInstanz (1:N) -->
+        <mxCell id="rel2" value="hat viele" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0;entryY=0.2;exitX=1;exitY=0.2;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="class1" target="class3"/>
+
+        <!-- Lagerort -> ProduktInstanz (1:N) -->
+        <mxCell id="rel3" value="enthält" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0.3;entryY=0;exitX=0.3;exitY=1;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="class4" target="class3"/>
+
+        <!-- ProduktInstanz -> VerfallsdatumWarnung (1:1) -->
+        <mxCell id="rel4" value="hat" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0;entryY=0.3;exitX=1;exitY=0.5;strokeWidth=2;strokeColor=#cc0000;" edge="1" parent="1" source="class3" target="class5"/>
+
+        <!-- Rezept -> RezeptZutat (1:N) -->
+        <mxCell id="rel5" value="enthält" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0;entryY=0.3;exitX=1;exitY=0.3;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="class6" target="class7"/>
+
+        <!-- RezeptZutat -> LebensmittelKatalog (N:1) -->
+        <mxCell id="rel6" value="benutzt" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0.5;entryY=0;exitX=0.5;exitY=1;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="class7" target="class1"/>
+
+        <!-- Einkaufsliste -> EinkaufsListenEintrag (1:N) -->
+        <mxCell id="rel7" value="hat" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0;entryY=0.3;exitX=1;exitY=0.3;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="class8" target="class9"/>
+
+        <!-- EinkaufsListenEintrag -> ProduktInstanz (N:1) -->
+        <mxCell id="rel8" value="referenziert" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeWidth=2;strokeColor=#000000;dashed=1;" edge="1" parent="1" source="class9" target="class3"/>
+
+        <!-- Legende -->
+        <mxCell id="legend" value="⭐ = Zentrale Entity | 🔴 = MHD-kritisch | Pfeile = Beziehungen (1:1, 1:N, N:1)" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="50" y="900" width="600" height="40" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

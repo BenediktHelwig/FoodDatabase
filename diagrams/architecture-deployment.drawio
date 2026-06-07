@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-06-07" agent="5.0" version="21.5.0" type="device">
+  <diagram name="Deployment Diagram - TrueNAS Container" id="deployment-diagram">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="FoodDatabase Deployment on TrueNAS" style="text;html=1;align=center;verticalAlign=top;fontSize=16;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="1300" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Heimnetzwerk Cloud -->
+        <mxCell id="heimnetz" value="Heimnetzwerk (LAN 192.168.x.x)" style="shape=hexagon;perimeter=hexagonPerimeter2;html=1;verticalAlign=top;horizontalAlign=center;fontSize=13;fontStyle=1;rounded=1;strokeWidth=2;strokeColor=#0066cc;fillColor=#cce5ff;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="1300" height="800" as="geometry"/>
+        </mxCell>
+
+        <!-- Clients -->
+        <mxCell id="windowsDevice" value="Windows PC&#10;192.168.x.10&#10;─────────────&#10;Browser HTTP&#10;localhost:5000" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#cce5ff;strokeWidth=2;strokeColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="150" width="140" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="iosDevice" value="iPhone/iPad&#10;192.168.x.20&#10;─────────────&#10;Browser HTTP&#10;localhost:5000" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#cce5ff;strokeWidth=2;strokeColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="350" y="150" width="140" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="androidDevice" value="Android Phone&#10;192.168.x.30&#10;─────────────&#10;Browser HTTP&#10;localhost:5000" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#cce5ff;strokeWidth=2;strokeColor:#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="600" y="150" width="140" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- TrueNAS Server -->
+        <mxCell id="truenas" value="TrueNAS Server&#10;192.168.x.100&#10;─────────────" style="shape=rectangle;html=1;verticalAlign=top;horizontalAlign=center;fontSize=12;fontStyle=1;rounded=1;strokeWidth=3;strokeColor=#ff6600;fillColor=#ffe6cc;" vertex="1" parent="1">
+          <mxGeometry x="900" y="150" width="300" height="600" as="geometry"/>
+        </mxCell>
+
+        <!-- Docker Container -->
+        <mxCell id="dockerContainer" value="Docker Container (FoodDatabase)&#10;─────────────────────────────&#10;- Image: mcr.microsoft.com/dotnet/aspnet:8.0&#10;- Container Name: fooddb-app" style="shape=rectangle;html=1;verticalAlign=top;horizontalAlign=center;fontSize=11;fontStyle=1;rounded=1;strokeWidth=2;strokeColor=#0066cc;fillColor=#d4e6f1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="200" width="260" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- ASP.NET Core App -->
+        <mxCell id="aspnetApp" value="ASP.NET Core 8 App&#10;─────────────────────────────&#10;- Blazor Server&#10;- Port: 5000 (HTTP)&#10;- Timezone: System (TrueNAS)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#fff2cc;strokeWidth=2;strokeColor:#ff9900;" vertex="1" parent="1">
+          <mxGeometry x="920" y="350" width="260" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- SQLite DB Volume -->
+        <mxCell id="dbVolume" value="SQLite Database Volume&#10;─────────────────────────────&#10;- Mount: /data&#10;- Persistence: Yes&#10;- File: FoodDatabase.db&#10;- Backups: WAL files" style="shape=cylinder;html=1;verticalAlign=top;horizontalAlign=center;fontSize=10;fontFamily=Courier New;fillColor=#c8e6c9;strokeWidth=2;strokeColor=#00cc00;" vertex="1" parent="1">
+          <mxGeometry x="920" y="520" width="260" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Connections (Clients -> TrueNAS) -->
+        <mxCell id="connWin" value="HTTP 5000/tcp" style="endArrow=open;html=1;rounded=0;entryX=0.3;entryY=0;exitX=0.5;exitY=1;strokeWidth=2;strokeColor:#0066cc;" edge="1" parent="1" source="windowsDevice" target="dockerContainer"/>
+
+        <mxCell id="connIos" value="HTTP 5000/tcp" style="endArrow=open;html=1;rounded=0;entryX=0.5;entryY=0;exitX=0.5;exitY=1;strokeWidth=2;strokeColor:#0066cc;" edge="1" parent="1" source="iosDevice" target="dockerContainer"/>
+
+        <mxCell id="connAnd" value="HTTP 5000/tcp" style="endArrow=open;html=1;rounded=0;entryX=0.7;entryY=0;exitX=0.5;exitY=1;strokeWidth=2;strokeColor:#0066cc;" edge="1" parent="1" source="androidDevice" target="dockerContainer"/>
+
+        <!-- Connection: App -> DB -->
+        <mxCell id="connAppDb" value="Entity Framework Core&#10;SQLite Connector" style="endArrow=open;html=1;rounded=0;entryX=0.5;entryY=0;exitX=0.5;exitY=1;strokeWidth=2;strokeColor:#00cc00;" edge="1" parent="1" source="aspnetApp" target="dbVolume"/>
+
+        <!-- Connection: Container -> App -->
+        <mxCell id="connContainerApp" value="" style="endArrow=open;html=1;rounded=0;entryX=0.5;entryY=0;exitX=0.5;exitY=1;strokeWidth=2;strokeColor:#000000;" edge="1" parent="1" source="dockerContainer" target="aspnetApp"/>
+
+        <!-- TrueNAS Filesystem -->
+        <mxCell id="filesystem" value="TrueNAS Filesystem&#10;─────────────────────────────&#10;- Path: /mnt/pool/fooddb-data&#10;- Permissions: 755&#10;- Owner: docker:docker" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#f0f0f0;strokeWidth=2;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="100" y="400" width="240" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Networking -->
+        <mxCell id="network" value="Docker Network (bridge)&#10;─────────────────────────────&#10;- Network: fooddb-net&#10;- DNS: Enabled&#10;- Subnet: 172.17.0.0/16" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#f0f0f0;strokeWidth=2;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="400" y="400" width="240" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Docker Compose Config -->
+        <mxCell id="compose" value="docker-compose.yml&#10;─────────────────────────────&#10;- Version: 3.9&#10;- Services: 1 (fooddb-app)&#10;- Volumes: 1 (/data)&#10;- Restart: unless-stopped" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#e8f4f8;strokeWidth=2;strokeColor:#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="700" y="400" width="240" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Backup Strategy -->
+        <mxCell id="backup" value="Backup Strategy&#10;─────────────────────────────&#10;- Frequency: Daily (Cron)&#10;- Target: TrueNAS ZFS Snapshot&#10;- Retention: 7 days&#10;- Method: SQLite dump" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#f8c6f8;strokeWidth=2;strokeColor=#cc00cc;" vertex="1" parent="1">
+          <mxGeometry x="100" y="600" width="240" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Monitoring -->
+        <mxCell id="monitoring" value="Monitoring & Logs&#10;─────────────────────────────&#10;- Docker Logs: Real-time&#10;- Serilog: File + Console&#10;- Health Check: HTTP 5000/health&#10;- Alerts: Container restart on fail" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#f8c6f8;strokeWidth=2;strokeColor:#cc00cc;" vertex="1" parent="1">
+          <mxGeometry x="400" y="600" width="240" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Update Strategy -->
+        <mxCell id="updates" value="Update Strategy&#10;─────────────────────────────&#10;- Stop Container&#10;- Backup Database&#10;- Pull new Image&#10;- Run Migrations&#10;- Start Container&#10;- Health Check" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=center;verticalAlign=middle;fillColor=#f8c6f8;strokeWidth=2;strokeColor:#cc00cc;" vertex="1" parent="1">
+          <mxGeometry x="700" y="600" width="240" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="🔵 = Client | 🟠 = Server | 🟢 = Data | 🟣 = Configuration | Alle Kommunikation über Heimnetzwerk (keine Internet-Abhängigkeit)" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="50" y="900" width="1300" height="50" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
