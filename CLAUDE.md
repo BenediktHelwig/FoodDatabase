@@ -7,6 +7,23 @@
 
 ---
 
+## 🚀 WICHTIG: Vor jeder Sitzung lesen!
+
+**Lese zuerst die `CONTEXT_SUMMARY.md`** (im Projekt-Root):
+```bash
+cat CONTEXT_SUMMARY.md
+```
+
+Diese Datei wird nach jeder abgeschlossenen Sitzung aktualisiert und enthält:
+- ✅ Abgeschlossene Use-Cases
+- ⏳ Verbleibende Aufgaben
+- 📋 Aktueller Projekt-Status
+- 🔄 Workflow & nächste Schritte
+
+**Dies erspart dir, die ganze CLAUDE.md + Konversations-Historie zu lesen!**
+
+---
+
 ## 🎼 Das Orchester-Team (5 Agenten)
 
 Alle Agenten sind als spezialisierte Claude-Agent-Instanzen konfiguriert und arbeiten nach striktem Workflow:
