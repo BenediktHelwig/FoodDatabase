@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC<N> - Feature Name | FoodDatabase</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #667eea;
+            margin: 0 0 10px 0;
+        }
+
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status-badge.done {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .status-badge.in-progress {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .status-badge.todo {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        section {
+            margin: 30px 0;
+        }
+
+        h2 {
+            color: #764ba2;
+            border-left: 4px solid #764ba2;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th {
+            background-color: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .checklist {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin: 15px 0;
+        }
+
+        .checklist li {
+            margin: 8px 0;
+        }
+
+        a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            margin-bottom: 20px;
+        }
+
+        .back-link a {
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="../architecture-overview.html">← Zurück zur Übersicht</a>
+        </div>
+
+        <header>
+            <h1>UC<N>: Feature Name</h1>
+            <div class="meta">
+                Use-Case <strong><N></strong> |
+                Status: <span class="status-badge todo">⏳ TODO</span>
+            </div>
+        </header>
+
+        <!-- Overview Section -->
+        <section>
+            <h2>📋 Übersicht</h2>
+            <p><strong>Beschreibung</strong>: [Was macht diese UC? Warum ist sie wichtig?]</p>
+
+            <h3>Hauptziele</h3>
+            <ul>
+                <li>[Ziel 1]</li>
+                <li>[Ziel 2]</li>
+                <li>[Ziel 3]</li>
+            </ul>
+
+            <h3>Geschäftsnutzen</h3>
+            <p>[Warum braucht der Benutzer diese Feature?]</p>
+        </section>
+
+        <!-- Domain Model Section -->
+        <section>
+            <h2>📦 Domain Model</h2>
+
+            <h3>Beteiligte Entities</h3>
+            <table>
+                <tr>
+                    <th>Entity</th>
+                    <th>Rolle</th>
+                    <th>Beziehung</th>
+                </tr>
+                <tr>
+                    <td>[Entity1]</td>
+                    <td>[Rolle]</td>
+                    <td>[Beziehung]</td>
+                </tr>
+                <tr>
+                    <td>[Entity2]</td>
+                    <td>[Rolle]</td>
+                    <td>[Beziehung]</td>
+                </tr>
+            </table>
+
+            <h3>Neue Attribute (falls relevant)</h3>
+            <pre>
+[Entity Name]
+├── [Attribute 1]: [Type]
+├── [Attribute 2]: [Type]
+└── [Attribute 3]: [Type]
+            </pre>
+        </section>
+
+        <!-- Workflows Section -->
+        <section>
+            <h2>🔄 User Workflows</h2>
+
+            <h3>Hauptworkflow: [Workflow Name]</h3>
+            <pre>
+1. Benutzer öffnet [Seite]
+2. [Aktion]
+3. System [Aktion]
+4. [Ergebnis]
+            </pre>
+
+            <h3>Alternative Flows (falls vorhanden)</h3>
+            <p>[Beschreibung von Edge Cases oder alternativen Paths]</p>
+        </section>
+
+        <!-- API/Service Section -->
+        <section>
+            <h2>🔌 Service Interface</h2>
+
+            <h3>Service-Methoden</h3>
+            <pre>
+public interface I[FeatureName]Service
+{
+    Task&lt;[Entity]&gt; Create[Entity]Async([Entity] entity);
+    Task&lt;[Entity]&gt; Get[Entity]ByIdAsync(int id);
+    Task&lt;IEnumerable&lt;[Entity]&gt;&gt; GetAll[Entities]Async();
+    Task&lt;[Entity]&gt; Update[Entity]Async([Entity] entity);
+    Task&lt;bool&gt; Delete[Entity]Async(int id);
+}
+            </pre>
+
+            <h3>REST Endpoints (Später)</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Beschreibung</th>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/[resource]</td>
+                    <td>Erstellen</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/[resource]/{id}</td>
+                    <td>Abrufen</td>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/[resource]/{id}</td>
+                    <td>Aktualisieren</td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/[resource]/{id}</td>
+                    <td>Löschen</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Testing Section -->
+        <section>
+            <h2>✅ Tests</h2>
+
+            <h3>Test Coverage</h3>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> CRUD Operations (Create, Read, Update, Delete)</li>
+                    <li><input type="checkbox"> Validierungen (Null-Checks, Ranges, Constraints)</li>
+                    <li><input type="checkbox"> Edge Cases (Empty lists, Invalid IDs)</li>
+                    <li><input type="checkbox"> Error Handling (Exceptions, Error Messages)</li>
+                    <li><input type="checkbox"> Business Logic (Calculations, Workflows)</li>
+                </ul>
+            </div>
+
+            <h3>Test-Datei</h3>
+            <p>Location: <code>src/Tests/Unit/Services/[FeatureName]ServiceTests.cs</code></p>
+            <p>Tests: [N] Unit Tests (xUnit + Moq)</p>
+        </section>
+
+        <!-- Dependencies Section -->
+        <section>
+            <h2>🔗 Dependencies</h2>
+
+            <h3>Abhängigkeiten (andere UCs)</h3>
+            <ul>
+                <li>Abhängt von: <strong>[UC Name]</strong></li>
+                <li>Wird benötigt von: <strong>[UC Name]</strong></li>
+            </ul>
+
+            <h3>Externe Libraries</h3>
+            <ul>
+                <li>Entity Framework Core (✅ Vorhanden)</li>
+                <li>xUnit (✅ Vorhanden)</li>
+                <li>Moq (✅ Vorhanden)</li>
+            </ul>
+        </section>
+
+        <!-- Implementation Status Section -->
+        <section>
+            <h2>📊 Implementation Status</h2>
+
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
+                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
+                    <li><input type="checkbox"> Code Review bestanden</li>
+                    <li><input type="checkbox"> Diagramme aktualisiert</li>
+                    <li><input type="checkbox"> Dokumentation fertig</li>
+                    <li><input type="checkbox"> User Review & Approval</li>
+                    <li><input type="checkbox"> Merged zu Master</li>
+                </ul>
+            </div>
+
+            <p><strong>Commit</strong>: [Git Commit Hash]</p>
+            <p><strong>MR Link</strong>: [Merge Request Link]</p>
+        </section>
+
+        <!-- Architecture Diagram Section (Placeholder) -->
+        <section>
+            <h2>📐 Diagramme</h2>
+
+            <div style="background-color: #f0f0f0; border: 2px dashed #999; padding: 40px; text-align: center; color: #666; border-radius: 8px;">
+                📊 Sequenz-Diagramm [Falls komplexer Workflow]<br>
+                <small>(siehe: diagrams/sequence-[workflow].drawio)</small>
+            </div>
+        </section>
+
+        <!-- Notes Section -->
+        <section>
+            <h2>📝 Notizen</h2>
+
+            <h3>Besonderheiten</h3>
+            <p>[Spezielle Anforderungen oder Constraints für diese UC]</p>
+
+            <h3>Offene Fragen</h3>
+            <ul>
+                <li>[Frage 1]</li>
+                <li>[Frage 2]</li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
+            <p>FoodDatabase | UC<N> | Zuletzt aktualisiert: [Datum]</p>
+            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        </footer>
+    </div>
+</body>
+</html>

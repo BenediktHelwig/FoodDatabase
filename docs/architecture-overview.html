@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodDatabase - Architecture & Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #667eea;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        section {
+            background: white;
+            margin: 20px 0;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        section h2 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        section h3 {
+            color: #764ba2;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .uc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .uc-card {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f9f9f9;
+            transition: all 0.3s;
+        }
+
+        .uc-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .uc-card.done {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .uc-card.todo {
+            background-color: #fff3e0;
+            border-color: #ff9800;
+        }
+
+        .uc-card h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .status-badge.done {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .status-badge.in-progress {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .status-badge.todo {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th {
+            background-color: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .diagram-placeholder {
+            background-color: #f0f0f0;
+            border: 2px dashed #999;
+            padding: 40px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #666;
+        }
+
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🍽️ FoodDatabase</h1>
+        <p>Multi-Agent Orchestrated Development - Architecture & Documentation</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#overview">Übersicht</a></li>
+            <li><a href="#architecture">Architektur</a></li>
+            <li><a href="#use-cases">Use-Cases</a></li>
+            <li><a href="#domain-model">Domain Model</a></li>
+            <li><a href="#deployment">Deployment</a></li>
+            <li><a href="#development">Entwicklung</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Overview Section -->
+        <section id="overview">
+            <h2>📋 Projektübersicht</h2>
+            <p><strong>FoodDatabase</strong> ist eine private Lebensmittel- und Rezeptverwaltungsanwendung für das Heimnetzwerk.</p>
+
+            <h3>🎯 Hauptziele</h3>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Überblick über Lebensmittel an verschiedenen Lagerorten behalten</li>
+                <li>Nährwerte von Rezepten automatisch berechnen</li>
+                <li>Verfallsdaten überwachen (gelb/rot Warnungen)</li>
+                <li>Einkaufslisten automatisch generieren (Mindestbestand-Trigger)</li>
+                <li>Verbrauchte Produkte ausbuchen (per Scan oder manuell)</li>
+            </ul>
+
+            <h3>📊 Technische Eckdaten</h3>
+            <table>
+                <tr>
+                    <th>Aspekt</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td>Frontend</td>
+                    <td>Blazor Server (ASP.NET Core 8)</td>
+                </tr>
+                <tr>
+                    <td>Backend</td>
+                    <td>C# / ASP.NET Core 8</td>
+                </tr>
+                <tr>
+                    <td>Datenbank</td>
+                    <td>SQLite (mit Entity Framework Core)</td>
+                </tr>
+                <tr>
+                    <td>Deployment</td>
+                    <td>Docker Container auf TrueNAS</td>
+                </tr>
+                <tr>
+                    <td>Clients</td>
+                    <td>Windows, iOS, Android (Browser)</td>
+                </tr>
+                <tr>
+                    <td>Netzwerk</td>
+                    <td>Lokales Heimnetzwerk (LAN)</td>
+                </tr>
+                <tr>
+                    <td>Benutzer</td>
+                    <td>Max. 3 gleichzeitig (keine Auth erforderlich)</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Architecture Section -->
+        <section id="architecture">
+            <h2>🏗️ Systemarchitektur</h2>
+
+            <h3>Schichtenmodell</h3>
+            <p>FoodDatabase folgt einer layered architecture:</p>
+            <pre>
+┌─────────────────────────────┐
+│   Presentation Layer        │  ← Blazor Server (WebUI)
+├─────────────────────────────┤
+│   Business Logic Layer      │  ← Services (CRUD, Calculations)
+├─────────────────────────────┤
+│   Data Access Layer         │  ← Repository Pattern
+├─────────────────────────────┤
+│   ORM Layer                 │  ← Entity Framework Core
+├─────────────────────────────┤
+│   Persistence Layer         │  ← SQLite Database
+└─────────────────────────────┘
+            </pre>
+
+            <h3>Design Patterns</h3>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>Repository Pattern</strong> - Data access abstraction</li>
+                <li><strong>Dependency Injection</strong> - Loose coupling, testability</li>
+                <li><strong>Service Layer</strong> - Business logic separation</li>
+                <li><strong>SOLID Principles</strong> - Clean code practices</li>
+                <li><strong>Async/Await</strong> - Non-blocking operations</li>
+            </ul>
+
+            <div class="diagram-placeholder">
+                📊 Komponenten-Diagramm (siehe: diagrams/architecture-components.drawio)
+            </div>
+        </section>
+
+        <!-- Use-Cases Section -->
+        <section id="use-cases">
+            <h2>🎯 Use-Cases (10 gesamt)</h2>
+
+            <div class="uc-grid">
+                <!-- UC1 -->
+                <div class="uc-card done">
+                    <h4>UC1: Lebensmittel-Katalog</h4>
+                    <p>Verwaltung des Produktkatalogs (CRUD).</p>
+                    <span class="status-badge done">✅ Fertig (gemergt)</span>
+                </div>
+
+                <!-- UC10 -->
+                <div class="uc-card todo">
+                    <h4>UC10: Produktinstanzen mit MHD</h4>
+                    <p>Zentral! Jedes gekaufte Produkt mit eigenem MHD.</p>
+                    <span class="status-badge todo">⏳ Nächstes (Priorität)</span>
+                </div>
+
+                <!-- UC2 -->
+                <div class="uc-card todo">
+                    <h4>UC2: Lagerbestand</h4>
+                    <p>Menge + Lagerort pro Produktinstanz aktualisieren.</p>
+                    <span class="status-badge todo">⏳ Queue</span>
+                </div>
+
+                <!-- UC3 -->
+                <div class="uc-card todo">
+                    <h4>UC3: Nährwerte</h4>
+                    <p>CRUD für Nährwerte pro Lebensmittel (pro 100g/ml).</p>
+                    <span class="status-badge todo">⏳ Queue</span>
+                </div>
+
+                <!-- UC4 -->
+                <div class="uc-card todo">
+                    <h4>UC4: Rezepte</h4>
+                    <p>CRUD für Rezepte + Zutaten-Liste.</p>
+                    <span class="status-badge todo">⏳ Queue</span>
+                </div>
+
+                <!-- UC5 -->
+                <div class="uc-card todo">
+                    <h4>UC5: Rezept-Nährwerte</h4>
+                    <p>Automatische Berechnung der Gesamtnährwerte.</p>
+                    <span class="status-badge todo">⏳ Queue</span>
+                </div>
+
+                <!-- UC6 -->
+                <div class="uc-card todo">
+                    <h4>UC6: Verbrauch ausbuchen</h4>
+                    <p>Produkte verbraucht markieren (Scan/manuell).</p>
+                    <span class="status-badge todo">⏳ Queue</span>
+                </div>
+
+                <!-- UC7 -->
+                <div class="uc-card todo">
+                    <h4>UC7: Verfallsdatum-Warnungen</h4>
+                    <p>Überwachung mit 🟡 Gelb / 🔴 Rot Status.</p>
+                    <span class="status-badge todo">⏳ Queue</span>
+                </div>
+
+                <!-- UC8 -->
+                <div class="uc-card todo">
+                    <h4>UC8: Einkaufslisten</h4>
+                    <p>Automatisch generiert bei Mindestbestand.</p>
+                    <span class="status-badge todo">⏳ Queue</span>
+                </div>
+
+                <!-- UC9 -->
+                <div class="uc-card todo">
+                    <h4>UC9: Lagerorte</h4>
+                    <p>CRUD für Lagerort-Verwaltung (Kühlschrank, etc.).</p>
+                    <span class="status-badge todo">⏳ Queue</span>
+                </div>
+            </div>
+
+            <div class="diagram-placeholder">
+                🎯 Use-Case-Diagramm (siehe: requirements/use-cases.drawio)
+            </div>
+        </section>
+
+        <!-- Domain Model Section -->
+        <section id="domain-model">
+            <h2>📦 Domain Model</h2>
+
+            <h3>Zentrale Entities</h3>
+            <table>
+                <tr>
+                    <th>Entity</th>
+                    <th>Zweck</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td><strong>LebensmittelKatalog</strong></td>
+                    <td>Produkt-Template (Was existiert?)</td>
+                    <td>✅ UC1</td>
+                </tr>
+                <tr>
+                    <td><strong>ProduktInstanz ⭐</strong></td>
+                    <td>Konkrete gekaufte Einheit mit MHD</td>
+                    <td>⏳ UC10</td>
+                </tr>
+                <tr>
+                    <td><strong>Nährwert</strong></td>
+                    <td>Pro 100g/ml für Lebensmittel</td>
+                    <td>⏳ UC3</td>
+                </tr>
+                <tr>
+                    <td><strong>Rezept</strong></td>
+                    <td>Rezept-Definition + Zutaten</td>
+                    <td>⏳ UC4</td>
+                </tr>
+                <tr>
+                    <td><strong>Einkaufsliste</strong></td>
+                    <td>Produkte unter Mindestbestand</td>
+                    <td>⏳ UC8</td>
+                </tr>
+                <tr>
+                    <td><strong>VerfallsdatumWarnung</strong></td>
+                    <td>Status-Tracking für MHD</td>
+                    <td>⏳ UC7</td>
+                </tr>
+            </table>
+
+            <div class="diagram-placeholder">
+                📊 Klassen-Diagramm (siehe: diagrams/architecture-class.drawio)
+            </div>
+        </section>
+
+        <!-- Deployment Section -->
+        <section id="deployment">
+            <h2>🚀 Deployment (TrueNAS Docker)</h2>
+
+            <h3>Container-Setup</h3>
+            <pre>
+TrueNAS Server (192.168.x.100)
+└── Docker Container
+    ├── Image: mcr.microsoft.com/dotnet/aspnet:8.0
+    ├── Port: 5000 (HTTP)
+    ├── Volume: /data (SQLite Database)
+    └── Network: bridge (docker-compose)
+            </pre>
+
+            <h3>Konfiguration</h3>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><code>docker-compose.yml</code> - Orchester-Datei</li>
+                <li><code>appsettings.json</code> - App-Konfiguration</li>
+                <li><code>FoodDatabase.db</code> - SQLite Datei (persistent)</li>
+                <li>WAL Files - Backup & Recovery</li>
+            </ul>
+
+            <div class="diagram-placeholder">
+                🌐 Deployment-Diagramm (siehe: diagrams/architecture-deployment.drawio)
+            </div>
+        </section>
+
+        <!-- Development Section -->
+        <section id="development">
+            <h2>💻 Entwicklungs-Workflow</h2>
+
+            <h3>Agenten-Orchestrierung</h3>
+            <p>Jeder Use-Case folgt diesem Workflow:</p>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>Test-Agent</strong>: Schreibt 20+ Unit Tests (TDD Red)</li>
+                <li><strong>Dev-Agent</strong>: Implementiert Code (TDD Green)</li>
+                <li><strong>Review-Agent</strong>: Überprüft Code-Qualität</li>
+                <li><strong>Doc-Agent</strong>: Dokumentiert & aktualisiert Diagramme</li>
+                <li><strong>User</strong>: Reviewed lokal und gibt Approval</li>
+                <li>✅ <strong>Merge</strong> zu <code>master</code></li>
+            </ol>
+
+            <h3>Git-Workflow</h3>
+            <pre>
+# Pro UC einen Feature-Branch
+git checkout -b feat/ucN-feature-name
+
+# Nach Approval mergen
+git merge feat/ucN-feature-name
+
+# Kontext speichern für nächste Sitzung
+cat CONTEXT_SUMMARY.md
+            </pre>
+
+            <h3>Code-Standards</h3>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>Interfaces/Classes Separation</strong> - Saubere Struktur</li>
+                <li><strong>Repository Pattern</strong> - Data access abstraction</li>
+                <li><strong>Async/Await</strong> - Nicht-blockierend</li>
+                <li><strong>SOLID Principles</strong> - Clean Code</li>
+                <li><strong>Neutral Diagrams</strong> - Schwarz/weiß Farbschema</li>
+                <li><strong>TDD Approach</strong> - Tests zuerst</li>
+            </ul>
+        </section>
+
+        <!-- Status Section -->
+        <section>
+            <h2>📊 Projekt-Status</h2>
+
+            <h3>Abgeschlossen</h3>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>✅ Requirements & Use-Cases definiert</li>
+                <li>✅ Architecture-Diagramme erstellt</li>
+                <li>✅ UC1: Lebensmittel-Katalog (Tests + Code)</li>
+                <li>✅ Kontext-Dokumentation</li>
+            </ul>
+
+            <h3>In Progress</h3>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>🔄 Doc-Agent: HTML-Dokumentation (diese Seite!)</li>
+                <li>🔄 Doc-Agent: Sequenz-Diagramme</li>
+                <li>🔄 Doc-Agent: ADRs (Architecture Decision Records)</li>
+            </ul>
+
+            <h3>Nächste Schritte</h3>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>⏳ UC10: Produktinstanzen mit MHD (Priorität!)</li>
+                <li>⏳ UC2-UC9: In rasantem Tempo</li>
+                <li>⏳ DbContext & Migrations einrichten</li>
+                <li>⏳ Blazor UI Components</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p>🍽️ FoodDatabase | Multi-Agent Orchestrated Development | 2026</p>
+        <p>Lese vor jeder Sitzung: <code>CONTEXT_SUMMARY.md</code></p>
+    </footer>
+</body>
+</html>
