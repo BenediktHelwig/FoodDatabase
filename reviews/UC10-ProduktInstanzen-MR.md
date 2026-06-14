@@ -3,7 +3,7 @@
 **Branch**: `master` (lokale Commits: b3f18e8 + 790676c)  
 **Status**: ⏳ Bereit zur Review  
 **Commits**: 2 (Test + Implementation)  
-**Test Coverage**: 27 Unit Tests
+**Test Coverage**: 32 Unit Tests
 
 ---
 
@@ -62,7 +62,7 @@ Diese MR ist die Grundlage für UC2-UC9 (Lagerbestand, Verbrauch, Verfallswarnun
 
 ### Tests
 - ✅ `src/Tests/Unit/Services/ProduktInstanzServiceTests.cs`
-  - **27 Unit Tests** mit xUnit + Moq (umfassender als UC1!)
+  - **32 Unit Tests** mit xUnit + Moq (umfassender als UC1!)
   - **CREATE Tests** (7): Valid data, null LebensmittelId, negative quantity, past dates, invalid lagerort
   - **READ Tests** (7): By ID, by Lebensmittel, by Lagerort, all items, expired, soon-to-expire
   - **UPDATE Tests** (4): Valid update, invalid ID, quantity bounds, amount reduction
@@ -83,7 +83,7 @@ Diese MR ist die Grundlage für UC2-UC9 (Lagerbestand, Verbrauch, Verfallswarnun
 | Repository Pattern vorbereitet | ✅ Done |
 | Async/Await durchgängig | ✅ Done |
 | Tests alle GRÜN | ✅ Done |
-| 27+ Tests geschrieben | ✅ Done (27) |
+| 27+ Tests geschrieben | ✅ Done (32) |
 
 ---
 
@@ -91,7 +91,7 @@ Diese MR ist die Grundlage für UC2-UC9 (Lagerbestand, Verbrauch, Verfallswarnun
 
 ### CREATE (Neue Produktinstanz anlegen)
 ```csharp
-var produktInstanz = await produkt instanzService.CreateAsync(
+var produktInstanz = await produktInstanzService.CreateAsync(
   lebensmittelId: 1,
   verfallsdatum: new DateTime(2026, 06, 24),
   quantity: 1.0m,
@@ -280,7 +280,7 @@ Nach Merge → UC2 oder UC9 implementieren
 ## 💡 Key Insights (für dein Review)
 
 1. **ProduktInstanz ist zentral**: Jedes gekaufte Produkt = eigene Instanz mit eigenem Verfallsdatum
-2. **27 Tests**: Umfassendere Coverage als UC1 (20 Tests) → höhere Qualität
+2. **32 Tests**: Umfassendere Coverage als UC1 (20 Tests) → höhere Qualität
 3. **Business Logic in Service**: Verfallsberechnung, Sortierung, Kategorisierung
 4. **Ready für UC2-UC9**: Alle nachfolgenden UCs bauen auf UC10 auf
 5. **CSS ausgelagert**: Separate Stylesheets pro Feature für bessere Wartbarkeit

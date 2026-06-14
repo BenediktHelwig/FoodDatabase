@@ -3,7 +3,7 @@
 **Branch**: `feat/uc1-lebensmittel-katalog` → `master`  
 **Status**: ⏳ Bereit zur Review  
 **Commits**: 2 (Test + Implementation)  
-**Test Coverage**: 20+ Unit Tests
+**Test Coverage**: 19 Unit Tests
 
 ---
 
@@ -44,7 +44,7 @@ Der Lebensmittel-Katalog ist die Basis für alle anderen Use-Cases (Produktinsta
 
 ### Tests
 - ✅ `src/Tests/Unit/Services/LebensmittelServiceTests.cs`
-  - **20+ Unit Tests** mit xUnit + Moq
+  - **19 Unit Tests** mit xUnit + Moq
   - **CREATE Tests**: Valid data, empty name, null name, invalid unit
   - **READ Tests**: By ID, all items, empty list, non-existent ID
   - **UPDATE Tests**: Valid data, empty name, non-existent ID
