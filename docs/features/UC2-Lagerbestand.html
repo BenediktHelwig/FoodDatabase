@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC2 - Lagerbestand aktualisieren | FoodDatabase</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/uc2-lagerbestand.css">
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="../architecture-overview.html">← Zurück zur Übersicht</a>
+        </div>
+
+        <header>
+            <h1>UC2: Lagerbestand aktualisieren</h1>
+            <div class="meta">
+                Use-Case <strong>2</strong> |
+                Status: <span class="status-badge todo">⏳ TODO</span>
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Übersicht</h2>
+            <p><strong>Beschreibung</strong>: Benutzer kann Menge und Lagerort von Produktinstanzen aktualisieren. Dies ist zentral, um den aktuellen Bestand zu verwalten.</p>
+
+            <h3>Hauptziele</h3>
+            <ul>
+                <li>Menge von Produktinstanzen ändern</li>
+                <li>Lagerort zuordnen (z.B. Kühlschrank, Vorratsschrank)</li>
+                <li>Sofortige Aktualisierung im System</li>
+            </ul>
+
+            <h3>Geschäftsnutzen</h3>
+            <p>Der Benutzer kann seinen aktuellen Lagerbestand verwalten und jederzeit sehen, wie viel von welchem Produkt an welchem Ort vorhanden ist.</p>
+        </section>
+
+        <section>
+            <h2>📦 Domain Model</h2>
+
+            <h3>Beteiligte Entities</h3>
+            <table>
+                <tr>
+                    <th>Entity</th>
+                    <th>Rolle</th>
+                    <th>Beziehung</th>
+                </tr>
+                <tr>
+                    <td>ProduktInstanz</td>
+                    <td>Zu aktualisierende Einheit</td>
+                    <td>Primary (Update-Ziel)</td>
+                </tr>
+                <tr>
+                    <td>Lagerort</td>
+                    <td>Speicherort des Produkts</td>
+                    <td>Foreign Key (0..1)</td>
+                </tr>
+                <tr>
+                    <td>LebensmittelKatalog</td>
+                    <td>Referenzen das Produkt</td>
+                    <td>Foreign Key (1..1)</td>
+                </tr>
+            </table>
+
+            <h3>Betroffene Attribute</h3>
+            <pre>
+ProduktInstanz
+├── Menge: decimal
+├── Einheit: string (g, ml, Stück, etc.)
+└── Lagerort: Lagerort (Foreign Key)
+            </pre>
+        </section>
+
+        <section>
+            <h2>🔄 User Workflows</h2>
+
+            <h3>Hauptworkflow: Bestand aktualisieren</h3>
+            <pre>
+1. Benutzer öffnet ProduktInstanz-Liste
+2. Selektiert eine ProduktInstanz
+3. Ändert Menge und/oder Lagerort
+4. Klickt "Speichern"
+5. System validiert Eingaben
+6. System speichert Änderungen in DB
+7. Benutzer sieht Erfolgsmeldung
+            </pre>
+
+            <h3>Alternative Flows</h3>
+            <p><strong>Fehler: Ungültige Menge</strong> - System zeigt Validierungsfehler und verhindert Speichern</p>
+            <p><strong>Lagerort nicht gefunden</strong> - System zeigt Dropdown mit verfügbaren Lagerorten</p>
+        </section>
+
+        <section>
+            <h2>🔌 Service Interface</h2>
+
+            <h3>Service-Methoden</h3>
+            <pre>
+public interface IProduktInstanzService
+{
+    Task&lt;ProduktInstanz&gt; UpdateProduktInstanzAsync(ProduktInstanz instanz);
+    Task&lt;ProduktInstanz&gt; GetProduktInstanzByIdAsync(int id);
+    Task&lt;IEnumerable&lt;ProduktInstanz&gt;&gt; GetAllProduktInstanzenAsync();
+}
+            </pre>
+
+            <h3>REST Endpoints (geplant)</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Beschreibung</th>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/produktinstanzen/{id}</td>
+                    <td>ProduktInstanz aktualisieren</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/produktinstanzen</td>
+                    <td>Alle ProduktInstanzen abrufen</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>✅ Tests</h2>
+
+            <h3>Test Coverage</h3>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Update Menge (valid)</li>
+                    <li><input type="checkbox"> Update Lagerort</li>
+                    <li><input type="checkbox"> Update beides (Menge + Lagerort)</li>
+                    <li><input type="checkbox"> Validierung: Negative Menge</li>
+                    <li><input type="checkbox"> Validierung: Null Menge</li>
+                    <li><input type="checkbox"> Validierung: Ungültige Lagerort-ID</li>
+                    <li><input type="checkbox"> Fehlerfall: ProduktInstanz nicht gefunden</li>
+                    <li><input type="checkbox"> Fehlerfall: Datenbank-Fehler</li>
+                    <li><input type="checkbox"> Concurrency: Gleichzeitige Updates</li>
+                </ul>
+            </div>
+
+            <h3>Test-Datei</h3>
+            <p>Location: <code>src/Tests/Unit/Services/ProduktInstanzServiceTests.cs</code></p>
+            <p>Tests: 20+ Unit Tests (xUnit + Moq)</p>
+        </section>
+
+        <section>
+            <h2>🔗 Dependencies</h2>
+
+            <h3>Abhängigkeiten (andere UCs)</h3>
+            <ul>
+                <li>Abhängt von: <strong>UC10: Produktinstanzen mit MHD</strong> (ProduktInstanz Entity)</li>
+                <li>Abhängt von: <strong>UC9: Lagerorte verwalten</strong> (Lagerort Entity)</li>
+                <li>Wird benötigt von: <strong>UC6: Verbrauch ausbuchen</strong></li>
+            </ul>
+
+            <h3>Externe Libraries</h3>
+            <ul>
+                <li>Entity Framework Core (✅ Vorhanden)</li>
+                <li>xUnit (✅ Vorhanden)</li>
+                <li>Moq (✅ Vorhanden)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>📊 Implementation Status</h2>
+
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
+                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
+                    <li><input type="checkbox"> Code Review bestanden</li>
+                    <li><input type="checkbox"> Diagramme aktualisiert</li>
+                    <li><input type="checkbox"> Dokumentation fertig</li>
+                    <li><input type="checkbox"> User Review & Approval</li>
+                    <li><input type="checkbox"> Merged zu Master</li>
+                </ul>
+            </div>
+
+            <p><strong>Commit</strong>: [Awaiting implementation]</p>
+            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
+        </section>
+
+        <section>
+            <h2>📐 Diagramme</h2>
+
+            <div class="diagram-placeholder">
+                📊 Sequenz-Diagramm: Lagerbestand aktualisieren<br>
+                <small>(siehe: diagrams/sequence-lagerbestand.drawio)</small>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 Notizen</h2>
+
+            <h3>Besonderheiten</h3>
+            <p>Diese UC ist abhängig von UC10 (ProduktInstanz) und UC9 (Lagerort). Sie sollte nach diesen implementiert werden.</p>
+
+            <h3>Offene Fragen</h3>
+            <ul>
+                <li>Sollen historische Änderungen protokolliert werden (Audit Log)?</li>
+                <li>Ist eine Batch-Update möglich (mehrere Instanzen auf einmal)?</li>
+            </ul>
+        </section>
+
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
+            <p>FoodDatabase | UC2 | Lagerbestand aktualisieren</p>
+            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        </footer>
+    </div>
+</body>
+</html>

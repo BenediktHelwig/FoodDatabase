@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC5 - Nährwerte berechnen | FoodDatabase</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/uc5-nährwertberechnung.css">
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="../architecture-overview.html">← Zurück zur Übersicht</a>
+        </div>
+
+        <header>
+            <h1>UC5: Nährwerte berechnen</h1>
+            <div class="meta">
+                Use-Case <strong>5</strong> |
+                Status: <span class="status-badge todo">⏳ TODO</span>
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Übersicht</h2>
+            <p><strong>Beschreibung</strong>: Automatische Berechnung der Gesamtnährwerte eines Rezepts basierend auf Zutaten und deren Nährwertinformationen.</p>
+
+            <h3>Hauptziele</h3>
+            <ul>
+                <li>Nährwerte automatisch berechnen (nicht manuell eingeben)</li>
+                <li>Berechnung basierend auf Zutat-Mengen</li>
+                <li>Anzeige der Gesamtnährwerte pro Rezept</li>
+            </ul>
+
+            <h3>Geschäftsnutzen</h3>
+            <p>Der Benutzer kann schnell sehen, wie viele Kcal und welche Nährwerte sein Rezept hat, ohne manuell zu rechnen.</p>
+        </section>
+
+        <section>
+            <h2>📦 Domain Model</h2>
+
+            <h3>Beteiligte Entities</h3>
+            <table>
+                <tr>
+                    <th>Entity</th>
+                    <th>Rolle</th>
+                    <th>Beziehung</th>
+                </tr>
+                <tr>
+                    <td>Rezept</td>
+                    <td>Quell-Rezept</td>
+                    <td>Primary (Read)</td>
+                </tr>
+                <tr>
+                    <td>RezeptZutat</td>
+                    <td>Zutat + Menge</td>
+                    <td>Child (Read)</td>
+                </tr>
+                <tr>
+                    <td>Nährwert</td>
+                    <td>Zutat-Nährwertinformation</td>
+                    <td>Reference (Read)</td>
+                </tr>
+            </table>
+
+            <h3>Berechnung</h3>
+            <pre>
+Gesamtnährwerte = SUMME über alle Zutaten:
+  pro Zutat:
+    Kcal = (Nährwert.Kcal / 100) * RezeptZutat.Menge
+    Eiweiß = (Nährwert.Eiweiß / 100) * RezeptZutat.Menge
+    etc.
+            </pre>
+        </section>
+
+        <section>
+            <h2>🔄 User Workflows</h2>
+
+            <h3>Hauptworkflow: Nährwerte ansehen</h3>
+            <pre>
+1. Benutzer öffnet Rezept-Detail
+2. System berechnet automatisch Nährwerte
+3. Nährwerte werden angezeigt (Kcal, Eiweiß, Fett, KH)
+4. Benutzer sieht auch Werte pro Portion (falls definiert)
+            </pre>
+
+            <h3>Fehlerfall</h3>
+            <p><strong>Fehlende Nährwertinformation</strong>: Wenn Zutat keine Nährwerte hat, wird Warnung angezeigt</p>
+        </section>
+
+        <section>
+            <h2>🔌 Service Interface</h2>
+
+            <h3>Service-Methoden</h3>
+            <pre>
+public interface IRezeptNährwertService
+{
+    Task&lt;RezeptNährwertErgebnis&gt; CalculateRezeptNährwerteAsync(int rezeptId);
+    Task&lt;RezeptNährwertErgebnis&gt; CalculateRezeptNährwerteAsync(Rezept rezept);
+}
+
+public class RezeptNährwertErgebnis
+{
+    public int RezeptId { get; set; }
+    public decimal GesamtKcal { get; set; }
+    public decimal GesamtEiweißGramm { get; set; }
+    public decimal GesamtFettGramm { get; set; }
+    public decimal GesamtKohlenhydrateGramm { get; set; }
+    public List&lt;string&gt; FehlendNährwertZutaten { get; set; }
+}
+            </pre>
+        </section>
+
+        <section>
+            <h2>✅ Tests</h2>
+
+            <h3>Test Coverage</h3>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Berechnung: Einzelne Zutat</li>
+                    <li><input type="checkbox"> Berechnung: Multiple Zutaten</li>
+                    <li><input type="checkbox"> Berechnung: Verschiedene Einheiten (g, ml)</li>
+                    <li><input type="checkbox"> Berechnung: Dezimalmengen</li>
+                    <li><input type="checkbox"> Fehler: Rezept nicht gefunden</li>
+                    <li><input type="checkbox"> Fehler: Leeres Rezept (0 Zutaten)</li>
+                    <li><input type="checkbox"> Fehler: Fehlende Nährwertinformation</li>
+                    <li><input type="checkbox"> Performance: Rezept mit 50+ Zutaten</li>
+                </ul>
+            </div>
+
+            <h3>Test-Datei</h3>
+            <p>Location: <code>src/Tests/Unit/Services/RezeptNährwertServiceTests.cs</code></p>
+            <p>Tests: 15+ Unit Tests (xUnit + Moq)</p>
+        </section>
+
+        <section>
+            <h2>🔗 Dependencies</h2>
+
+            <h3>Abhängigkeiten (andere UCs)</h3>
+            <ul>
+                <li>Abhängt von: <strong>UC3: Nährwerte verwalten</strong></li>
+                <li>Abhängt von: <strong>UC4: Rezepte verwalten</strong></li>
+            </ul>
+
+            <h3>Externe Libraries</h3>
+            <ul>
+                <li>Entity Framework Core (✅ Vorhanden)</li>
+                <li>xUnit (✅ Vorhanden)</li>
+                <li>Moq (✅ Vorhanden)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>📊 Implementation Status</h2>
+
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
+                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
+                    <li><input type="checkbox"> Code Review bestanden</li>
+                    <li><input type="checkbox"> Diagramme aktualisiert</li>
+                    <li><input type="checkbox"> Dokumentation fertig</li>
+                    <li><input type="checkbox"> User Review & Approval</li>
+                    <li><input type="checkbox"> Merged zu Master</li>
+                </ul>
+            </div>
+
+            <p><strong>Commit</strong>: [Awaiting implementation]</p>
+            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
+        </section>
+
+        <section>
+            <h2>📐 Diagramme</h2>
+
+            <div class="diagram-placeholder">
+                📊 Sequenz-Diagramm: Nährwertberechnung<br>
+                <small>(siehe: diagrams/sequence-nährwert.drawio)</small>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 Notizen</h2>
+
+            <h3>Besonderheiten</h3>
+            <p>Diese UC ist eine READ-ONLY Operation (keine Daten-Modifikation). Sie berechnet nur basierend auf vorhandenen Daten.</p>
+
+            <h3>Offene Fragen</h3>
+            <ul>
+                <li>Sollen Nährwerte pro Portion berechnet werden (falls Rezept Portionengröße hat)?</li>
+                <li>Sollen die berechneten Nährwerte zwischengespeichert werden (cachen)?</li>
+            </ul>
+        </section>
+
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
+            <p>FoodDatabase | UC5 | Nährwerte berechnen</p>
+            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        </footer>
+    </div>
+</body>
+</html>

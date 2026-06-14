@@ -1,0 +1,42 @@
+/* UC7: Verfallsdatum-Warnungen */
+:root {
+    --feature-primary: #000;
+}
+
+.section {
+    background: var(--bg-primary);
+    margin: 20px 0;
+    padding: 25px;
+    border-left: 4px solid var(--feature-primary);
+}
+
+.section h2 {
+    border-left: 4px solid var(--feature-primary);
+    color: var(--text-primary);
+}
+
+header {
+    border-bottom: 3px solid var(--feature-primary);
+}
+
+header h1 {
+    border-bottom: none;
+}
+
+table th {
+    background: var(--feature-primary);
+}
+
+pre {
+    border-left: 4px solid var(--feature-primary);
+}
+
+.checklist {
+    border-left: 4px solid var(--feature-primary);
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 15px;
+    }
+}

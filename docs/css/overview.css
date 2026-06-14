@@ -1,0 +1,128 @@
+/* ============================================================================
+   FoodDatabase - Architecture Overview Page Styles
+   Extends shared.css with overview-specific styling
+   ============================================================================ */
+
+/* Override header styling for overview */
+header {
+    background: var(--primary-light);
+    border-bottom: 3px solid var(--primary-dark);
+    padding: 30px 20px;
+}
+
+header h1 {
+    font-size: 2.2em;
+    margin-bottom: 5px;
+}
+
+header p {
+    font-size: 1.05em;
+    color: var(--text-secondary);
+}
+
+/* UC Grid */
+.uc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.uc-card {
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    padding: 20px;
+    background: var(--bg-primary);
+    transition: all 0.3s ease;
+}
+
+.uc-card:hover {
+    border-color: var(--primary-dark);
+    box-shadow: 0 4px 12px var(--shadow-medium);
+    transform: translateY(-2px);
+}
+
+.uc-card h4 {
+    margin: 0 0 10px 0;
+    color: var(--text-primary);
+}
+
+.uc-card p {
+    margin: 0.5em 0;
+    color: var(--text-secondary);
+    font-size: 0.95em;
+}
+
+.uc-card.done {
+    background-color: #e8f5e9;
+    border-color: var(--accent-success);
+}
+
+.uc-card.in-progress {
+    background-color: #e3f2fd;
+    border-color: var(--accent-info);
+}
+
+.uc-card.todo {
+    background-color: #fff3e0;
+    border-color: var(--accent-warning);
+}
+
+/* Section styling specific to overview */
+.section {
+    background: var(--bg-primary);
+    margin: 20px 0;
+    padding: 25px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px var(--shadow-light);
+}
+
+.section h2 {
+    margin-top: 0;
+}
+
+.section:first-of-type {
+    margin-top: 0;
+}
+
+/* Tech stack table styling */
+table {
+    background: var(--bg-primary);
+}
+
+table th {
+    background: var(--primary-dark);
+    color: var(--primary-light);
+}
+
+table tr:nth-child(even) {
+    background-color: var(--bg-tertiary);
+}
+
+/* Link styling */
+.section a {
+    font-weight: 500;
+}
+
+/* Architecture layer visualization */
+pre {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.6em;
+    }
+
+    header p {
+        font-size: 0.95em;
+    }
+
+    .uc-grid {
+        grid-template-columns: 1fr;
+    }
+}

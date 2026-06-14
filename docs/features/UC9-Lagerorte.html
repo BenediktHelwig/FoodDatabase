@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC9 - Lagerorte verwalten | FoodDatabase</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/uc9-lagerorte.css">
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="../architecture-overview.html">← Zurück zur Übersicht</a>
+        </div>
+
+        <header>
+            <h1>UC9: Lagerorte verwalten</h1>
+            <div class="meta">
+                Use-Case <strong>9</strong> |
+                Status: <span class="status-badge todo">⏳ TODO</span>
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Übersicht</h2>
+            <p><strong>Beschreibung</strong>: CRUD für Lagerorte (z.B. Kühlschrank, Vorratsschrank, Gefrierraum). Benutzer kann Speicherorte für Produkte definieren.</p>
+
+            <h3>Hauptziele</h3>
+            <ul>
+                <li>Lagerorte erstellen (z.B. "Kühlschrank", "Gefrierschrank")</li>
+                <li>Lagerorte bearbeiten und löschen</li>
+                <li>Lagerorte bei Produktinstanzen referenzieren</li>
+            </ul>
+
+            <h3>Geschäftsnutzen</h3>
+            <p>Der Benutzer kann sein Lager in verschiedene Bereiche unterteilen (Küche, Keller, etc.) und immer sehen, wo welche Produkte lagern.</p>
+        </section>
+
+        <section>
+            <h2>📦 Domain Model</h2>
+
+            <h3>Beteiligte Entities</h3>
+            <table>
+                <tr>
+                    <th>Entity</th>
+                    <th>Rolle</th>
+                    <th>Beziehung</th>
+                </tr>
+                <tr>
+                    <td>Lagerort</td>
+                    <td>Zu verwaltender Speicherort</td>
+                    <td>Primary (CRUD-Ziel)</td>
+                </tr>
+                <tr>
+                    <td>ProduktInstanz</td>
+                    <td>Referenzierendes Produkt</td>
+                    <td>Child (0:N)</td>
+                </tr>
+            </table>
+
+            <h3>Neue Entity: Lagerort</h3>
+            <pre>
+Lagerort
+├── Id: int (PK)
+├── Name: string (z.B. "Kühlschrank")
+├── Beschreibung: string (optional)
+├── Temperatur: decimal (optional, in °C)
+├── Lagertyp: LagerortTyp (Kühlschrank, Gefrierschrank, Schrank, etc.)
+└── ProduktInstanzen: ICollection&lt;ProduktInstanz&gt;
+
+enum LagerortTyp
+{
+    Kühlschrank,
+    Gefrierschrank,
+    Schrank,
+    Regal,
+    Sonstiges
+}
+            </pre>
+        </section>
+
+        <section>
+            <h2>🔄 User Workflows</h2>
+
+            <h3>Hauptworkflow: Lagerort erstellen</h3>
+            <pre>
+1. Benutzer öffnet "Lagerorte verwalten"
+2. Klickt "Neuer Lagerort"
+3. Gibt Name und Typ ein (z.B. "Kühlschrank")
+4. Speichert
+5. Lagerort kann jetzt bei ProduktInstanzen verwendet werden
+            </pre>
+
+            <h3>Weitere Workflows</h3>
+            <p><strong>Bearbeiten</strong>: Benutzer ändert Lagerort-Informationen</p>
+            <p><strong>Löschen</strong>: Benutzer entfernt Lagerort (nur wenn keine Produkte zugeordnet)</p>
+        </section>
+
+        <section>
+            <h2>🔌 Service Interface</h2>
+
+            <h3>Service-Methoden</h3>
+            <pre>
+public interface ILagerortService
+{
+    Task&lt;Lagerort&gt; CreateLagerortAsync(Lagerort lagerort);
+    Task&lt;Lagerort&gt; GetLagerortByIdAsync(int id);
+    Task&lt;IEnumerable&lt;Lagerort&gt;&gt; GetAllLagerorteAsync();
+    Task&lt;Lagerort&gt; UpdateLagerortAsync(Lagerort lagerort);
+    Task&lt;bool&gt; DeleteLagerortAsync(int id);
+    Task&lt;bool&gt; CanDeleteAsync(int lagerortId);
+}
+            </pre>
+
+            <h3>REST Endpoints (geplant)</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Beschreibung</th>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/lagerorte</td>
+                    <td>Lagerort erstellen</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/lagerorte</td>
+                    <td>Alle Lagerorte</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/lagerorte/{id}</td>
+                    <td>Lagerort abrufen</td>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/lagerorte/{id}</td>
+                    <td>Lagerort aktualisieren</td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/lagerorte/{id}</td>
+                    <td>Lagerort löschen</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>✅ Tests</h2>
+
+            <h3>Test Coverage</h3>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Create Lagerort (valid)</li>
+                    <li><input type="checkbox"> Read Lagerort by ID</li>
+                    <li><input type="checkbox"> Read all Lagerorte</li>
+                    <li><input type="checkbox"> Update Lagerort</li>
+                    <li><input type="checkbox"> Delete Lagerort (leer)</li>
+                    <li><input type="checkbox"> Delete Lagerort (mit Produkten) - Error</li>
+                    <li><input type="checkbox"> Validierung: Empty Name</li>
+                    <li><input type="checkbox"> Validierung: Duplicate Name</li>
+                    <li><input type="checkbox"> Can Delete Check</li>
+                </ul>
+            </div>
+
+            <h3>Test-Datei</h3>
+            <p>Location: <code>src/Tests/Unit/Services/LagerortServiceTests.cs</code></p>
+            <p>Tests: 15+ Unit Tests (xUnit + Moq)</p>
+        </section>
+
+        <section>
+            <h2>🔗 Dependencies</h2>
+
+            <h3>Abhängigkeiten (andere UCs)</h3>
+            <ul>
+                <li>Wird benötigt von: <strong>UC2: Lagerbestand aktualisieren</strong></li>
+                <li>Wird benötigt von: <strong>UC10: Produktinstanzen mit MHD</strong></li>
+            </ul>
+
+            <h3>Externe Libraries</h3>
+            <ul>
+                <li>Entity Framework Core (✅ Vorhanden)</li>
+                <li>xUnit (✅ Vorhanden)</li>
+                <li>Moq (✅ Vorhanden)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>📊 Implementation Status</h2>
+
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
+                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
+                    <li><input type="checkbox"> Code Review bestanden</li>
+                    <li><input type="checkbox"> Diagramme aktualisiert</li>
+                    <li><input type="checkbox"> Dokumentation fertig</li>
+                    <li><input type="checkbox"> User Review & Approval</li>
+                    <li><input type="checkbox"> Merged zu Master</li>
+                </ul>
+            </div>
+
+            <p><strong>Commit</strong>: [Awaiting implementation]</p>
+            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
+        </section>
+
+        <section>
+            <h2>📐 Diagramme</h2>
+
+            <div class="diagram-placeholder">
+                📊 Klassen-Diagramm: Lagerort-Entity<br>
+                <small>(siehe: diagrams/architecture-class.drawio)</small>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 Notizen</h2>
+
+            <h3>Besonderheiten</h3>
+            <p>Dies ist eine simple CRUD-Entity. Lagerort-Namen sollten eindeutig sein (Unique Constraint).</p>
+
+            <h3>Offene Fragen</h3>
+            <ul>
+                <li>Sollen Temperatur/Feuchte-Sensoren gekoppelt werden?</li>
+                <li>Können Lagerorte hierarchisch sein (z.B. "Küche > Kühlschrank")?</li>
+            </ul>
+        </section>
+
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
+            <p>FoodDatabase | UC9 | Lagerorte verwalten</p>
+            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        </footer>
+    </div>
+</body>
+</html>

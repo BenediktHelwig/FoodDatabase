@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC10 - Produktinstanzen mit MHD | FoodDatabase</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/uc10-produktinstanzen.css">
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="../architecture-overview.html">← Zurück zur Übersicht</a>
+        </div>
+
+        <header>
+            <h1>UC10: Produktinstanzen mit MHD</h1>
+            <div class="meta">
+                Use-Case <strong>10</strong> |
+                Status: <span class="status-badge todo">⏳ TODO (PRIORITÄT!)</span>
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Übersicht</h2>
+            <p><strong>Beschreibung</strong>: ZENTRALE UC! Verwaltung von konkreten gekauften Produktinstanzen mit individuellem MHD. Dies ist das Kernmodell der gesamten Anwendung.</p>
+
+            <h3>Hauptziele</h3>
+            <ul>
+                <li>ProduktInstanz-Records mit eigenem MHD verwalten</li>
+                <li>CRUD für ProduktInstanzen</li>
+                <li>Jedes gekaufte Produkt = EINE ProduktInstanz (nicht ein MHD pro Lebensmittel!)</li>
+                <li>Lagerort, Menge, MHD tracken</li>
+            </ul>
+
+            <h3>Geschäftsnutzen & Design-Decision</h3>
+            <p><strong>⭐ Zentral:</strong> Eine "Portion Joghurt" = 1 ProduktInstanz mit eigenem MHD, nicht ein globales "Joghurt" MHD. Dies ermöglicht flexibles Tracking von Mehrfach-Käufen mit unterschiedlichen Verfallsdaten.</p>
+        </section>
+
+        <section>
+            <h2>📦 Domain Model</h2>
+
+            <h3>Beteiligte Entities</h3>
+            <table>
+                <tr>
+                    <th>Entity</th>
+                    <th>Rolle</th>
+                    <th>Beziehung</th>
+                </tr>
+                <tr>
+                    <td>ProduktInstanz</td>
+                    <td>Zu verwaltende Einheit (ZENTRAL!)</td>
+                    <td>Primary (CRUD-Ziel)</td>
+                </tr>
+                <tr>
+                    <td>LebensmittelKatalog</td>
+                    <td>Referenz-Template</td>
+                    <td>Foreign Key (1..1)</td>
+                </tr>
+                <tr>
+                    <td>Lagerort</td>
+                    <td>Speicherort</td>
+                    <td>Foreign Key (0..1)</td>
+                </tr>
+            </table>
+
+            <h3>ProduktInstanz Entity</h3>
+            <pre>
+ProduktInstanz
+├── Id: int (PK)
+├── LebensmittelKatalogId: int (FK) ← WELCHES Produkt?
+├── Menge: decimal ← WIE VIEL?
+├── Einheit: string (g, ml, Stück, etc.)
+├── MHD: DateTime ← WANN VERFÄLLT DIESES?
+├── LagerortId: int? (FK, nullable) ← WO LAGERT ES?
+├── Barcode: string (optional)
+├── KaufDatum: DateTime
+└── Notiz: string (optional)
+
+BEACHTE: Kein globales "MHD pro LebensmittelKatalog"
+         Jede INSTANZ hat ihr eigenes MHD!
+            </pre>
+
+            <h3>Daten-Beispiel</h3>
+            <pre>
+LebensmittelKatalog: Joghurt (generisch)
+├── ProduktInstanz #1: 500g, MHD 2026-06-20, Kühlschrank
+├── ProduktInstanz #2: 500g, MHD 2026-06-25, Kühlschrank (2. gekauft)
+└── ProduktInstanz #3: 250g, MHD 2026-07-10, Gefrierschrank
+
+→ Drei VERSCHIEDENE Einheiten mit UNTERSCHIEDLICHEN MHDs!
+            </pre>
+        </section>
+
+        <section>
+            <h2>🔄 User Workflows</h2>
+
+            <h3>Hauptworkflow: Produktinstanz hinzufügen (Einkauf)</h3>
+            <pre>
+1. Benutzer klickt "Neuen Einkauf hinzufügen"
+2. Wählt Lebensmittel aus Katalog
+3. Gibt ein:
+   - Menge (z.B. 500)
+   - Einheit (z.B. "g")
+   - MHD (z.B. 2026-06-20)
+   - Lagerort (z.B. "Kühlschrank")
+   - Optional: Barcode, Notiz
+4. Speichert
+5. ProduktInstanz wird angelegt
+6. Wird in Liste/Dashboard angezeigt
+            </pre>
+
+            <h3>Workflow 2: Bestand überblicken</h3>
+            <pre>
+1. Benutzer öffnet Lager-Übersicht
+2. Sieht ALLE ProduktInstanzen gruppiert:
+   - Nach LebensmittelKatalog
+   - Mit MHD-Status (🟢 OK, 🟡 Bald verfallen, 🔴 Verfallen)
+3. Kann filtern nach:
+   - Lagerort
+   - MHD-Status
+   - Produkt-Kategorie
+            </pre>
+
+            <h3>Workflow 3: Verbrauch tracken</h3>
+            <pre>
+1. Benutzer hat Joghurt gegessen
+2. Öffnet ProduktInstanz
+3. Ändert Menge (z.B. von 500g auf 300g)
+4. Oder: "Vollständig verbraucht" (Menge = 0, markiert als deleted/inactive)
+5. System aktualisiert
+            </pre>
+        </section>
+
+        <section>
+            <h2>🔌 Service Interface</h2>
+
+            <h3>Service-Methoden</h3>
+            <pre>
+public interface IProduktInstanzService
+{
+    Task&lt;ProduktInstanz&gt; CreateProduktInstanzAsync(ProduktInstanz instanz);
+    Task&lt;ProduktInstanz&gt; GetProduktInstanzByIdAsync(int id);
+    Task&lt;IEnumerable&lt;ProduktInstanz&gt;&gt; GetAllProduktInstanzenAsync();
+    Task&lt;IEnumerable&lt;ProduktInstanz&gt;&gt; GetByLebensmittelAsync(int lebensmittelId);
+    Task&lt;IEnumerable&lt;ProduktInstanz&gt;&gt; GetByLagerortAsync(int lagerortId);
+    Task&lt;ProduktInstanz&gt; UpdateProduktInstanzAsync(ProduktInstanz instanz);
+    Task&lt;bool&gt; DeleteProduktInstanzAsync(int id);
+    Task&lt;ProduktInstanz&gt; FindByBarcodeAsync(string barcode);
+}
+            </pre>
+
+            <h3>REST Endpoints (geplant)</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Beschreibung</th>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/produktinstanzen</td>
+                    <td>Neue ProduktInstanz hinzufügen</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/produktinstanzen</td>
+                    <td>Alle ProduktInstanzen</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/produktinstanzen/{id}</td>
+                    <td>ProduktInstanz abrufen</td>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/produktinstanzen/{id}</td>
+                    <td>ProduktInstanz aktualisieren</td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/produktinstanzen/{id}</td>
+                    <td>ProduktInstanz löschen</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/produktinstanzen/lebensmittel/{id}</td>
+                    <td>Nach Lebensmittel filtern</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/produktinstanzen/barcode/{barcode}</td>
+                    <td>Nach Barcode suchen</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>✅ Tests</h2>
+
+            <h3>Test Coverage</h3>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Create ProduktInstanz (valid)</li>
+                    <li><input type="checkbox"> Read by ID</li>
+                    <li><input type="checkbox"> Read all</li>
+                    <li><input type="checkbox"> Read by Lebensmittel</li>
+                    <li><input type="checkbox"> Read by Lagerort</li>
+                    <li><input type="checkbox"> Update Menge</li>
+                    <li><input type="checkbox"> Update MHD</li>
+                    <li><input type="checkbox"> Update Lagerort</li>
+                    <li><input type="checkbox"> Delete ProduktInstanz</li>
+                    <li><input type="checkbox"> Find by Barcode</li>
+                    <li><input type="checkbox"> Validierung: Negative Menge</li>
+                    <li><input type="checkbox"> Validierung: MHD in Vergangenheit (Warnung?)</li>
+                    <li><input type="checkbox"> Validierung: Lebensmittel nicht gefunden</li>
+                    <li><input type="checkbox"> Validierung: Lagerort nicht gefunden</li>
+                    <li><input type="checkbox"> Fehler: Duplicate Barcode</li>
+                    <li><input type="checkbox"> Performance: 10,000+ ProduktInstanzen</li>
+                </ul>
+            </div>
+
+            <h3>Test-Datei</h3>
+            <p>Location: <code>src/Tests/Unit/Services/ProduktInstanzServiceTests.cs</code></p>
+            <p>Tests: 25+ Unit Tests (xUnit + Moq)</p>
+        </section>
+
+        <section>
+            <h2>🔗 Dependencies</h2>
+
+            <h3>Abhängigkeiten (andere UCs)</h3>
+            <ul>
+                <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong> (LebensmittelKatalog muss existieren)</li>
+                <li>Abhängt von: <strong>UC9: Lagerorte verwalten</strong> (optional, aber empfohlen)</li>
+                <li>Wird benötigt von: <strong>UC2: Lagerbestand aktualisieren</strong></li>
+                <li>Wird benötigt von: <strong>UC6: Verbrauch ausbuchen</strong></li>
+                <li>Wird benötigt von: <strong>UC7: Verfallsdatum-Warnungen</strong></li>
+            </ul>
+
+            <h3>Externe Libraries</h3>
+            <ul>
+                <li>Entity Framework Core (✅ Vorhanden)</li>
+                <li>xUnit (✅ Vorhanden)</li>
+                <li>Moq (✅ Vorhanden)</li>
+                <li>Barcode-Library (📦 Optional)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>📊 Implementation Status</h2>
+
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
+                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
+                    <li><input type="checkbox"> Code Review bestanden</li>
+                    <li><input type="checkbox"> Diagramme aktualisiert</li>
+                    <li><input type="checkbox"> Dokumentation fertig</li>
+                    <li><input type="checkbox"> User Review & Approval</li>
+                    <li><input type="checkbox"> Merged zu Master</li>
+                </ul>
+            </div>
+
+            <p><strong>Commit</strong>: [Awaiting implementation]</p>
+            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
+        </section>
+
+        <section>
+            <h2>📐 Diagramme</h2>
+
+            <div class="diagram-placeholder">
+                📊 Klassen-Diagramm: ProduktInstanz (zentral!)<br>
+                <small>(siehe: diagrams/architecture-class.drawio)</small>
+            </div>
+
+            <div class="diagram-placeholder">
+                📊 ER-Diagramm: ProduktInstanz + Beziehungen<br>
+                <small>(siehe: diagrams/database-schema.drawio)</small>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 Notizen</h2>
+
+            <h3>Besonderheiten & Design-Decisions</h3>
+            <p><strong>⭐ WICHTIG:</strong> ProduktInstanz ist das Kernmodell! Eine "Packung Joghurt" = 1 ProduktInstanz mit eigenem MHD.</p>
+            <p>Dies ist NICHT wie manchmal gedacht: "LebensmittelKatalog.MHD" (global). Stattdessen: jede gekaufte Einheit trackt ihr eigenes MHD.</p>
+            <p>Beispiel: Wenn Sie 2x Joghurt kaufen mit unterschiedlichen Verfallsdaten, sind das 2 ProduktInstanzen mit jeweils eigenem MHD.</p>
+
+            <h3>Offene Fragen</h3>
+            <ul>
+                <li>Sollen Barcodes eindeutig sein (Unique Constraint) oder optional?</li>
+                <li>Sollen MHD-Warnungen bereits beim Einkauf angezeigt werden (wenn MHD &lt; X Tage)?</li>
+                <li>Ist Barcode-Scanning für MVP erforderlich oder später?</li>
+            </ul>
+
+            <h3>Design-Notes</h3>
+            <p>ProduktInstanz sollte Transaktional atomar updatet werden (z.B. Menge + Lagerort + MHD in EINER Operation, nicht einzeln).</p>
+            <p>Performance ist kritisch: Mit 10,000+ Produktinstanzen muss die Datenbank schnell abfragen können (Indizes auf LebensmittelKatalogId, LagerortId, MHD).</p>
+        </section>
+
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
+            <p>FoodDatabase | UC10 | Produktinstanzen mit MHD (ZENTRAL!)</p>
+            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        </footer>
+    </div>
+</body>
+</html>

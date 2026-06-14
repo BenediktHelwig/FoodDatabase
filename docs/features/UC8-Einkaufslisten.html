@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC8 - Einkaufslisten | FoodDatabase</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/uc8-einkaufslisten.css">
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="../architecture-overview.html">← Zurück zur Übersicht</a>
+        </div>
+
+        <header>
+            <h1>UC8: Einkaufslisten generieren</h1>
+            <div class="meta">
+                Use-Case <strong>8</strong> |
+                Status: <span class="status-badge todo">⏳ TODO</span>
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Übersicht</h2>
+            <p><strong>Beschreibung</strong>: Automatische Generierung von Einkaufslisten basierend auf Mindestbestandsgrenzen. Wenn Menge eines Produkts unter Grenzwert fällt, wird es zur Einkaufsliste hinzugefügt.</p>
+
+            <h3>Hauptziele</h3>
+            <ul>
+                <li>Mindestbestand pro Lebensmittel definieren</li>
+                <li>Automatisch Einkaufslisten generieren</li>
+                <li>Einkaufte Produkte abhaken/erfassen</li>
+            </ul>
+
+            <h3>Geschäftsnutzen</h3>
+            <p>Der Benutzer sieht automatisch, welche Produkte zum Einkaufen notwendig sind. Keine manuelle Liste erforderlich.</p>
+        </section>
+
+        <section>
+            <h2>📦 Domain Model</h2>
+
+            <h3>Beteiligte Entities</h3>
+            <table>
+                <tr>
+                    <th>Entity</th>
+                    <th>Rolle</th>
+                    <th>Beziehung</th>
+                </tr>
+                <tr>
+                    <td>Einkaufsliste</td>
+                    <td>Zu verwaltende Liste</td>
+                    <td>Primary (CRUD)</td>
+                </tr>
+                <tr>
+                    <td>EinkaufslisteEintrag</td>
+                    <td>Item in der Liste</td>
+                    <td>Child (1:N)</td>
+                </tr>
+                <tr>
+                    <td>LebensmittelKatalog</td>
+                    <td>Referenziertes Produkt</td>
+                    <td>Foreign Key</td>
+                </tr>
+            </table>
+
+            <h3>Neue Attribute</h3>
+            <pre>
+LebensmittelKatalog
+├── ... (existing)
+└── MindestbestandMenge: decimal (NEW)
+
+Einkaufsliste
+├── Name: string
+├── ErstelltAm: DateTime
+├── Status: ListStatus (Open, Completed)
+└── Einträge: ICollection&lt;EinkaufslisteEintrag&gt;
+
+EinkaufslisteEintrag
+├── EinkaufslisteId: int (FK)
+├── LebensmittelKatalogId: int (FK)
+├── EmpfohlenenMenge: decimal
+└── Gekauft: bool
+            </pre>
+        </section>
+
+        <section>
+            <h2>🔄 User Workflows</h2>
+
+            <h3>Hauptworkflow: Einkaufsliste generieren</h3>
+            <pre>
+1. Benutzer klickt "Einkaufsliste generieren"
+2. System prüft alle Lebensmittel:
+   - Aktuelle Menge &lt; Mindestbestand? → In Liste
+3. System zeigt generierte Liste
+4. Benutzer kann Mengen anpassen
+5. Benutzer speichert Liste
+6. Beim Einkaufen: Abhaken wenn gekauft
+            </pre>
+
+            <h3>Alternative Flows</h3>
+            <p><strong>Manuelle Erstellung</strong>: Benutzer erstellt Liste manuell</p>
+            <p><strong>Listen-Template</strong>: Vorgespeicherte Listen (z.B. "Wöchentlicher Einkauf")</p>
+        </section>
+
+        <section>
+            <h2>🔌 Service Interface</h2>
+
+            <h3>Service-Methoden</h3>
+            <pre>
+public interface IEinkaufslisteService
+{
+    Task&lt;Einkaufsliste&gt; GenerateFromMindestbestandAsync();
+    Task&lt;Einkaufsliste&gt; CreateEinkaufslisteAsync(Einkaufsliste liste);
+    Task&lt;Einkaufsliste&gt; GetEinkaufslisteByIdAsync(int id);
+    Task&lt;IEnumerable&lt;Einkaufsliste&gt;&gt; GetAllEinkaufslistenAsync();
+    Task&lt;Einkaufsliste&gt; UpdateEinkaufslisteAsync(Einkaufsliste liste);
+    Task&lt;bool&gt; DeleteEinkaufslisteAsync(int id);
+}
+            </pre>
+        </section>
+
+        <section>
+            <h2>✅ Tests</h2>
+
+            <h3>Test Coverage</h3>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Generieren: Keine Einträge nötig</li>
+                    <li><input type="checkbox"> Generieren: Ein Produkt unter Grenzwert</li>
+                    <li><input type="checkbox"> Generieren: Multiple Produkte</li>
+                    <li><input type="checkbox"> Create Liste (manuell)</li>
+                    <li><input type="checkbox"> Update Liste + Einträge</li>
+                    <li><input type="checkbox"> Delete Liste</li>
+                    <li><input type="checkbox"> Fehler: Produkt nicht gefunden</li>
+                    <li><input type="checkbox"> Fehler: Negative Mengen</li>
+                </ul>
+            </div>
+
+            <h3>Test-Datei</h3>
+            <p>Location: <code>src/Tests/Unit/Services/EinkaufslisteServiceTests.cs</code></p>
+            <p>Tests: 20+ Unit Tests (xUnit + Moq)</p>
+        </section>
+
+        <section>
+            <h2>🔗 Dependencies</h2>
+
+            <h3>Abhängigkeiten (andere UCs)</h3>
+            <ul>
+                <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong></li>
+                <li>Abhängt von: <strong>UC2: Lagerbestand aktualisieren</strong></li>
+            </ul>
+
+            <h3>Externe Libraries</h3>
+            <ul>
+                <li>Entity Framework Core (✅ Vorhanden)</li>
+                <li>xUnit (✅ Vorhanden)</li>
+                <li>Moq (✅ Vorhanden)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>📊 Implementation Status</h2>
+
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
+                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
+                    <li><input type="checkbox"> Code Review bestanden</li>
+                    <li><input type="checkbox"> Diagramme aktualisiert</li>
+                    <li><input type="checkbox"> Dokumentation fertig</li>
+                    <li><input type="checkbox"> User Review & Approval</li>
+                    <li><input type="checkbox"> Merged zu Master</li>
+                </ul>
+            </div>
+
+            <p><strong>Commit</strong>: [Awaiting implementation]</p>
+            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
+        </section>
+
+        <section>
+            <h2>📐 Diagramme</h2>
+
+            <div class="diagram-placeholder">
+                📊 Sequenz-Diagramm: Einkaufslisten-Generierung<br>
+                <small>(siehe: diagrams/sequence-einkaufsliste.drawio)</small>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 Notizen</h2>
+
+            <h3>Besonderheiten</h3>
+            <p>Mindestbestand sollte pro Lebensmittel individuell definierbar sein. Default: 0 (nicht verwendet).</p>
+
+            <h3>Offene Fragen</h3>
+            <ul>
+                <li>Können Listen synchronisiert werden (z.B. mit Shopping-App)?</li>
+                <li>Sollen gekaufte Einträge automatisch zum Lagerbestand hinzugefügt werden?</li>
+            </ul>
+        </section>
+
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
+            <p>FoodDatabase | UC8 | Einkaufslisten generieren</p>
+            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        </footer>
+    </div>
+</body>
+</html>

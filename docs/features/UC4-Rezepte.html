@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC4 - Rezepte verwalten | FoodDatabase</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/uc4-rezepte.css">
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="../architecture-overview.html">← Zurück zur Übersicht</a>
+        </div>
+
+        <header>
+            <h1>UC4: Rezepte verwalten</h1>
+            <div class="meta">
+                Use-Case <strong>4</strong> |
+                Status: <span class="status-badge todo">⏳ TODO</span>
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Übersicht</h2>
+            <p><strong>Beschreibung</strong>: CRUD für Rezepte und deren Zutaten-Liste. Benutzer kann Rezepte erstellen, bearbeiten, löschen.</p>
+
+            <h3>Hauptziele</h3>
+            <ul>
+                <li>Rezepte mit Namen und Beschreibung erstellen</li>
+                <li>Zutaten-Liste pro Rezept verwalten</li>
+                <li>Mengen pro Zutat angeben</li>
+                <li>Rezepte bearbeiten und löschen</li>
+            </ul>
+
+            <h3>Geschäftsnutzen</h3>
+            <p>Basis für UC5 (automatische Nährwertberechnung). Der Benutzer kann seine Lieblings-Rezepte speichern und verwalten.</p>
+        </section>
+
+        <section>
+            <h2>📦 Domain Model</h2>
+
+            <h3>Beteiligte Entities</h3>
+            <table>
+                <tr>
+                    <th>Entity</th>
+                    <th>Rolle</th>
+                    <th>Beziehung</th>
+                </tr>
+                <tr>
+                    <td>Rezept</td>
+                    <td>Hauptentität (zu verwalten)</td>
+                    <td>Primary (CRUD-Ziel)</td>
+                </tr>
+                <tr>
+                    <td>RezeptZutat</td>
+                    <td>Zutat im Rezept</td>
+                    <td>Child (1:N)</td>
+                </tr>
+                <tr>
+                    <td>LebensmittelKatalog</td>
+                    <td>Referenzierte Zutat</td>
+                    <td>Foreign Key</td>
+                </tr>
+            </table>
+
+            <h3>Neue Attribute</h3>
+            <pre>
+Rezept
+├── Name: string
+├── Beschreibung: string
+└── Zutaten: ICollection&lt;RezeptZutat&gt;
+
+RezeptZutat
+├── RezeptId: int (FK)
+├── LebensmittelKatalogId: int (FK)
+├── Menge: decimal
+└── Einheit: string
+            </pre>
+        </section>
+
+        <section>
+            <h2>🔄 User Workflows</h2>
+
+            <h3>Hauptworkflow: Rezept erstellen</h3>
+            <pre>
+1. Benutzer klickt "Neues Rezept"
+2. Gibt Rezept-Name und Beschreibung ein
+3. Fügt Zutaten hinzu (Lebensmittel + Menge)
+4. Kann weitere Zutaten hinzufügen
+5. Klickt "Speichern"
+6. System speichert Rezept + Zutaten
+7. Rezept wird in Liste angezeigt
+            </pre>
+
+            <h3>Weitere Workflows</h3>
+            <p><strong>Bearbeiten</strong>: Benutzer ändert Rezeptinformationen und Zutaten</p>
+            <p><strong>Löschen</strong>: Benutzer entfernt Rezept</p>
+        </section>
+
+        <section>
+            <h2>🔌 Service Interface</h2>
+
+            <h3>Service-Methoden</h3>
+            <pre>
+public interface IRezeptService
+{
+    Task&lt;Rezept&gt; CreateRezeptAsync(Rezept rezept);
+    Task&lt;Rezept&gt; GetRezeptByIdAsync(int id);
+    Task&lt;IEnumerable&lt;Rezept&gt;&gt; GetAllRezepteAsync();
+    Task&lt;Rezept&gt; UpdateRezeptAsync(Rezept rezept);
+    Task&lt;bool&gt; DeleteRezeptAsync(int id);
+    Task AddZutatToRezeptAsync(int rezeptId, RezeptZutat zutat);
+    Task RemoveZutatFromRezeptAsync(int rezeptId, int zutatId);
+}
+            </pre>
+
+            <h3>REST Endpoints (geplant)</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Beschreibung</th>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/rezepte</td>
+                    <td>Rezept erstellen</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/rezepte/{id}</td>
+                    <td>Rezept abrufen</td>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/rezepte/{id}</td>
+                    <td>Rezept aktualisieren</td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/rezepte/{id}</td>
+                    <td>Rezept löschen</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/rezepte/{id}/zutaten</td>
+                    <td>Zutat hinzufügen</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>✅ Tests</h2>
+
+            <h3>Test Coverage</h3>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Create Rezept (valid)</li>
+                    <li><input type="checkbox"> Read Rezept by ID</li>
+                    <li><input type="checkbox"> Read all Rezepte</li>
+                    <li><input type="checkbox"> Update Rezept</li>
+                    <li><input type="checkbox"> Delete Rezept</li>
+                    <li><input type="checkbox"> Add Zutat to Rezept</li>
+                    <li><input type="checkbox"> Remove Zutat from Rezept</li>
+                    <li><input type="checkbox"> Validierung: Empty Name</li>
+                    <li><input type="checkbox"> Fehler: Lebensmittel nicht gefunden</li>
+                    <li><input type="checkbox"> Fehler: Rezept mit Zutaten löschen</li>
+                </ul>
+            </div>
+
+            <h3>Test-Datei</h3>
+            <p>Location: <code>src/Tests/Unit/Services/RezeptServiceTests.cs</code></p>
+            <p>Tests: 20+ Unit Tests (xUnit + Moq)</p>
+        </section>
+
+        <section>
+            <h2>🔗 Dependencies</h2>
+
+            <h3>Abhängigkeiten (andere UCs)</h3>
+            <ul>
+                <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong></li>
+                <li>Wird benötigt von: <strong>UC5: Nährwerte berechnen</strong></li>
+            </ul>
+
+            <h3>Externe Libraries</h3>
+            <ul>
+                <li>Entity Framework Core (✅ Vorhanden)</li>
+                <li>xUnit (✅ Vorhanden)</li>
+                <li>Moq (✅ Vorhanden)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>📊 Implementation Status</h2>
+
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
+                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
+                    <li><input type="checkbox"> Code Review bestanden</li>
+                    <li><input type="checkbox"> Diagramme aktualisiert</li>
+                    <li><input type="checkbox"> Dokumentation fertig</li>
+                    <li><input type="checkbox"> User Review & Approval</li>
+                    <li><input type="checkbox"> Merged zu Master</li>
+                </ul>
+            </div>
+
+            <p><strong>Commit</strong>: [Awaiting implementation]</p>
+            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
+        </section>
+
+        <section>
+            <h2>📐 Diagramme</h2>
+
+            <div class="diagram-placeholder">
+                📊 Klassen-Diagramm: Rezept + RezeptZutat<br>
+                <small>(siehe: diagrams/architecture-class.drawio)</small>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 Notizen</h2>
+
+            <h3>Besonderheiten</h3>
+            <p>RezeptZutat ist eine Join-Entity (1:N von Rezept). Ermöglicht flexible Zutat-Verwaltung.</p>
+
+            <h3>Offene Fragen</h3>
+            <ul>
+                <li>Können Rezepte mit anderen Benutzern geteilt werden?</li>
+                <li>Sollen Kategorien für Rezepte (Frühstück, Mittagessen, etc.) unterstützt werden?</li>
+            </ul>
+        </section>
+
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
+            <p>FoodDatabase | UC4 | Rezepte verwalten</p>
+            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        </footer>
+    </div>
+</body>
+</html>

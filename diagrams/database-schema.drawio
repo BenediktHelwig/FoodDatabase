@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="draw.io" modified="2026-06-14" agent="Claude Code" version="1.0">
+    <diagram id="database" name="Database Schema">
+        <mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" background="#ffffff" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+
+                <!-- LebensmittelKatalog Entity -->
+                <mxCell id="entity_lebensmittel" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="50" width="200" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="lebensmittel_title" value="LebensmittelKatalog" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_lebensmittel" vertex="1">
+                    <mxGeometry y="26" width="200" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="lebensmittel_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_lebensmittel" vertex="1">
+                    <mxGeometry y="52" width="200" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="lebensmittel_attrs" value="PK Id: int&#10;Name: string&#10;Kategorie: string&#10;MindestbestandMenge: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_lebensmittel" vertex="1">
+                    <mxGeometry y="60" width="200" height="90" as="geometry"/>
+                </mxCell>
+
+                <!-- Nährwert Entity -->
+                <mxCell id="entity_nährwert" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="50" width="220" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="nährwert_title" value="Nährwert" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_nährwert" vertex="1">
+                    <mxGeometry y="26" width="220" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="nährwert_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_nährwert" vertex="1">
+                    <mxGeometry y="52" width="220" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="nährwert_attrs" value="PK Id: int&#10;FK LebensmittelKatalogId: int&#10;Kcal: decimal&#10;EiweißGramm: decimal&#10;FettGramm: decimal&#10;KohlenhydrateGramm: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_nährwert" vertex="1">
+                    <mxGeometry y="60" width="220" height="120" as="geometry"/>
+                </mxCell>
+
+                <!-- Lagerort Entity -->
+                <mxCell id="entity_lagerort" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="50" width="200" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="lagerort_title" value="Lagerort" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_lagerort" vertex="1">
+                    <mxGeometry y="26" width="200" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="lagerort_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_lagerort" vertex="1">
+                    <mxGeometry y="52" width="200" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="lagerort_attrs" value="PK Id: int&#10;Name: string&#10;Lagertyp: string&#10;Temperatur: decimal (opt)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_lagerort" vertex="1">
+                    <mxGeometry y="60" width="200" height="90" as="geometry"/>
+                </mxCell>
+
+                <!-- ProduktInstanz Entity (ZENTRAL!) -->
+                <mxCell id="entity_produktinstanz" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffeeee;strokeColor=#ff0000;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="330" width="240" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="produktinstanz_title" value="ProduktInstanz (ZENTRAL!)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;color=#ff0000;" parent="entity_produktinstanz" vertex="1">
+                    <mxGeometry y="26" width="240" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="produktinstanz_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#ff0000;" parent="entity_produktinstanz" vertex="1">
+                    <mxGeometry y="52" width="240" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="produktinstanz_attrs" value="PK Id: int&#10;FK LebensmittelKatalogId: int&#10;FK LagerortId: int (nullable)&#10;Menge: decimal&#10;Einheit: string&#10;MHD: DateTime (ZENTRAL!)&#10;KaufDatum: DateTime&#10;Barcode: string (optional)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_produktinstanz" vertex="1">
+                    <mxGeometry y="60" width="240" height="120" as="geometry"/>
+                </mxCell>
+
+                <!-- Rezept Entity -->
+                <mxCell id="entity_rezept" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="330" width="200" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="rezept_title" value="Rezept" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_rezept" vertex="1">
+                    <mxGeometry y="26" width="200" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="rezept_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_rezept" vertex="1">
+                    <mxGeometry y="52" width="200" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="rezept_attrs" value="PK Id: int&#10;Name: string&#10;Beschreibung: string&#10;Zutaten: ICollection" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_rezept" vertex="1">
+                    <mxGeometry y="60" width="200" height="90" as="geometry"/>
+                </mxCell>
+
+                <!-- RezeptZutat Entity -->
+                <mxCell id="entity_rezeptzutat" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="550" width="200" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="rezeptzutat_title" value="RezeptZutat" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_rezeptzutat" vertex="1">
+                    <mxGeometry y="26" width="200" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="rezeptzutat_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_rezeptzutat" vertex="1">
+                    <mxGeometry y="52" width="200" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="rezeptzutat_attrs" value="PK Id: int&#10;FK RezeptId: int&#10;FK LebensmittelId: int&#10;Menge: decimal&#10;Einheit: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_rezeptzutat" vertex="1">
+                    <mxGeometry y="60" width="200" height="80" as="geometry"/>
+                </mxCell>
+
+                <!-- Einkaufsliste Entity -->
+                <mxCell id="entity_einkaufsliste" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="330" width="220" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="einkaufsliste_title" value="Einkaufsliste" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_einkaufsliste" vertex="1">
+                    <mxGeometry y="26" width="220" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="einkaufsliste_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_einkaufsliste" vertex="1">
+                    <mxGeometry y="52" width="220" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="einkaufsliste_attrs" value="PK Id: int&#10;Name: string&#10;Status: string&#10;ErstelltAm: DateTime&#10;Einträge: ICollection" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_einkaufsliste" vertex="1">
+                    <mxGeometry y="60" width="220" height="80" as="geometry"/>
+                </mxCell>
+
+                <!-- VerfallsdatumWarnung Entity -->
+                <mxCell id="entity_verfallwarnung" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="550" width="240" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="verfallwarnung_title" value="VerfallsdatumWarnung" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_verfallwarnung" vertex="1">
+                    <mxGeometry y="26" width="240" height="26" as="geometry"/>
+                </mxCell>
+                <mxCell id="verfallwarnung_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_verfallwarnung" vertex="1">
+                    <mxGeometry y="52" width="240" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="verfallwarnung_attrs" value="PK Id: int&#10;FK ProduktInstanzId: int&#10;Status: WarningStatus&#10;TageVerbleibend: int&#10;LastCheckedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_verfallwarnung" vertex="1">
+                    <mxGeometry y="60" width="240" height="90" as="geometry"/>
+                </mxCell>
+
+                <!-- Relationships -->
+
+                <!-- LebensmittelKatalog -> Nährwert (1:1) -->
+                <mxCell id="rel_lebensmittel_nährwert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;" parent="1" source="lebensmittel_attrs" target="nährwert_attrs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_rel1" value="1:1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=bold;" parent="rel_lebensmittel_nährwert" vertex="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint as="offset" x="0" y="-10"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- LebensmittelKatalog -> ProduktInstanz (1:N) -->
+                <mxCell id="rel_lebensmittel_produkt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;" parent="1" source="lebensmittel_attrs" target="produktinstanz_attrs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="150" y="200"/>
+                            <mxPoint x="150" y="420"/>
+                            <mxPoint x="300" y="420"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_rel2" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=bold;" parent="rel_lebensmittel_produkt" vertex="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint as="offset" x="0" y="-10"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Lagerort -> ProduktInstanz (1:N) -->
+                <mxCell id="rel_lagerort_produkt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;" parent="1" source="lagerort_attrs" target="produktinstanz_attrs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="750" y="200"/>
+                            <mxPoint x="750" y="420"/>
+                            <mxPoint x="540" y="420"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_rel3" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=bold;" parent="rel_lagerort_produkt" vertex="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint as="offset" x="0" y="-10"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Rezept -> RezeptZutat (1:N) -->
+                <mxCell id="rel_rezept_zutat" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;" parent="1" source="rezept_attrs" target="rezeptzutat_attrs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="150" y="480"/>
+                            <mxPoint x="150" y="620"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_rel4" value="1:N" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=bold;" parent="rel_rezept_zutat" vertex="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint as="offset" x="0" y="-10"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- LebensmittelKatalog -> RezeptZutat (1:N) -->
+                <mxCell id="rel_lebensmittel_rezeptzutat" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;" parent="1" source="lebensmittel_attrs" target="rezeptzutat_attrs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="100" y="250"/>
+                            <mxPoint x="100" y="620"/>
+                            <mxPoint x="50" y="620"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_rel5" value="N:1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=bold;" parent="rel_lebensmittel_rezeptzutat" vertex="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint as="offset" x="0" y="-10"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- ProduktInstanz -> VerfallsdatumWarnung (1:1) -->
+                <mxCell id="rel_produkt_verfallwarnung" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;" parent="1" source="produktinstanz_attrs" target="verfallwarnung_attrs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="600" y="625"/>
+                            <mxPoint x="650" y="625"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="label_rel6" value="1:1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=bold;" parent="rel_produkt_verfallwarnung" vertex="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint as="offset" x="0" y="-10"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Legend -->
+                <mxCell id="legend_title" value="Legende" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontStyle=bold;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="720" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend_pk" value="PK = Primary Key" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="745" width="150" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend_fk" value="FK = Foreign Key" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="745" width="150" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend_zentral" value="Rote Umrandung = Zentral (ProduktInstanz)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="450" y="745" width="300" height="20" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC3 - Nährwerte verwalten | FoodDatabase</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/uc3-nährwerte.css">
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="../architecture-overview.html">← Zurück zur Übersicht</a>
+        </div>
+
+        <header>
+            <h1>UC3: Nährwerte verwalten</h1>
+            <div class="meta">
+                Use-Case <strong>3</strong> |
+                Status: <span class="status-badge todo">⏳ TODO</span>
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Übersicht</h2>
+            <p><strong>Beschreibung</strong>: CRUD für Nährwerte pro Lebensmittel (pro 100g/ml). Benutzer kann Nährwertinformationen eingeben und verwalten.</p>
+
+            <h3>Hauptziele</h3>
+            <ul>
+                <li>Nährwerte pro Lebensmittel hinzufügen (Kcal, Eiweiß, Fett, Kohlenhydrate)</li>
+                <li>Nährwerte bearbeiten und aktualisieren</li>
+                <li>Nährwerte löschen</li>
+            </ul>
+
+            <h3>Geschäftsnutzen</h3>
+            <p>Basis für UC5 (Rezept-Nährwerte berechnen). Der Benutzer kann Rezepte erstellen und automatisch Nährwertinformationen berechnen.</p>
+        </section>
+
+        <section>
+            <h2>📦 Domain Model</h2>
+
+            <h3>Beteiligte Entities</h3>
+            <table>
+                <tr>
+                    <th>Entity</th>
+                    <th>Rolle</th>
+                    <th>Beziehung</th>
+                </tr>
+                <tr>
+                    <td>Nährwert</td>
+                    <td>Zu verwaltende Nährwertinformation</td>
+                    <td>Primary (CRUD-Ziel)</td>
+                </tr>
+                <tr>
+                    <td>LebensmittelKatalog</td>
+                    <td>Referenziertes Lebensmittel</td>
+                    <td>Foreign Key (1..1)</td>
+                </tr>
+            </table>
+
+            <h3>Neue Attribute</h3>
+            <pre>
+Nährwert
+├── LebensmittelKatalogId: int (FK)
+├── Kcal: decimal (pro 100g/ml)
+├── EiweißGramm: decimal
+├── FettGramm: decimal
+├── KohlenhydrateGramm: decimal
+├── FaserGramm: decimal
+└── ZuckerGramm: decimal
+            </pre>
+        </section>
+
+        <section>
+            <h2>🔄 User Workflows</h2>
+
+            <h3>Hauptworkflow: Nährwert erstellen</h3>
+            <pre>
+1. Benutzer wählt Lebensmittel aus
+2. Klickt "Nährwert hinzufügen"
+3. Gibt Nährwertinformationen ein
+4. Klickt "Speichern"
+5. System validiert Werte
+6. System speichert in DB
+7. Nährwert wird angezeigt
+            </pre>
+
+            <h3>Weitere Workflows</h3>
+            <p><strong>Bearbeiten</strong>: Benutzer ändert Nährwertinformationen</p>
+            <p><strong>Löschen</strong>: Benutzer entfernt Nährwertinformationen</p>
+        </section>
+
+        <section>
+            <h2>🔌 Service Interface</h2>
+
+            <h3>Service-Methoden</h3>
+            <pre>
+public interface INährwertService
+{
+    Task&lt;Nährwert&gt; CreateNährwertAsync(Nährwert nährwert);
+    Task&lt;Nährwert&gt; GetNährwertByIdAsync(int id);
+    Task&lt;Nährwert&gt; GetNährwertByLebensmittelAsync(int lebensmittelId);
+    Task&lt;Nährwert&gt; UpdateNährwertAsync(Nährwert nährwert);
+    Task&lt;bool&gt; DeleteNährwertAsync(int id);
+}
+            </pre>
+
+            <h3>REST Endpoints (geplant)</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Beschreibung</th>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/nährwerte</td>
+                    <td>Nährwert erstellen</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/nährwerte/{id}</td>
+                    <td>Nährwert abrufen</td>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/nährwerte/{id}</td>
+                    <td>Nährwert aktualisieren</td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/nährwerte/{id}</td>
+                    <td>Nährwert löschen</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>✅ Tests</h2>
+
+            <h3>Test Coverage</h3>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Create Nährwert (valid)</li>
+                    <li><input type="checkbox"> Read Nährwert by ID</li>
+                    <li><input type="checkbox"> Read by Lebensmittel</li>
+                    <li><input type="checkbox"> Update Nährwert</li>
+                    <li><input type="checkbox"> Delete Nährwert</li>
+                    <li><input type="checkbox"> Validierung: Negative Werte</li>
+                    <li><input type="checkbox"> Validierung: Null Werte</li>
+                    <li><input type="checkbox"> Fehler: Lebensmittel nicht gefunden</li>
+                    <li><input type="checkbox"> Fehler: Duplicate Nährwert für Lebensmittel</li>
+                </ul>
+            </div>
+
+            <h3>Test-Datei</h3>
+            <p>Location: <code>src/Tests/Unit/Services/NährwertServiceTests.cs</code></p>
+            <p>Tests: 20+ Unit Tests (xUnit + Moq)</p>
+        </section>
+
+        <section>
+            <h2>🔗 Dependencies</h2>
+
+            <h3>Abhängigkeiten (andere UCs)</h3>
+            <ul>
+                <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong></li>
+                <li>Wird benötigt von: <strong>UC5: Nährwerte berechnen</strong></li>
+            </ul>
+
+            <h3>Externe Libraries</h3>
+            <ul>
+                <li>Entity Framework Core (✅ Vorhanden)</li>
+                <li>xUnit (✅ Vorhanden)</li>
+                <li>Moq (✅ Vorhanden)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>📊 Implementation Status</h2>
+
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
+                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
+                    <li><input type="checkbox"> Code Review bestanden</li>
+                    <li><input type="checkbox"> Diagramme aktualisiert</li>
+                    <li><input type="checkbox"> Dokumentation fertig</li>
+                    <li><input type="checkbox"> User Review & Approval</li>
+                    <li><input type="checkbox"> Merged zu Master</li>
+                </ul>
+            </div>
+
+            <p><strong>Commit</strong>: [Awaiting implementation]</p>
+            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
+        </section>
+
+        <section>
+            <h2>📐 Diagramme</h2>
+
+            <div class="diagram-placeholder">
+                📊 Klassen-Diagramm: Nährwert-Entity<br>
+                <small>(siehe: diagrams/architecture-class.drawio)</small>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 Notizen</h2>
+
+            <h3>Besonderheiten</h3>
+            <p>Ein Lebensmittel sollte maximal EINEN Nährwert-Eintrag haben. Dies ist eine 1:1 Beziehung.</p>
+
+            <h3>Offene Fragen</h3>
+            <ul>
+                <li>Können Nährwerte aus einer Datenbank (z.B. USDA) importiert werden?</li>
+                <li>Sollen verschiedene Quellen/Versionen der Nährwerte gespeichert werden?</li>
+            </ul>
+        </section>
+
+        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
+            <p>FoodDatabase | UC3 | Nährwerte verwalten</p>
+            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        </footer>
+    </div>
+</body>
+</html>
