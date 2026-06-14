@@ -132,13 +132,26 @@ FoodDatabase/
 ├── docs/
 │   ├── architecture-overview.html ✅ (mit CSS-Links)
 │   ├── css/
-│   │   ├── shared.css ✅
-│   │   ├── overview.css ✅
-│   │   └── uc2-uc10.css (9 Feature-CSS-Dateien) ✅
+│   │   ├── shared.css ✅ (Basis-Styles)
+│   │   ├── overview.css ✅ (Overview-Seite)
+│   │   ├── uc2-lagerbestand.css ✅
+│   │   ├── uc3-nährwerte.css ✅
+│   │   ├── uc4-rezepte.css ✅
+│   │   ├── uc5-nährwerteberechnen.css ✅
+│   │   ├── uc6-verbrauchausbuchen.css ✅
+│   │   ├── uc7-verfallsdatumwarnung.css ✅
+│   │   ├── uc8-einkaufslistengenerieren.css ✅
+│   │   ├── uc9-lagerorte.css ✅
+│   │   └── uc10-produktinstanzen.css ✅
 │   └── features/
 │       ├── UC2-Lagerbestand.html ✅ (Template leer)
 │       ├── UC3-Nährwerte.html ✅ (Template leer)
-│       ├── ... (UC4-UC10)
+│       ├── UC4-Rezepte.html ✅ (Template leer)
+│       ├── UC5-NährwerteBerechnen.html ✅ (Template leer)
+│       ├── UC6-VerbrauchAusbuchen.html ✅ (Template leer)
+│       ├── UC7-VerfallsdatumWarnung.html ✅ (Template leer)
+│       ├── UC8-EinkaufslistenGenerieren.html ✅ (Template leer)
+│       ├── UC9-Lagerorte.html ✅ (Template leer)
 │       └── UC10-ProduktInstanzen.html ✅ (Template leer)
 │
 ├── requirements/
