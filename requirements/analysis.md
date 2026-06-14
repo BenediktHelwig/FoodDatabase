@@ -1,7 +1,8 @@
 # FoodDatabase – Anforderungsanalyse v1.0
 
-**Datum**: 2026-06-07  
-**Status**: Freigegeben zur Entwicklung  
+**Datum**: 2026-06-07 (Initial Analysis)  
+**Aktualisiert**: 2026-06-14  
+**Status**: Aktuell gültig für UC1-UC10 MVP | Freigegeben zur Entwicklung  
 **Benutzer**: Privater Anwender (max. 3 Geräte im Heimnetzwerk)
 
 ---

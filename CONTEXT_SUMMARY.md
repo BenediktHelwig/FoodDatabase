@@ -137,17 +137,17 @@ FoodDatabase/
 │   │   ├── uc2-lagerbestand.css ✅
 │   │   ├── uc3-nährwerte.css ✅
 │   │   ├── uc4-rezepte.css ✅
-│   │   ├── uc5-nährwerteberechnen.css ✅
+│   │   ├── uc5-nährwertberechnung.css ✅
 │   │   ├── uc6-verbrauchausbuchen.css ✅
-│   │   ├── uc7-verfallsdatumwarnung.css ✅
-│   │   ├── uc8-einkaufslistengenerieren.css ✅
+│   │   ├── uc7-verfallswarnungen.css ✅
+│   │   ├── uc8-einkaufslisten.css ✅
 │   │   ├── uc9-lagerorte.css ✅
 │   │   └── uc10-produktinstanzen.css ✅
 │   └── features/
 │       ├── UC2-Lagerbestand.html ✅ (Template leer)
 │       ├── UC3-Nährwerte.html ✅ (Template leer)
 │       ├── UC4-Rezepte.html ✅ (Template leer)
-│       ├── UC5-NährwerteBerechnen.html ✅ (Template leer)
+│       ├── UC5-Nährwertberechnung.html ✅ (Template leer)
 │       ├── UC6-VerbrauchAusbuchen.html ✅ (Template leer)
 │       ├── UC7-VerfallsdatumWarnung.html ✅ (Template leer)
 │       ├── UC8-EinkaufslistenGenerieren.html ✅ (Template leer)

@@ -1,0 +1,49 @@
+/* UC1 – Lebensmittel-Katalog – Feature-spezifisches CSS */
+
+/* Feature-spezifische Farben */
+:root {
+    --uc1-accent: #2c3e50;
+    --uc1-light: #ecf0f1;
+}
+
+/* Spezifische Styling für UC1 */
+header {
+    border-left: 4px solid var(--uc1-accent);
+}
+
+h2 {
+    color: var(--uc1-accent);
+}
+
+.model-table {
+    margin: 1.5rem 0;
+}
+
+.code-block {
+    background-color: var(--uc1-light);
+    border-left: 3px solid var(--uc1-accent);
+}
+
+.checklist li {
+    margin-left: 1rem;
+}
+
+.coverage {
+    background-color: #d5f4e6;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+.notes {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+}
+
+footer {
+    border-top: 1px solid var(--uc1-accent);
+    padding-top: 2rem;
+    margin-top: 3rem;
+    color: #666;
+    font-size: 0.9rem;
+}

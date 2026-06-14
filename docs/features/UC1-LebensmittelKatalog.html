@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC1 – Lebensmittel-Katalog verwalten</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/uc1-lebensmittelkatalog.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>UC1 – Lebensmittel-Katalog verwalten</h1>
+            <p class="subtitle">Verwaltung der Lebensmittel-Stammdaten mit CRUD-Operationen</p>
+            <a href="../architecture-overview.html" class="back-link">← Zurück zur Übersicht</a>
+        </header>
+
+        <!-- Overview -->
+        <section class="section">
+            <h2>📋 Übersicht</h2>
+            <p>
+                UC1 bildet die Basis des FoodDatabase-Systems. Mit diesem Use-Case können Lebensmittel in den
+                Katalog aufgenommen, aktualisiert, gelesen und gelöscht werden (CRUD-Operationen).
+            </p>
+            <p>
+                Der Lebensmittel-Katalog wird von nahezu allen anderen Use-Cases benötigt, da ProduktInstanzen,
+                Nährwerte und Rezepte auf Lebensmittel-Daten verweisen.
+            </p>
+        </section>
+
+        <!-- Domain Model -->
+        <section class="section">
+            <h2>🏗️ Domain Model</h2>
+            <p><strong>Entität: LebensmittelKatalog</strong></p>
+            <table class="model-table">
+                <thead>
+                    <tr>
+                        <th>Feld</th>
+                        <th>Typ</th>
+                        <th>Beschreibung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Id</td>
+                        <td>int (PK)</td>
+                        <td>Eindeutige Lebensmittel-ID</td>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>string</td>
+                        <td>Lebensmittel-Name (z.B. "Milch", "Käse")</td>
+                    </tr>
+                    <tr>
+                        <td>Einheit</td>
+                        <td>string</td>
+                        <td>Maßeinheit: g, ml, oder Stück</td>
+                    </tr>
+                    <tr>
+                        <td>Kategorie</td>
+                        <td>string</td>
+                        <td>Optional: Lebensmittel-Kategorie (z.B. "Milchprodukte")</td>
+                    </tr>
+                    <tr>
+                        <td>ErstelltAm</td>
+                        <td>DateTime</td>
+                        <td>Zeitstempel der Erstellung</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- User Workflows -->
+        <section class="section">
+            <h2>🔄 Workflows</h2>
+
+            <h3>Happy Path: Lebensmittel hinzufügen</h3>
+            <ol>
+                <li>Benutzer öffnet "Lebensmittel verwalten" Seite</li>
+                <li>Klickt "Neues Lebensmittel"</li>
+                <li>Gibt Daten ein: Name="Milch", Einheit="ml", Kategorie="Milchprodukte"</li>
+                <li>System speichert Lebensmittel in DB</li>
+                <li>Lebensmittel erscheint in Liste</li>
+            </ol>
+
+            <h3>Alternative: Lebensmittel aktualisieren</h3>
+            <ol>
+                <li>Benutzer sucht Lebensmittel in Liste</li>
+                <li>Klickt "Bearbeiten"</li>
+                <li>Ändert Daten (z.B. Kategorie)</li>
+                <li>System speichert Änderungen</li>
+            </ol>
+        </section>
+
+        <!-- Service Interface -->
+        <section class="section">
+            <h2>🔧 Service Interface</h2>
+            <p><strong>ILebensmittelService.cs</strong></p>
+            <pre class="code-block">
+public interface ILebensmittelService {
+    Task&lt;LebensmittelKatalog&gt; CreateLebensmittelAsync(LebensmittelKatalog lebensmittel);
+    Task&lt;LebensmittelKatalog&gt; GetLebensmittelByIdAsync(int id);
+    Task&lt;List&lt;LebensmittelKatalog&gt;&gt; GetAllLebensmittelAsync();
+    Task UpdateLebensmittelAsync(LebensmittelKatalog lebensmittel);
+    Task DeleteLebensmittelAsync(int id);
+    Task&lt;List&lt;LebensmittelKatalog&gt;&gt; SearchLebensmittelAsync(string searchTerm);
+}
+            </pre>
+        </section>
+
+        <!-- Test Coverage -->
+        <section class="section">
+            <h2>✅ Test Coverage</h2>
+            <p><strong>LebensmittelServiceTests.cs: 19 Unit Tests</strong></p>
+            <ul class="checklist">
+                <li>✅ CREATE: Valid data, empty name, null name, invalid unit</li>
+                <li>✅ READ: By ID, all items, empty list, non-existent ID</li>
+                <li>✅ UPDATE: Valid data, empty name, non-existent ID</li>
+                <li>✅ DELETE: Valid/invalid ID, cascade delete</li>
+                <li>✅ SEARCH: Case-insensitive search, duplicates</li>
+            </ul>
+            <p class="coverage">Coverage Target: >80% ✅</p>
+        </section>
+
+        <!-- Dependencies -->
+        <section class="section">
+            <h2>🔗 Abhängigkeiten</h2>
+            <p><strong>UC1 wird benötigt von:</strong></p>
+            <ul>
+                <li>✅ <strong>UC10</strong> – ProduktInstanzen (Foreign Key zu LebensmittelKatalog)</li>
+                <li>✅ <strong>UC3</strong> – Nährwerte (verknüpft mit Lebensmitteln)</li>
+                <li>✅ <strong>UC4</strong> – Rezepte (RezeptZutaten verweisen auf Lebensmittel)</li>
+                <li>✅ <strong>UC2, UC5, UC6, UC7, UC8, UC9</strong> – Indirekt über ProduktInstanzen</li>
+            </ul>
+            <p><strong>UC1 hängt ab von:</strong> Keine (Basis-Entity)</p>
+        </section>
+
+        <!-- Implementation Status -->
+        <section class="section">
+            <h2>📊 Implementation Status</h2>
+            <table class="status-table">
+                <tr>
+                    <td><strong>Status</strong></td>
+                    <td>✅ COMPLETE</td>
+                </tr>
+                <tr>
+                    <td><strong>Tests</strong></td>
+                    <td>✅ 19/19 PASSING</td>
+                </tr>
+                <tr>
+                    <td><strong>Service</strong></td>
+                    <td>✅ LebensmittelService.cs implemented</td>
+                </tr>
+                <tr>
+                    <td><strong>Model</strong></td>
+                    <td>✅ LebensmittelKatalog.cs</td>
+                </tr>
+                <tr>
+                    <td><strong>Interfaces</strong></td>
+                    <td>✅ IRepository, ILebensmittelService</td>
+                </tr>
+                <tr>
+                    <td><strong>Blazor UI</strong></td>
+                    <td>⏳ TODO</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Notes -->
+        <section class="section notes">
+            <h2>📝 Notizen & Offene Fragen</h2>
+            <ul>
+                <li>Repository Pattern ist generic implementiert → reusable für andere Entities</li>
+                <li>Async/Await durchgehend → Production-ready</li>
+                <li>Validierungen auf Service-Ebene (nicht DB-Ebene)</li>
+                <li>Blazor UI Components müssen noch erstellt werden</li>
+            </ul>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Zuletzt aktualisiert: 2026-06-14 | Status: Complete & Tested</p>
+        </footer>
+    </div>
+</body>
+</html>
