@@ -6,15 +6,13 @@ namespace FoodDatabase.App.Models
     {
         public int Id { get; set; }
         public int LebensmittelKatalogId { get; set; }
-        public int LagerortId { get; set; }
-        public double AktuelleM enge { get; set; }
-        public double MindestbestandMenge { get; set; }
+        public decimal Menge { get; set; }
         public DateTime Verfallsdatum { get; set; }
         public DateTime Einkaufsdatum { get; set; }
+        public string Lagerort { get; set; }
         public DateTime ErstelltAm { get; set; } = DateTime.UtcNow;
 
-        // Navigation properties
+        // Navigation property
         public LebensmittelKatalog LebensmittelKatalog { get; set; }
-        public Lagerort Lagerort { get; set; }
     }
 }

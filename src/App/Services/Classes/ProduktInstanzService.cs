@@ -10,178 +10,142 @@ namespace FoodDatabase.App.Services.Classes
     public class ProduktInstanzService : IProduktInstanzService
     {
         private readonly IRepository<ProduktInstanz> _repository;
-        private readonly IRepository<LebensmittelKatalog> _lebensmittelRepository;
-        private readonly IRepository<Lagerort> _lagerortRepository;
 
-        public ProduktInstanzService(
-            IRepository<ProduktInstanz> repository,
-            IRepository<LebensmittelKatalog> lebensmittelRepository,
-            IRepository<Lagerort> lagerortRepository)
+        public ProduktInstanzService(IRepository<ProduktInstanz> repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _lebensmittelRepository = lebensmittelRepository ?? throw new ArgumentNullException(nameof(lebensmittelRepository));
-            _lagerortRepository = lagerortRepository ?? throw new ArgumentNullException(nameof(lagerortRepository));
         }
 
-        public async Task<ProduktInstanz> CreateProduktInstanzAsync(ProduktInstanz instanz)
+        public async Task<ProduktInstanz> CreateAsync(int lebensmittelKatalogId, decimal menge, DateTime verfallsdatum, string lagerort)
         {
-            ValidateProduktInstanz(instanz);
-            ValidateLebensmittelId(instanz.LebensmittelKatalogId);
-            ValidateLagerortId(instanz.LagerortId);
-            ValidateMengen(instanz.AktuelleM enge, instanz.MindestbestandMenge);
-            ValidateDatum(instanz.Verfallsdatum, instanz.Einkaufsdatum);
+            // Validierungen
+            if (lebensmittelKatalogId <= 0)
+                throw new ArgumentException("LebensmittelKatalogId muss größer als 0 sein.");
 
-            instanz.ErstelltAm = DateTime.UtcNow;
-            return await _repository.AddAsync(instanz);
+            if (menge < 0)
+                throw new ArgumentException("Menge darf nicht negativ sein.");
+
+            if (verfallsdatum < DateTime.Today)
+                throw new ArgumentException("Verfallsdatum darf nicht in der Vergangenheit liegen.");
+
+            if (string.IsNullOrWhiteSpace(lagerort))
+                throw new ArgumentNullException(nameof(lagerort), "Lagerort darf nicht null oder leer sein.");
+
+            if (!LagerortKonstanten.IsValidLagerort(lagerort))
+                throw new ArgumentException($"Ungültiger Lagerort: {lagerort}");
+
+            var produktInstanz = new ProduktInstanz
+            {
+                LebensmittelKatalogId = lebensmittelKatalogId,
+                Menge = menge,
+                Verfallsdatum = verfallsdatum,
+                Einkaufsdatum = DateTime.UtcNow,
+                Lagerort = lagerort,
+                ErstelltAm = DateTime.UtcNow
+            };
+
+            return await _repository.AddAsync(produktInstanz);
         }
 
-        public async Task<ProduktInstanz> GetProduktInstanzByIdAsync(int id)
-        {
-            ValidateId(id);
-            return await _repository.GetByIdAsync(id);
-        }
-
-        public async Task<IEnumerable<ProduktInstanz>> GetAllProduktInstanzenAsync()
-        {
-            return await _repository.GetAllAsync();
-        }
-
-        public async Task<IEnumerable<ProduktInstanz>> GetProduktInstanzenByLebensmittelIdAsync(int lebensmittelId)
-        {
-            if (lebensmittelId <= 0)
-                throw new ArgumentException("Lebensmittel-ID muss größer als 0 sein.");
-
-            var alle = await _repository.GetAllAsync();
-            return alle.Where(p => p.LebensmittelKatalogId == lebensmittelId).ToList();
-        }
-
-        public async Task<IEnumerable<ProduktInstanz>> GetProduktInstanzenByLagerortIdAsync(int lagerortId)
-        {
-            if (lagerortId <= 0)
-                throw new ArgumentException("Lagerort-ID muss größer als 0 sein.");
-
-            var alle = await _repository.GetAllAsync();
-            return alle.Where(p => p.LagerortId == lagerortId).ToList();
-        }
-
-        public async Task<IEnumerable<ProduktInstanz>> GetAbgelaufeneProduktInstanzenAsync()
-        {
-            var alle = await _repository.GetAllAsync();
-            return alle.Where(p => IsAbgelaufen(p)).ToList();
-        }
-
-        public async Task<IEnumerable<ProduktInstanz>> GetProduktInstanzenBaldAbgelaufen_Async(int tagesBis)
-        {
-            if (tagesBis <= 0)
-                throw new ArgumentException("Tage muss größer als 0 sein.");
-
-            var alle = await _repository.GetAllAsync();
-            var grenze = DateTime.UtcNow.AddDays(tagesBis);
-
-            return alle.Where(p =>
-                p.Verfallsdatum > DateTime.UtcNow &&
-                p.Verfallsdatum <= grenze)
-                .ToList();
-        }
-
-        public async Task<ProduktInstanz> UpdateProduktInstanzAsync(ProduktInstanz instanz)
-        {
-            ValidateProduktInstanz(instanz);
-            ValidateId(instanz.Id);
-
-            return await _repository.UpdateAsync(instanz);
-        }
-
-        public async Task<ProduktInstanz> ReduceProduktInstanzMengeAsync(int id, double mengeZuReduzieren)
-        {
-            ValidateId(id);
-            if (mengeZuReduzieren <= 0)
-                throw new ArgumentException("Menge zu reduzieren muss größer als 0 sein.");
-
-            var instanz = await _repository.GetByIdAsync(id);
-            if (instanz == null)
-                throw new InvalidOperationException($"ProduktInstanz mit ID {id} nicht gefunden.");
-
-            if (instanz.AktuelleM enge < mengeZuReduzieren)
-                throw new ArgumentException($"Verfügbare Menge ({instanz.AktuelleM enge}) ist kleiner als zu reduzierende Menge ({mengeZuReduzieren}).");
-
-            instanz.AktuelleM enge -= mengeZuReduzieren;
-            return await _repository.UpdateAsync(instanz);
-        }
-
-        public async Task<bool> DeleteProduktInstanzAsync(int id)
-        {
-            ValidateId(id);
-            return await _repository.DeleteAsync(id);
-        }
-
-        public bool IsUnterMindestbestand(ProduktInstanz instanz)
-        {
-            if (instanz == null)
-                throw new ArgumentNullException(nameof(instanz));
-
-            return instanz.AktuelleM enge < instanz.MindestbestandMenge;
-        }
-
-        public bool IsAbgelaufen(ProduktInstanz instanz)
-        {
-            if (instanz == null)
-                throw new ArgumentNullException(nameof(instanz));
-
-            return instanz.Verfallsdatum < DateTime.UtcNow;
-        }
-
-        public int CalculateTagesBisAblauf(ProduktInstanz instanz)
-        {
-            if (instanz == null)
-                throw new ArgumentNullException(nameof(instanz));
-
-            var tage = (instanz.Verfallsdatum - DateTime.UtcNow).Days;
-            return tage;
-        }
-
-        // === Private Validation Methods ===
-
-        private void ValidateProduktInstanz(ProduktInstanz instanz)
-        {
-            if (instanz == null)
-                throw new ArgumentNullException(nameof(instanz));
-        }
-
-        private void ValidateId(int id)
+        public async Task<ProduktInstanz> GetByIdAsync(int id)
         {
             if (id <= 0)
                 throw new ArgumentException("ID muss größer als 0 sein.");
+
+            return await _repository.GetByIdAsync(id);
         }
 
-        private void ValidateLebensmittelId(int lebensmittelId)
+        public async Task<List<ProduktInstanz>> GetByLebensmittelAsync(int lebensmittelKatalogId)
         {
-            if (lebensmittelId <= 0)
-                throw new ArgumentException("Lebensmittel-ID muss größer als 0 sein.");
+            if (lebensmittelKatalogId <= 0)
+                throw new ArgumentException("LebensmittelKatalogId muss größer als 0 sein.");
+
+            var alle = await _repository.GetAllAsync();
+            return alle
+                .Where(p => p.LebensmittelKatalogId == lebensmittelKatalogId)
+                .ToList();
         }
 
-        private void ValidateLagerortId(int lagerortId)
+        public async Task<List<ProduktInstanz>> GetByLagerortAsync(string lagerort)
         {
-            if (lagerortId <= 0)
-                throw new ArgumentException("Lagerort-ID muss größer als 0 sein.");
+            if (string.IsNullOrWhiteSpace(lagerort))
+                throw new ArgumentNullException(nameof(lagerort), "Lagerort darf nicht null oder leer sein.");
+
+            if (!LagerortKonstanten.IsValidLagerort(lagerort))
+                throw new ArgumentException($"Ungültiger Lagerort: {lagerort}");
+
+            var alle = await _repository.GetAllAsync();
+            return alle
+                .Where(p => p.Lagerort == lagerort)
+                .ToList();
         }
 
-        private void ValidateMengen(double aktuelleM enge, double mindestbestandM enge)
+        public async Task<List<ProduktInstanz>> GetNachVerfallsdatumSortiertAsync()
         {
-            if (aktuelleM enge < 0)
-                throw new ArgumentException("Aktuelle Menge darf nicht negativ sein.");
-
-            if (mindestbestandM enge < 0)
-                throw new ArgumentException("Mindestbestand Menge darf nicht negativ sein.");
+            var alle = await _repository.GetAllAsync();
+            return alle
+                .OrderBy(p => p.Verfallsdatum)
+                .ToList();
         }
 
-        private void ValidateDatum(DateTime verfallsdatum, DateTime einkaufsdatum)
+        public async Task<List<ProduktInstanz>> GetVerfallenenAsync(DateTime? standdatum = null)
         {
-            if (verfallsdatum < DateTime.UtcNow)
+            var referenzdatum = standdatum ?? DateTime.Today;
+            var alle = await _repository.GetAllAsync();
+            return alle
+                .Where(p => p.Verfallsdatum <= referenzdatum)
+                .ToList();
+        }
+
+        public async Task UpdateAsync(int id, decimal menge, DateTime verfallsdatum, string lagerort)
+        {
+            if (id <= 0)
+                throw new ArgumentException("ID muss größer als 0 sein.");
+
+            if (menge < 0)
+                throw new ArgumentException("Menge darf nicht negativ sein.");
+
+            if (verfallsdatum < DateTime.Today)
                 throw new ArgumentException("Verfallsdatum darf nicht in der Vergangenheit liegen.");
 
-            if (einkaufsdatum > DateTime.UtcNow)
-                throw new ArgumentException("Einkaufsdatum darf nicht in der Zukunft liegen.");
+            if (string.IsNullOrWhiteSpace(lagerort))
+                throw new ArgumentNullException(nameof(lagerort), "Lagerort darf nicht null oder leer sein.");
+
+            if (!LagerortKonstanten.IsValidLagerort(lagerort))
+                throw new ArgumentException($"Ungültiger Lagerort: {lagerort}");
+
+            var instanz = await _repository.GetByIdAsync(id);
+            if (instanz == null)
+                throw new KeyNotFoundException($"ProduktInstanz mit ID {id} nicht gefunden.");
+
+            instanz.Menge = menge;
+            instanz.Verfallsdatum = verfallsdatum;
+            instanz.Lagerort = lagerort;
+
+            await _repository.UpdateAsync(instanz);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            if (id <= 0)
+                throw new ArgumentException("ID muss größer als 0 sein.");
+
+            var success = await _repository.DeleteAsync(id);
+            if (!success)
+                throw new KeyNotFoundException($"ProduktInstanz mit ID {id} nicht gefunden.");
+        }
+
+        public async Task<int> GetTagesBisVerfallAsync(int id)
+        {
+            if (id <= 0)
+                throw new ArgumentException("ID muss größer als 0 sein.");
+
+            var instanz = await _repository.GetByIdAsync(id);
+            if (instanz == null)
+                throw new KeyNotFoundException($"ProduktInstanz mit ID {id} nicht gefunden.");
+
+            var tage = (instanz.Verfallsdatum - DateTime.Today).Days;
+            return tage;
         }
     }
 }

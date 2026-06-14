@@ -13,569 +13,520 @@ namespace FoodDatabase.Tests.Unit.Services
     public class ProduktInstanzServiceTests
     {
         private readonly Mock<IRepository<ProduktInstanz>> _mockRepository;
-        private readonly Mock<IRepository<LebensmittelKatalog>> _mockLebensmittelRepository;
-        private readonly Mock<IRepository<Lagerort>> _mockLagerortRepository;
-        private readonly IProduktInstanzService _service;
+        private readonly ProduktInstanzService _service;
 
         public ProduktInstanzServiceTests()
         {
             _mockRepository = new Mock<IRepository<ProduktInstanz>>();
-            _mockLebensmittelRepository = new Mock<IRepository<LebensmittelKatalog>>();
-            _mockLagerortRepository = new Mock<IRepository<Lagerort>>();
-            _service = new ProduktInstanzService(
-                _mockRepository.Object,
-                _mockLebensmittelRepository.Object,
-                _mockLagerortRepository.Object
-            );
+            _service = new ProduktInstanzService(_mockRepository.Object);
         }
 
-        // === CREATE Tests ===
+        // === CREATE Tests (6) ===
 
         [Fact]
-        public async Task CreateProduktInstanz_WithValidData_ShouldReturnCreatedInstance()
+        public async Task CreateAsync_WithValidData_ShouldReturnCreatedProduktInstanz()
         {
             // Arrange
-            var instanz = new ProduktInstanz
+            var produktInstanz = new ProduktInstanz
             {
                 LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 500,
-                MindestbestandMenge = 200,
-                Verfallsdatum = DateTime.UtcNow.AddDays(30),
-                Einkaufsdatum = DateTime.UtcNow
+                Menge = 500,
+                Verfallsdatum = DateTime.Today.AddDays(10),
+                Lagerort = LagerortKonstanten.Kühlschrank
             };
 
             _mockRepository.Setup(r => r.AddAsync(It.IsAny<ProduktInstanz>()))
-                .ReturnsAsync(instanz with { Id = 1 });
+                .ReturnsAsync(produktInstanz);
 
             // Act
-            var result = await _service.CreateProduktInstanzAsync(instanz);
+            var result = await _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(1, result.Id);
-            Assert.Equal(500, result.AktuelleM enge);
+            Assert.Equal(1, result.LebensmittelKatalogId);
+            Assert.Equal(500, result.Menge);
+            Assert.Equal(LagerortKonstanten.Kühlschrank, result.Lagerort);
             _mockRepository.Verify(r => r.AddAsync(It.IsAny<ProduktInstanz>()), Times.Once);
         }
 
         [Fact]
-        public async Task CreateProduktInstanz_WithNullEntity_ShouldThrowArgumentNullException()
+        public async Task CreateAsync_WithLebensmittelKatalogIdZero_ShouldThrowArgumentException()
         {
-            // Act & Assert
+            // Arrange & Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.CreateAsync(0, 500, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank));
+        }
+
+        [Fact]
+        public async Task CreateAsync_WithNegativeMenge_ShouldThrowArgumentException()
+        {
+            // Arrange & Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.CreateAsync(1, -100, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank));
+        }
+
+        [Fact]
+        public async Task CreateAsync_WithVerfallsdatumInPast_ShouldThrowArgumentException()
+        {
+            // Arrange & Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.CreateAsync(1, 500, DateTime.Today.AddDays(-1), LagerortKonstanten.Kühlschrank));
+        }
+
+        [Fact]
+        public async Task CreateAsync_WithInvalidLagerort_ShouldThrowArgumentException()
+        {
+            // Arrange & Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), "InvalidLagerort"));
+        }
+
+        [Fact]
+        public async Task CreateAsync_WithNullLagerort_ShouldThrowArgumentNullException()
+        {
+            // Arrange & Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                _service.CreateProduktInstanzAsync(null));
+                _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), null));
         }
 
-        [Fact]
-        public async Task CreateProduktInstanz_WithInvalidLebensmittelId_ShouldThrowArgumentException()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                LebensmittelKatalogId = 0,
-                LagerortId = 1,
-                AktuelleM enge = 500,
-                MindestbestandMenge = 200,
-                Verfallsdatum = DateTime.UtcNow.AddDays(30),
-                Einkaufsdatum = DateTime.UtcNow
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateProduktInstanzAsync(instanz));
-        }
+        // === READ Tests (6) ===
 
         [Fact]
-        public async Task CreateProduktInstanz_WithInvalidLagerortId_ShouldThrowArgumentException()
+        public async Task GetByIdAsync_WithValidId_ShouldReturnProduktInstanz()
         {
             // Arrange
-            var instanz = new ProduktInstanz
-            {
-                LebensmittelKatalogId = 1,
-                LagerortId = 0,
-                AktuelleM enge = 500,
-                MindestbestandMenge = 200,
-                Verfallsdatum = DateTime.UtcNow.AddDays(30),
-                Einkaufsdatum = DateTime.UtcNow
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateProduktInstanzAsync(instanz));
-        }
-
-        [Fact]
-        public async Task CreateProduktInstanz_WithNegativeAktuelleM enge_ShouldThrowArgumentException()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = -100,
-                MindestbestandMenge = 200,
-                Verfallsdatum = DateTime.UtcNow.AddDays(30),
-                Einkaufsdatum = DateTime.UtcNow
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateProduktInstanzAsync(instanz));
-        }
-
-        [Fact]
-        public async Task CreateProduktInstanz_WithNegativeMindestbestandMenge_ShouldThrowArgumentException()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 500,
-                MindestbestandMenge = -50,
-                Verfallsdatum = DateTime.UtcNow.AddDays(30),
-                Einkaufsdatum = DateTime.UtcNow
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateProduktInstanzAsync(instanz));
-        }
-
-        [Fact]
-        public async Task CreateProduktInstanz_WithVerfallsdatumInPast_ShouldThrowArgumentException()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 500,
-                MindestbestandMenge = 200,
-                Verfallsdatum = DateTime.UtcNow.AddDays(-1),
-                Einkaufsdatum = DateTime.UtcNow
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateProduktInstanzAsync(instanz));
-        }
-
-        [Fact]
-        public async Task CreateProduktInstanz_WithEinkaufsdatumInFuture_ShouldThrowArgumentException()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 500,
-                MindestbestandMenge = 200,
-                Verfallsdatum = DateTime.UtcNow.AddDays(30),
-                Einkaufsdatum = DateTime.UtcNow.AddDays(1)
-            };
-
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateProduktInstanzAsync(instanz));
-        }
-
-        // === READ Tests ===
-
-        [Fact]
-        public async Task GetProduktInstanzById_WithValidId_ShouldReturnProduktInstanz()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
+            var produktInstanz = new ProduktInstanz
             {
                 Id = 1,
                 LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 500,
-                MindestbestandMenge = 200,
-                Verfallsdatum = DateTime.UtcNow.AddDays(30),
-                Einkaufsdatum = DateTime.UtcNow
+                Menge = 500,
+                Verfallsdatum = DateTime.Today.AddDays(10),
+                Lagerort = LagerortKonstanten.Kühlschrank
             };
 
             _mockRepository.Setup(r => r.GetByIdAsync(1))
-                .ReturnsAsync(instanz);
+                .ReturnsAsync(produktInstanz);
 
             // Act
-            var result = await _service.GetProduktInstanzByIdAsync(1);
+            var result = await _service.GetByIdAsync(1);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(1, result.Id);
-            _mockRepository.Verify(r => r.GetByIdAsync(1), Times.Once);
+            Assert.Equal(500, result.Menge);
         }
 
         [Fact]
-        public async Task GetProduktInstanzById_WithInvalidId_ShouldThrowArgumentException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.GetProduktInstanzByIdAsync(0));
-        }
-
-        [Fact]
-        public async Task GetProduktInstanzById_WithNegativeId_ShouldThrowArgumentException()
-        {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.GetProduktInstanzByIdAsync(-1));
-        }
-
-        [Fact]
-        public async Task GetAllProduktInstanzen_ShouldReturnAllInstances()
+        public async Task GetByIdAsync_WithNonExistentId_ShouldReturnNull()
         {
             // Arrange
-            var instanzen = new List<ProduktInstanz>
+            _mockRepository.Setup(r => r.GetByIdAsync(999))
+                .ReturnsAsync((ProduktInstanz)null);
+
+            // Act
+            var result = await _service.GetByIdAsync(999);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task GetByLebensmittelAsync_WithValidId_ShouldReturnFilteredList()
+        {
+            // Arrange
+            var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, LagerortId = 1, AktuelleM enge = 500 },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, LagerortId = 1, AktuelleM enge = 300 },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 1, LagerortId = 2, AktuelleM enge = 200 }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 1, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 2, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(15), Lagerort = LagerortKonstanten.Tiefkühler }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
-                .ReturnsAsync(instanzen);
+                .ReturnsAsync(produktInstanzen);
 
             // Act
-            var result = await _service.GetAllProduktInstanzenAsync();
+            var result = await _service.GetByLebensmittelAsync(1);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(3, result.Count());
-            _mockRepository.Verify(r => r.GetAllAsync(), Times.Once);
+            Assert.Equal(2, result.Count);
+            Assert.All(result, p => Assert.Equal(1, p.LebensmittelKatalogId));
         }
 
         [Fact]
-        public async Task GetProduktInstanzenByLebensmittelId_WithValidId_ShouldReturnMatchingInstances()
+        public async Task GetByLagerortAsync_WithValidLagerort_ShouldReturnFilteredList()
         {
             // Arrange
-            var instanzen = new List<ProduktInstanz>
+            var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, LagerortId = 1, AktuelleM enge = 500 },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 1, LagerortId = 2, AktuelleM enge = 200 }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(15), Lagerort = LagerortKonstanten.Tiefkühler }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
-                .ReturnsAsync(instanzen.Concat(new List<ProduktInstanz>
-                {
-                    new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, LagerortId = 1, AktuelleM enge = 300 }
-                }));
+                .ReturnsAsync(produktInstanzen);
 
             // Act
-            var result = await _service.GetProduktInstanzenByLebensmittelIdAsync(1);
+            var result = await _service.GetByLagerortAsync(LagerortKonstanten.Kühlschrank);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.Count());
-            Assert.All(result, i => Assert.Equal(1, i.LebensmittelKatalogId));
+            Assert.Equal(2, result.Count);
+            Assert.All(result, p => Assert.Equal(LagerortKonstanten.Kühlschrank, p.Lagerort));
         }
 
         [Fact]
-        public async Task GetProduktInstanzenByLagerortId_WithValidId_ShouldReturnMatchingInstances()
+        public async Task GetVerfallenenAsync_WithExpiredProducts_ShouldReturnExpiredItems()
         {
             // Arrange
-            var instanzen = new List<ProduktInstanz>
+            var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, LagerortId = 1, AktuelleM enge = 500 },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, LagerortId = 1, AktuelleM enge = 300 }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(-5), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today, Lagerort = LagerortKonstanten.Tiefkühler }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
-                .ReturnsAsync(instanzen.Concat(new List<ProduktInstanz>
-                {
-                    new ProduktInstanz { Id = 3, LebensmittelKatalogId = 1, LagerortId = 2, AktuelleM enge = 200 }
-                }));
+                .ReturnsAsync(produktInstanzen);
 
             // Act
-            var result = await _service.GetProduktInstanzenByLagerortIdAsync(1);
+            var result = await _service.GetVerfallenenAsync();
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.Count());
-            Assert.All(result, i => Assert.Equal(1, i.LagerortId));
+            Assert.Equal(2, result.Count); // Id=1 (past) und Id=3 (today)
+            Assert.All(result, p => Assert.True(p.Verfallsdatum <= DateTime.Today));
         }
 
         [Fact]
-        public async Task GetAbgelaufeneProduktInstanzen_ShouldReturnExpiredInstances()
+        public async Task GetNachVerfallsdatumSortiertAsync_ShouldReturnSortedByExpiryAscending()
         {
             // Arrange
-            var instanzen = new List<ProduktInstanz>
+            var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, LagerortId = 1, Verfallsdatum = DateTime.UtcNow.AddDays(-1) },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, LagerortId = 1, Verfallsdatum = DateTime.UtcNow.AddDays(5) },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 1, LagerortId = 2, Verfallsdatum = DateTime.UtcNow.AddDays(-5) }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(20), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Tiefkühler }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
-                .ReturnsAsync(instanzen);
+                .ReturnsAsync(produktInstanzen);
 
             // Act
-            var result = await _service.GetAbgelaufeneProduktInstanzenAsync();
+            var result = await _service.GetNachVerfallsdatumSortiertAsync();
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.Count());
-            Assert.All(result, i => Assert.True(i.Verfallsdatum < DateTime.UtcNow));
+            Assert.Equal(3, result.Count);
+            Assert.Equal(5, (result[0].Verfallsdatum - DateTime.Today).Days);
+            Assert.Equal(10, (result[1].Verfallsdatum - DateTime.Today).Days);
+            Assert.Equal(20, (result[2].Verfallsdatum - DateTime.Today).Days);
         }
 
-        [Fact]
-        public async Task GetProduktInstanzenBaldAbgelaufen_WithinThreeDays_ShouldReturnWarningInstances()
-        {
-            // Arrange
-            var instanzen = new List<ProduktInstanz>
-            {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, LagerortId = 1, Verfallsdatum = DateTime.UtcNow.AddDays(2) },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, LagerortId = 1, Verfallsdatum = DateTime.UtcNow.AddDays(10) },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 1, LagerortId = 2, Verfallsdatum = DateTime.UtcNow.AddDays(-1) }
-            };
-
-            _mockRepository.Setup(r => r.GetAllAsync())
-                .ReturnsAsync(instanzen);
-
-            // Act
-            var result = await _service.GetProduktInstanzenBaldAbgelaufen_Async(3);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Single(result);
-            Assert.Equal(1, result.First().Id);
-        }
-
-        // === UPDATE Tests ===
+        // === UPDATE Tests (4) ===
 
         [Fact]
-        public async Task UpdateProduktInstanz_WithValidData_ShouldReturnUpdatedInstance()
+        public async Task UpdateAsync_WithValidData_ShouldUpdateSuccessfully()
         {
             // Arrange
-            var instanz = new ProduktInstanz
+            var existingInstanz = new ProduktInstanz
             {
                 Id = 1,
                 LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 300,
-                MindestbestandMenge = 200,
-                Verfallsdatum = DateTime.UtcNow.AddDays(30),
-                Einkaufsdatum = DateTime.UtcNow
+                Menge = 500,
+                Verfallsdatum = DateTime.Today.AddDays(10),
+                Lagerort = LagerortKonstanten.Kühlschrank
             };
 
+            _mockRepository.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync(existingInstanz);
             _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<ProduktInstanz>()))
-                .ReturnsAsync(instanz);
+                .ReturnsAsync(existingInstanz);
 
             // Act
-            var result = await _service.UpdateProduktInstanzAsync(instanz);
+            await _service.UpdateAsync(1, 600, DateTime.Today.AddDays(15), LagerortKonstanten.Tiefkühler);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(300, result.AktuelleM enge);
+            _mockRepository.Verify(r => r.GetByIdAsync(1), Times.Once);
             _mockRepository.Verify(r => r.UpdateAsync(It.IsAny<ProduktInstanz>()), Times.Once);
         }
 
         [Fact]
-        public async Task UpdateProduktInstanz_WithNullEntity_ShouldThrowArgumentNullException()
+        public async Task UpdateAsync_WithNegativeMenge_ShouldThrowArgumentException()
         {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                _service.UpdateProduktInstanzAsync(null));
-        }
-
-        [Fact]
-        public async Task UpdateProduktInstanz_WithInvalidId_ShouldThrowArgumentException()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                Id = 0,
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 500
-            };
-
-            // Act & Assert
+            // Arrange & Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.UpdateProduktInstanzAsync(instanz));
+                _service.UpdateAsync(1, -100, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank));
         }
 
         [Fact]
-        public async Task ReduceProduktInstanzMenge_WithValidData_ShouldReduceMenge()
+        public async Task UpdateAsync_WithInvalidLagerort_ShouldThrowArgumentException()
         {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                Id = 1,
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 500,
-                MindestbestandMenge = 200,
-                Verfallsdatum = DateTime.UtcNow.AddDays(30),
-                Einkaufsdatum = DateTime.UtcNow
-            };
-
-            var updatedInstanz = instanz with { AktuelleM enge = 250 };
-            _mockRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(instanz);
-            _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<ProduktInstanz>()))
-                .ReturnsAsync(updatedInstanz);
-
-            // Act
-            var result = await _service.ReduceProduktInstanzMengeAsync(1, 250);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(250, result.AktuelleM enge);
+            // Arrange & Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.UpdateAsync(1, 500, DateTime.Today.AddDays(10), "InvalidLagerort"));
         }
 
         [Fact]
-        public async Task ReduceProduktInstanzMenge_WithMoreThanAvailable_ShouldThrowArgumentException()
+        public async Task UpdateAsync_WithNonExistentId_ShouldThrowKeyNotFoundException()
         {
             // Arrange
-            var instanz = new ProduktInstanz
-            {
-                Id = 1,
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 100,
-                MindestbestandMenge = 50
-            };
-
-            _mockRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(instanz);
+            _mockRepository.Setup(r => r.GetByIdAsync(999))
+                .ReturnsAsync((ProduktInstanz)null);
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.ReduceProduktInstanzMengeAsync(1, 200));
+            await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+                _service.UpdateAsync(999, 500, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank));
         }
 
-        // === DELETE Tests ===
+        // === DELETE Tests (3) ===
 
         [Fact]
-        public async Task DeleteProduktInstanz_WithValidId_ShouldReturnTrue()
+        public async Task DeleteAsync_WithValidId_ShouldDeleteSuccessfully()
         {
             // Arrange
             _mockRepository.Setup(r => r.DeleteAsync(1))
                 .ReturnsAsync(true);
 
             // Act
-            var result = await _service.DeleteProduktInstanzAsync(1);
+            await _service.DeleteAsync(1);
 
             // Assert
-            Assert.True(result);
             _mockRepository.Verify(r => r.DeleteAsync(1), Times.Once);
         }
 
         [Fact]
-        public async Task DeleteProduktInstanz_WithInvalidId_ShouldThrowArgumentException()
+        public async Task DeleteAsync_WithNonExistentId_ShouldThrowKeyNotFoundException()
         {
+            // Arrange
+            _mockRepository.Setup(r => r.DeleteAsync(999))
+                .ReturnsAsync(false);
+
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.DeleteProduktInstanzAsync(0));
+            await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+                _service.DeleteAsync(999));
         }
 
         [Fact]
-        public async Task DeleteProduktInstanz_WithNegativeId_ShouldThrowArgumentException()
+        public async Task DeleteAsync_WithNegativeId_ShouldThrowArgumentException()
         {
+            // Arrange & Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.DeleteAsync(-1));
+        }
+
+        // === BUSINESS LOGIC Tests (6) ===
+
+        [Fact]
+        public async Task GetTagesBisVerfallAsync_WithFutureExpiry_ShouldReturnCorrectDays()
+        {
+            // Arrange
+            var daysUntilExpiry = 10;
+            var produktInstanz = new ProduktInstanz
+            {
+                Id = 1,
+                LebensmittelKatalogId = 1,
+                Menge = 500,
+                Verfallsdatum = DateTime.Today.AddDays(daysUntilExpiry),
+                Lagerort = LagerortKonstanten.Kühlschrank
+            };
+
+            _mockRepository.Setup(r => r.GetByIdAsync(1))
+                .ReturnsAsync(produktInstanz);
+
+            // Act
+            var result = await _service.GetTagesBisVerfallAsync(1);
+
+            // Assert
+            Assert.Equal(daysUntilExpiry, result);
+        }
+
+        [Fact]
+        public async Task GetVerfallenenAsync_WithCustomStanddate_ShouldFilterCorrectly()
+        {
+            // Arrange
+            var customDate = DateTime.Today.AddDays(5);
+            var produktInstanzen = new List<ProduktInstanz>
+            {
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(3), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(7), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Tiefkühler }
+            };
+
+            _mockRepository.Setup(r => r.GetAllAsync())
+                .ReturnsAsync(produktInstanzen);
+
+            // Act
+            var result = await _service.GetVerfallenenAsync(customDate);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count); // Id=1 (3 days) und Id=3 (5 days)
+            Assert.All(result, p => Assert.True(p.Verfallsdatum <= customDate));
+        }
+
+        [Fact]
+        public async Task GetNachVerfallsdatumSortiertAsync_WithMultipleItems_ShouldMaintainFIFOOrder()
+        {
+            // Arrange - FIFO bedeutet, älteste zuerst (ascending order)
+            var produktInstanzen = new List<ProduktInstanz>
+            {
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 1, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(50), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 1, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(30), Lagerort = LagerortKonstanten.Kühlschrank }
+            };
+
+            _mockRepository.Setup(r => r.GetAllAsync())
+                .ReturnsAsync(produktInstanzen);
+
+            // Act
+            var result = await _service.GetNachVerfallsdatumSortiertAsync();
+
+            // Assert
+            Assert.Equal(3, result.Count);
+            Assert.Equal(1, result[0].Id); // 10 days (älteste zuerst)
+            Assert.Equal(2, result[1].Id); // 30 days
+            Assert.Equal(3, result[2].Id); // 50 days (neueste zuletzt)
+        }
+
+        [Fact]
+        public async Task CreateAsync_WithZeroMenge_ShouldSucceed()
+        {
+            // Arrange - Menge=0 ist erlaubt (nicht negativ)
+            var produktInstanz = new ProduktInstanz
+            {
+                LebensmittelKatalogId = 1,
+                Menge = 0,
+                Verfallsdatum = DateTime.Today.AddDays(10),
+                Lagerort = LagerortKonstanten.Kühlschrank
+            };
+
+            _mockRepository.Setup(r => r.AddAsync(It.IsAny<ProduktInstanz>()))
+                .ReturnsAsync(produktInstanz);
+
+            // Act
+            var result = await _service.CreateAsync(1, 0, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(0, result.Menge);
+        }
+
+        [Fact]
+        public async Task GetByLebensmittelAsync_WithMultipleInstances_ShouldReturnAll()
+        {
+            // Arrange
+            var produktInstanzen = new List<ProduktInstanz>
+            {
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 5, Menge = 100, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 5, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(20), Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 5, Menge = 150, Verfallsdatum = DateTime.Today.AddDays(15), Lagerort = LagerortKonstanten.Tiefkühler },
+                new ProduktInstanz { Id = 4, LebensmittelKatalogId = 6, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(25), Lagerort = LagerortKonstanten.Kühlschrank }
+            };
+
+            _mockRepository.Setup(r => r.GetAllAsync())
+                .ReturnsAsync(produktInstanzen);
+
+            // Act
+            var result = await _service.GetByLebensmittelAsync(5);
+
+            // Assert
+            Assert.Equal(3, result.Count);
+            Assert.All(result, p => Assert.Equal(5, p.LebensmittelKatalogId));
+        }
+
+        [Fact]
+        public async Task GetVerfallenenAsync_WithVerfallsdatumToday_ShouldIncludeItem()
+        {
+            // Arrange - Verfallsdatum = heute sollte als abgelaufen zählen
+            var produktInstanzen = new List<ProduktInstanz>
+            {
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today, Lagerort = LagerortKonstanten.Kühlschrank },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(1), Lagerort = LagerortKonstanten.Kühlschrank }
+            };
+
+            _mockRepository.Setup(r => r.GetAllAsync())
+                .ReturnsAsync(produktInstanzen);
+
+            // Act
+            var result = await _service.GetVerfallenenAsync();
+
+            // Assert
+            Assert.Single(result);
+            Assert.Equal(1, result[0].Id);
+        }
+
+        // === VALIDATION Tests (Edge Cases) ===
+
+        [Theory]
+        [InlineData(LagerortKonstanten.Kühlschrank)]
+        [InlineData(LagerortKonstanten.Tiefkühler)]
+        [InlineData(LagerortKonstanten.Pantry)]
+        [InlineData(LagerortKonstanten.Anderes)]
+        public async Task CreateAsync_WithAllValidLagerorte_ShouldSucceed(string lagerort)
+        {
+            // Arrange
+            var produktInstanz = new ProduktInstanz
+            {
+                LebensmittelKatalogId = 1,
+                Menge = 500,
+                Verfallsdatum = DateTime.Today.AddDays(10),
+                Lagerort = lagerort
+            };
+
+            _mockRepository.Setup(r => r.AddAsync(It.IsAny<ProduktInstanz>()))
+                .ReturnsAsync(produktInstanz);
+
+            // Act
+            var result = await _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), lagerort);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(lagerort, result.Lagerort);
+        }
+
+        [Fact]
+        public async Task CreateAsync_WithVerfallsdatumToday_ShouldSucceed()
+        {
+            // Arrange - Verfallsdatum = heute ist erlaubt (nicht in der Vergangenheit)
+            var produktInstanz = new ProduktInstanz
+            {
+                LebensmittelKatalogId = 1,
+                Menge = 500,
+                Verfallsdatum = DateTime.Today,
+                Lagerort = LagerortKonstanten.Kühlschrank
+            };
+
+            _mockRepository.Setup(r => r.AddAsync(It.IsAny<ProduktInstanz>()))
+                .ReturnsAsync(produktInstanz);
+
+            // Act
+            var result = await _service.CreateAsync(1, 500, DateTime.Today, LagerortKonstanten.Kühlschrank);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(DateTime.Today, result.Verfallsdatum);
+        }
+
+        [Fact]
+        public async Task GetByLagerortAsync_WithEmptyLagerort_ShouldThrowArgumentNullException()
+        {
+            // Arrange & Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
+                _service.GetByLagerortAsync(""));
+        }
+
+        [Fact]
+        public async Task GetTagesBisVerfallAsync_WithNonExistentId_ShouldThrowKeyNotFoundException()
+        {
+            // Arrange
+            _mockRepository.Setup(r => r.GetByIdAsync(999))
+                .ReturnsAsync((ProduktInstanz)null);
+
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.DeleteProduktInstanzAsync(-5));
-        }
-
-        // === BUSINESS LOGIC Tests ===
-
-        [Fact]
-        public async Task IsUnterMindestbestand_WithMengeBelowThreshold_ShouldReturnTrue()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                Id = 1,
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 100,
-                MindestbestandMenge = 200
-            };
-
-            // Act
-            var result = _service.IsUnterMindestbestand(instanz);
-
-            // Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public async Task IsUnterMindestbestand_WithMengeAboveThreshold_ShouldReturnFalse()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                Id = 1,
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                AktuelleM enge = 300,
-                MindestbestandMenge = 200
-            };
-
-            // Act
-            var result = _service.IsUnterMindestbestand(instanz);
-
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public async Task IsAbgelaufen_WithDateInPast_ShouldReturnTrue()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                Id = 1,
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                Verfallsdatum = DateTime.UtcNow.AddDays(-1)
-            };
-
-            // Act
-            var result = _service.IsAbgelaufen(instanz);
-
-            // Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public async Task IsAbgelaufen_WithDateInFuture_ShouldReturnFalse()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                Id = 1,
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                Verfallsdatum = DateTime.UtcNow.AddDays(10)
-            };
-
-            // Act
-            var result = _service.IsAbgelaufen(instanz);
-
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public async Task CalculateTagesBisAblauf_ShouldReturnDaysRemaining()
-        {
-            // Arrange
-            var instanz = new ProduktInstanz
-            {
-                Id = 1,
-                LebensmittelKatalogId = 1,
-                LagerortId = 1,
-                Verfallsdatum = DateTime.UtcNow.AddDays(7)
-            };
-
-            // Act
-            var result = _service.CalculateTagesBisAblauf(instanz);
-
-            // Assert
-            Assert.InRange(result, 6, 7); // Allow for rounding
+            await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+                _service.GetTagesBisVerfallAsync(999));
         }
     }
 }
