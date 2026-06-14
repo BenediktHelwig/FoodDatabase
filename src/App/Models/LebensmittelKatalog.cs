@@ -11,9 +11,6 @@ namespace FoodDatabase.App.Models
         public string Kategorie { get; set; } // Optional
         public DateTime ErstelltAm { get; set; } = DateTime.UtcNow;
 
-        // Navigation properties
-        public ICollection<Nährwert> Nährwerte { get; set; } = new List<Nährwert>();
-        public ICollection<ProduktInstanz> ProduktInstanzen { get; set; } = new List<ProduktInstanz>();
-        public ICollection<RezeptZutat> RezeptZutaten { get; set; } = new List<RezeptZutat>();
+        // Navigation properties (werden später hinzugefügt, wenn weitere Entities existieren)
     }
 }

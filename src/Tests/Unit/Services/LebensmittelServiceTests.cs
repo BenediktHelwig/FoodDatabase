@@ -58,7 +58,7 @@ namespace FoodDatabase.Tests.Unit.Services
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
                 _service.CreateLebensmittelAsync(lebensmittel));
         }
 
@@ -207,7 +207,7 @@ namespace FoodDatabase.Tests.Unit.Services
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
+            await Assert.ThrowsAsync<ArgumentNullException>(() =>
                 _service.UpdateLebensmittelAsync(lebensmittel));
         }
 
