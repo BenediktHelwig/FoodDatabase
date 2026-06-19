@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-06-19" agent="5.0" version="21.5.0" type="device">
+  <diagram name="UC1 - Lebensmittel-Katalog Sequence" id="sequence-uc1">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Actors -->
+        <mxCell id="actor-user" value="Benutzer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#e1d5e7;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="30" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-ui" value="Blazor UI&#10;(LebensmittelPage)" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="200" y="60" width="100" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-service" value="ILebensmittelService&#10;(LebensmittelService)" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="60" width="120" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-repo" value="IRepository&lt;&#10;LebensmittelKatalog&gt;" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=9;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="600" y="60" width="110" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-db" value="SQLite DB" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d4f1d4;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="800" y="50" width="80" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="line-user" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-user" target="actor-user">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="65" y="110"/>
+            <mxPoint as="targetPoint" x="65" y="900"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="line-ui" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-ui" target="actor-ui">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="250" y="110"/>
+            <mxPoint as="targetPoint" x="250" y="900"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="line-service" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="460" y="110"/>
+            <mxPoint as="targetPoint" x="460" y="900"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="line-repo" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-repo" target="actor-repo">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="655" y="110"/>
+            <mxPoint as="targetPoint" x="655" y="900"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="line-db" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-db" target="actor-db">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="840" y="120"/>
+            <mxPoint as="targetPoint" x="840" y="900"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Scenario: CREATE Lebensmittel -->
+        <mxCell id="label-create" value="SCENARIO 1: Lebensmittel erstellen (Happy Path)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#000000;backgroundColor=#ffffcc;" vertex="1" parent="1">
+          <mxGeometry x="50" y="140" width="400" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. User klickt Form -->
+        <mxCell id="msg1" value="1: Klickt &quot;Neues Lebensmittel&quot;" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=10;strokeWidth=2;" edge="1" parent="1" source="actor-user" target="actor-ui">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="65" y="200" as="sourcePoint"/>
+            <mxPoint x="250" y="200" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. UI zeigt Form -->
+        <mxCell id="msg2" value="2: Form anzeigen" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=10;strokeWidth=1;" edge="1" parent="1" source="actor-ui" target="actor-user">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="250" y="230" as="sourcePoint"/>
+            <mxPoint x="65" y="230" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. User füllt Formular aus und speichert -->
+        <mxCell id="msg3" value="3: CreateLebensmittelAsync(Name=&quot;Milch&quot;, Einheit=&quot;ml&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="250" y="270" as="sourcePoint"/>
+            <mxPoint x="460" y="270" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Service validiert -->
+        <mxCell id="msg4" value="4: ValidateLebensmittel() ✓" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="460" y="300" as="sourcePoint"/>
+            <mxPoint x="520" y="300" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Service ruft Repository.AddAsync auf -->
+        <mxCell id="msg5" value="5: AddAsync(lebensmittel)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-service" target="actor-repo">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="460" y="330" as="sourcePoint"/>
+            <mxPoint x="655" y="330" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Repository speichert in DB -->
+        <mxCell id="msg6" value="6: INSERT INTO LebensmittelKatalog (...)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-repo" target="actor-db">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="655" y="360" as="sourcePoint"/>
+            <mxPoint x="840" y="360" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. DB Bestätigung -->
+        <mxCell id="msg7" value="7: ID = 1 ✓" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-db" target="actor-repo">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="840" y="390" as="sourcePoint"/>
+            <mxPoint x="655" y="390" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Repository gibt Objekt zurück -->
+        <mxCell id="msg8" value="8: LebensmittelKatalog {ID=1, Name=&quot;Milch&quot;, ...}" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-repo" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="655" y="420" as="sourcePoint"/>
+            <mxPoint x="460" y="420" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Service gibt an UI zurück -->
+        <mxCell id="msg9" value="9: LebensmittelKatalog {ID=1, ...}" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-ui">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="460" y="450" as="sourcePoint"/>
+            <mxPoint x="250" y="450" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 10. UI aktualisiert Liste -->
+        <mxCell id="msg10" value="10: Liste aktualisiert" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-ui" target="actor-user">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="250" y="480" as="sourcePoint"/>
+            <mxPoint x="65" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Scenario: SEARCH & UPDATE -->
+        <mxCell id="label-search" value="SCENARIO 2: Lebensmittel suchen und aktualisieren" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#000000;backgroundColor=#ffffcc;" vertex="1" parent="1">
+          <mxGeometry x="50" y="530" width="400" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. User öffnet Such-UI -->
+        <mxCell id="msg11" value="1: SearchLebensmittelAsync(&quot;Milch&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="250" y="590" as="sourcePoint"/>
+            <mxPoint x="460" y="590" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Service holt alle Einträge -->
+        <mxCell id="msg12" value="2: GetAllAsync()" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-service" target="actor-repo">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="460" y="620" as="sourcePoint"/>
+            <mxPoint x="655" y="620" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Repository holt von DB -->
+        <mxCell id="msg13" value="3: SELECT * FROM LebensmittelKatalog" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-repo" target="actor-db">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="655" y="650" as="sourcePoint"/>
+            <mxPoint x="840" y="650" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. DB gibt Liste zurück -->
+        <mxCell id="msg14" value="4: [Milch, Milchpulver, Käse, ...]" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-db" target="actor-repo">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="840" y="680" as="sourcePoint"/>
+            <mxPoint x="655" y="680" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Service filtert -->
+        <mxCell id="msg15" value="5: Filter .Where(Name.Contains(&quot;Milch&quot;))" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="460" y="710" as="sourcePoint"/>
+            <mxPoint x="520" y="710" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Service gibt Ergebnisse zurück -->
+        <mxCell id="msg16" value="6: [Milch, Milchpulver]" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-ui">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="460" y="740" as="sourcePoint"/>
+            <mxPoint x="250" y="740" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. UI zeigt Ergebnisse -->
+        <mxCell id="msg17" value="7: Treffer anzeigen" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-ui" target="actor-user">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="250" y="770" as="sourcePoint"/>
+            <mxPoint x="65" y="770" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="Legend: ─→ = Synchroner Aufruf | ⤴ = Rückgabewert | ⚙ = Interne Validierung | ✓ = Erfolg" style="text;html=1;align=left;verticalAlign=top;fontSize=9;fontStyle=italic;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="50" y="880" width="800" height="30" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-06-19" agent="5.0" version="21.5.0" type="device">
+  <diagram name="UC10 - Produktinstanzen mit MHD Sequence" id="sequence-uc10">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Actors -->
+        <mxCell id="actor-user" value="Benutzer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#ffff99;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="30" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-ui" value="Blazor UI&#10;(ProduktInstanzPage)" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="150" y="40" width="120" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-service" value="IProduktInstanzService&#10;(ProduktInstanzService)" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="350" y="40" width="140" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-repo" value="IRepository&lt;&#10;ProduktInstanz&gt;" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=9;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="580" y="40" width="120" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-db" value="SQLite DB" style="shape=cylinder3d;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d4f1d4;strokeWidth=2;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="800" y="30" width="80" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="line-user" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-user" target="actor-user">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="45" y="90"/>
+            <mxPoint as="targetPoint" x="45" y="1100"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="line-ui" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-ui" target="actor-ui">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="210" y="90"/>
+            <mxPoint as="targetPoint" x="210" y="1100"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="line-service" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="420" y="90"/>
+            <mxPoint as="targetPoint" x="420" y="1100"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="line-repo" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-repo" target="actor-repo">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="640" y="90"/>
+            <mxPoint as="targetPoint" x="640" y="1100"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="line-db" value="" style="line;strokeWidth=2;direction=south;html=1;" edge="1" parent="1" source="actor-db" target="actor-db">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="sourcePoint" x="840" y="100"/>
+            <mxPoint as="targetPoint" x="840" y="1100"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SCENARIO 1: CREATE ProduktInstanz (Einkauf) -->
+        <mxCell id="label-create" value="SCENARIO 1: Produktinstanz erstellen (Einkauf, 500g Joghurt, MHD 2026-06-20)" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontStyle=1;fontColor=#000000;backgroundColor=#ffffcc;" vertex="1" parent="1">
+          <mxGeometry x="30" y="120" width="600" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. User klickt Neuer Einkauf -->
+        <mxCell id="msg1" value="1: CreateAsync(LebensmittelId=1, Menge=500, MHD=2026-06-20, Lagerort=Kühlschrank)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="210" y="180" as="sourcePoint"/>
+            <mxPoint x="420" y="180" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Service validiert Eingaben -->
+        <mxCell id="msg2" value="2: Validiere LebensmittelId, Menge ≥ 0, MHD ≥ heute, Lagerort valid" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="420" y="210" as="sourcePoint"/>
+            <mxPoint x="520" y="210" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Service ruft AddAsync auf -->
+        <mxCell id="msg3" value="3: AddAsync(ProduktInstanz{ LebensmittelKatalogId=1, Menge=500, Verfallsdatum=2026-06-20, ... })" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=8;strokeWidth=2;" edge="1" parent="1" source="actor-service" target="actor-repo">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="420" y="240" as="sourcePoint"/>
+            <mxPoint x="640" y="240" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Repository speichert in DB -->
+        <mxCell id="msg4" value="4: INSERT INTO ProduktInstanzen (...)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-repo" target="actor-db">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="640" y="270" as="sourcePoint"/>
+            <mxPoint x="840" y="270" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. DB Bestätigung -->
+        <mxCell id="msg5" value="5: INSERT OK, ID=42 ✓" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-db" target="actor-repo">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="840" y="300" as="sourcePoint"/>
+            <mxPoint x="640" y="300" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Repository gibt Objekt zurück -->
+        <mxCell id="msg6" value="6: ProduktInstanz { ID=42, LebensmittelKatalogId=1, Menge=500, Verfallsdatum=2026-06-20, ... }" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-repo" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="640" y="330" as="sourcePoint"/>
+            <mxPoint x="420" y="330" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Service gibt zurück -->
+        <mxCell id="msg7" value="7: ProduktInstanz { ID=42, ... }" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-ui">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="420" y="360" as="sourcePoint"/>
+            <mxPoint x="210" y="360" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. UI zeigt erfolgreiche Nachricht -->
+        <mxCell id="msg8" value="8: ✓ Produktinstanz #42 hinzugefügt (500g Joghurt, MHD 2026-06-20)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-ui" target="actor-user">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="210" y="390" as="sourcePoint"/>
+            <mxPoint x="45" y="390" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SCENARIO 2: READ & FILTER (Nach Lagerort) -->
+        <mxCell id="label-filter" value="SCENARIO 2: Bestand nach Lagerort filtern (Kühlschrank öffnen)" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontStyle=1;fontColor=#000000;backgroundColor=#ffffcc;" vertex="1" parent="1">
+          <mxGeometry x="30" y="440" width="600" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. User klickt auf Lagerort -->
+        <mxCell id="msg9" value="1: GetByLagerortAsync(&quot;Kühlschrank&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="210" y="500" as="sourcePoint"/>
+            <mxPoint x="420" y="500" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Service validiert Lagerort -->
+        <mxCell id="msg10" value="2: Validiere Lagerort ∈ [Kühlschrank, Tiefkühler, Pantry, Anderes]" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="420" y="530" as="sourcePoint"/>
+            <mxPoint x="520" y="530" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Service holt alle Instanzen -->
+        <mxCell id="msg11" value="3: GetAllAsync()" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-service" target="actor-repo">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="420" y="560" as="sourcePoint"/>
+            <mxPoint x="640" y="560" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Repository holt von DB -->
+        <mxCell id="msg12" value="4: SELECT * FROM ProduktInstanzen WHERE Lagerort = &quot;Kühlschrank&quot;" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=8;strokeWidth=2;" edge="1" parent="1" source="actor-repo" target="actor-db">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="640" y="590" as="sourcePoint"/>
+            <mxPoint x="840" y="590" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. DB gibt Liste zurück (Beispiel mit 3 Items) -->
+        <mxCell id="msg13" value="5: [#42 (500g Joghurt, MHD 2026-06-20), #51 (500g Joghurt, MHD 2026-06-25), #63 (1L Milch, MHD 2026-06-18)]" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-db" target="actor-repo">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="840" y="630" as="sourcePoint"/>
+            <mxPoint x="640" y="630" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Service filtert (bereits gefiltert von DB) -->
+        <mxCell id="msg14" value="6: Filter by Lagerort = &quot;Kühlschrank&quot; ✓ (3 Treffer)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="420" y="660" as="sourcePoint"/>
+            <mxPoint x="520" y="660" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Service gibt Liste zurück -->
+        <mxCell id="msg15" value="7: List&lt;ProduktInstanz&gt; [3 Items]" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-ui">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="420" y="690" as="sourcePoint"/>
+            <mxPoint x="210" y="690" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. UI zeigt Liste mit MHD-Status -->
+        <mxCell id="msg16" value="8: Bestand anzeigen mit MHD-Status (🟢 OK, 🟡 Bald weg, 🔴 Verfallen)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-ui" target="actor-user">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="210" y="720" as="sourcePoint"/>
+            <mxPoint x="45" y="720" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SCENARIO 3: UPDATE (Verbrauch tracken) -->
+        <mxCell id="label-update" value="SCENARIO 3: Verbrauch tracken (Joghurt von 500g auf 300g essen)" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontStyle=1;fontColor=#000000;backgroundColor=#ffffcc;" vertex="1" parent="1">
+          <mxGeometry x="30" y="780" width="600" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- 1. User klickt auf Instanz zum Bearbeiten -->
+        <mxCell id="msg17" value="1: UpdateAsync(Id=42, Menge=300, MHD=2026-06-20, Lagerort=Kühlschrank)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="210" y="840" as="sourcePoint"/>
+            <mxPoint x="420" y="840" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Service validiert Eingaben -->
+        <mxCell id="msg18" value="2: Validiere ID, Menge ≥ 0, MHD, Lagerort" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+          <mxGeometry width="100" relative="1" as="geometry">
+            <mxPoint x="420" y="870" as="sourcePoint"/>
+            <mxPoint x="520" y="870" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Service holt bestehende Instanz -->
+        <mxCell id="msg19" value="3: GetByIdAsync(42)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-service" target="actor-repo">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="420" y="900" as="sourcePoint"/>
+            <mxPoint x="640" y="900" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Repository holt von DB -->
+        <mxCell id="msg20" value="4: SELECT * FROM ProduktInstanzen WHERE Id = 42" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-repo" target="actor-db">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="640" y="930" as="sourcePoint"/>
+            <mxPoint x="840" y="930" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. DB gibt Objekt zurück -->
+        <mxCell id="msg21" value="5: ProduktInstanz { ID=42, Menge=500, Verfallsdatum=2026-06-20, ... }" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-db" target="actor-repo">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="840" y="960" as="sourcePoint"/>
+            <mxPoint x="640" y="960" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Repository gibt zurück -->
+        <mxCell id="msg22" value="6: ProduktInstanz { ID=42, ... }" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-repo" target="actor-service">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="640" y="990" as="sourcePoint"/>
+            <mxPoint x="420" y="990" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Service aktualisiert Menge -->
+        <mxCell id="msg23" value="7: Aktualisiere Menge: 500 → 300" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+          <mxGeometry width="1" relative="1" as="geometry">
+            <mxPoint x="420" y="1020" as="sourcePoint"/>
+            <mxPoint x="520" y="1020" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend2" value="Legend: ─→ = Synchroner Aufruf | ⤴ = Rückgabewert | ⚙ = Validierung | ✓ = Erfolg | MHD = Verfallsdatum | UC10 = Zentrale Produktinstanz-Verwaltung" style="text;html=1;align=left;verticalAlign=top;fontSize=8;fontStyle=italic;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="30" y="1100" width="1000" height="30" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
