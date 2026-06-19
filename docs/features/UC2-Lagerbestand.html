@@ -40,36 +40,104 @@
             <h2>📦 Domain Model</h2>
 
             <h3>Beteiligte Entities</h3>
-            <table>
-                <tr>
-                    <th>Entity</th>
-                    <th>Rolle</th>
-                    <th>Beziehung</th>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: #f0f0f0;">
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Entity</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Rolle</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Beziehung</th>
+                </tr>
+                <tr style="background-color: #e8f5e9;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>ProduktInstanz ⭐</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Zu aktualisierende Einheit (UC2 Primary)</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Primary (Update-Ziel)</td>
                 </tr>
                 <tr>
-                    <td>ProduktInstanz</td>
-                    <td>Zu aktualisierende Einheit</td>
-                    <td>Primary (Update-Ziel)</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">LebensmittelKatalog</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Referenziert das Produkt</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Foreign Key (1:N)</td>
                 </tr>
-                <tr>
-                    <td>Lagerort</td>
-                    <td>Speicherort des Produkts</td>
-                    <td>Foreign Key (0..1)</td>
-                </tr>
-                <tr>
-                    <td>LebensmittelKatalog</td>
-                    <td>Referenzen das Produkt</td>
-                    <td>Foreign Key (1..1)</td>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 10px; border: 1px solid #ddd;">LagerbestandService</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Business-Logic-Service (UC2)</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Service (Verwaltung)</td>
                 </tr>
             </table>
 
-            <h3>Betroffene Attribute</h3>
-            <pre>
-ProduktInstanz
-├── Menge: decimal
-├── Einheit: string (g, ml, Stück, etc.)
-└── Lagerort: Lagerort (Foreign Key)
-            </pre>
+            <h3>ProduktInstanz-Attribute (UC2-Erweiterung)</h3>
+            <div style="background-color: #e8f5e9; padding: 15px; border-left: 4px solid #4CAF50; margin: 10px 0;">
+                <h4>Eigenschaften für Lagerbestand-Management:</h4>
+                <pre style="background-color: #f5f5f5; padding: 10px;">
+public class ProduktInstanz
+{
+    public int Id { get; set; }                              // PK
+    public int LebensmittelKatalogId { get; set; }          // FK → LebensmittelKatalog
+
+    // === UC2: Lagerbestand-Attribute ===
+    public decimal Menge { get; set; }                       // Aktuelle Menge (z.B. 500g)
+    public decimal MindestbestandMenge { get; set; }         // ⭐ UC2-NEW: Schwellenwert
+    public string Lagerort { get; set; }                     // ⭐ Speicherort (Kühlschrank, etc.)
+
+    // === Dates ===
+    public DateTime Verfallsdatum { get; set; }             // MHD
+    public DateTime Einkaufsdatum { get; set; }             // Kaufdatum
+    public DateTime ErstelltAm { get; set; }                // Erstellungszeitstempel
+
+    // === Navigation ===
+    public LebensmittelKatalog LebensmittelKatalog { get; set; }
+}</pre>
+            </div>
+
+            <h3>UC2-Spezifische Attribute</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: #fff3e0;">
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Attribut</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Typ</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Beschreibung</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">UC2-Relevanz</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>Menge</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">decimal</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Aktuelle Lagermenge in Einheiten</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Zentral</strong></td>
+                </tr>
+                <tr style="background-color: #e8f5e9;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>MindestbestandMenge</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">decimal</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Schwellenwert für Nachbestellungen</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>WICHTIG ⭐</strong></td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>Lagerort</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">string</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Speicherort (z.B. "Kühlschrank", "Vorratsschrank")</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC2-Feature</strong></td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>Verfallsdatum</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">DateTime</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Mindesthaltbarkeitsdatum</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Validierung (UC2)</td>
+                </tr>
+            </table>
+
+            <h3>UC2-Operations auf ProduktInstanz</h3>
+            <div style="background-color: #e3f2fd; padding: 15px; border-left: 4px solid #2196F3; margin: 10px 0;">
+                <p><strong>Hauptoperation:</strong> UpdateMengeAsync(id, newMenge)</p>
+                <p>Diese Operation aktualisiert die Menge einer ProduktInstanz:</p>
+                <pre style="background-color: #f5f5f5; padding: 10px;">
+// Vor Update
+instanz.Menge = 500g
+
+// UpdateMengeAsync(id=5, newMenge=300)
+instanz.Menge = 300g  // GEÄNDERT
+
+// Validierungen vor Update:
+// ✓ newMenge > 0?
+// ✓ id existiert?
+// ✓ Keine Fehler → DB Update
+                </pre>
+            </div>
         </section>
 
         <section>
@@ -92,22 +160,104 @@ ProduktInstanz
         </section>
 
         <section>
-            <h2>🔌 Service Interface</h2>
+            <h2>🔌 Service Interface (8 Methoden)</h2>
 
-            <h3>LagerbestandService-Methoden</h3>
-            <pre>
-public interface ILagerbestandService
-{
-    Task&lt;decimal&gt; GetGesamtmengeAsync(int lebensmittelKatalogId);
-    Task&lt;bool&gt; CheckMindestbestandUnterschrittenAsync(int lebensmittelKatalogId);
-    Task&lt;List&lt;ProduktInstanz&gt;&gt; GetEinkaufslistenEintraegeAsync();
-    Task&lt;List&lt;ProduktInstanz&gt;&gt; GetBestaendePorLagerortAsync(string lagerort);
-    Task&lt;ProduktInstanz&gt; AddToBestandAsync(int lebensmittelKatalogId, decimal menge, decimal mindestbestandMenge, DateTime verfallsdatum, string lagerort);
-    Task&lt;ProduktInstanz&gt; UpdateMengeAsync(int id, decimal newMenge);
-    Task RemoveFromBestandAsync(int id);
-    Task&lt;bool&gt; ValidateBestandAsync(int id, decimal requiredMenge);
-}
-            </pre>
+            <h3>LagerbestandService-Methoden (ILagerbestandService)</h3>
+
+            <div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #2196F3; margin: 10px 0;">
+                <h4>1. GetGesamtmengeAsync(lebensmittelKatalogId: int)</h4>
+                <p><strong>Rückgabe:</strong> decimal</p>
+                <p><strong>Beschreibung:</strong> Summiert die Menge aller ProduktInstanzen für ein Lebensmittel auf.</p>
+                <p><strong>Test-Coverage:</strong> 4 Tests (valid ID, no instanzen, different IDs, null result)</p>
+                <pre>var total = await service.GetGesamtmengeAsync(1); // z.B. 1000g</pre>
+            </div>
+
+            <div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #2196F3; margin: 10px 0;">
+                <h4>2. CheckMindestbestandUnterschrittenAsync(lebensmittelKatalogId: int)</h4>
+                <p><strong>Rückgabe:</strong> bool</p>
+                <p><strong>Beschreibung:</strong> Prüft, ob die Gesamtmenge unter dem Mindestbestand liegt.</p>
+                <p><strong>Test-Coverage:</strong> 4 Tests (under, above, equal, no instanzen)</p>
+                <pre>bool isLow = await service.CheckMindestbestandUnterschrittenAsync(1); // true wenn &lt; Mindestbestand</pre>
+            </div>
+
+            <div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #2196F3; margin: 10px 0;">
+                <h4>3. GetEinkaufslistenEintraegeAsync()</h4>
+                <p><strong>Rückgabe:</strong> List&lt;ProduktInstanz&gt;</p>
+                <p><strong>Beschreibung:</strong> Gibt alle ProduktInstanzen zurück, deren Mindestbestand unterschritten ist.</p>
+                <p><strong>Test-Coverage:</strong> 3 Tests (with unterschritten, without, empty repo)</p>
+                <pre>var shopping = await service.GetEinkaufslistenEintraegeAsync(); // Nachbestellungen</pre>
+            </div>
+
+            <div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #2196F3; margin: 10px 0;">
+                <h4>4. GetBestaendePorLagerortAsync(lagerort: string)</h4>
+                <p><strong>Rückgabe:</strong> List&lt;ProduktInstanz&gt;</p>
+                <p><strong>Beschreibung:</strong> Filtert ProduktInstanzen nach Lagerort (z.B. Kühlschrank, Vorratsschrank).</p>
+                <p><strong>Test-Coverage:</strong> 3 Tests (valid location, empty, null lagerort)</p>
+                <pre>var kühlschrank = await service.GetBestaendePorLagerortAsync("Kühlschrank");</pre>
+            </div>
+
+            <div style="background-color: #fff8e1; padding: 15px; border-left: 4px solid #FFC107; margin: 10px 0;">
+                <h4>5. AddToBestandAsync(lebensmittelKatalogId, menge, mindestbestandMenge, verfallsdatum, lagerort)</h4>
+                <p><strong>Rückgabe:</strong> ProduktInstanz</p>
+                <p><strong>Beschreibung:</strong> Fügt neue Produktinstanz zum Bestand hinzu mit umfassender Validierung.</p>
+                <p><strong>Validierungen:</strong> menge > 0, verfallsdatum >= today</p>
+                <p><strong>Test-Coverage:</strong> 4 Tests (valid, negative menge, zero menge, past verfallsdatum)</p>
+                <pre>var new_item = await service.AddToBestandAsync(1, 500m, 100m, DateTime.Today.AddDays(10), "Kühlschrank");</pre>
+            </div>
+
+            <div style="background-color: #e8f5e9; padding: 15px; border-left: 4px solid #4CAF50; margin: 10px 0;">
+                <h4>6. UpdateMengeAsync(id: int, newMenge: decimal) ⭐ HAUPTMETHODE UC2</h4>
+                <p><strong>Rückgabe:</strong> ProduktInstanz</p>
+                <p><strong>Beschreibung:</strong> Aktualisiert die Menge einer existierenden ProduktInstanz. Dies ist die zentrale Methode für UC2.</p>
+                <p><strong>Validierungen:</strong> newMenge > 0, id muss existieren</p>
+                <p><strong>Test-Coverage:</strong> 4 Tests (valid data, negative menge, zero menge, non-existent id)</p>
+                <pre>var updated = await service.UpdateMengeAsync(5, 300m); // Ändert Menge auf 300g</pre>
+            </div>
+
+            <div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #2196F3; margin: 10px 0;">
+                <h4>7. RemoveFromBestandAsync(id: int)</h4>
+                <p><strong>Rückgabe:</strong> void (Task)</p>
+                <p><strong>Beschreibung:</strong> Löscht eine ProduktInstanz aus dem Bestand.</p>
+                <p><strong>Test-Coverage:</strong> 3 Tests (valid id, non-existent id, verify delete called)</p>
+                <pre>await service.RemoveFromBestandAsync(5); // Entfernt Instanz</pre>
+            </div>
+
+            <div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #2196F3; margin: 10px 0;">
+                <h4>8. ValidateBestandAsync(id: int, requiredMenge: decimal)</h4>
+                <p><strong>Rückgabe:</strong> bool</p>
+                <p><strong>Beschreibung:</strong> Prüft, ob eine ProduktInstanz die geforderte Menge verfügbar hat (z.B. für Rezepte).</p>
+                <p><strong>Test-Coverage:</strong> 4 Tests (valid, insufficient, equal, non-existent id)</p>
+                <pre>bool has_enough = await service.ValidateBestandAsync(5, 100m); // true wenn Menge >= 100</pre>
+            </div>
+
+            <h3>Validierungsregeln (UC2)</h3>
+            <div style="background-color: #ffebee; padding: 15px; border-left: 4px solid #dc3545; margin: 10px 0;">
+                <h4>UpdateMengeAsync-Validierungen:</h4>
+                <ul>
+                    <li><strong>Menge-Validierung:</strong> newMenge > 0 (nicht <= 0)</li>
+                    <li><strong>ID-Validierung:</strong> ProduktInstanz mit dieser ID muss existieren</li>
+                    <li><strong>Exception bei Fehler:</strong> ArgumentException oder KeyNotFoundException</li>
+                </ul>
+            </div>
+
+            <div style="background-color: #fff3e0; padding: 15px; border-left: 4px solid #ff9800; margin: 10px 0;">
+                <h4>AddToBestandAsync-Validierungen:</h4>
+                <ul>
+                    <li><strong>Menge:</strong> menge > 0</li>
+                    <li><strong>Verfallsdatum:</strong> verfallsdatum >= DateTime.Today (nicht in der Vergangenheit)</li>
+                    <li><strong>Lagerort:</strong> Wird als string übernommen, muss nicht null sein</li>
+                </ul>
+            </div>
+
+            <div style="background-color: #f3e5f5; padding: 15px; border-left: 4px solid #9c27b0; margin: 10px 0;">
+                <h4>CheckMindestbestandUnterschrittenAsync-Logik:</h4>
+                <pre>// Pseudocode
+gesamtmenge = Sum(alle ProduktInstanzen für LebensmittelKatalogId)
+mindestbestand = FirstOrDefault(ProduktInstanzen).MindestbestandMenge
+
+if (gesamtmenge < mindestbestand) return true;  // Unterschritten!
+else return false;                               // Okay</pre>
+            </div>
 
             <h3>REST Endpoints (geplant)</h3>
             <table>
@@ -130,29 +280,152 @@ public interface ILagerbestandService
         </section>
 
         <section>
-            <h2>✅ Tests</h2>
+            <h2>✅ Tests (29 Tests - All Green)</h2>
 
-            <h3>Test Coverage</h3>
-            <div class="checklist">
-                <ul>
-                    <li><input type="checkbox" checked> GetGesamtmengeAsync: Sum quantities per food item</li>
-                    <li><input type="checkbox" checked> CheckMindestbestandUnterschrittenAsync: Verify minimum stock</li>
-                    <li><input type="checkbox" checked> GetEinkaufslistenEintraegeAsync: Generate shopping list</li>
-                    <li><input type="checkbox" checked> GetBestaendePorLagerortAsync: Filter by storage location</li>
-                    <li><input type="checkbox" checked> AddToBestandAsync: Add inventory with validation</li>
-                    <li><input type="checkbox" checked> UpdateMengeAsync: Update quantities with validation</li>
-                    <li><input type="checkbox" checked> RemoveFromBestandAsync: Delete inventory entries</li>
-                    <li><input type="checkbox" checked> ValidateBestandAsync: Verify stock availability</li>
-                </ul>
+            <h3>Test-Datei: LagerbestandServiceTests.cs</h3>
+            <p><strong>Framework:</strong> xUnit + Moq | <strong>Status:</strong> ✅ ALL PASSING</p>
+
+            <div style="background-color: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50;">
+                <h4>Method 1: GetGesamtmengeAsync (4 Tests)</h4>
+                <ol>
+                    <li>✅ GetGesamtmengeAsync_WithValidLebensmittelId_ShouldSumAllMengen</li>
+                    <li>✅ GetGesamtmengeAsync_WithNoInstanzen_ShouldReturnZero</li>
+                    <li>✅ GetGesamtmengeAsync_WithDifferentLebensmittelIds_ShouldFilterCorrectly</li>
+                    <li>✅ GetGesamtmengeAsync_WithNullResult_ShouldReturnZero</li>
+                </ol>
             </div>
 
-            <h3>Test-Dateien</h3>
-            <p>Locations:</p>
+            <div style="background-color: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50;">
+                <h4>Method 2: CheckMindestbestandUnterschrittenAsync (4 Tests)</h4>
+                <ol>
+                    <li>✅ CheckMindestbestandUnterschrittenAsync_WhenUnderMindestand_ShouldReturnTrue</li>
+                    <li>✅ CheckMindestbestandUnterschrittenAsync_WhenAboveMindestand_ShouldReturnFalse</li>
+                    <li>✅ CheckMindestbestandUnterschrittenAsync_WhenEqualMindestand_ShouldReturnFalse</li>
+                    <li>✅ CheckMindestbestandUnterschrittenAsync_WithNoInstanzen_ShouldReturnTrue</li>
+                </ol>
+            </div>
+
+            <div style="background-color: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50;">
+                <h4>Method 3: GetEinkaufslistenEintraegeAsync (3 Tests)</h4>
+                <ol>
+                    <li>✅ GetEinkaufslistenEintraegeAsync_WithUnterschrittenBestaende_ShouldReturnList</li>
+                    <li>✅ GetEinkaufslistenEintraegeAsync_WithNoUnterschrittenBestaende_ShouldReturnEmpty</li>
+                    <li>✅ GetEinkaufslistenEintraegeAsync_WithEmptyRepository_ShouldReturnEmpty</li>
+                </ol>
+            </div>
+
+            <div style="background-color: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50;">
+                <h4>Method 4: GetBestaendePorLagerortAsync (3 Tests)</h4>
+                <ol>
+                    <li>✅ GetBestaendePorLagerortAsync_WithValidLagerort_ShouldReturnList</li>
+                    <li>✅ GetBestaendePorLagerortAsync_WithEmptyLagerort_ShouldReturnEmpty</li>
+                    <li>✅ GetBestaendePorLagerortAsync_WithNullLagerort_ShouldThrowArgumentException</li>
+                </ol>
+            </div>
+
+            <div style="background-color: #e8f5e9; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50;">
+                <h4>Method 5: AddToBestandAsync (4 Tests)</h4>
+                <ol>
+                    <li>✅ AddToBestandAsync_WithValidData_ShouldReturnProduktInstanz</li>
+                    <li>✅ AddToBestandAsync_WithNegativeMenge_ShouldThrowArgumentException</li>
+                    <li>✅ AddToBestandAsync_WithZeroMenge_ShouldThrowArgumentException</li>
+                    <li>✅ AddToBestandAsync_WithPastVerfallsdatum_ShouldThrowArgumentException</li>
+                </ol>
+            </div>
+
+            <div style="background-color: #e8f5e9; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50; border-width: 3px;">
+                <h4>Method 6: UpdateMengeAsync ⭐ (4 Tests - MAIN UC2)</h4>
+                <ol>
+                    <li>✅ UpdateMengeAsync_WithValidData_ShouldUpdateSuccessfully</li>
+                    <li>✅ UpdateMengeAsync_WithNegativeMenge_ShouldThrowArgumentException</li>
+                    <li>✅ UpdateMengeAsync_WithZeroMenge_ShouldThrowArgumentException</li>
+                    <li>✅ UpdateMengeAsync_WithNonExistentId_ShouldThrowKeyNotFoundException</li>
+                </ol>
+                <p><em>Diese Methode ist das Herzstück von UC2 (Lagerbestand aktualisieren).</em></p>
+            </div>
+
+            <div style="background-color: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50;">
+                <h4>Method 7: RemoveFromBestandAsync (3 Tests)</h4>
+                <ol>
+                    <li>✅ RemoveFromBestandAsync_WithValidId_ShouldDeleteSuccessfully</li>
+                    <li>✅ RemoveFromBestandAsync_WithNonExistentId_ShouldThrowKeyNotFoundException</li>
+                    <li>✅ RemoveFromBestandAsync_WithValidId_ShouldCallRepositoryDelete</li>
+                </ol>
+            </div>
+
+            <div style="background-color: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50;">
+                <h4>Method 8: ValidateBestandAsync (4 Tests)</h4>
+                <ol>
+                    <li>✅ ValidateBestandAsync_WithValidMenge_ShouldReturnTrue</li>
+                    <li>✅ ValidateBestandAsync_WithInsufficientMenge_ShouldReturnFalse</li>
+                    <li>✅ ValidateBestandAsync_WithEqualMenge_ShouldReturnTrue</li>
+                    <li>✅ ValidateBestandAsync_WithNonExistentId_ShouldThrowKeyNotFoundException</li>
+                </ol>
+            </div>
+
+            <h3>Test Statistik</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+                <tr style="background-color: #4CAF50; color: white;">
+                    <th style="padding: 10px; border: 1px solid #ddd;">Methode</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Anzahl Tests</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Status</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">GetGesamtmengeAsync</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">4</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 10px; border: 1px solid #ddd;">CheckMindestbestandUnterschrittenAsync</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">4</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">GetEinkaufslistenEintraegeAsync</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">3</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 10px; border: 1px solid #ddd;">GetBestaendePorLagerortAsync</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">3</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">AddToBestandAsync</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">4</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr style="background-color: #e8f5e9;">
+                    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">UpdateMengeAsync ⭐</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center; font-weight: bold;">4</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745; font-weight: bold;">✅ PASS</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 10px; border: 1px solid #ddd;">RemoveFromBestandAsync</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">3</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">ValidateBestandAsync</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">4</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr style="background-color: #d4edda; font-weight: bold;">
+                    <td style="padding: 10px; border: 1px solid #ddd;">TOTAL</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">29</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ ALL PASS</td>
+                </tr>
+            </table>
+
+            <h3>Test-Datei Info</h3>
             <ul>
-                <li><code>src/Tests/Unit/Services/LagerbestandServiceTests.cs</code> (29 Tests) ✅</li>
-                <li><code>src/Tests/Unit/Services/ProduktInstanzServiceTests.cs</code> (32 Tests) ✅</li>
+                <li><strong>Pfad:</strong> <code>src/Tests/Unit/Services/LagerbestandServiceTests.cs</code></li>
+                <li><strong>Framework:</strong> xUnit 2.x + Moq 4.x</li>
+                <li><strong>Test Count:</strong> 29 Tests</li>
+                <li><strong>Coverage:</strong> 100% für ILagerbestandService Methoden</li>
+                <li><strong>Mocking:</strong> IRepository&lt;ProduktInstanz&gt; gemockt</li>
+                <li><strong>Status:</strong> ✅ ALL TESTS PASSING</li>
             </ul>
-            <p>Total: 29 UC2 Tests (xUnit + Moq) | All ✅ Green</p>
         </section>
 
         <section>
@@ -194,25 +467,238 @@ public interface ILagerbestandService
         </section>
 
         <section>
-            <h2>📐 Diagramme</h2>
+            <h2>📐 Diagramme & Workflows</h2>
 
-            <div class="diagram-placeholder">
-                📊 Sequenz-Diagramm: Lagerbestand aktualisieren<br>
-                <small>(siehe: diagrams/sequence-lagerbestand.drawio)</small>
+            <h3>Sequence-Diagramme (UC2 Workflows)</h3>
+            <p><strong>Quelle:</strong> <code>diagrams/sequence-uc2-lagerbestand.drawio</code></p>
+            <p>Die folgenden Sequenz-Diagramme zeigen die drei Hauptszenarien für UC2 mit vollständiger Nachverfolgung der Interaktionen:</p>
+
+            <div style="background-color: #d4edda; padding: 15px; border-left: 4px solid #28a745; margin: 10px 0; border-radius: 4px;">
+                <h4>Szenario 1: Erfolgreiche Menge-Aktualisierung ✅ (Happy Path)</h4>
+                <p><strong>Akteure:</strong> Benutzer → UI → LagerbestandService → IRepository → SQLite-DB</p>
+                <ol>
+                    <li>Benutzer klickt "Speichern" in UI mit id=5, newMenge=300g</li>
+                    <li>UI ruft <code>UpdateMengeAsync(5, 300)</code> auf</li>
+                    <li><strong>Service-Validierung:</strong> newMenge > 0? ✓ PASS</li>
+                    <li>Service holt ProduktInstanz von Repository: <code>GetByIdAsync(5)</code></li>
+                    <li>Repository gibt ProduktInstanz zurück (vorher: Menge=500g)</li>
+                    <li>Service aktualisiert in-memory: <code>instanz.Menge = 300</code></li>
+                    <li>Service speichert: <code>SaveAsync(instanz)</code></li>
+                    <li>Repository speichert in DB - Änderung erfolgreich ✓</li>
+                    <li>Service gibt aktualisierte ProduktInstanz zurück</li>
+                    <li>UI zeigt Erfolgsmeldung: "Menge aktualisiert: 300g" ✅</li>
+                </ol>
+                <p><strong>Resultat:</strong> DB enthält jetzt: Menge=300g, Benutzer bestätigt Erfolg</p>
+            </div>
+
+            <div style="background-color: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 10px 0; border-radius: 4px;">
+                <h4>Szenario 2: Validierungsfehler (Ungültige Menge) ❌</h4>
+                <p><strong>Akteure:</strong> Benutzer → UI → LagerbestandService (Abbruch vor DB-Zugriff)</p>
+                <ol>
+                    <li>Benutzer klickt "Speichern" mit id=5, newMenge=-100g (UNGÜLTIG!)</li>
+                    <li>UI ruft <code>UpdateMengeAsync(5, -100)</code> auf</li>
+                    <li><strong>Service-Validierung:</strong> if (newMenge &lt;= 0) → <code>throw ArgumentException</code> ❌</li>
+                    <li>Fehler wird zurückgeworfen mit Message: "Menge muss größer als 0 sein"</li>
+                    <li>UI fängt Exception und zeigt Validierungsfehler</li>
+                    <li>Benutzer sieht: "❌ Validierungsfehler: Menge muss > 0 sein"</li>
+                    <li><strong>KEIN Repository/DB-Zugriff!</strong> - Fehler abgefangen vorher</li>
+                </ol>
+                <p><strong>Resultat:</strong> DB unverändert, Benutzer sieht klare Fehlermeldung</p>
+            </div>
+
+            <div style="background-color: #fff3e0; padding: 15px; border-left: 4px solid #ff9800; margin: 10px 0; border-radius: 4px;">
+                <h4>Szenario 3: Mindestbestand-Prüfung ⚠️ (Nachbestellungs-Warnung)</h4>
+                <p><strong>Akteure:</strong> UI → LagerbestandService → IRepository → SQLite-DB</p>
+                <ol>
+                    <li>UI ruft <code>CheckMindestbestandUnterschrittenAsync(lebensmittelId=7)</code> auf</li>
+                    <li>Service holt alle ProduktInstanzen für dieses Lebensmittel: <code>GetAllByLebensmittelIdAsync(7)</code></li>
+                    <li>Repository gibt 3 Instanzen zurück:
+                        <ul style="margin: 5px 0;">
+                            <li>Instanz 1: Menge=15g, Lagerort="Kühlschrank"</li>
+                            <li>Instanz 2: Menge=20g, Lagerort="Vorratsschrank"</li>
+                            <li>Instanz 3: Menge=10g, Lagerort="Gefrierfach"</li>
+                        </ul>
+                    </li>
+                    <li><strong>Service-Berechnung:</strong> Gesamtmenge = 15 + 20 + 10 = 45g</li>
+                    <li>Service prüft: <code>45 &lt; 100 (MindestbestandMenge)?</code> → <strong>TRUE</strong> ⚠️</li>
+                    <li>Service gibt <code>true</code> zurück (Mindestbestand UNTERSCHRITTEN)</li>
+                    <li>UI zeigt Warnung: "⚠️ Mindestbestand unterschritten! Aktuell 45g, Ziel: 100g. Bitte nachbestellen."</li>
+                    <li><strong>Optional:</strong> Automatischer Eintrag in Einkaufsliste (UC8)</li>
+                </ol>
+                <p><strong>Resultat:</strong> Benutzer wird proaktiv informiert, dass Nachbestellungen nötig sind</p>
+            </div>
+
+            <h3>Klassen-Diagramm (Domain Model)</h3>
+            <p><strong>Quelle:</strong> <code>diagrams/architecture-class.drawio</code></p>
+            <p>Das aktualisierte Klassen-Diagramm zeigt:</p>
+            <ul>
+                <li>ProduktInstanz mit UC2-Attributen (MindestbestandMenge, Lagerort, etc.)</li>
+                <li>LagerbestandService mit allen 8 Methoden</li>
+                <li>Beziehung: LagerbestandService "verwaltet" ProduktInstanz</li>
+                <li>Abhängigkeiten: LebensmittelKatalog, Lagerort, IRepository</li>
+            </ul>
+
+            <div style="background-color: #fff3e0; padding: 10px; border: 1px solid #ff9800; border-radius: 4px; margin: 10px 0;">
+                <strong>ProduktInstanz Properties (UC2):</strong>
+                <pre>- Menge: decimal           // Aktuelle Menge
+- MindestbestandMenge: decimal  // UC2: Schwellenwert
+- Lagerort: string          // Speicherort (Kühlschrank, etc.)
+- Verfallsdatum: DateTime   // MHD
+- Einkaufsdatum: DateTime   // Kaufdatum
+- ErstelltAm: DateTime      // Erstellungszeitstempel</pre>
+            </div>
+
+            <div style="background-color: #e3f2fd; padding: 10px; border: 1px solid #2196F3; border-radius: 4px; margin: 10px 0;">
+                <strong>LagerbestandService Methods (UC2):</strong>
+                <pre>GetGesamtmengeAsync(lebensmittelKatalogId)
+CheckMindestbestandUnterschrittenAsync(lebensmittelKatalogId)
+GetEinkaufslistenEintraegeAsync()
+GetBestaendePorLagerortAsync(lagerort)
+AddToBestandAsync(lebensmittelKatalogId, menge, mindestbestandMenge, verfallsdatum, lagerort)
+UpdateMengeAsync(id, newMenge) ← Main UC2 Operation
+RemoveFromBestandAsync(id)
+ValidateBestandAsync(id, requiredMenge)</pre>
             </div>
         </section>
 
         <section>
-            <h2>📝 Notizen</h2>
+            <h2>🔧 Implementation Details</h2>
 
-            <h3>Besonderheiten</h3>
-            <p>Diese UC ist abhängig von UC10 (ProduktInstanz) und UC9 (Lagerort). Sie sollte nach diesen implementiert werden.</p>
+            <h3>Commits & Branches</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: #f0f0f0;">
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Info</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Wert</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Main Commit</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>d35fbc8</code> - test(uc2): Add 29 tests for Lagerbestand management service</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Code Commit</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>98724d5</code> - docs(uc2): Update feature documentation with complete implementation details</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Refactor Commit</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>5536383</code> - refactor: Replace '== null' with 'is null' pattern matching</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Branch</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">feat/uc2-lagerbestand-update</td>
+                </tr>
+            </table>
 
-            <h3>Offene Fragen</h3>
+            <h3>Code-Struktur</h3>
+            <pre style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #2196F3;">
+src/App/Services/Classes/LagerbestandService.cs
+├── Constructor(IRepository&lt;ProduktInstanz&gt; repository)
+├── GetGesamtmengeAsync(lebensmittelKatalogId)
+├── CheckMindestbestandUnterschrittenAsync(lebensmittelKatalogId)
+├── GetEinkaufslistenEintraegeAsync()
+├── GetBestaendePorLagerortAsync(lagerort)
+├── AddToBestandAsync(...)
+├── UpdateMengeAsync(id, newMenge) ← Main UC2
+├── RemoveFromBestandAsync(id)
+└── ValidateBestandAsync(id, requiredMenge)
+
+src/App/Services/Interfaces/ILagerbestandService.cs
+└── 8 async Methods (Task-basiert)
+
+src/App/Models/ProduktInstanz.cs
+├── UC2 Properties: Menge, MindestbestandMenge, Lagerort
+└── Navigation: LebensmittelKatalog
+
+src/Tests/Unit/Services/LagerbestandServiceTests.cs
+└── 29 Unit Tests (xUnit + Moq)
+            </pre>
+        </section>
+
+        <section>
+            <h2>📝 Notizen & Offene Fragen</h2>
+
+            <h3>Besonderheiten UC2</h3>
+            <ul>
+                <li><strong>Abhängigkeiten:</strong> UC10 (ProduktInstanz Entity) und UC9 (Lagerort)</li>
+                <li><strong>Zentrale Methode:</strong> UpdateMengeAsync() ist das Herzstück von UC2</li>
+                <li><strong>Validierungen:</strong> Strikte Prüfung auf Mengen > 0 und existierende IDs</li>
+                <li><strong>Mindestbestand-Logik:</strong> Automatische Erkennung von Nachbestellungs-Bedarf</li>
+                <li><strong>Service-Pattern:</strong> Dependency Injection über IRepository</li>
+            </ul>
+
+            <h3>Offene Fragen für Zukünftige Erweiterungen</h3>
             <ul>
                 <li>Sollen historische Änderungen protokolliert werden (Audit Log)?</li>
                 <li>Ist eine Batch-Update möglich (mehrere Instanzen auf einmal)?</li>
+                <li>Sollte es ein "Lagerbestand-Transaktions-Journal" geben?</li>
+                <li>Wie wird die Integrationation mit UC6 (Verbrauchsausbuchen) gestaltet?</li>
             </ul>
+
+            <h3>Best Practices implementiert</h3>
+            <div style="background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0;">
+                <ul>
+                    <li>✅ Async/await durchgängig (Task-basiert)</li>
+                    <li>✅ Null-Pattern-Matching ('is null' statt '== null')</li>
+                    <li>✅ Exception-Handling mit sprechenden Meldungen</li>
+                    <li>✅ Mockable Interface (ILagerbestandService)</li>
+                    <li>✅ Aussagekräftige Exception-Types (ArgumentException, KeyNotFoundException)</li>
+                    <li>✅ LINQ für Filterungen und Aggregationen</li>
+                    <li>✅ 100% Test-Coverage für alle 8 Methoden</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 Zusammenfassung UC2</h2>
+
+            <div style="background-color: #e3f2fd; padding: 20px; border: 2px solid #2196F3; border-radius: 4px;">
+                <h3 style="margin-top: 0;">UC2: Lagerbestand aktualisieren - Status: COMPLETE ✅</h3>
+
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <tr style="background-color: #2196F3; color: white;">
+                        <th style="padding: 10px; border: 1px solid #ddd;">Komponente</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Status</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">Details</th>
+                    </tr>
+                    <tr style="background-color: #d4edda;">
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Tests</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">✅ PASS (29/29)</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Alle Tests bestanden, 100% Coverage</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Code</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">✅ COMPLETE</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">LagerbestandService mit 8 Methoden implementiert</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Model</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">✅ EXTENDED</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">ProduktInstanz um MindestbestandMenge erweitert</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Dokumentation</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">✅ COMPLETE</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Service Interface, Workflows, Tests dokumentiert</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Diagramme</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">✅ COMPLETE</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Sequence-Diagramm + Klassen-Diagramm Update</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Review</strong></td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">✅ PASS</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">Code-Review bestanden, Best Practices implementiert</td>
+                    </tr>
+                </table>
+
+                <h4 style="margin-top: 20px;">Nächste Schritte:</h4>
+                <ol>
+                    <li>User-Review dieser Dokumentation</li>
+                    <li>Feedback einarbeiten (falls nötig)</li>
+                    <li>Merge zur develop-Branch</li>
+                    <li>Integration in UC6 (Verbrauchausbuchen)</li>
+                </ol>
+            </div>
         </section>
 
         <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">

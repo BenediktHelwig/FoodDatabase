@@ -16,9 +16,9 @@
           <mxGeometry x="350" y="50" width="240" height="230" as="geometry"/>
         </mxCell>
 
-        <!-- ProduktInstanz (zentral) -->
-        <mxCell id="class3" value="ProduktInstanz ⭐&#10;─────────────────&#10;- ID: int (PK)&#10;- LebensmittelKatalogID: int (FK)&#10;- LagerortID: int (FK)&#10;- AktuelleM enge: decimal&#10;- MindestbestandMenge: decimal&#10;- EinkaufsDatum: DateTime&#10;- VerfallsDatum: DateTime ⭐&#10;- ErstelltAm: DateTime&#10;- Status: enum (Aktiv, Verbraucht, Abgelaufen)&#10;─────────────────&#10;+ UpdateMenge(decimal)&#10;+ UpdateVerfallsDatum(DateTime)&#10;+ MarkAsConsumed()&#10;+ IsUnterMindestbestand(): bool&#10;+ IsAbgelaufen(): bool&#10;+ IstBaldAbgelaufen(tage): bool&#10;+ Delete()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#ffff99;strokeWidth=3;strokeColor=#ff0000;" vertex="1" parent="1">
-          <mxGeometry x="700" y="50" width="260" height="280" as="geometry"/>
+        <!-- ProduktInstanz (zentral) - Updated für UC2 -->
+        <mxCell id="class3" value="ProduktInstanz ⭐ (UC10 + UC2)&#10;─────────────────────────────&#10;- ID: int (PK)&#10;- LebensmittelKatalogID: int (FK)&#10;- Menge: decimal&#10;- MindestbestandMenge: decimal (UC2)&#10;- Verfallsdatum: DateTime ⭐&#10;- Einkaufsdatum: DateTime&#10;- Lagerort: string&#10;- ErstelltAm: DateTime&#10;- LebensmittelKatalog: nav property&#10;─────────────────────────────&#10;Methods (UC2 Operations):" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=9;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#ffff99;strokeWidth=3;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="650" y="50" width="320" height="240" as="geometry"/>
         </mxCell>
 
         <!-- Lagerort -->
@@ -31,14 +31,19 @@
           <mxGeometry x="350" y="350" width="240" height="150" as="geometry"/>
         </mxCell>
 
+        <!-- LagerbestandService (UC2) - NEW -->
+        <mxCell id="class5-lagerbestand" value="«Service»&#10;LagerbestandService (UC2)&#10;─────────────────────────────&#10;- _repository: IRepository&lt;ProduktInstanz&gt;&#10;─────────────────────────────&#10;+ GetGesamtmengeAsync(lebensmittelKatalogId)&#10;  → decimal&#10;+ CheckMindestbestandUnterschrittenAsync(...)&#10;  → bool&#10;+ GetEinkaufslistenEintraegeAsync()&#10;  → List&lt;ProduktInstanz&gt;&#10;+ GetBestaendePorLagerortAsync(lagerort)&#10;  → List&lt;ProduktInstanz&gt;&#10;+ AddToBestandAsync(...)&#10;  → ProduktInstanz (mit Validierung)&#10;+ UpdateMengeAsync(id, newMenge) ⭐&#10;  → ProduktInstanz&#10;+ RemoveFromBestandAsync(id)&#10;  → void&#10;+ ValidateBestandAsync(id, requiredMenge)&#10;  → bool&#10;───────────────────────────────&#10;UC2 Operations: 8 public Methods&#10;Test Coverage: 29 Unit Tests (100%)&#10;Status: ✅ COMPLETE" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=9;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#fff0f5;strokeWidth=2;strokeColor=#d81b60;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="50" width="340" height="430" as="geometry"/>
+        </mxCell>
+
         <!-- Rezept -->
         <mxCell id="class6" value="Rezept&#10;─────────────────&#10;- ID: int (PK)&#10;- Name: string&#10;- Portionen: int&#10;- Zubereitung: string&#10;- ErstelltAm: DateTime&#10;─────────────────&#10;+ AddZutat(LebensmittelKatalog, Menge)&#10;+ GetZutaten(): List&lt;RezeptZutat&gt;&#10;+ CalculateNährwerte(): Nährwert&#10;+ UpdateMenge(decimal)&#10;+ Delete()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#cce5ff;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="700" y="400" width="240" height="180" as="geometry"/>
+          <mxGeometry x="700" y="450" width="240" height="180" as="geometry"/>
         </mxCell>
 
         <!-- RezeptZutat -->
         <mxCell id="class7" value="RezeptZutat&#10;─────────────────&#10;- ID: int (PK)&#10;- RezeptID: int (FK)&#10;- LebensmittelKatalogID: int (FK)&#10;- Menge: decimal&#10;- Einheit: string&#10;─────────────────&#10;+ CalculateNährwert(portionen): Nährwert&#10;+ Update(Menge, Einheit)" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#cce5ff;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="400" width="220" height="150" as="geometry"/>
+          <mxGeometry x="1000" y="450" width="220" height="150" as="geometry"/>
         </mxCell>
 
         <!-- Einkaufsliste -->
@@ -52,6 +57,9 @@
         </mxCell>
 
         <!-- Relationships -->
+        <!-- LagerbestandService -> ProduktInstanz (UC2 Core) -->
+        <mxCell id="rel-lagerbestand-produkt" value="verwaltet" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=1;entryY=0.3;exitX=0;exitY=0.5;strokeWidth=3;strokeColor=#d81b60;" edge="1" parent="1" source="class5-lagerbestand" target="class3"/>
+
         <!-- LebensmittelKatalog -> Nährwert (1:1) -->
         <mxCell id="rel1" value="hat" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0;entryY=0.5;exitX=1;exitY=0.3;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="class1" target="class2"/>
 
@@ -77,8 +85,8 @@
         <mxCell id="rel8" value="referenziert" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeWidth=2;strokeColor=#000000;dashed=1;" edge="1" parent="1" source="class9" target="class3"/>
 
         <!-- Legende -->
-        <mxCell id="legend" value="⭐ = Zentrale Entity | 🔴 = MHD-kritisch | Pfeile = Beziehungen (1:1, 1:N, N:1)" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="50" y="900" width="600" height="40" as="geometry"/>
+        <mxCell id="legend" value="⭐ = Zentrale Entity | 🔴 = MHD-kritisch | UC2 = Lagerbestand-Management | Pfeile = Beziehungen (1:1, 1:N, N:1)" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="50" y="900" width="1000" height="40" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>

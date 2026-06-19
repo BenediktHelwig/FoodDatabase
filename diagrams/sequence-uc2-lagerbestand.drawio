@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-06-19" agent="5.0" version="21.5.0" type="device">
+  <diagram name="UC2 Sequence Diagrams - Lagerbestand" id="sequence-uc2">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="UC2: Sequence Diagramme - Lagerbestand aktualisieren" style="text;html=1;align=center;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="0" y="10" width="2000" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- SCENARIO 1: UpdateMengeAsync Success -->
+        <mxCell id="scenario1-title" value="Szenario 1: Erfolgreiche Menge-Aktualisierung (Happy Path)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#28a745;backgroundColor=#d4edda;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="900" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 1: Participants -->
+        <mxCell id="s1-actor" value="Benutzer" style="shape=umlActor;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="30" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-ui" value="UI (Blazor)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#cce5ff;strokeColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="130" y="120" width="80" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-service" value="LagerbestandService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#fff0f5;strokeColor=#d81b60;" vertex="1" parent="1">
+          <mxGeometry x="270" y="120" width="100" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-repo" value="IRepository (DB)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#e1d5e7;strokeColor=#9c27b0;" vertex="1" parent="1">
+          <mxGeometry x="430" y="120" width="80" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 1: Lifelines -->
+        <mxCell id="s1-line-ui" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#0066cc;" edge="1" parent="1">
+          <mxGeometry x="170" y="160" width="1" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-line-service" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#d81b60;" edge="1" parent="1">
+          <mxGeometry x="320" y="160" width="1" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-line-repo" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#9c27b0;" edge="1" parent="1">
+          <mxGeometry x="470" y="160" width="1" height="280" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="Sequence UC2: UpdateMengeAsync Happy Path - Service validates, Repository fetches, updates, and saves to DB" style="text;html=1;align=left;verticalAlign=top;fontSize=9;fontStyle=0;fontColor=#666;backgroundColor=#f5f5f5;border=1;borderColor:#ddd;" vertex="1" parent="1">
+          <mxGeometry x="20" y="500" width="900" height="30" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
