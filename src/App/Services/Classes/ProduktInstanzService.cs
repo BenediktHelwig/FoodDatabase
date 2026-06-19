@@ -115,7 +115,7 @@ namespace FoodDatabase.App.Services.Classes
                 throw new ArgumentException($"Ungültiger Lagerort: {lagerort}");
 
             var instanz = await _repository.GetByIdAsync(id);
-            if (instanz == null)
+            if (instanz is null)
                 throw new KeyNotFoundException($"ProduktInstanz mit ID {id} nicht gefunden.");
 
             instanz.Menge = menge;
@@ -141,7 +141,7 @@ namespace FoodDatabase.App.Services.Classes
                 throw new ArgumentException("ID muss größer als 0 sein.");
 
             var instanz = await _repository.GetByIdAsync(id);
-            if (instanz == null)
+            if (instanz is null)
                 throw new KeyNotFoundException($"ProduktInstanz mit ID {id} nicht gefunden.");
 
             var tage = (instanz.Verfallsdatum - DateTime.Today).Days;

@@ -19,7 +19,7 @@ namespace FoodDatabase.App.Services.Classes
         public async Task<decimal> GetGesamtmengeAsync(int lebensmittelKatalogId)
         {
             var allInstanzen = await _repository.GetAllAsync();
-            if (allInstanzen == null)
+            if (allInstanzen is null)
                 throw new NullReferenceException(nameof(allInstanzen));
 
             return allInstanzen
@@ -30,7 +30,7 @@ namespace FoodDatabase.App.Services.Classes
         public async Task<bool> CheckMindestbestandUnterschrittenAsync(int lebensmittelKatalogId)
         {
             var allInstanzen = await _repository.GetAllAsync();
-            if (allInstanzen == null || !allInstanzen.Any())
+            if (allInstanzen is null || !allInstanzen.Any())
                 return true;
 
             var instanzenFuerLebensmittel = allInstanzen
@@ -49,7 +49,7 @@ namespace FoodDatabase.App.Services.Classes
         public async Task<List<ProduktInstanz>> GetEinkaufslistenEintraegeAsync()
         {
             var allInstanzen = await _repository.GetAllAsync();
-            if (allInstanzen == null)
+            if (allInstanzen is null)
                 return new List<ProduktInstanz>();
 
             var grouped = allInstanzen
@@ -74,7 +74,7 @@ namespace FoodDatabase.App.Services.Classes
                 throw new ArgumentException("Lagerort darf nicht null oder leer sein.", nameof(lagerort));
 
             var allInstanzen = await _repository.GetAllAsync();
-            if (allInstanzen == null)
+            if (allInstanzen is null)
                 return new List<ProduktInstanz>();
 
             return allInstanzen
@@ -110,7 +110,7 @@ namespace FoodDatabase.App.Services.Classes
                 throw new ArgumentException("Menge muss größer als 0 sein.", nameof(newMenge));
 
             var instanz = await _repository.GetByIdAsync(id);
-            if (instanz == null)
+            if (instanz is null)
                 throw new KeyNotFoundException($"ProduktInstanz mit ID {id} nicht gefunden.");
 
             instanz.Menge = newMenge;
@@ -120,7 +120,7 @@ namespace FoodDatabase.App.Services.Classes
         public async Task RemoveFromBestandAsync(int id)
         {
             var instanz = await _repository.GetByIdAsync(id);
-            if (instanz == null)
+            if (instanz is null)
                 throw new KeyNotFoundException($"ProduktInstanz mit ID {id} nicht gefunden.");
 
             await _repository.DeleteAsync(id);
@@ -129,7 +129,7 @@ namespace FoodDatabase.App.Services.Classes
         public async Task<bool> ValidateBestandAsync(int id, decimal requiredMenge)
         {
             var instanz = await _repository.GetByIdAsync(id);
-            if (instanz == null)
+            if (instanz is null)
                 throw new KeyNotFoundException($"ProduktInstanz mit ID {id} nicht gefunden.");
 
             return instanz.Menge >= requiredMenge;

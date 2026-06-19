@@ -78,7 +78,7 @@ namespace FoodDatabase.App.Services.Classes
 
         private void ValidateLebensmittel(LebensmittelKatalog lebensmittel)
         {
-            if (lebensmittel == null)
+            if (lebensmittel is null)
                 throw new ArgumentNullException(nameof(lebensmittel));
 
             if (string.IsNullOrWhiteSpace(lebensmittel.Name))
