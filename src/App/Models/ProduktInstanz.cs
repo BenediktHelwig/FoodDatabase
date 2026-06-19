@@ -7,6 +7,7 @@ namespace FoodDatabase.App.Models
         public int Id { get; set; }
         public int LebensmittelKatalogId { get; set; }
         public decimal Menge { get; set; }
+        public decimal MindestbestandMenge { get; set; }
         public DateTime Verfallsdatum { get; set; }
         public DateTime Einkaufsdatum { get; set; }
         public string Lagerort { get; set; }
