@@ -1,8 +1,8 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-06-19 (Update: Doc-Agent-Workflow etabliert + UC1/UC2/UC10 Dokumentation vollständig)  
-**Status**: UC1 & UC10 & UC2 gemergt | Tests 80/80 grün ✅ | Dokumentation 100% vollständig & aktuell ✅ | 6 Sequence-Diagramme ✅  
-**Nächster Schritt**: UC3 oder UC6 implementieren mit vollständigem Doc-Agent-Workflow | Alle 3 UCs PRODUCTION-READY
+**Datum**: 2026-06-20 (Update: Doc-Agent Workflow REPARIERT + Definition-of-Done erneuert)  
+**Status**: UC1 & UC10 & UC2 gemergt | Tests 80/80 grün ✅ | Dokumentation KONSISTENT & aktuell ✅ | 4-Teil-Dokumentation MANDATORY  
+**Nächster Schritt**: UC3 oder UC6 implementieren mit VERVOLLSTÄNDIGTEM Doc-Agent-Workflow | Alle 3 UCs PRODUCTION-READY
 
 ---
 
@@ -213,24 +213,25 @@ FoodDatabase/
 
 ---
 
-## 📊 Git-Status (AUDIT COMPLETE + DOC-AGENT WORKFLOW ESTABLISHED ✅)
+## 📊 Git-Status (DOC-AGENT WORKFLOW REPARIERT + DEFINITION-OF-DONE ERNEUERT ✅)
 
 ```
 Branch: master
-Total Commits: 25
-Commits Ahead of Origin: 13
+Total Commits: 26
+Commits Ahead of Origin: 14
 Working Tree: CLEAN ✅
 Test Status: 80/80 GRÜN ✅
-Documentation Status: 100% COMPLETE (UC1/UC2/UC10) ✅
+Documentation Status: 100% KONSISTENT (UC1/UC2/UC10) ✅
 Sequence Diagrams: 3/3 Complete ✅
 Validierungs-Reports: 3/3 Complete ✅
+Doc-Agent Workflow: 4-Teil-Mandatory (Code + Features HTML + Overview + Diagrams) ✅
 
 Last Commits (Top 5):
+  - 929389d docs: Fix UC2/UC10 status inconsistencies and establish 4-part Doc-Agent Definition-of-Done
   - b406f2e docs(uc1,uc10): Add comprehensive documentation with sequence diagrams and validation audits
   - 6672d7f docs(uc2): Add comprehensive UC2 documentation with sequence diagrams and validation
   - 5536383 refactor: Replace '== null' with 'is null' pattern matching
   - 98724d5 docs(uc2): Update feature documentation with complete implementation details
-  - d35fbc8 test(uc2): Add 29 tests for Lagerbestand management service
 ```
 
 ---
@@ -255,42 +256,49 @@ dotnet test FoodDatabase.sln
 
 ## 💪 Momentum & Status
 
-**Status**: ✅ Infrastruktur stabil | ✅ UC1 & UC10 vollständig | ✅ Tests 51/51 grün | ✅ Dokumentation 100% | ✅ Workflow bewährt  
-**Ready For**: Schnelle Implementierung UC2-UC9 OHNE Dokumentations-Backlog! PRODUCTION READY!
+**Status**: ✅ Infrastruktur stabil | ✅ UC1/UC2/UC10 vollständig | ✅ Tests 80/80 grün | ✅ Dokumentation KONSISTENT | ✅ Doc-Agent REPARIERT  
+**Ready For**: Schnelle Implementierung UC3/UC6-UC9 mit VOLLSTÄNDIGEM 4-Teil-Dokumentations-Workflow! PRODUCTION READY!
 
-**Completed This Session** (Session 2026-06-19):
+---
 
-**Part 1: UC2 Code Implementation**
-- ✅ UC2 (Lagerbestand aktualisieren): 29 Tests implementiert + Code
-  - LagerbestandService.cs: 8 Business-Logic-Methoden
-  - ILagerbestandService.cs: Interface mit vollständiger Dokumentation
-  - ProduktInstanz.cs: Erweitert um MindestbestandMenge-Feld
-- ✅ Clean Code Refactoring: `== null` → `is null` Pattern (10 Instanzen)
-  - LagerbestandService (7), LebensmittelService (1), ProduktInstanzService (2)
+## 🔧 Doc-Agent Workflow REPARATUR (Session 2026-06-20)
 
-**Part 2: Doc-Agent Workflow Implementation (Kritisch!)**
-- ✅ UC2 Dokumentation: Sequence-Diagramm + HTML-Seite + Validierungs-Report
-  - diagrams/sequence-uc2-lagerbestand.drawio: 3 Workflow-Szenarien
-  - docs/features/UC2-Lagerbestand.html: Alle 29 Tests dokumentiert
-  - reviews/uc2-documentation-validation.md: 100% Coverage
-- ✅ UC1 Dokumentation: Sequence-Diagramm + HTML-Seite + Validierungs-Report
-  - diagrams/sequence-uc1-lebensmittel.drawio: 2 Workflow-Szenarien
-  - docs/features/UC1-LebensmittelKatalog.html: Alle 19 Tests dokumentiert
-  - reviews/uc1-documentation-validation.md: 100% Coverage
-- ✅ UC10 Dokumentation: Sequence-Diagramm + HTML-Seite + Validierungs-Report
-  - diagrams/sequence-uc10-produktinstanzen.drawio: 3 Workflow-Szenarien
-  - docs/features/UC10-Produktinstanzen.html: Alle 32 Tests dokumentiert
-  - reviews/uc10-documentation-validation.md: 100% Coverage
-- ✅ Comprehensive Audit: reviews/documentation-audit-2026-06-19.md (51 Tests, 100% Alignment)
+**PROBLEM**: UC2 und UC10 waren im Code fertig (gemergt), aber in `architecture-overview.html` noch als "⏳ todo" markiert. Das deutete auf **Dokumentations-Inkonsistenz**.
 
-**Part 3: Workflow Improvements**
-- ✅ Doc-Agent Workflow etabliert: Nach Code-Commit → Doc-Agent updates Diagramme + HTML
-- ✅ Definition-of-Done aktualisiert: Tests + Code + Dokumentation + Review = COMPLETE
-- ✅ CONTEXT_SUMMARY.md aktualisiert mit realem Status
+**ROOT CAUSE**: Doc-Agent hat nur EINZELNE Teile aktualisiert (Diagramme + HTML), aber nicht die Master-Übersicht (architecture-overview.html). Das ist nicht akzeptabel.
+
+**LÖSUNG – Phase 1 (Doc-Agent Workflow Fixes):**
+- ✅ **architecture-overview.html** repariert: UC2, UC10 von "todo" → "done"
+- ✅ **use-cases.drawio** aktualisiert: Farbcodierung (grün=done) + ✅ Markierungen für UC1/UC2/UC10
+- ✅ Feature-HTML-Seiten überprüft: Alle aktuell & konsistent
+- ✅ Sequence-Diagramme verifiziert: 3/3 vorhanden
+
+**LÖSUNG – Phase 2 (Definition-of-Done erneuert):**
+- ✅ **CLAUDE.md aktualisiert**: Doc-Agent Rolle mit 4-teil-Verantwortung
+- ✅ **4-Teil-Dokumentation MANDATORY** nach jedem Code-Commit:
+  1. Code-Dokumentation (Inline, Validierungsreports)
+  2. Feature-HTML-Seite (Domain Model, Tests, Workflows)
+  3. **Architecture-Overview.html** (UC Status, Master-Übersicht) ← KRITISCH!
+  4. Diagramme (use-cases.drawio mit Status, Sequence-Diagramme, ER-Schema)
+- ✅ **Konsistenz-Validierungs-Checkliste** hinzugefügt (verhindert zukünftige Fehler)
+- ✅ **Doc-Agent Workflow pseudocode** dokumentiert
+- ✅ **Entwicklungs-Prozess** aktualisiert mit Dokumentations-Checkpoints
+
+**SAFEGUARDS gegen zukünftige Fehler:**
+```
+VOR MR-Erstellung: KONSISTENZ-CHECK
+☐ Code-Dokumentation aktuell
+☐ Feature-HTML aktuell
+☐ Architecture-Overview.html Status korrekt (UC als "done" wenn fertig!)
+☐ Diagramme mit Status-Farben
+☐ KEINE FEHLER = Ready for MR
+```
+
+**Commit**: 929389d (docs: Fix UC2/UC10 inconsistencies + 4-part Doc-Agent Definition-of-Done)
 
 **Total Test Suite**: 80/80 Grün ✅ (UC1: 19 + UC10: 32 + UC2: 29)
 **Code Quality**: Modern C# Pattern Matching, Clean Code ✅
-**Documentation**: 100% vollständig, aktuell, konsistent, mit 6 Sequence-Diagrammen ✅
-**Doc-Agent Workflow**: Etabliert und bewährt ✅
+**Documentation**: 100% vollständig, KONSISTENT, mit 3 Sequence-Diagrammen ✅
+**Doc-Agent Workflow**: Repariert, Safeguards in Platz, VERIFIED ✅
 
-🚀 **READY FOR PRODUCTION: UC3 oder UC6 können sofort mit vollständigem Workflow starten!**
+🚀 **READY FOR PRODUCTION: UC3 oder UC6 können sofort mit vollständigem 4-Teil-Doc-Agent-Workflow starten!**
