@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-06-20" agent="5.0" version="21.5.0" type="device">
+  <diagram name="UC6 Sequence Diagram - Verbrauch Ausbuchen" id="sequence-uc6">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="UC6: Sequence Diagram - Verbrauch Ausbuchen (FIFO)" style="text;html=1;align=center;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="0" y="10" width="2000" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- SCENARIO 1: Happy Path -->
+        <mxCell id="scenario1-title" value="Szenario 1: Erfolgreicher Verbrauch (FIFO - Älteste zuerst)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#28a745;backgroundColor=#d4edda;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="900" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 1: Participants -->
+        <mxCell id="s1-actor" value="Benutzer" style="shape=umlActor;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="30" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-ui" value="UI (Blazor)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#cce5ff;strokeColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="130" y="120" width="80" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-service" value="VerbrauchAusbuchangService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#fff0f5;strokeColor:#d81b60;" vertex="1" parent="1">
+          <mxGeometry x="270" y="120" width="120" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-repo" value="IRepository (DB)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#e1d5e7;strokeColor:#9c27b0;" vertex="1" parent="1">
+          <mxGeometry x="470" y="120" width="80" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 1: Lifelines -->
+        <mxCell id="s1-line-ui" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#0066cc;" edge="1" parent="1">
+          <mxGeometry x="170" y="160" width="1" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-line-service" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#d81b60;" edge="1" parent="1">
+          <mxGeometry x="330" y="160" width="1" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-line-repo" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#9c27b0;" edge="1" parent="1">
+          <mxGeometry x="510" y="160" width="1" height="280" as="geometry"/>
+        </mxCell>
+
+        <!-- Message 1: UI -> Service -->
+        <mxCell id="s1-msg1" value="VerbauchtProduktAsync(lebensmittelId)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="190" as="sourcePoint"/>
+            <mxPoint x="330" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 2: Service -> Repo: GetAll() -->
+        <mxCell id="s1-msg2" value="GetAllAsync()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="220" as="sourcePoint"/>
+            <mxPoint x="510" y="220" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 3: Repo -> Service: ProduktInstanzen (alle) -->
+        <mxCell id="s1-msg3" value="[List&lt;ProduktInstanz&gt;]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="250" as="sourcePoint"/>
+            <mxPoint x="330" y="250" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Note: Filter & Order -->
+        <mxCell id="s1-note1" value="Service filtert nach lebensmittelId&#10;und sortiert nach Verfallsdatum (ascending)&#10;→ Älteste zuerst (FIFO)" style="text;html=1;align=left;verticalAlign=top;fontSize=9;fontColor=#666;backgroundColor=#fffacd;border=1;borderColor=#ddd;" vertex="1" parent="1">
+          <mxGeometry x="360" y="260" width="200" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Message 4: Service -> Repo: DeleteAsync(aeltesteId) -->
+        <mxCell id="s1-msg4" value="DeleteAsync(aeltesteProduktId)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="330" as="sourcePoint"/>
+            <mxPoint x="510" y="330" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 5: Repo -> Service: true (success) -->
+        <mxCell id="s1-msg5" value="true (erfolgreich gelöscht)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="360" as="sourcePoint"/>
+            <mxPoint x="330" y="360" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 6: Service -> UI: ServiceResult (Success) -->
+        <mxCell id="s1-msg6" value="ServiceResult(true, &quot;Erfolgreich verbraucht&quot;)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="390" as="sourcePoint"/>
+            <mxPoint x="170" y="390" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SCENARIO 2: Error Path -->
+        <mxCell id="scenario2-title" value="Szenario 2: Fehlerfall - Keine Packung vorhanden" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#dc3545;backgroundColor=#f8d7da;" vertex="1" parent="1">
+          <mxGeometry x="20" y="460" width="900" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 2: Same Participants (no need to repeat) -->
+        <mxCell id="s2-msg1" value="VerbauchtProduktAsync(lebensmittelId=999)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="520" as="sourcePoint"/>
+            <mxPoint x="330" y="520" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="s2-msg2" value="GetAllAsync()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="550" as="sourcePoint"/>
+            <mxPoint x="510" y="550" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="s2-msg3" value="[List&lt;ProduktInstanz&gt;] - leer oder keine Matches" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="510" y="580" as="sourcePoint"/>
+            <mxPoint x="330" y="580" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Note: No Delete -->
+        <mxCell id="s2-note1" value="keine Packung gefunden,&#10;keine Delete-Operation" style="text;html=1;align=left;verticalAlign=top;fontSize=9;fontColor=#666;backgroundColor=#fffacd;border=1;borderColor=#ddd;" vertex="1" parent="1">
+          <mxGeometry x="360" y="590" width="150" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2-msg4" value="ServiceResult(false, &quot;Lebensmittel (ID: 999) ist nicht vorhanden&quot;)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="650" as="sourcePoint"/>
+            <mxPoint x="170" y="650" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="UC6 FIFO-Logik: 1) Alle ProduktInstanzen holen 2) Nach lebensmittelId filtern 3) Nach Verfallsdatum (ascending) sortieren 4) Älteste löschen 5) Ergebnis zurückgeben" style="text;html=1;align=left;verticalAlign=top;fontSize=9;fontStyle=0;fontColor:#666;backgroundColor=#f5f5f5;border=1;borderColor=#ddd;" vertex="1" parent="1">
+          <mxGeometry x="20" y="750" width="900" height="40" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

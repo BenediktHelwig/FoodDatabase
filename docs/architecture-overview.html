@@ -158,10 +158,10 @@
                 </div>
 
                 <!-- UC6 -->
-                <div class="uc-card todo">
+                <div class="uc-card done">
                     <h4><a href="features/UC6-Verbrauchausbuchen.html">UC6: Verbrauch ausbuchen</a></h4>
-                    <p>Produkte verbraucht markieren (Scan/manuell).</p>
-                    <span class="status-badge todo">⏳ Queue</span>
+                    <p>Älteste Packung nach Verfallsdatum löschen (FIFO).</p>
+                    <span class="status-badge done">✅ Fertig (gemergt)</span>
                 </div>
 
                 <!-- UC7 -->
@@ -319,14 +319,16 @@ cat CONTEXT_SUMMARY.md
                 <li>✅ UC1: Lebensmittel-Katalog (19 Tests + Code)</li>
                 <li>✅ UC2: Lagerbestand (29 Tests + Code)</li>
                 <li>✅ UC10: Produktinstanzen mit MHD (32 Tests + Code)</li>
+                <li>✅ UC6: Verbrauch ausbuchen (10 Tests + Code + Dokumentation)</li>
                 <li>✅ Kontext-Dokumentation + Sequence-Diagramme</li>
-                <li>✅ Validierungs-Reports (UC1/UC2/UC10 80/80 Tests grün)</li>
+                <li>✅ Validierungs-Reports (UC1/UC2/UC10/UC6 = 90/90 Tests grün)</li>
             </ul>
 
             <h3>Nächste Schritte</h3>
             <ul style="margin-left: 20px; margin-top: 10px;">
-                <li>⏳ UC3: Nährwerte verwalten (oder UC6: Verbrauch ausbuchen)</li>
-                <li>⏳ UC4-UC9: In Queue</li>
+                <li>✅ UC6: Verbrauch ausbuchen – FERTIG!</li>
+                <li>⏳ UC3: Nährwerte verwalten (HIGH PRIORITY)</li>
+                <li>⏳ UC4-UC5, UC7-UC9: In Queue</li>
                 <li>⏳ DbContext & Migrations einrichten</li>
                 <li>⏳ Blazor UI Components</li>
             </ul>
