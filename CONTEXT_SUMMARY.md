@@ -476,4 +476,24 @@ VOR MR-Erstellung: KONSISTENZ-CHECK
 
 **WICHTIG**: Keine Code-Änderungen bis Dokumentation 100% spezifiziert ist! 🚫
 
+### ❓ Offene Fragen – Nächste Session klären!
+
+Bevor die Dokumentations-Phase startet, müssen diese Fragen geklärt werden:
+
+1. **Normalisierung bei GROSS-Schreibung:**
+   - Input: `"LAGER"` (single word, ganz GROSS) → Bleibt `"LAGER"` oder wird zu `"Lager"`?
+   - Regel: Nur single-word-kleingeschrieben wird normalisiert, oder ALLE single-words?
+
+2. **Fuzzy-Matching Tiefgang:**
+   - Input: `"lag"` → Findet auch `"Lager"` (partial prefix)?
+   - Oder nur exact Prefix-Match (z.B. "Lag" findet "Lag*")?
+   - Wieviele Zeichen mindestens zum Matchen?
+
+3. **Lagerorte-Persistierung:**
+   - Neue Datenbank-Tabelle `Lagerorte` (mit ID) oder direkt String-Speicherung in `ProduktInstanz`?
+   - Brauchen wir ein `Lagerorte`-Model oder einfacher Set/Cache im Memory?
+   - Sollen Lagerorte auch in der SQLite-DB persistiert werden (für Multi-User)?
+
+**📌 Diese Fragen in den Diagrammen & Feature-Design-Dokumentation klären → DANN erst Code!**
+
 ---
