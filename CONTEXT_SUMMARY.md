@@ -1,8 +1,8 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-06-20 (Update: Doc-Agent Workflow REPARIERT + Definition-of-Done erneuert)  
-**Status**: UC1 & UC10 & UC2 gemergt | Tests 80/80 grün ✅ | Dokumentation KONSISTENT & aktuell ✅ | 4-Teil-Dokumentation MANDATORY  
-**Nächster Schritt**: UC3 oder UC6 implementieren mit VERVOLLSTÄNDIGTEM Doc-Agent-Workflow | Alle 3 UCs PRODUCTION-READY
+**Datum**: 2026-06-20 (Update: UC6 COMPLETE – 90/90 Tests Green! ✅)  
+**Status**: UC1 & UC2 & UC10 & UC6 gemergt | Tests 90/90 grün ✅ | Dokumentation KONSISTENT & aktuell ✅ | 4-Teil-Dokumentation MANDATORY  
+**Nächster Schritt**: UC3 (Nährwerte) oder weitere UC implementieren mit bewährtem Doc-Agent-Workflow | Alle 4 UCs PRODUCTION-READY
 
 ---
 
@@ -46,6 +46,17 @@
 - ✅ **Dokumentation**: Sequence-Diagramm (uc2-lagerbestand.drawio) + HTML-Seite + Validierungs-Report
 - 📁 Commits: d35fbc8, 98724d5, 5536383 (UC2 Implementation + Refactor) + **6672d7f (UC2 Dokumentation)**
 
+### Phase 6: UC6 – Verbrauch Ausbuchen (✅ COMPLETE – PRODUCTION READY!)
+- ✅ Model: ServiceResult.cs (neu) für besseres Error Handling
+- ✅ Interface: IVerbrauchAusbuchangService.cs mit VerbauchtProduktAsync()
+- ✅ Service: VerbrauchAusbuchangService.cs (FIFO-Logik)
+- ✅ Tests: VerbrauchAusbuchangServiceTests.cs (10/10 Tests ✅)
+- ✅ Business Logic: FIFO nach Verfallsdatum, Ganze Packung löschen
+- ✅ Validierungen: LebensmittelId > 0, ProduktInstanz vorhanden, Delete erfolgreich
+- ✅ Clean Code: SOLID-Prinzipien, Dependency Injection, Async/Await
+- ✅ **Dokumentation**: Sequence-Diagramm (sequence-uc6-verbrauchausbuchangung.drawio) + HTML-Seite + Validierungs-Report
+- 📁 Commits: **ed62d49** (tests) + **5c542d7** (docs)
+
 ### Phase 4: Saubere Projektstruktur (Neu!)
 - ✅ Backup von alten Dateien erstellt (`backup/`)
 - ✅ Neue Projekte ohne Encoding-Fehler aufgebaut
@@ -64,13 +75,14 @@
 | **UC1 Code** | ✅ Done | LebensmittelKatalog CRUD, 19 Tests ✅ |
 | **UC10 Code** | ✅ Done | ProduktInstanz CRUD + Business Logic, 32 Tests ✅ |
 | **UC2 Code** | ✅ Done | Lagerbestand Management, 29 Tests ✅ |
-| **Test-Suite** | ✅ Done | 80/80 Tests GRÜN (UC1: 19, UC10: 32, UC2: 29) |
-| **Dokumentation** | ✅ 100% COMPLETE | UC1/UC2/UC10 Sequence-Diagramme + HTML + Validierungs-Reports |
+| **UC6 Code** | ✅ Done | Verbrauch ausbuchen (FIFO), 10 Tests ✅ |
+| **Test-Suite** | ✅ Done | **90/90 Tests GRÜN** (UC1: 19, UC10: 32, UC2: 29, UC6: 10) |
+| **Dokumentation** | ✅ 100% COMPLETE | UC1/UC2/UC10/UC6 Sequence-Diagramme + HTML + Validierungs-Reports |
 | **CSS Infrastructure** | ✅ Done | Separate Stylesheets pro Feature |
 | **ER-Diagramm** | ✅ Done | Datenbank-Schema dokumentiert |
-| **Sequence-Diagramme** | ✅ 3 Complete | UC1, UC2, UC10 Workflows dokumentiert (draw.io) |
-| **Validierungs-Reports** | ✅ 3 Complete | UC1, UC2, UC10 Code ↔ Dokumentation Alignment 100% |
-| **UC2-UC9 Code** | ⏳ Queue | Bereit für Implementierung |
+| **Sequence-Diagramme** | ✅ 4 Complete | UC1, UC2, UC6, UC10 Workflows dokumentiert (draw.io) |
+| **Validierungs-Reports** | ✅ 4 Complete | UC1, UC2, UC6, UC10 Code ↔ Dokumentation Alignment 100% |
+| **UC3-UC5, UC7-UC9** | ⏳ Queue | Bereit für Implementierung |
 
 ---
 
@@ -81,23 +93,20 @@
    - Model: Nährwert.cs mit Einheiten (kcal, g Fett, g Kohlenhydrate, g Protein)
    - Service: CRUD-Operationen für Nährwerte
    - Tests: 20+ Tests
+   - Grund: Basis für UC5 (Nährwertberechnung bei Rezepten)
 
-2. **UC6**: Verbrauch ausbuchen (FIFO-Prinzip)
-   - Service: Markiere älteste ProduktInstanz als verbraucht
-   - Reduces Menge oder löscht bei Menge=0
-   - Tests: FIFO-Ordering, Verfallsdatum-Logik
-
-3. **UC2** ✅ COMPLETE
-   - ✅ LagerbestandService mit 8 Methoden (29 Tests grün)
-   - ✅ ProduktInstanz um MindestbestandMenge erweitert
-   - ✅ Clean Code: Null-Checks refaktoriert
-
-### 🟡 MEDIUM PRIORITY
+### 🟡 MEDIUM PRIORITY (danach)
 4. **UC4**: Rezepte verwalten (Model: Rezept, RezeptZutat)
 5. **UC5**: Nährwerte für Rezepte berechnen (Aggregation über RezeptZutaten)
 6. **UC7**: Verfallsdatum-Warnungen (GetBaldVerfallenen Filter)
 7. **UC8**: Einkaufslisten generieren (basierend auf Verfallenden)
 8. **UC9**: Lagerorte verwalten (CRUD für Lagerverwaltung)
+
+### ✅ COMPLETED
+- **UC1** ✅ Lebensmittel-Katalog (19 Tests)
+- **UC2** ✅ Lagerbestand (29 Tests)
+- **UC6** ✅ Verbrauch ausbuchen (10 Tests) – FERTIG!
+- **UC10** ✅ Produktinstanzen mit MHD (32 Tests)
 
 ---
 
@@ -213,25 +222,25 @@ FoodDatabase/
 
 ---
 
-## 📊 Git-Status (DOC-AGENT WORKFLOW REPARIERT + DEFINITION-OF-DONE ERNEUERT ✅)
+## 📊 Git-Status (UC6 IMPLEMENTATION + DOCUMENTATION COMPLETE ✅)
 
 ```
 Branch: master
-Total Commits: 26
-Commits Ahead of Origin: 14
+Total Commits: 28
+Commits Ahead of Origin: 16
 Working Tree: CLEAN ✅
-Test Status: 80/80 GRÜN ✅
-Documentation Status: 100% KONSISTENT (UC1/UC2/UC10) ✅
-Sequence Diagrams: 3/3 Complete ✅
-Validierungs-Reports: 3/3 Complete ✅
+Test Status: 90/90 GRÜN ✅
+Documentation Status: 100% KONSISTENT (UC1/UC2/UC10/UC6) ✅
+Sequence Diagrams: 4/4 Complete ✅
+Validierungs-Reports: 4/4 Complete ✅
 Doc-Agent Workflow: 4-Teil-Mandatory (Code + Features HTML + Overview + Diagrams) ✅
 
 Last Commits (Top 5):
+  - 5c542d7 docs(uc6): Add comprehensive documentation with sequence diagrams
+  - ed62d49 test(uc6): Add VerbrauchAusbuchangService tests (10/10 green)
   - 929389d docs: Fix UC2/UC10 status inconsistencies and establish 4-part Doc-Agent Definition-of-Done
   - b406f2e docs(uc1,uc10): Add comprehensive documentation with sequence diagrams and validation audits
   - 6672d7f docs(uc2): Add comprehensive UC2 documentation with sequence diagrams and validation
-  - 5536383 refactor: Replace '== null' with 'is null' pattern matching
-  - 98724d5 docs(uc2): Update feature documentation with complete implementation details
 ```
 
 ---
@@ -242,22 +251,24 @@ Last Commits (Top 5):
 # 1. Diese Datei lesen (2 min)
 cat CONTEXT_SUMMARY.md
 
-# 2. Tests überprüfen (sollten alle grün sein)
+# 2. Tests überprüfen (sollten alle 90 grün sein)
 dotnet test FoodDatabase.sln
+# → Erwartet: 90/90 GRÜN ✅
 
-# 3. Wählen: Welche UC2-UC9 soll implementiert werden?
-#    Empfehlung: UC2 (Lagerbestand) → UC6 (Verbrauch) → UC3-UC9
+# 3. Wählen: Welche UC soll implementiert werden?
+#    Empfehlung: UC3 (Nährwerte) → UC4/UC5 → UC7-UC9
+#    Templates: UC1/UC2/UC6 als Vorlage nutzen (3-Tests, Service, FIFO-Logik, etc.)
 
-# 4. Dev-Agent starten für nächste UC
-# (Template: UC1 + UC10 als Vorlage nutzen)
+# 4. Orchestrator/Dev-Agent starten für nächste UC
+# Follow: Established TDD-Workflow + 4-Teil-Doc-Agent Dokumentation
 ```
 
 ---
 
 ## 💪 Momentum & Status
 
-**Status**: ✅ Infrastruktur stabil | ✅ UC1/UC2/UC10 vollständig | ✅ Tests 80/80 grün | ✅ Dokumentation KONSISTENT | ✅ Doc-Agent REPARIERT  
-**Ready For**: Schnelle Implementierung UC3/UC6-UC9 mit VOLLSTÄNDIGEM 4-Teil-Dokumentations-Workflow! PRODUCTION READY!
+**Status**: ✅ Infrastruktur stabil | ✅ UC1/UC2/UC6/UC10 vollständig | ✅ Tests 90/90 grün | ✅ Dokumentation KONSISTENT | ✅ Doc-Agent BEWÄHRT  
+**Ready For**: Schnelle Implementierung UC3 + UC4/UC5 + UC7-UC9 mit VOLLSTÄNDIGEM 4-Teil-Dokumentations-Workflow! **90/90 TESTS GRÜN! 🎉**
 
 ---
 
@@ -301,4 +312,37 @@ VOR MR-Erstellung: KONSISTENZ-CHECK
 **Documentation**: 100% vollständig, KONSISTENT, mit 3 Sequence-Diagrammen ✅
 **Doc-Agent Workflow**: Repariert, Safeguards in Platz, VERIFIED ✅
 
-🚀 **READY FOR PRODUCTION: UC3 oder UC6 können sofort mit vollständigem 4-Teil-Doc-Agent-Workflow starten!**
+---
+
+## 🎯 UC6 Implementation Summary (Session 2026-06-20)
+
+**UC6 Status**: ✅ **COMPLETE & PRODUCTION READY**
+
+**Phase 1: Requirements** (User Input)
+- Paket-basiertes System (ganze Packungen, nicht Gramm-weise)
+- FIFO nach Verfallsdatum (älteste zuerst)
+- ProduktInstanz wird gelöscht bei Verbrauch
+
+**Phase 2-3: TDD Implementation**
+- ✅ 10 Unit Tests (Happy Path + Error Cases + FIFO + Edge Cases)
+- ✅ ServiceResult Model (neu) für besseres Error Handling
+- ✅ IVerbrauchAusbuchangService Interface
+- ✅ VerbrauchAusbuchangService Implementation (FIFO-Logik)
+
+**Phase 4: Documentation (4-Teil)**
+- ✅ Code-Dokumentation (Tests + Service dokumentiert)
+- ✅ Feature-HTML (UC6-VerbrauchAusbuchen.html vollständig)
+- ✅ Architecture-Overview (UC6 Card Status aktualisiert)
+- ✅ Sequence-Diagramm (sequence-uc6-verbrauchausbuchangung.drawio)
+
+**Commits**:
+- ed62d49: test(uc6): Add VerbrauchAusbuchangService tests (10/10 green)
+- 5c542d7: docs(uc6): Add comprehensive documentation with sequence diagrams
+
+**Key Metrics**:
+- Tests: 10/10 ✅
+- Code Quality: Clean Code + SOLID + KISS ✅
+- Documentation: 100% Konsistent ✅
+- Total Suite: 90/90 Tests Grün ✅
+
+🚀 **READY FOR NEXT UC: UC3 kann sofort mit vollständigem 4-Teil-Doc-Agent-Workflow starten!**
