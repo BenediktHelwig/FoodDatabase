@@ -43,19 +43,25 @@ Alle Agenten sind als spezialisierte Claude-Agent-Instanzen konfiguriert und arb
 
 ### 2. **Doc-Agent** (`doc-agent.md`)
 - **Rolle**: Dokumentation, Diagramme, Architektur-Rationale
-- **Verantwortung**:
+- **Verantwortung**: **4-teilige Dokumentation nach jedem Code-Commit**
+  1. **Code-Dokumentation** (Inline-Kommentare, Validierungsreports)
+  2. **Feature-HTML** (z.B. `docs/features/UC2-Lagerbestand.html`)
+  3. **Architecture-Overview.html** (Master-Seite mit Status aller UCs)
+  4. **Diagramme** (use-cases.drawio, Sequence-Diagramme, ER-Diagramm)
+  
   - Erstellt UML-Diagramme basierend auf Use-Case-Diagramm:
     - Klassen-Diagramm (Domänen-Modell)
     - Komponenten-Diagramm (Frontend, Backend, DB)
     - Deployment-Diagramm (Container auf TrueNAS)
     - Sequenz-Diagramme (komplexe Workflows)
   - Dokumentiert Code-Architektur und Decisions in HTML
-  - Aktualisiert Diagramme kontinuierlich
-  - Dokumentiert Tests und Produktivcode unmittelbar
+  - **Aktualisiert Architecture-Overview.html mit UC-Status** (todo → done)
+  - **Führt Konsistenz-Check durch** (4 Aspekte alle aktuell?)
 - **Output-Format**:
-  - `diagrams/[feature].drawio` (draw.io XML)
-  - `docs/[feature].html` (mit eingebetteten Diagrammen)
-  - `docs/architecture/[decision].md` (Architecture Decision Records)
+  - `diagrams/[feature].drawio` (draw.io XML mit Status-Markierungen)
+  - `docs/features/[feature].html` (Feature-Dokumentation)
+  - `docs/architecture-overview.html` (Master-Übersicht - aktualisiert!)
+  - `reviews/[feature]-documentation-validation.md` (Validierungsbericht)
 
 ### 3. **Test-Agent** (`test-agent.md`)
 - **Rolle**: Test-Driven Development (TDD)
@@ -123,22 +129,30 @@ FOR EACH USE-CASE:
   │ 3. Doc-Agent dokumentiert Architektur     │
   └───────────────────────────────────────────┘
            ↓
-  ┌─── Test-Phase ────────────────────────────┐
-  │ 1. Test-Agent schreibt Tests (TDD Rot)    │
-  │ 2. Doc-Agent dokumentiert Tests           │
-  │ 3. Merge Request: "test/[feature]"        │
-  │    → Review-Agent überprüft               │
-  │    → Max. 3 Fehlschläge → Eskalation      │
-  └───────────────────────────────────────────┘
+  ┌─── Test-Phase ────────────────────────────────────────┐
+  │ 1. Test-Agent schreibt Tests (TDD Rot)                │
+  │ 2. Doc-Agent dokumentiert (4-Teil-Check):            │
+  │    ☐ Test-Dokumentation                              │
+  │    ☐ Feature-HTML Seite                              │
+  │    ☐ Architecture-Overview.html                       │
+  │    ☐ Diagramme aktualisiert                           │
+  │ 3. Merge Request: "test/[feature]"                   │
+  │    → Review-Agent überprüft                          │
+  │    → Max. 3 Fehlschläge → Eskalation                 │
+  └────────────────────────────────────────────────────────┘
            ↓
-  ┌─── Implementation-Phase ──────────────────┐
-  │ 1. Dev-Agent implementiert Code (TDD Grün)│
-  │ 2. Doc-Agent dokumentiert Code            │
-  │ 3. Diagramme ggf. aktualisiert            │
-  │ 4. Merge Request: "feat/[feature]"        │
-  │    → Review-Agent überprüft               │
-  │    → Max. 3 Fehlschläge → Eskalation      │
-  └───────────────────────────────────────────┘
+  ┌─── Implementation-Phase ──────────────────────────────┐
+  │ 1. Dev-Agent implementiert Code (TDD Grün)           │
+  │ 2. Dev-Agent: Tests müssen GRÜN sein                 │
+  │ 3. Doc-Agent dokumentiert (4-Teil-Check):           │
+  │    ☐ Code-Dokumentation + Validierungsreport         │
+  │    ☐ Feature-HTML Seite erweitert                    │
+  │    ☐ Architecture-Overview.html Status aktualisiert  │
+  │    ☐ use-cases.drawio + Diagramme mit Status         │
+  │ 4. Merge Request: "feat/[feature]"                  │
+  │    → Review-Agent überprüft                         │
+  │    → Max. 3 Fehlschläge → Eskalation                │
+  └────────────────────────────────────────────────────────┘
            ↓
   ┌─── User-Review-Phase ─────────────────────┐
   │ 1. User reviewt komplettes Feature        │
@@ -427,7 +441,7 @@ claude agent --load "C:\Users\bened\source\repos\FoodDatabase\claude\agents\revi
 
 ---
 
-## ✅ Qualitäts-Gates
+## ✅ Qualitäts-Gates & Definition-of-Done
 
 ### **Was muss bestanden werden, bevor ein MR gemergt wird?**
 
@@ -436,8 +450,114 @@ claude agent --load "C:\Users\bened\source\repos\FoodDatabase\claude\agents\revi
 | **Tests** | Test-Agent | Tests schreiben + bestehen | ✅ Automatisiert |
 | **Code** | Dev-Agent | Code implementieren + Best Practices | ✅ Automatisiert |
 | **Review** | Review-Agent | Code-Quality + Security + Performance | ✅ Automatisiert (3 Fehlschläge → Eskalation) |
-| **Doku** | Doc-Agent | HTML + Diagramme aktualisiert | ✅ Automatisiert |
+| **Dokumentation** | Doc-Agent | **4-Teil-Check** (siehe unten) | ✅ Automatisiert |
 | **User** | User (du) | Feature passt zu Use-Cases | ⏳ Manuell |
+
+---
+
+### **🔴 KRITISCH: Doc-Agent Definition-of-Done (4-teilig)**
+
+Nach **JEDEM Code-Commit** (Test-Agent + Dev-Agent) muss der Doc-Agent ALLE 4 Aspekte aktualisieren:
+
+#### **1️⃣ Code-Dokumentation**
+- Inline-Kommentare nur für NON-OBVIOUS Logik
+- Validierungsreports aktualisieren (z.B. `reviews/uc2-documentation-validation.md`)
+- Fehlerbehandlung dokumentiert
+- Keine fehlenden oder veralteten Kommentare
+
+#### **2️⃣ Feature-HTML-Seite** (z.B. `docs/features/UC2-Lagerbestand.html`)
+- Domain Model Sektion: Alle Entities + Felder dokumentiert
+- Test-Coverage Sektion: Alle Test-Cases gelistet
+- Workflow Sektion: Geschäftslogik erklärt
+- Links zu Diagrammen aktuell
+- Status-Badge aktualisiert (todo → done wenn fertig)
+
+#### **3️⃣ Architecture-Overview.html** (Master-Seite)
+- **Use-Cases Sektion**: UC-Karte Status aktualisiert
+  - Von `<div class="uc-card todo">` → `<div class="uc-card done">` wenn fertig
+  - Status-Badge: Von `⏳ Queue` → `✅ Fertig (gemergt)`
+- **Domain Model Sektion**: Entity-Status aktualisiert
+  - Von `⏳ UCN` → `✅ UCN` wenn fertig
+- **Projekt-Status Sektion**: 
+  - "Abgeschlossen" hinzufügen
+  - "Nächste Schritte" aktualisieren
+
+#### **4️⃣ Diagramme** (draw.io)
+- **use-cases.drawio**: 
+  - UC-Status mit Farbcodierung (✅ Grün = done, Weiß = todo)
+  - Legend aktualisiert
+- **Sequence-Diagramme** (z.B. `diagrams/sequence-uc2-lagerbestand.drawio`):
+  - Neue Workflows hinzufügen
+  - Beschreibungen aktualisieren
+- **ER-Diagramm** (`diagrams/database-schema.drawio`):
+  - Neue Entities/Relationen hinzufügen falls Model sich ändert
+
+---
+
+### **⚠️ Fehlerkontrolle: Ist die Dokumentation konsistent?**
+
+Vor MR-Erstellung muss folgende Prüfliste bestanden werden:
+
+```
+KONSISTENZ-CHECK:
+
+☐ Code-Dokumentation:
+  ☐ Alle Services/Models dokumentiert
+  ☐ Alle Tests beschrieben
+  ☐ Validierungsreport aktualisiert
+
+☐ Feature-HTML:
+  ☐ Status-Badge aktuell (todo/done)
+  ☐ Domain Model vollständig
+  ☐ Tests dokumentiert
+  ☐ Verweise zu Diagrammen gültig
+
+☐ Architecture-Overview:
+  ☐ UC-Karte Status aktualisiert
+  ☐ Domain Model Status aktualisiert
+  ☐ Projekt-Status Sektion aktualisiert
+  ☐ Status ist KONSISTENT mit Code
+
+☐ Diagramme:
+  ☐ use-cases.drawio: UC-Status mit Farben
+  ☐ Sequence-Diagramme: Workflows dokumentiert
+  ☐ ER-Diagramm: Neue Entities eingetragen
+
+☐ KONSISTENZ-CHECK:
+  ☐ Code sagt "fertig", aber Feature-HTML sagt "todo"? → FEHLER!
+  ☐ Architecture-Overview zeigt falsche Status? → FEHLER!
+  ☐ Diagramme zeigen alte Struktur? → FEHLER!
+  
+  → KEINE FEHLER = Doc-Agent fertig
+```
+
+**Folge**: Wenn nur EINZELNE Aspekte aktualisiert werden (z.B. nur Diagramme, aber nicht Overview), entsteht Inkonsistenz wie in UC2/UC10. Das ist NICHT akzeptabel.
+
+---
+
+### **🔄 Doc-Agent Workflow (Pseudocode)**
+
+```
+NACH Test-Agent Commit:
+  1. Test-Dokumentation schreiben
+  2. Diagramme prüfen (noch aktuell?)
+  3. Feature-HTML aktualisieren
+  4. commit("docs(feature): Add test documentation")
+
+NACH Dev-Agent Commit:
+  1. Code-Dokumentation schreiben
+  2. Feature-HTML aktualisieren (Domain Model, Workflows)
+  3. Diagramme ggf. erweitern
+  4. architecture-overview.html aktualisieren (Status!)
+  5. use-cases.drawio aktualisieren (Farben)
+  6. Validierungsreport schreiben
+  7. commit("docs(feature): Add code documentation and diagrams")
+
+FINAL CHECK:
+  → Alle 4 Aspekte aktuell?
+  → Keine Inkonsistenzen?
+  → Dann: READY FOR MR
+```
 
 ---
 

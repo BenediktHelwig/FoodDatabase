@@ -17,12 +17,12 @@
         </mxCell>
 
         <!-- UC1: Lebensmittel verwalten -->
-        <mxCell id="uc1" value="Lebensmittel verwalten&#10;(CRUD + Lagerort)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+        <mxCell id="uc1" value="✅ Lebensmittel verwalten&#10;(CRUD + Lagerort)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#d4edda;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="70" y="60" width="130" height="70" as="geometry"/>
         </mxCell>
 
         <!-- UC2: Lagerbestand aktualisieren -->
-        <mxCell id="uc2" value="Lagerbestand&#10;aktualisieren" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+        <mxCell id="uc2" value="✅ Lagerbestand&#10;aktualisieren" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#d4edda;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="280" y="60" width="130" height="70" as="geometry"/>
         </mxCell>
 
@@ -62,7 +62,7 @@
         </mxCell>
 
         <!-- UC10: Produktinstanzen mit MHD verwalten -->
-        <mxCell id="uc10" value="Produktinstanzen&#10;mit MHD verwalten" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+        <mxCell id="uc10" value="✅ Produktinstanzen&#10;mit MHD verwalten" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#d4edda;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="70" y="540" width="130" height="70" as="geometry"/>
         </mxCell>
 
@@ -103,7 +103,7 @@
         <mxCell id="include8" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=10;strokeColor:#000000;fontColor:#000000;" edge="1" parent="1" source="uc6" target="uc10"/>
 
         <!-- Legend -->
-        <mxCell id="legend" value="Neutrale Farben: Schwarz=Schrift, Weiß=Hintergrund | UC10 ist zentral: Produktinstanzen mit eigenem MHD" style="text;html=1;align=left;verticalAlign=top;fontSize=10;italic=1;fontColor=#000000;" vertex="1" parent="1">
+        <mxCell id="legend" value="Status: ✅ Grün = Fertig (gemergt) | Weiß = Todo | UC10 ist zentral: Produktinstanzen mit eigenem MHD" style="text;html=1;align=left;verticalAlign=top;fontSize=10;italic=1;fontColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="70" y="700" width="730" height="60" as="geometry"/>
         </mxCell>
       </root>

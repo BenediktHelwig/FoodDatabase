@@ -123,17 +123,17 @@
                 </div>
 
                 <!-- UC10 -->
-                <div class="uc-card todo">
+                <div class="uc-card done">
                     <h4><a href="features/UC10-Produktinstanzen.html">UC10: Produktinstanzen mit MHD</a></h4>
                     <p>Zentral! Jedes gekaufte Produkt mit eigenem MHD.</p>
-                    <span class="status-badge todo">⏳ Nächstes (Priorität)</span>
+                    <span class="status-badge done">✅ Fertig (gemergt)</span>
                 </div>
 
                 <!-- UC2 -->
-                <div class="uc-card todo">
+                <div class="uc-card done">
                     <h4><a href="features/UC2-Lagerbestand.html">UC2: Lagerbestand</a></h4>
                     <p>Menge + Lagerort pro Produktinstanz aktualisieren.</p>
-                    <span class="status-badge todo">⏳ Queue</span>
+                    <span class="status-badge done">✅ Fertig (gemergt)</span>
                 </div>
 
                 <!-- UC3 -->
@@ -210,7 +210,7 @@
                 <tr>
                     <td><strong>ProduktInstanz ⭐</strong></td>
                     <td>Konkrete gekaufte Einheit mit MHD</td>
-                    <td>⏳ UC10</td>
+                    <td>✅ UC10</td>
                 </tr>
                 <tr>
                     <td><strong>Nährwert</strong></td>
@@ -316,21 +316,17 @@ cat CONTEXT_SUMMARY.md
             <ul style="margin-left: 20px; margin-top: 10px;">
                 <li>✅ Requirements & Use-Cases definiert</li>
                 <li>✅ Architecture-Diagramme erstellt</li>
-                <li>✅ UC1: Lebensmittel-Katalog (Tests + Code)</li>
-                <li>✅ Kontext-Dokumentation</li>
-            </ul>
-
-            <h3>In Progress</h3>
-            <ul style="margin-left: 20px; margin-top: 10px;">
-                <li>🔄 Doc-Agent: HTML-Dokumentation (diese Seite!)</li>
-                <li>🔄 Doc-Agent: Sequenz-Diagramme</li>
-                <li>🔄 Doc-Agent: ADRs (Architecture Decision Records)</li>
+                <li>✅ UC1: Lebensmittel-Katalog (19 Tests + Code)</li>
+                <li>✅ UC2: Lagerbestand (29 Tests + Code)</li>
+                <li>✅ UC10: Produktinstanzen mit MHD (32 Tests + Code)</li>
+                <li>✅ Kontext-Dokumentation + Sequence-Diagramme</li>
+                <li>✅ Validierungs-Reports (UC1/UC2/UC10 80/80 Tests grün)</li>
             </ul>
 
             <h3>Nächste Schritte</h3>
             <ul style="margin-left: 20px; margin-top: 10px;">
-                <li>⏳ UC10: Produktinstanzen mit MHD (Priorität!)</li>
-                <li>⏳ UC2-UC9: In rasantem Tempo</li>
+                <li>⏳ UC3: Nährwerte verwalten (oder UC6: Verbrauch ausbuchen)</li>
+                <li>⏳ UC4-UC9: In Queue</li>
                 <li>⏳ DbContext & Migrations einrichten</li>
                 <li>⏳ Blazor UI Components</li>
             </ul>
