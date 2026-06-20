@@ -88,7 +88,38 @@
 
 ## 📋 TODO – UC3-UC9 Implementierung
 
-### 🔴 HIGH PRIORITY (nächste Sitzung)
+### 🔴 HIGH PRIORITY – REQUIREMENTS SPEZIFIZIERT (nächste Sitzung: Dokumentation + Diagramme + Implementierung)
+
+**🆕 UC9-ERWEITERUNG: Dynamische Lagerorte-Verwaltung** (Änderungswunsch 2026-06-20)
+   - **Status**: REQUIREMENTS SPEZIFIZIERT ✅ → Next: Dokumentation + Diagramme → Implementierung
+   - **Anforderung**: Lagerorte nicht vordefiniert (LagerortKonstanten), sondern dynamisch
+   
+   **Details**:
+   - ✅ Lagerorte angelegt beim **Erstellen neuer Produkte (UC10)**
+   - ✅ Lagerorte angelegt beim **Buchen zu anderem Ort (UC2: AddToBestand)**
+   - ✅ Normalisierung: Single-Word-Input kleingeschrieben → 1. Buchstabe Upper-Case ("lagerA" → "LagerA")
+   - ✅ Nur Buchstaben (A-Z, a-z) erlaubt
+   - ✅ Case-Sensitive Speicherung
+   - ✅ Live-Auto-Complete mit Fuzzy-Matching (Input "lager" findet "Lager", "LagerA", "LagerB")
+   - ✅ Keine Löschung, keine Limit
+   - ✅ Bestehende ProduktInstanzen behalten ihre Lagerorte (keine Migration)
+   
+   **Impact**:
+   - ProduktInstanz.Lagerort: String (statt LagerortKonstanten enum)
+   - Neuer Service: `LagerortService` mit GetAlleLagerorte(), GetLagerorteMitAutoComplete(prefix), ValidateLagerort(name)
+   - UC10 angepasst: Lagerort-Input statt Konstanten-Selection
+   - UC2 angepasst: Lagerort-Input mit Suggestions bei AddToBestand
+   
+   **Next Session Workflow**:
+   1. ✅ Diagramme aktualisieren (use-cases.drawio, Sequence-Diagramme für UC2/UC10)
+   2. ✅ Architecture-Overview + Feature-HTML für UC9-Erweiterung
+   3. ✅ DANN: Test-Agent Tests schreiben
+   4. ✅ DANN: Dev-Agent Code implementieren
+   5. ✅ DANN: Doc-Agent 4-Teil-Dokumentation
+
+---
+
+### 🔴 HIGH PRIORITY (nach UC9-Erweiterung)
 1. **UC3**: Nährwerte verwalten
    - Model: Nährwert.cs mit Einheiten (kcal, g Fett, g Kohlenhydrate, g Protein)
    - Service: CRUD-Operationen für Nährwerte
@@ -388,3 +419,61 @@ VOR MR-Erstellung: KONSISTENZ-CHECK
 - Total Suite: 90/90 Tests Grün ✅
 
 🚀 **READY FOR NEXT UC: UC3 kann sofort mit vollständigem 4-Teil-Doc-Agent-Workflow starten!**
+
+---
+
+## 📝 UC9-ERWEITERUNG: ANFORDERUNGS-MEMO (Session 2026-06-20 – Part 3)
+
+**Datum Anforderung**: 2026-06-20  
+**Status**: ✅ SPEZIFIZIERT | ⏳ DOKUMENTATION (nächste Session) | ⏳ IMPLEMENTIERUNG (danach)
+
+**Kontext**: User wünscht sich **dynamische Lagerorte statt vordefinierter Konstanten**. Lagerorte sollen beim Erstellen von Produkten und beim Buchen (AddToBestand) angelegt werden können.
+
+### Anforderungs-Details (FINAL)
+
+| Aspekt | Spezifikation |
+|--------|----------------|
+| **Anlage-Punkte** | UC10 (Neues Produkt erstellen) + UC2 (AddToBestand zu anderem Ort) |
+| **Validierung** | Nur Buchstaben (A-Z, a-z) |
+| **Normalisierung** | Single-Word-Input kleingeschrieben → Capitalize ("lagerA" → "LagerA") |
+| **Speicherung** | Case-Sensitive (wird unterschieden) |
+| **Auto-Complete** | Live-Vorschlag mit Fuzzy-Matching für Case-Insensitive Input |
+| **Limits** | KEINE (beliebig viele Lagerorte) |
+| **Löschung** | NICHT erlaubt (Audit-Trail) |
+| **Migration** | Bestehende ProduktInstanzen behalten ihre Lagerorte |
+| **Duplikate** | Mehrere ProduktInstanzen können gleichen Lagerort haben (unterschiedliche IDs) |
+
+### Nächste Session – DOKUMENTATIONS-PHASE (VOR Implementierung!)
+
+```
+1. Doc-Agent: Diagramme aktualisieren
+   ☐ use-cases.drawio: UC9 (neu) einzeichnen oder UC10 erweitern?
+   ☐ Sequence-Diagramme: UC2 (AddToBestand mit neuem Lagerort) + UC10 (Lagerort-Input)
+   ☐ ER-Diagramm: ProduktInstanz.Lagerort (String statt enum) + neue Lagerorte-Tabelle?
+
+2. Doc-Agent: Feature-Dokumentation
+   ☐ UC9-Lagerorte.html oder UC10-Erweiterung.html
+   ☐ Architecture-Overview.html: UC9 Status aktualisieren
+   ☐ Code-Design dokumentieren (LagerortService, Normalisierung, Fuzzy-Matching)
+
+3. Test-Agent: Tests (TDD Red)
+   ☐ LagerortService Tests (GetAlleLagerorte, GetLagerorteMitAutoComplete, ValidateLagerort, NormalisiereLagerort)
+   ☐ ProduktInstanzService Tests aktualisieren (neuer Lagerort-String)
+   ☐ LagerbestandService Tests aktualisieren (AddToBestand mit neuem Lagerort)
+
+4. Dev-Agent: Implementierung (TDD Green)
+   ☐ ProduktInstanz.cs: Lagerort String statt enum
+   ☐ LagerortService.cs (neu): Validierung, Normalisierung, Fuzzy-Matching
+   ☐ ProduktInstanzService.cs: Lagerort-Input verarbeiten
+   ☐ LagerbestandService.cs: AddToBestand mit Lagerort-Anlage
+
+5. Doc-Agent: 4-Teil-Dokumentation
+   ☐ Code-Dokumentation (XML-Docs, Inline-Kommentare)
+   ☐ Feature-HTML erweitert
+   ☐ Architecture-Overview aktualisiert
+   ☐ Diagramme mit Status
+```
+
+**WICHTIG**: Keine Code-Änderungen bis Dokumentation 100% spezifiziert ist! 🚫
+
+---
