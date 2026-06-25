@@ -1,8 +1,13 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-06-25 (Session 3: UC9-Erweiterung Spezifikation & Dokumentation)  
-**Status**: UC1 & UC2 & UC10 & UC6 gemergt | Tests 90/90 grün ✅ | UC9-Anforderungen geklärt & dokumentiert ✅ | Diagramme aktualisiert ✅  
-**Nächster Schritt**: Test-Agent schreibt LagerortService Tests (TDD Red) → Dev-Agent implementiert Code → Doc-Agent 4-Teil-Dokumentation
+**Datum**: 2026-06-25 (Session 3: UC9-Erweiterung Spezifikation & Dokumentation – COMPLETE ✅)  
+**Status**: 
+- ✅ UC1 & UC2 & UC6 & UC10 gemergt + dokumentiert (90/90 Tests grün)
+- ✅ UC9-Anforderungen geklärt (3 User-Entscheidungen)
+- ✅ UC9-Dokumentation VOLLSTÄNDIG (Diagramme, Feature-HTML, Spezifikation)
+- ⏳ UC9-Implementation bereit (nächst: Test-Agent)
+
+**Nächster Schritt**: Test-Agent schreibt LagerortService Tests (15+ Tests) → Dev-Agent implementiert Code → Doc-Agent 4-Teil-Dokumentation
 
 ---
 
@@ -511,24 +516,248 @@ VOR MR-Erstellung: KONSISTENZ-CHECK
 
 **WICHTIG**: Keine Code-Änderungen bis Dokumentation 100% spezifiziert ist! 🚫
 
-### ❓ Offene Fragen – Nächste Session klären!
+### ✅ Gekärte Fragen (Session 2026-06-25)
 
-Bevor die Dokumentations-Phase startet, müssen diese Fragen geklärt werden:
+Alle 3 offenen Fragen wurden mit User entschieden:
 
 1. **Normalisierung bei GROSS-Schreibung:**
-   - Input: `"LAGER"` (single word, ganz GROSS) → Bleibt `"LAGER"` oder wird zu `"Lager"`?
-   - Regel: Nur single-word-kleingeschrieben wird normalisiert, oder ALLE single-words?
+   - ✅ **ALLE Single-Words werden normalisiert (Capitalize)**
+   - "lagerA" → "LagerA" ✅
+   - "LAGER" → "Lager" ✅
+   - "LagerB" → "LagerB" (bleibt unverändert)
 
 2. **Fuzzy-Matching Tiefgang:**
-   - Input: `"lag"` → Findet auch `"Lager"` (partial prefix)?
-   - Oder nur exact Prefix-Match (z.B. "Lag" findet "Lag*")?
-   - Wieviele Zeichen mindestens zum Matchen?
+   - ✅ **Partial Prefix Matching (Case-Insensitive Input)**
+   - Input "lag" → findet ["Lager", "LagerA", "LagerB"] ✅
+   - Input "kue" → findet ["KuehlraumEins"] ✅
+   - Kein Minimum-Zeichenlimit (beliebig kurz möglich)
 
 3. **Lagerorte-Persistierung:**
-   - Neue Datenbank-Tabelle `Lagerorte` (mit ID) oder direkt String-Speicherung in `ProduktInstanz`?
-   - Brauchen wir ein `Lagerorte`-Model oder einfacher Set/Cache im Memory?
-   - Sollen Lagerorte auch in der SQLite-DB persistiert werden (für Multi-User)?
+   - ✅ **Separate Lagerorte-Tabelle mit ID (Multi-User & Audit-Trail)**
+   - Neue Tabelle: Lagerorte(Id INT, Name VARCHAR UNIQUE, CreatedAt DATETIME, IsArchived BIT)
+   - ProduktInstanz.LagerortId: FK referenziert Lagerorte.Id
+   - Keine physische Löschung (nur IsArchived flag)
 
-**📌 Diese Fragen in den Diagrammen & Feature-Design-Dokumentation klären → DANN erst Code!**
+---
+
+## 🎯 SESSION 2026-06-25: UC9-Erweiterung Spezifikation & Dokumentation (COMPLETE ✅)
+
+**Dauer**: ~45 Minuten  
+**Phase**: Doc-Agent Phase (Anforderungs-Klärung + Spezifikation + Diagramme)  
+**Ergebnis**: UC9-Dokumentation VOLLSTÄNDIG | Ready for Test-Agent  
+**Commit**: `1e3ba6e` (docs(uc9): UC9-Erweiterung spezifiziert)
+
+### Phase 1: Anforderungs-Klärung mit User (3 Fragen)
+
+User antwortet auf 3 kritische Entscheidungs-Fragen via AskUserQuestion-Tool:
+
+✅ **Normalisierung**: ALLE Single-Words → Capitalize  
+✅ **Fuzzy-Matching**: Partial Prefix, Case-Insensitive Input  
+✅ **Persistierung**: Separate Lagerorte-Tabelle mit FK (Multi-User)
+
+### Phase 2: Diagramme aktualisieren
+
+**1. ER-Diagramm** (`diagrams/database-schema.drawio`)
+- ✅ Neue Lagerorte-Entity (UC9 NEU! - grüne Umrandung)
+- ✅ Fields: Id (PK), Name (VARCHAR UNIQUE), CreatedAt (DATETIME), IsArchived (BIT)
+- ✅ ProduktInstanz.LagerortId (FK) → Lagerorte.Id
+- ✅ 1:N Beziehung dokumentiert
+
+**2. Sequence-Diagramm** (`diagrams/sequence-uc9-lagerorte.drawio`)
+- ✅ SZENARIO 1: ProduktInstanz-Erstellung mit neuem Lagerort (UC10)
+  - 13 Schritte: Input → Auto-Complete → Normalisierung → ValidateLagerort → GetOrCreate → Insert → Return
+- ✅ SZENARIO 2: AddToBestand mit neuem Lagerort (UC2)
+  - Ähnlicher Flow, aber in LagerbestandService-Kontext
+- ✅ Tech-Details dokumentiert (Fuzzy-Matching, Case-Sensitive Speicherung)
+
+**3. Use-Cases Diagramm** (`requirements/use-cases.drawio`)
+- ✅ UC2: "✅ Lagerbestand aktualisieren (UC2)" - mit Checkmark aktualisiert
+- ✅ UC6: "✅ Verbrauchte Produkte ausbuchen (UC6)" - mit Checkmark aktualisiert
+- ✅ UC9: "⏳ Lagerorte verwalten (UC9-Erweiterung)" - gelbe Markierung (IN ENTWICKLUNG)
+- ✅ Include-Beziehungen hinzugefügt:
+  - UC10 << include >> UC9 (orange Farbe für UC9-Erweiterung)
+  - UC2 << include >> UC9 (orange Farbe für UC9-Erweiterung)
+- ✅ Legend aktualisiert (⏳ Gelb = In Entwicklung, ✅ Grün = Fertig)
+
+### Phase 3: Feature-Dokumentation erstellen
+
+**UC9-Lagerorte.html** (`docs/features/UC9-Lagerorte.html`)
+- ✅ Header: Status-Badge "⏳ IN ENTWICKLUNG" + "✅ SPEZIFIZIERT"
+- ✅ Übersicht: Anforderungen + Geschäftsnutzen
+- ✅ 🔧 Technische Anforderungen (Table mit 7 Aspekten)
+  - Validierung (Buchstaben nur)
+  - Normalisierung (Capitalize)
+  - Speicherung (Case-Sensitive)
+  - Auto-Complete (Partial Prefix)
+  - Duplikat-Handling (GetOrCreate)
+  - Limits (keine)
+  - Löschung (nicht erlaubt)
+- ✅ Database Schema (CREATE TABLE + ALTER TABLE Statements)
+- ✅ Domain Model (Lagerort Entity + Service Interfaces)
+- ✅ 2 User Workflows + Auto-Complete Beispiele
+- ✅ Service Interfaces (ILagerortService mit 5 Methoden)
+- ✅ Tests-Plan (15+ Tests geplant mit Checklisten)
+- ✅ Dependencies (UC10, UC2, SQLite, EF Core)
+- ✅ Implementation Status (8-Item Checklist, 3 ✅ aus dieser Session)
+- ✅ Gekärte Fragen Sektion
+
+**Architecture-Overview.html** (`docs/architecture-overview.html`)
+- ✅ UC9 Card Status: "⏳ IN ENTWICKLUNG (Spezifiziert)"
+- ✅ UC9 Beschreibung: "Dynamische Lagerorte mit Auto-Complete & Normalisierung"
+- ✅ Domain Model Table: Lagerort Entity hinzugefügt (Status: ⏳ UC9-Erweiterung)
+
+**CONTEXT_SUMMARY.md** (`CONTEXT_SUMMARY.md`)
+- ✅ Header aktualisiert (Datum, Status, nächste Schritte)
+- ✅ UC9-ERWEITERUNG Sektion mit gekärten Fragen
+- ✅ Diese Session-Dokumentation hinzugefügt
+
+### Phase 4: Git Commit & Kontext speichern
+
+**Commit erstellt**: `1e3ba6e`
+```
+docs(uc9): UC9-Erweiterung spezifiziert - dynamische Lagerorte mit Auto-Complete
+
+Dokumentations-Phase (Doc-Agent) für UC9-Erweiterung abgeschlossen:
+
+ANFORDERUNGEN GEKLÄRT (3 User-Entscheidungen):
+✅ Normalisierung: Alle Single-Word-Inputs → Capitalize
+✅ Fuzzy-Matching: Partial Prefix, Case-Insensitive
+✅ Persistierung: Separate Lagerorte-Tabelle mit ID
+
+DIAGRAMME AKTUALISIERT:
+- ER-Diagramm: Lagerorte-Tabelle mit FK
+- Sequence-Diagramm: GetOrCreate, Fuzzy-Matching, Normalisierung
+- use-cases.drawio: UC9 mit Include-Beziehungen
+
+DOKUMENTATION:
+- UC9-Lagerorte.html: Spezifikation + Workflows + Tests-Plan
+- Architecture-Overview.html: UC9 Status aktualisiert
+- CONTEXT_SUMMARY.md: UC9-Phase dokumentiert
+
+Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>
+```
+
+### 📊 Projekt-Status nach Session 2026-06-25
+
+**Abgeschlossen & Gemergt**:
+- ✅ UC1 (LebensmittelKatalog) – 19 Tests, Code-Docs vollständig
+- ✅ UC2 (Lagerbestand) – 29 Tests, Diagramme + HTML + Validierungs-Report
+- ✅ UC6 (Verbrauch ausbuchen) – 10 Tests, Diagramme + HTML + Code-Docs
+- ✅ UC10 (ProduktInstanzen mit MHD) – 32 Tests, ZENTRAL, Code-Docs vollständig
+- **Total**: 90/90 Tests GRÜN ✅
+
+**In Dokumentation / Spezifikation**:
+- ✅ UC9-Erweiterung (Anforderungen geklärt, Diagramme erstellt, Feature-HTML, Architecture-Overview aktualisiert)
+  - ER-Diagramm: Lagerorte-Tabelle + FK
+  - Sequence-Diagramm: 2 Workflows (UC10, UC2)
+  - use-cases.drawio: UC9 mit Include-Beziehungen
+  - Feature-HTML: Vollständige Spezifikation
+  - Ready for Test-Agent
+
+**Im Backlog (todo)**:
+- UC3 (Nährwerte) – Basis für UC5
+- UC4 (Rezepte)
+- UC5 (Rezept-Nährwertberechnung)
+- UC7 (Verfallsdatum-Warnungen)
+- UC8 (Einkaufslisten)
+
+### 🚀 Nächste Phase (Session 2026-06-??)
+
+**1. Test-Agent** (TDD Red Phase):
+```
+Erstelle: src/Tests/Unit/Services/LagerortServiceTests.cs (15+ Tests)
+
+Tests für LagerortService:
+- GetAlleLagerorte() – Happy Path, Archivierte ausschließen
+- GetLagerorteMitAutoComplete(prefix) – Fuzzy-Matching, Case-Insensitive
+- ValidateLagerort(name) – Nur Buchstaben, Fehlerbehandlung
+- NormalisiereLagerort(input) – Capitalize-Logik (lager → Lager, LAGER → Lager)
+- GetOrCreateAsync(name) – Duplikat-Prüfung, Neu-Anlage
+- Edge Cases: leerer String, null, SQL-Injection versuche
+
+Aktualisierte Tests:
+- ProduktInstanzServiceTests: ProduktInstanz.LagerortId statt String
+- LagerbestandServiceTests: AddToBestand mit Lagerort-Input
+```
+
+**2. Dev-Agent** (TDD Green Phase):
+```
+Erstelle Dateien:
+- src/App/Models/Lagerort.cs (Entity)
+- src/App/Services/Interfaces/ILagerortService.cs
+- src/App/Services/Classes/LagerortService.cs
+
+Aktualisiere Dateien:
+- src/App/Models/ProduktInstanz.cs (LagerortId FK statt String)
+- src/App/Services/Classes/ProduktInstanzService.cs (GetOrCreateAsync nutzen)
+- src/App/Services/Classes/LagerbestandService.cs (Lagerort-Input)
+- Data/FoodDatabaseContext.cs (DbSet<Lagerort>, Migration)
+```
+
+**3. Doc-Agent** (4-Teil-Dokumentation):
+```
+Dokumentiere:
+1. Code-Dokumentation (XML-Docs, Inline-Kommentare für Fuzzy-Matching & Normalisierung)
+2. Feature-HTML erweitert (Code-Beispiele, Implementation-Details)
+3. Architecture-Overview aktualisiert (UC9 Status: ✅ FERTIG)
+4. Diagramme aktualisiert (use-cases.drawio: UC9 → ✅ grün, Commits hinzufügen)
+```
+
+**4. Review-Agent**: Code Review (Clean Code, SOLID, Security)
+
+**5. User Review**: Lokal testen auf Windows/Blazor
+
+**6. Merge zu master**: Feature Branch mergen
+
+### 💾 Git Status nach Session
+
+```
+Branch: master
+Commits: +1 (1e3ba6e)
+Ahead of origin/master: 9 commits
+Working Tree: CLEAN ✅
+
+Last Commits:
+  1e3ba6e (HEAD) docs(uc9): UC9-Erweiterung spezifiziert
+  5c542d7 docs(uc6): Add comprehensive documentation
+  ed62d49 test(uc6): Add VerbrauchAusbuchangService tests
+  [...]
+```
+
+### 📝 Key Decisions aus dieser Session
+
+| Entscheidung | Grund | Effekt |
+|--------------|-------|--------|
+| **ALLE Single-Words normalisieren** | Konsistenz (keine Case-Mischung in DB) | "LAGER", "lager", "Lager" → "Lager" |
+| **Partial Prefix Fuzzy-Matching** | Benutzerfreundlichkeit (weniger Tippen) | Input "lag" findet ["Lager", "LagerA"] |
+| **Separate Lagerorte-Tabelle** | Multi-User Consistency + Audit-Trail | Lagerorte persistiert, UNIQUE(Name) |
+| **IsArchived flag statt Delete** | Audit-Trail bleiben (wer, wann, was) | Soft-Delete Muster |
+| **GetOrCreate Pattern** | Verhindert Duplikate automatisch | Service-Layer Logik, DB UNIQUE Constraint |
+
+### 🎓 Learnings & Best Practices
+
+1. **Anforderungs-Klärung VOR Dokumentation** ← Spart Zeit später
+   - 3 Fragen in ~5 min geklärt
+   - User-Entscheidung SOFORT dokumentiert
+   
+2. **Sequence-Diagramme zeigen Implementation-Details**
+   - Normalisierung-Schritte sichtbar
+   - Database calls sichtbar
+   - Fehlerbehandlung sichtbar
+   
+3. **Feature-HTML mit Spezifikations-Table** ← Verhindert Missverständnisse
+   - Jede Anforderung 1 Zeile
+   - Beispiele inline
+   
+4. **Diagramme aktualisieren statt neu erstellen**
+   - use-cases.drawio: Nur 2 Includes + 3 Status-Änderungen hinzugefügt
+   - ER-Diagramm: Eine Tabelle mit Styling hinzugefügt
+   
+5. **4-Teil-Dokumentation MANDATORY**
+   - ✅ Code
+   - ✅ Features HTML
+   - ✅ Architecture-Overview
+   - ✅ Diagramme
+   - → Verhindert UC2/UC10-ähnliche Inkonsistenzen
 
 ---
