@@ -1,15 +1,97 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-06-25 (Session 5: Review-Agent Projekt-Audit – COMPLETE ✅)  
+**Datum**: 2026-06-25 (Session 6: Orchestrator - EF Core Setup – COMPLETE ✅)  
 **Status**: 
 - ✅ UC1 & UC2 & UC6 & UC10 gemergt + dokumentiert (90/90 Tests ✅ GRÜN)
 - ✅ UC9-Anforderungen geklärt & Spezifikation abgeschlossen
-- ✅ **Review-Agent Projekt-Audit durchgeführt** (Production-Ready!)
+- ✅ Review-Agent Projekt-Audit durchgeführt (Production-Ready!)
 - ✅ 4-Teil-Dokumentation 100% konsistent (Code + HTML + Overview + Diagramme)
-- ✅ Alle 9 Diagramme aktuell & synchronized
+- ✅ **Entity Framework Core Setup** (FoodDatabaseContext + Migrations + SQLite)
+- ✅ Lagerort.cs Modell vorbereitet (UC9)
+- ✅ Alte Feature-Branches gelöscht
 - ⏳ UC9-Implementation ready (nächst: Test-Agent LagerortService Tests)
 
 **Nächster Schritt**: Test-Agent schreibt LagerortService Tests (15+ Tests) → Review-Agent validiert → Dev-Agent implementiert → Doc-Agent 4-Teil-Dokumentation → Review-Agent Doku-Check
+
+---
+
+## 🔄 SESSION 2026-06-25 (PART 4): Orchestrator - EF Core Setup (COMPLETE ✅)
+
+**Dauer**: ~20 Minuten  
+**Phase**: Orchestrator Phase (Review-Agent Empfehlungen ausführen)  
+**Ergebnis**: EF Core 8.0 konfiguriert | Migrations erstellt & angewendet | DB Schema fertig  
+**Output**: Commit `5089cfa` (feat: Setup Entity Framework Core with SQLite migrations)
+
+### Phase 1: Review-Agent Empfehlungen ausführen
+
+**1. FoodDatabaseContext.cs erstellt**
+```
+✅ DbSets für LebensmittelKatalog, ProduktInstanzen, Lagerorte
+✅ Fluent API: Unique Indexes auf LebensmittelKatalog.Name + Lagerorte.Name
+✅ Foreign Keys: ProduktInstanz → LebensmittelKatalog (OnDelete: Restrict)
+✅ UC9 vorbereitet: Lagerorte-Tabelle mit CreatedAt + IsArchived
+```
+
+**2. Lagerort.cs Modell erstellt**
+```
+✅ Entity für dynamische Lagerorte (UC9)
+✅ Properties: Id, Name (UNIQUE), CreatedAt, IsArchived (Soft-Delete)
+✅ Dokumentiert mit XML-Docs
+✅ Wird später von Dev-Agent mit ProduktInstanz verknüpft
+```
+
+**3. Program.cs DbContext registriert**
+```
+✅ AddDbContext<FoodDatabaseContext> mit SQLite
+✅ Connection String aus appsettings.json ("FoodDatabaseConnection")
+✅ Using statements für FoodDatabase.App.Data + EntityFrameworkCore
+```
+
+**4. InitialCreate Migration erstellt & angewendet**
+```
+✅ `dotnet ef migrations add InitialCreate`
+✅ `dotnet ef database update`
+✅ Migration Files: 20260625145118_InitialCreate.cs + Designer + Snapshot
+✅ Datenbank-Tabellen erstellt:
+   - LebensmittelKatalog (mit UNIQUE Index auf Name)
+   - ProduktInstanzen (mit FK zu LebensmittelKatalog)
+   - Lagerorte (UC9, mit UNIQUE Index auf Name)
+   - __EFMigrationsHistory (Migration Tracking)
+```
+
+**5. Tests überprüft & Branches gelöscht**
+```
+✅ 90/90 Tests immer noch GRÜN (447 ms) – keine Breaking Changes
+✅ Alte Feature-Branches gelöscht:
+   - feat/uc1-lebensmittel-katalog ✅
+   - feat/uc2-lagerbestand-update ✅
+```
+
+### Phase 2: Qualitäts-Metriken nach EF Core Setup
+
+| Metrik | Status |
+|--------|--------|
+| Test-Suite | 90/90 GRÜN ✅ |
+| Build | Erfolgreich (6 Warnings - nullable) |
+| Database | SQLite erstellt mit Schema ✅ |
+| Migrations | InitialCreate angewendet ✅ |
+| Code | FoodDatabaseContext + Lagerort.cs + Program.cs ✅ |
+
+### Phase 3: Git Status nach EF Core Setup
+
+```
+Branch: master
+New Commits: 1 (5089cfa)
+Total Commits: 29
+Working Tree: CLEAN ✅
+
+Commit 5089cfa (HEAD):
+  - 6 files changed, 447 insertions
+  - Src/App/Data/FoodDatabaseContext.cs
+  - Src/App/Migrations/ (3 files)
+  - Src/App/Models/Lagerort.cs
+  - Src/App/Program.cs (modified)
+```
 
 ---
 
@@ -556,26 +638,25 @@ FoodDatabase/
 
 ---
 
-## 📊 Git-Status (SESSION 5: REVIEW-AGENT AUDIT COMPLETE ✅)
+## 📊 Git-Status (SESSION 6: EF CORE SETUP COMPLETE ✅)
 
 ```
 Branch: master
-Total Commits: 28
-Commits Ahead of Origin: 9
+Total Commits: 29
+Commits Ahead of Origin: 10
 Working Tree: CLEAN ✅
 Test Status: 90/90 GRÜN ✅
 Documentation Status: 100% KONSISTENT (UC1/UC2/UC6/UC10/UC9-Spec) ✅
-Sequence Diagrams: 5/5 Complete (UC1, UC2, UC6, UC9, UC10) ✅
-Validierungs-Reports: 4/4 Complete (UC1, UC2, UC6, UC10) ✅
-Doc-Agent Workflow: 4-Teil-Mandatory (Code + Features HTML + Overview + Diagrams) ✅ VERIFIED
-Review-Agent Audit: PROJECT-STATUS-REVIEW-2026-06-25.md erstellt ✅
+Database Schema: SQLite mit FoodDatabaseContext ✅
+EF Core Migrations: InitialCreate angewendet ✅
+Feature Branches: Cleanup (feat/uc1, feat/uc2 gelöscht) ✅
 
 Last Commits (Top 5):
+  - 5089cfa feat: Setup Entity Framework Core with SQLite migrations
+  - e715c65 docs: Review-Agent Project Audit - Production-Ready Status Confirmed
   - 1aec930 docs: Integrate Review-Agent with 3-Loop Feedback Workflow
   - 5104afb docs: Update CONTEXT_SUMMARY with UC9 session details and next steps
   - 1e3ba6e docs(uc9): UC9-Erweiterung spezifiziert - dynamische Lagerorte mit Auto-Complete
-  - 5c542d7 docs(uc6): Add comprehensive documentation with sequence diagrams
-  - ed62d49 test(uc6): Add VerbrauchAusbuchangService tests (10/10 green)
 ```
 
 ### Quality Gates alle BESTANDEN ✅
@@ -589,31 +670,57 @@ Last Commits (Top 5):
 
 ---
 
-## 🎯 Nächste Phase – UC9 Implementation START
+## 🎯 Nächste Phase – UC9 Test-Agent Phase STARTEN ✅
+
+**EF Core Setup ist FERTIG!** Alle Review-Agent Empfehlungen ausgeführt. UC9 Implementation kann starten.
+
+### Immediately (nächste Sitzung):
 
 ```bash
-# 1. Diese Datei lesen (2 min)
-cat CONTEXT_SUMMARY.md
-
-# 2. Tests überprüfen (sollten alle 90 grün sein)
+# 1. Überprüfen dass alles stabil ist
 dotnet test FoodDatabase.sln
 # → Erwartet: 90/90 GRÜN ✅
 
-# 3. Cleanup (Optional)
-git branch -d feat/uc1-lebensmittel-katalog
-git branch -d feat/uc2-lagerbestand-update
+# 2. UC9 Test-Agent Phase starten
+# Test-Agent: LagerortService Tests schreiben (15+ Tests) – TDD Red
+#
+# Tests für:
+#   - GetAlleLagerorte() – Happy Path, Archivierte ausschließen
+#   - GetLagerorteMitAutoComplete(prefix) – Fuzzy-Matching, Case-Insensitive
+#   - ValidateLagerort(name) – Nur Buchstaben, Fehlerbehandlung
+#   - NormalisiereLagerort(input) – Capitalize-Logik (lager → Lager, LAGER → Lager)
+#   - GetOrCreateAsync(name) – Duplikat-Prüfung, Neu-Anlage
+#   - Edge Cases: leerer String, null, SQL-Injection attempts
 
-# 4. UC9 STARTEN – Test-Agent Phase (TDD Red)
-# Test-Agent: LagerortService Tests schreiben (15+ Tests)
-#   - GetAlleLagerorte()
-#   - GetLagerorteMitAutoComplete(prefix) – Fuzzy-Matching
-#   - ValidateLagerort(name)
-#   - NormalisiereLagerort(input)
-#   - GetOrCreateAsync(name)
-#   - Edge Cases
+# 3. Review-Agent validiert Tests (Testkonstruktion, Abdeckung, Edge-Cases)
 
-# 5. Dann: Dev-Agent → Doc-Agent → Review-Agent → User-Review → Merge
-# Follow: Established TDD-Workflow (Test → Code → Docs) + 4-Teil-Doc-Agent
+# 4. Dev-Agent implementiert Code (TDD Green)
+#   - ProduktInstanz.cs aktualisieren (LagerortId FK)
+#   - Lagerort.cs Entity erweitern
+#   - ILagerortService Interface
+#   - LagerortService Implementation
+#   - Migration für ProduktInstanz.LagerortId
+
+# 5. Doc-Agent: 4-Teil-Dokumentation
+#   - Code-Dokumentation (XML-Docs, Inline)
+#   - Feature-HTML erweitert (Implementation Details)
+#   - Architecture-Overview aktualisiert (UC9 Status: ✅ Fertig)
+#   - Diagramme mit Status
+
+# 6. Review-Agent validiert Code + Doku (3-Schleifen-Feedback)
+
+# 7. User-Review & Merge
+```
+
+### Pre-UC9 Test-Phase Checklist:
+```
+✅ FoodDatabaseContext erstellt
+✅ InitialCreate Migration angewendet
+✅ Lagerort.cs Entity vorhanden
+✅ 90/90 Tests grün
+✅ Feature-Branches gelöscht
+✅ UC9 Spezifikation parat (Feature-HTML + Diagramme + Anforderungen)
+→ READY FOR TEST-AGENT
 ```
 
 ### Pre-UC9 Checklist
@@ -628,11 +735,11 @@ git branch -d feat/uc2-lagerbestand-update
 
 ---
 
-## 💪 Momentum & Status (SESSION 5 UPDATE)
+## 💪 Momentum & Status (SESSION 6 UPDATE)
 
-**Status**: ✅ Infrastruktur stabil | ✅ UC1/UC2/UC6/UC10 vollständig | ✅ Tests 90/90 grün | ✅ Dokumentation 100% KONSISTENT | ✅ Code-Docs 100% XML | ✅ Review-Audit bestätigt Production-Ready | ✅ UC9 Spezifikation abgeschlossen  
-**Projekt-Reife**: 🟢 PRODUCTION READY für UC1-UC2, UC6, UC10 | 🟡 UC9 spezifiziert, ready für Test-Phase  
-**Ready For**: UC9 Test-Agent Phase + nachfolgende UC3/UC4/UC5/UC7/UC8 mit etabliertem 4-Teil-Dokumentations-Workflow! **🚀 GO GO GO!**
+**Status**: ✅ Infrastruktur stabil + EF Core ready | ✅ UC1/UC2/UC6/UC10 vollständig | ✅ Tests 90/90 grün | ✅ Dokumentation 100% KONSISTENT | ✅ Code-Docs 100% XML | ✅ Review-Audit Production-Ready | ✅ UC9 Spezifikation + EF Core Setup fertig  
+**Projekt-Reife**: 🟢 PRODUCTION READY für UC1-UC2, UC6, UC10 | 🟢 UC9 spezifiziert + EF Core ready, ready für Test-Phase  
+**Ready For**: UC9 Test-Agent Phase sofort! LagerortService Tests (TDD Red) → Dev/Doc/Review → Merge. **🚀 GO GO GO!**
 
 ---
 
