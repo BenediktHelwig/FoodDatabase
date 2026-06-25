@@ -86,20 +86,34 @@ Alle Agenten sind als spezialisierte Claude-Agent-Instanzen konfiguriert und arb
   - `src/App/[Domain]/[Feature].razor` (Blazor-Components)
 
 ### 5. **Review-Agent** (`review-agent.md`)
-- **Rolle**: Qualitätssicherung
+- **Rolle**: Qualitätssicherung mit strukturiertem Feedback-Loop
 - **Verantwortung**:
-  - Reviewt Test + Produktivcode
-  - Prüfkriterien:
-    - ✅ Clean Code (Naming, SOLID, Readability)
-    - ✅ KISS Prinzip (Keine Over-Engineering)
-    - ✅ Test-Coverage (>80%)
-    - ✅ Fehlerbehandlung
-    - ✅ Code-Dokumentation
-    - ✅ Performance & Resource-Effizienz
-    - ✅ Security (SQL Injection, XSS, Authentication)
-  - **Eskalation**: 3 Fehlschläge → Escalation zu User (als Merge Request Comment)
+  - Validiert Tests nach Test-Agent-Commit (Testkonstruktion, Abdeckung, Edge-Cases)
+  - Validiert Code nach Dev-Agent-Commit (Clean Code, Security, SOLID, KISS + Tests GRÜN?)
+  - Validiert Dokumentation nach Doc-Agent 4-Teil-Check (Konsistenz aller 4 Aspekte)
+  - **3-Schleifen-Feedback-Loop**: Max. 3× Feedback zwischen Review-Agent und dem betroffenen Agent
+  - **Eskalation nach Schleife 3**: Falls nicht gelöst → User-Eskalation als Merge Request Comment
+- **Test-Phase Review fokussiert auf**:
+  - ✅ Testkonstruktion (Arrange/Act/Assert klar?)
+  - ✅ Test-Abdeckung (Alle Szenarien bedacht?)
+  - ✅ Edge-Cases (Fehlerfall, Boundary-Bedingungen?)
+  - ✅ TDD-Logik (Tests als Spezifikation für Code?)
+  - ⚠️ NICHT: "Sind Tests bestanden?" (Sie sind absichtlich rot in dieser Phase!)
+- **Code-Phase Review fokussiert auf**:
+  - ✅ Tests müssen ALLE GRÜN sein
+  - ✅ Clean Code (Naming, SOLID, Readability)
+  - ✅ KISS Prinzip (Keine Over-Engineering)
+  - ✅ Fehlerbehandlung
+  - ✅ Code-Dokumentation
+  - ✅ Performance & Resource-Effizienz
+  - ✅ Security (SQL Injection, XSS, Authentication)
+- **Doku-Phase Review fokussiert auf**:
+  - ✅ Code-Dokumentation konsistent
+  - ✅ Feature-HTML vollständig
+  - ✅ Architecture-Overview aktualisiert
+  - ✅ Diagramme korrekt
 - **Output-Format**:
-  - `reviews/[feature]-review-[attempt].md` (Review-Feedback)
+  - `reviews/[feature]-[phase]-review-[attempt].md` (z.B. `uc3-code-review-1.md`)
 
 ---
 
@@ -123,45 +137,77 @@ Alle Agenten sind als spezialisierte Claude-Agent-Instanzen konfiguriert und arb
 ```
 FOR EACH USE-CASE:
 
-  ┌─── Diagramm-Phase ────────────────────────┐
-  │ 1. Use-Case definiert                     │
-  │ 2. Alle UML-Diagramme vorhanden           │
-  │ 3. Doc-Agent dokumentiert Architektur     │
-  └───────────────────────────────────────────┘
+  ┌─── Diagramm-Phase ────────────────────────────────────┐
+  │ 1. Use-Case definiert                                 │
+  │ 2. Alle UML-Diagramme vorhanden                       │
+  │ 3. Doc-Agent dokumentiert Architektur                 │
+  └───────────────────────────────────────────────────────┘
            ↓
-  ┌─── Test-Phase ────────────────────────────────────────┐
-  │ 1. Test-Agent schreibt Tests (TDD Rot)                │
-  │ 2. Doc-Agent dokumentiert (4-Teil-Check):            │
-  │    ☐ Test-Dokumentation                              │
-  │    ☐ Feature-HTML Seite                              │
-  │    ☐ Architecture-Overview.html                       │
-  │    ☐ Diagramme aktualisiert                           │
-  │ 3. Merge Request: "test/[feature]"                   │
-  │    → Review-Agent überprüft                          │
-  │    → Max. 3 Fehlschläge → Eskalation                 │
-  └────────────────────────────────────────────────────────┘
+  ┌─── TEST-PHASE mit Review-Loop ────────────────────────────────────────────┐
+  │ 1. Test-Agent schreibt Tests (TDD ROT – absichtlich!)                     │
+  │         ↓                                                                  │
+  │ 2. Review-Agent: Testkonstruktion validieren (Versuch 1/3)               │
+  │    (Abdeckung? Edge-Cases? Logik? TDD-Spezifikation?)                   │
+  │    NICHT: "Sind Tests bestanden?" (Sie sind rot!)                         │
+  │         ↓                                                                  │
+  │    ✅ Tests freigegeben | ⚠️ Feedback (Loop 1/3)                         │
+  │         ↓ (falls Feedback)                                                │
+  │    Test-Agent überarbeitet Tests → Review-Agent (Versuch 2/3)            │
+  │         ↓ (falls noch nicht OK)                                           │
+  │    Test-Agent überarbeitet Tests → Review-Agent (Versuch 3/3)            │
+  │         ↓ (falls IMMER NOCH nicht OK)                                    │
+  │    ⛔ ESKALATION ZU USER                                                  │
+  │         ↓ (Tests freigegeben)                                             │
+  │ 3. Doc-Agent dokumentiert (4-Teil-Check):                                │
+  │    ☐ Test-Dokumentation                                                  │
+  │    ☐ Feature-HTML Seite                                                  │
+  │    ☐ Architecture-Overview.html                                           │
+  │    ☐ Diagramme aktualisiert                                              │
+  └────────────────────────────────────────────────────────────────────────────┘
            ↓
-  ┌─── Implementation-Phase ──────────────────────────────┐
-  │ 1. Dev-Agent implementiert Code (TDD Grün)           │
-  │ 2. Dev-Agent: Tests müssen GRÜN sein                 │
-  │ 3. Doc-Agent dokumentiert (4-Teil-Check):           │
-  │    ☐ Code-Dokumentation + Validierungsreport         │
-  │    ☐ Feature-HTML Seite erweitert                    │
-  │    ☐ Architecture-Overview.html Status aktualisiert  │
-  │    ☐ use-cases.drawio + Diagramme mit Status         │
-  │ 4. Merge Request: "feat/[feature]"                  │
-  │    → Review-Agent überprüft                         │
-  │    → Max. 3 Fehlschläge → Eskalation                │
-  └────────────────────────────────────────────────────────┘
+  ┌─── IMPLEMENTATION-PHASE mit Review-Loop ──────────────────────────────────┐
+  │ 1. Dev-Agent implementiert Code (TDD GRÜN)                               │
+  │    Dev-Agent: Tests müssen ALLE GRÜN sein                                │
+  │         ↓                                                                  │
+  │ 2. Review-Agent: Code + Tests validieren (Versuch 1/3)                  │
+  │    (Tests GRÜN? Clean Code? Security? SOLID? KISS?)                     │
+  │         ↓                                                                  │
+  │    ✅ Code freigegeben | ⚠️ Feedback (Loop 1/3)                          │
+  │         ↓ (falls Feedback)                                                │
+  │    Dev-Agent überarbeitet Code → Review-Agent (Versuch 2/3)              │
+  │         ↓ (falls noch nicht OK)                                           │
+  │    Dev-Agent überarbeitet Code → Review-Agent (Versuch 3/3)              │
+  │         ↓ (falls IMMER NOCH nicht OK)                                    │
+  │    ⛔ ESKALATION ZU USER                                                  │
+  │         ↓ (Code freigegeben)                                              │
+  │ 3. Doc-Agent dokumentiert (4-Teil-Check):                                │
+  │    ☐ Code-Dokumentation + Validierungsreport                            │
+  │    ☐ Feature-HTML Seite erweitert                                        │
+  │    ☐ Architecture-Overview.html Status aktualisiert                      │
+  │    ☐ use-cases.drawio + Diagramme mit Status                             │
+  │         ↓                                                                  │
+  │ 4. Review-Agent: Doku-Konsistenz validieren (Versuch 1/3)               │
+  │    (Alle 4 Aspekte konsistent? Status OK?)                               │
+  │         ↓                                                                  │
+  │    ✅ Doku freigegeben | ⚠️ Feedback (Loop 1/3)                          │
+  │         ↓ (falls Feedback)                                                │
+  │    Doc-Agent überarbeitet Doku → Review-Agent (Versuch 2/3)              │
+  │         ↓ (falls noch nicht OK)                                           │
+  │    Doc-Agent überarbeitet Doku → Review-Agent (Versuch 3/3)              │
+  │         ↓ (falls IMMER NOCH nicht OK)                                    │
+  │    ⛔ ESKALATION ZU USER                                                  │
+  │         ↓ (Doku freigegeben)                                              │
+  │ 5. Definition-of-Done erfüllt ✅                                          │
+  └────────────────────────────────────────────────────────────────────────────┘
            ↓
-  ┌─── User-Review-Phase ─────────────────────┐
-  │ 1. User reviewt komplettes Feature        │
-  │    - Code-Quality                         │
-  │    - Funktionalität                       │
-  │    - Dokumentation & Diagramme            │
-  │ 2. User approved? → Merge & nächster UC   │
-  │    User feedback? → Feedback an Agents    │
-  └───────────────────────────────────────────┘
+  ┌─── User-Review-Phase ─────────────────────────────────────┐
+  │ 1. User reviewt komplettes Feature (alle Reviews bestanden)  │
+  │    - Code-Quality                                          │
+  │    - Funktionalität                                        │
+  │    - Dokumentation & Diagramme                             │
+  │ 2. User approved? → Merge & nächster UC                    │
+  │    User feedback? → Feedback an relevante Agents          │
+  └──────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -445,13 +491,15 @@ claude agent --load "C:\Users\bened\source\repos\FoodDatabase\claude\agents\revi
 
 ### **Was muss bestanden werden, bevor ein MR gemergt wird?**
 
-| Phase | Gatekeeper | Anforderung | Status |
-|-------|-----------|-------------|--------|
-| **Tests** | Test-Agent | Tests schreiben + bestehen | ✅ Automatisiert |
-| **Code** | Dev-Agent | Code implementieren + Best Practices | ✅ Automatisiert |
-| **Review** | Review-Agent | Code-Quality + Security + Performance | ✅ Automatisiert (3 Fehlschläge → Eskalation) |
-| **Dokumentation** | Doc-Agent | **4-Teil-Check** (siehe unten) | ✅ Automatisiert |
-| **User** | User (du) | Feature passt zu Use-Cases | ⏳ Manuell |
+| Phase | Agent | Verantwortung | Review-Gate | Status |
+|-------|-------|----------------|-------------|--------|
+| **Test-Phase** | Test-Agent | Tests schreiben (TDD Rot) | Review-Agent: Testkonstruktion (3-Loop) | ✅ Automatisiert |
+| **Implementation** | Dev-Agent | Code schreiben + Tests GRÜN (TDD Grün) | Review-Agent: Code-Quality (3-Loop) | ✅ Automatisiert |
+| **Dokumentation** | Doc-Agent | 4-Teil-Check (Code/HTML/Overview/Diagramme) | Review-Agent: Konsistenz (3-Loop) | ✅ Automatisiert |
+| **MR-Finalisierung** | Review-Agent | Alle Reviews bestanden? MR-Ready? | - | ✅ Automatisiert |
+| **User-Review** | User (du) | Feature passt zu Use-Cases? | - | ⏳ Manuell |
+
+**Legende**: 3-Loop = Max. 3 Feedback-Schleifen zwischen Review-Agent und Agent. Nach Schleife 3 → Eskalation zu User.
 
 ---
 
@@ -557,6 +605,116 @@ FINAL CHECK:
   → Alle 4 Aspekte aktuell?
   → Keine Inkonsistenzen?
   → Dann: READY FOR MR
+```
+
+---
+
+### **🔄 Review-Agent Workflow & 3-Schleifen-Feedback**
+
+Der Review-Agent arbeitet mit strukturiertem Feedback-Loop nach jeder Agent-Arbeit:
+
+#### **Test-Phase Review**
+
+```
+TRIGGER: Nach Test-Agent-Commit
+
+Review fokussiert auf (NICHT auf Bestanden-Status, Tests sind absichtlich ROT!):
+  1. Testkonstruktion: Arrange/Act/Assert klar und sinnvoll?
+  2. Test-Abdeckung: Werden alle Szenarien abgedeckt?
+  3. Edge-Cases: Fehlerfall, Boundary-Bedingungen, Sonderfälle?
+  4. TDD-Logik: Dienen Tests als Spezifikation für den Dev-Agent?
+
+FEEDBACK-LOOP:
+  Versuch 1/3: Review-Agent prüft Tests
+    → Tests OK? ✅ Freigabe für Doc-Agent
+    → Probleme? ⚠️ Feedback an Test-Agent
+
+  Versuch 2/3: Test-Agent überarbeitet → Review-Agent schaut nochmal
+    → Tests OK? ✅ Freigabe für Doc-Agent
+    → Immer noch Probleme? ⚠️ Feedback an Test-Agent
+
+  Versuch 3/3: Test-Agent überarbeitet → Review-Agent schaut nochmal
+    → Tests OK? ✅ Freigabe für Doc-Agent
+    → Immer noch nicht OK? ⛔ ESKALATION ZU USER
+       Message: "Test-Konstruktion nach 3 Feedback-Schleifen nicht akzeptabel.
+                 User-Entscheidung erforderlich."
+
+OUTPUT: reviews/[feature]-test-review-[attempt].md
+```
+
+#### **Code-Phase Review**
+
+```
+TRIGGER: Nach Dev-Agent-Commit (wenn Tests alle GRÜN sind)
+
+Review fokussiert auf:
+  1. Tests GRÜN? (TDD Grün-Phase erfolgreich?)
+  2. Clean Code: Naming, Leserlichkeit, SOLID-Prinzipien?
+  3. Security: SQL Injection? XSS? Authentication/Authorization?
+  4. KISS: Keine Over-Engineering, Simplicitas?
+  5. Error Handling: Fehlerbehandlung korrekt?
+  6. Performance: Resource-Effizienz, Skalierbarkeit?
+  7. Code-Dokumentation: Inline-Kommentare für NON-OBVIOUS Logik?
+
+FEEDBACK-LOOP:
+  Versuch 1/3: Review-Agent prüft Code + Tests
+    → Code OK? ✅ Freigabe für Doc-Agent
+    → Probleme? ⚠️ Feedback an Dev-Agent
+
+  Versuch 2/3: Dev-Agent überarbeitet → Review-Agent schaut nochmal
+    → Code OK? ✅ Freigabe für Doc-Agent
+    → Immer noch Probleme? ⚠️ Feedback an Dev-Agent
+
+  Versuch 3/3: Dev-Agent überarbeitet → Review-Agent schaut nochmal
+    → Code OK? ✅ Freigabe für Doc-Agent
+    → Immer noch nicht OK? ⛔ ESKALATION ZU USER
+       Message: "Code-Quality nach 3 Feedback-Schleifen nicht akzeptabel.
+                 User-Entscheidung erforderlich."
+
+OUTPUT: reviews/[feature]-code-review-[attempt].md
+```
+
+#### **Dokumentation-Phase Review**
+
+```
+TRIGGER: Nach Doc-Agent 4-Teil-Check (komplett)
+
+Review fokussiert auf (alle 4 Aspekte zusammen):
+  1. Code-Dokumentation: Alle Services/Models/Tests dokumentiert?
+  2. Feature-HTML: Status-Badge, Domain Model, Tests, Diagramme aktuell?
+  3. Architecture-Overview: UC-Status, Entity-Status, Projekt-Status aktualisiert?
+  4. Diagramme: use-cases.drawio mit Farben, Sequence-Diagramme, ER-Diagramm?
+  5. Konsistenz: Sagen alle 4 Aspekte das gleiche? Oder widersprechen sie sich?
+
+FEEDBACK-LOOP:
+  Versuch 1/3: Review-Agent prüft Doku-Konsistenz
+    → Alles OK? ✅ Freigabe für MR-Erstellung
+    → Probleme? ⚠️ Feedback an Doc-Agent
+
+  Versuch 2/3: Doc-Agent überarbeitet → Review-Agent schaut nochmal
+    → Alles OK? ✅ Freigabe für MR-Erstellung
+    → Immer noch Probleme? ⚠️ Feedback an Doc-Agent
+
+  Versuch 3/3: Doc-Agent überarbeitet → Review-Agent schaut nochmal
+    → Alles OK? ✅ Freigabe für MR-Erstellung
+    → Immer noch nicht OK? ⛔ ESKALATION ZU USER
+       Message: "Dokumentation nach 3 Feedback-Schleifen nicht konsistent.
+                 User-Entscheidung erforderlich."
+
+OUTPUT: reviews/[feature]-doku-review-[attempt].md
+```
+
+#### **MR-Finalisierung Review**
+
+```
+TRIGGER: Vor User-Review (optional, falls alle anderen Reviews bestanden)
+
+Review prüft:
+  1. Sind alle vorherigen Reviews (Test/Code/Doku) bestanden?
+  2. Ist MR-Beschreibung vollständig und korrekt?
+  3. Sind alle Änderungen dokumentiert und nachverfolgbar?
+
+OUTPUT: reviews/[feature]-mr-final-check.md (oder kurz im MR-Comment)
 ```
 
 ---

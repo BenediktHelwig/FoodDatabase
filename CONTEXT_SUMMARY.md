@@ -1,13 +1,138 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-06-25 (Session 3: UC9-Erweiterung Spezifikation & Dokumentation – COMPLETE ✅)  
+**Datum**: 2026-06-25 (Session 4: Review-Agent Workflow Integration – COMPLETE ✅)  
 **Status**: 
 - ✅ UC1 & UC2 & UC6 & UC10 gemergt + dokumentiert (90/90 Tests grün)
-- ✅ UC9-Anforderungen geklärt (3 User-Entscheidungen)
-- ✅ UC9-Dokumentation VOLLSTÄNDIG (Diagramme, Feature-HTML, Spezifikation)
+- ✅ UC9-Anforderungen geklärt & dokumentiert (3 User-Entscheidungen)
+- ✅ **Review-Agent Workflow implementiert** (3-Schleifen-Feedback für Test/Code/Doku)
+- ✅ CLAUDE.md aktualisiert mit neuem Review-Prozess
 - ⏳ UC9-Implementation bereit (nächst: Test-Agent)
 
-**Nächster Schritt**: Test-Agent schreibt LagerortService Tests (15+ Tests) → Dev-Agent implementiert Code → Doc-Agent 4-Teil-Dokumentation
+**Nächster Schritt**: Test-Agent schreibt LagerortService Tests (15+ Tests) → Review-Agent (Versuch 1-3) → Dev-Agent implementiert → Doc-Agent 4-Teil-Dokumentation → Review-Agent Doku-Check
+
+---
+
+## 🔄 SESSION 2026-06-25 (PART 2): Review-Agent Workflow Integration (COMPLETE ✅)
+
+**Erkenntnisse**: Der Review-Agent war bisher im Workflow definiert, aber nicht aktiv beteiligt. **Neue Struktur**: 3-Schleifen-Feedback zwischen Review-Agent und den anderen Agenten (Test, Dev, Doc).
+
+### Phase 1: Problem-Identifikation
+- ✅ Review-Agent war DEFINIERT, aber nicht AKTIV eingebunden
+- ✅ Entdeckung: Kein strukturiertes Feedback-Loop zwischen Reviews und Agenten-Überarbeitungen
+
+### Phase 2: Neuer Review-Agent Workflow implementiert
+
+**Struktur: 3-Schleifen-Feedback-Loop pro Phase**:
+
+#### Test-Phase Review
+```
+TRIGGER: Nach Test-Agent-Commit
+REVIEW FOKUSSIERT AUF:
+  ✅ Testkonstruktion (Arrange/Act/Assert klar?)
+  ✅ Test-Abdeckung (Alle Szenarien?)
+  ✅ Edge-Cases (Fehlerfall, Boundaries?)
+  ✅ TDD-Logik (Tests als Spezifikation?)
+  ⚠️ NICHT: "Sind Tests bestanden?" (Sie sind absichtlich ROT!)
+
+FEEDBACK-LOOP:
+  Versuch 1/3: Review → Problem? → Test-Agent überarbeitet
+  Versuch 2/3: Review → Problem? → Test-Agent überarbeitet
+  Versuch 3/3: Review → Problem? → ⛔ ESKALATION ZU USER
+```
+
+#### Code-Phase Review
+```
+TRIGGER: Nach Dev-Agent-Commit (Tests GRÜN)
+REVIEW FOKUSSIERT AUF:
+  ✅ Tests ALLE GRÜN? (TDD Grün erfolgreich?)
+  ✅ Clean Code (Naming, Readability, SOLID?)
+  ✅ Security (SQL Injection, XSS, Authentication?)
+  ✅ KISS (Keine Over-Engineering?)
+  ✅ Error Handling + Performance + Dokumentation?
+
+FEEDBACK-LOOP:
+  Versuch 1/3: Review → Problem? → Dev-Agent überarbeitet
+  Versuch 2/3: Review → Problem? → Dev-Agent überarbeitet
+  Versuch 3/3: Review → Problem? → ⛔ ESKALATION ZU USER
+```
+
+#### Dokumentation-Phase Review
+```
+TRIGGER: Nach Doc-Agent 4-Teil-Check (komplett)
+REVIEW FOKUSSIERT AUF:
+  ✅ Alle 4 Aspekte KONSISTENT?
+    1. Code-Dokumentation (Services, Models, Tests)
+    2. Feature-HTML (Status, Domain Model, Workflows)
+    3. Architecture-Overview (UC-Status aktualisiert)
+    4. Diagramme (use-cases, Sequence, ER-Diagramm)
+
+FEEDBACK-LOOP:
+  Versuch 1/3: Review → Inkonsistenz? → Doc-Agent überarbeitet
+  Versuch 2/3: Review → Inkonsistenz? → Doc-Agent überarbeitet
+  Versuch 3/3: Review → Inkonsistenz? → ⛔ ESKALATION ZU USER
+```
+
+### Phase 3: CLAUDE.md aktualisiert
+
+**Review-Agent Rolle präzisiert**:
+- ✅ Test-Phase: Testkonstruktion-Review (NICHT Bestanden-Status)
+- ✅ Code-Phase: Code-Quality + Tests GRÜN
+- ✅ Doku-Phase: 4-Aspekte-Konsistenz
+- ✅ 3-Schleifen-Feedback mit User-Eskalation nach Schleife 3
+
+**Phase-2 Workflow aktualisiert**:
+- ✅ Test-Phase-Diagramm: Review-Agent mit 3-Loop integriert
+- ✅ Implementation-Phase-Diagramm: Review-Agent mit 3-Loop integriert
+- ✅ Doc-Phase-Diagramm: Review-Agent mit 3-Loop integriert
+
+**Neue Sektion hinzugefügt**: "Review-Agent Workflow & 3-Schleifen-Feedback"
+- ✅ Detaillierter Pseudocode für Test/Code/Doku/MR-Reviews
+- ✅ Output-Dateien definiert (reviews/[feature]-[phase]-review-[attempt].md)
+
+**Qualitäts-Gates Tabelle aktualisiert**:
+- ✅ 5 Phasen: Test | Implementation | Dokumentation | MR-Finalisierung | User-Review
+- ✅ Agent + Verantwortung + Review-Gate + Status klar definiert
+- ✅ 3-Loop-Legende hinzugefügt
+
+### Phase 4: Definition-of-Done (überprüft & aktualisiert)
+
+**Neue Definition-of-Done pro UC**:
+
+```
+TEST-PHASE:
+  1. ✅ Test-Agent schreibt Tests (TDD ROT)
+  2. ✅ Review-Agent: Testkonstruktion (3-Loop → max. 3 Feedback-Schleifen)
+  3. ✅ Doc-Agent: 4-Teil-Check (Code + HTML + Overview + Diagramme)
+
+IMPLEMENTATION-PHASE:
+  1. ✅ Dev-Agent implementiert Code (TDD GRÜN)
+  2. ✅ Review-Agent: Code-Quality (3-Loop)
+  3. ✅ Review-Agent: Doku-Konsistenz (3-Loop)
+  4. ✅ Definition-of-Done erfüllt
+
+USER-REVIEW-PHASE:
+  1. ✅ User reviewt Feature lokal
+  2. ✅ Approval oder Feedback
+  3. ✅ Merge oder Eskalation
+```
+
+### 📊 Projekt-Status nach Phase 2
+
+| Aspekt | Status | Details |
+|--------|--------|---------|
+| **Review-Agent Integration** | ✅ COMPLETE | 3-Schleifen-Feedback für Test/Code/Doku aktiv |
+| **CLAUDE.md aktualisiert** | ✅ COMPLETE | Neue Workflow-Diagramme, 4-Aspekte-Dokumentation |
+| **Definition-of-Done** | ✅ UPDATED | Review-Agent als MANDATORY Gate pro Phase |
+| **Ready für UC3+** | ✅ YES | Kompletter Workflow mit Review-Integration |
+
+### 🚀 Auswirkung auf nächste UCs
+
+**Neue Workflow-Garantien**:
+1. ✅ Jede Testphase wird auf Konstruktion reviewt (nicht nur bestanden-Status)
+2. ✅ Jeder Code wird auf Quality reviewt (min. 1× durchlaufen)
+3. ✅ Jede Dokumentation wird auf Konsistenz reviewt (alle 4 Aspekte zusammen)
+4. ✅ Max. 3 Feedback-Schleifen pro Phase → dann User-Eskalation
+5. ✅ Keine "fehlende Reviews" mehr (waren bisher Lücke in Workflow)
 
 ---
 
