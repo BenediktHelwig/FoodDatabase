@@ -34,18 +34,18 @@
                     <mxGeometry y="60" width="220" height="120" as="geometry"/>
                 </mxCell>
 
-                <!-- Lagerort Entity -->
-                <mxCell id="entity_lagerort" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
-                    <mxGeometry x="650" y="50" width="200" height="150" as="geometry"/>
+                <!-- Lagerort Entity (UC9-Erweiterung) -->
+                <mxCell id="entity_lagerort" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#eeffee;strokeColor=#00aa00;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="50" width="220" height="130" as="geometry"/>
                 </mxCell>
-                <mxCell id="lagerort_title" value="Lagerort" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_lagerort" vertex="1">
-                    <mxGeometry y="26" width="200" height="26" as="geometry"/>
+                <mxCell id="lagerort_title" value="Lagerort (UC9 NEU!)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;color=#00aa00;" parent="entity_lagerort" vertex="1">
+                    <mxGeometry y="26" width="220" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="lagerort_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_lagerort" vertex="1">
-                    <mxGeometry y="52" width="200" height="8" as="geometry"/>
+                <mxCell id="lagerort_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#00aa00;" parent="entity_lagerort" vertex="1">
+                    <mxGeometry y="52" width="220" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="lagerort_attrs" value="PK Id: int&#10;Name: string&#10;Lagertyp: string&#10;Temperatur: decimal (opt)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_lagerort" vertex="1">
-                    <mxGeometry y="60" width="200" height="90" as="geometry"/>
+                <mxCell id="lagerort_attrs" value="PK Id: int&#10;Name: string (unique, normalized)&#10;CreatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_lagerort" vertex="1">
+                    <mxGeometry y="60" width="220" height="70" as="geometry"/>
                 </mxCell>
 
                 <!-- ProduktInstanz Entity (ZENTRAL!) -->
@@ -58,7 +58,7 @@
                 <mxCell id="produktinstanz_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#ff0000;" parent="entity_produktinstanz" vertex="1">
                     <mxGeometry y="52" width="240" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="produktinstanz_attrs" value="PK Id: int&#10;FK LebensmittelKatalogId: int&#10;FK LagerortId: int (nullable)&#10;Menge: decimal&#10;Einheit: string&#10;MHD: DateTime (ZENTRAL!)&#10;KaufDatum: DateTime&#10;Barcode: string (optional)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_produktinstanz" vertex="1">
+                <mxCell id="produktinstanz_attrs" value="PK Id: int&#10;FK LebensmittelKatalogId: int&#10;FK LagerortId: int (UC9)&#10;Menge: decimal&#10;Einheit: string&#10;MHD: DateTime (ZENTRAL!)&#10;KaufDatum: DateTime&#10;Barcode: string (optional)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_produktinstanz" vertex="1">
                     <mxGeometry y="60" width="240" height="120" as="geometry"/>
                 </mxCell>
 

@@ -1,8 +1,8 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-06-20 (Final Update: Code Documentation Audit Complete ✅)  
-**Status**: UC1 & UC2 & UC10 & UC6 gemergt | Tests 90/90 grün ✅ | Dokumentation 100% (Code + Features + Architecture) ✅ | Code-Docs VOLLSTÄNDIG  
-**Nächster Schritt**: UC3 (Nährwerte) oder weitere UC implementieren mit bewährtem Doc-Agent-Workflow | Alle 4 UCs PRODUCTION-READY
+**Datum**: 2026-06-25 (Session 3: UC9-Erweiterung Spezifikation & Dokumentation)  
+**Status**: UC1 & UC2 & UC10 & UC6 gemergt | Tests 90/90 grün ✅ | UC9-Anforderungen geklärt & dokumentiert ✅ | Diagramme aktualisiert ✅  
+**Nächster Schritt**: Test-Agent schreibt LagerortService Tests (TDD Red) → Dev-Agent implementiert Code → Doc-Agent 4-Teil-Dokumentation
 
 ---
 
@@ -110,12 +110,47 @@
    - UC10 angepasst: Lagerort-Input statt Konstanten-Selection
    - UC2 angepasst: Lagerort-Input mit Suggestions bei AddToBestand
    
-   **Next Session Workflow**:
-   1. ✅ Diagramme aktualisieren (use-cases.drawio, Sequence-Diagramme für UC2/UC10)
-   2. ✅ Architecture-Overview + Feature-HTML für UC9-Erweiterung
-   3. ✅ DANN: Test-Agent Tests schreiben
-   4. ✅ DANN: Dev-Agent Code implementieren
-   5. ✅ DANN: Doc-Agent 4-Teil-Dokumentation
+   **Workflow (Session 2026-06-25)**:
+   1. ✅ Anforderungen-Fragen geklärt (3 User-Entscheidungen)
+   2. ✅ Diagramme aktualisiert:
+      - ER-Diagramm (database-schema.drawio): Lagerorte-Tabelle mit FK in ProduktInstanz
+      - Sequence-Diagramm (sequence-uc9-lagerorte.drawio): GetOrCreate, Fuzzy-Matching, Normalisierung
+      - use-cases.drawio: UC9 mit Include-Beziehungen zu UC10 & UC2
+   3. ✅ Feature-HTML für UC9-Lagerorte.html erstellt (Spezifikation + Workflows + Tests-Plan)
+   4. ✅ Architecture-Overview.html aktualisiert (UC9 Status: IN ENTWICKLUNG)
+   5. ⏳ NÄCHST: Test-Agent LagerortService Tests schreiben
+   6. ⏳ DANN: Dev-Agent Code implementieren
+   7. ⏳ DANN: Doc-Agent 4-Teil-Dokumentation
+
+---
+
+## 🔧 UC9-ERWEITERUNG: ANFORDERUNGEN GEKLÄRT (Session 2026-06-25)
+
+**Alle 3 offenen Fragen beantwortet ✅**:
+
+1. **Normalisierung bei GROSS-Schreibung**:
+   - ✅ **Entscheidung: Alle normalisieren**
+   - "lagerA" → "LagerA" ✅
+   - "LAGER" → "Lager" ✅
+   - "LagerB" → "LagerB" (bleibt unverändert)
+
+2. **Fuzzy-Matching für Auto-Complete**:
+   - ✅ **Entscheidung: Partial Prefix Matching (Case-Insensitive)**
+   - Input "lag" → findet ["Lager", "LagerA", "LagerB"] ✅
+   - Input "kue" → findet ["KuehlraumEins"] ✅
+   - Input "xxx" → findet [] (new lagerort möglich)
+
+3. **Persistierung der Lagerorte**:
+   - ✅ **Entscheidung: Separate Lagerorte-Tabelle mit ID (Multi-User & Audit)**
+   - Neue Tabelle: Lagerorte(Id, Name, CreatedAt, IsArchived)
+   - ProduktInstanz.LagerortId: FK referenziert Lagerorte.Id
+   - Keine Löschung (Audit-Trail bleibt sauber, nur IsArchived flag)
+
+**Implementation-Status**:
+- ✅ Anforderungen SPEZIFIZIERT (vollständig dokumentiert)
+- ✅ Diagramme UPDATED (ER, Sequence, use-cases)
+- ✅ Feature-HTML CREATED (UC9-Lagerorte.html mit Spezifikation)
+- ⏳ Test-Phase (nächste: Test-Agent)
 
 ---
 

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="draw.io" modified="2026-06-25" agent="Claude Code" version="1.0">
+    <diagram id="sequence_uc9" name="UC9 – Dynamische Lagerorte Management">
+        <mxGraphModel dx="0" dy="0" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" background="#ffffff" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+
+                <!-- Title -->
+                <mxCell id="title" value="UC9-Erweiterung: Dynamische Lagerorte (mit Auto-Complete)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;fontStyle=bold;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="0" y="20" width="1400" height="30" as="geometry"/>
+                </mxCell>
+
+                <!-- Actors/Components -->
+                <mxCell id="actor_user" value="User" style="shape=umlActor;verticalLabel=1;align=center;outlineConnect=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="80" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_ui" value="Blazor UI\n(UC10/UC2)" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="90" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_service" value="LagerortService\n(NEW)" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="90" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_lagerort" value="IRepository\n<Lagerort>" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="490" y="90" width="100" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_db" value="SQLite DB\nLagerorte Table" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="90" width="100" height="50" as="geometry"/>
+                </mxCell>
+
+                <!-- Lifelines -->
+                <mxCell id="line_user" style="line;strokeColor=#000000;strokeWidth=2;html=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="65" y="140" as="sourcePoint"/>
+                        <mxPoint x="65" y="800" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="line_ui" style="line;strokeColor=#000000;strokeWidth=2;html=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="200" y="140" as="sourcePoint"/>
+                        <mxPoint x="200" y="800" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="line_service" style="line;strokeColor=#000000;strokeWidth=2;html=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="370" y="140" as="sourcePoint"/>
+                        <mxPoint x="370" y="800" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="line_repo" style="line;strokeColor=#000000;strokeWidth=2;html=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="540" y="140" as="sourcePoint"/>
+                        <mxPoint x="540" y="800" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="line_db" style="line;strokeColor=#000000;strokeWidth=2;html=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="710" y="140" as="sourcePoint"/>
+                        <mxPoint x="710" y="800" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- SCENARIO 1: Neuer Lagerort beim Erstellen von ProduktInstanz (UC10) -->
+                <mxCell id="scenario1_title" value="SZENARIO 1: Neuer Lagerort anlegen beim Erstellen von ProduktInstanz (UC10)" style="text;html=1;strokeColor=none;fillColor=#ffffcc;align=left;verticalAlign=top;fontStyle=bold;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="180" width="700" height="25" as="geometry"/>
+                </mxCell>
+
+                <!-- Step 1: User gibt Lagerort ein -->
+                <mxCell id="msg1_1" value="1: Input &quot;lagerA&quot; (User gibt Text ein)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="220" as="sourcePoint"/>
+                        <mxPoint x="200" y="220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 2: UI ruft GetLagerorteMitAutoComplete auf -->
+                <mxCell id="msg1_2" value="2: GetLagerorteMitAutoComplete(&quot;lager&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="200" y="250" as="sourcePoint"/>
+                        <mxPoint x="370" y="250" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 3: Service macht Fuzzy-Match (partial prefix) -->
+                <mxCell id="msg1_3" value="3: Fuzzy-Match im Cache (Memory/DB)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="370" y="280" as="sourcePoint"/>
+                        <mxPoint x="540" y="280" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 4: Repo antwortet mit Matches -->
+                <mxCell id="msg1_4" value="4: GetAll() → [&quot;LagerA&quot;, &quot;LagerB&quot;]" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;exitX=0;exitY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="540" y="310" as="sourcePoint"/>
+                        <mxPoint x="370" y="310" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 5: Service antwortet mit Auto-Complete-Vorschlägen -->
+                <mxCell id="msg1_5" value="5: Auto-Complete Suggeste [&quot;LagerA&quot;, &quot;LagerB&quot;]" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;exitX=0;exitY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="370" y="340" as="sourcePoint"/>
+                        <mxPoint x="200" y="340" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 6: User wählt &quot;LagerA&quot; aus ODER gibt neuen Namen ein -->
+                <mxCell id="msg1_6" value="6a: User wählt &quot;LagerA&quot;" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="370" as="sourcePoint"/>
+                        <mxPoint x="200" y="370" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="msg1_6b" value="6b: ODER gibt &quot;lagerC&quot; (neuer Ort)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="80" y="390" as="sourcePoint"/>
+                        <mxPoint x="200" y="390" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 7: Normalisierung -->
+                <mxCell id="msg1_7" value="7: ValidateLagerort(input) + NormaliseLagerort(&quot;lagerC&quot; → &quot;LagerC&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="200" y="410" as="sourcePoint"/>
+                        <mxPoint x="370" y="410" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 8: Service prüft ob existiert oder erstellt neu -->
+                <mxCell id="msg1_8" value="8: GetOrCreate(&quot;LagerC&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="370" y="440" as="sourcePoint"/>
+                        <mxPoint x="540" y="440" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 9: Check if exists -->
+                <mxCell id="msg1_9" value="9: SELECT * WHERE Name = &quot;LagerC&quot;" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="540" y="470" as="sourcePoint"/>
+                        <mxPoint x="710" y="470" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 10: Not found → Create -->
+                <mxCell id="msg1_10" value="10: Nicht gefunden → INSERT INTO Lagerorte (Name, CreatedAt)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="540" y="500" as="sourcePoint"/>
+                        <mxPoint x="710" y="500" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 11: Return new LagerortId -->
+                <mxCell id="msg1_11" value="11: Return Lagerort(Id=3, Name=&quot;LagerC&quot;)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;exitX=0;exitY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="710" y="530" as="sourcePoint"/>
+                        <mxPoint x="540" y="530" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 12: Service returns to UI -->
+                <mxCell id="msg1_12" value="12: Return LagerortId=3" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;exitX=0;exitY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="540" y="560" as="sourcePoint"/>
+                        <mxPoint x="370" y="560" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Step 13: Create ProduktInstanz with LagerortId -->
+                <mxCell id="msg1_13" value="13: CreateProduktInstanz(lebensId, menge, lagerortId=3, mhd)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="200" y="580" as="sourcePoint"/>
+                        <mxPoint x="370" y="580" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Result -->
+                <mxCell id="scenario1_result" value="✅ Resultat: ProduktInstanz mit dynamischem Lagerort angelegt" style="text;html=1;strokeColor=none;fillColor=#ccffcc;align=left;verticalAlign=top;fontStyle=italic;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="620" width="600" height="20" as="geometry"/>
+                </mxCell>
+
+                <!-- SCENARIO 2: AddToBestand mit neuem Lagerort (UC2) -->
+                <mxCell id="scenario2_title" value="SZENARIO 2: AddToBestand mit neuem Lagerort (UC2 erweitert für UC9)" style="text;html=1;strokeColor=none;fillColor=#ffffcc;align=left;verticalAlign=top;fontStyle=bold;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="850" y="180" width="500" height="25" as="geometry"/>
+                </mxCell>
+
+                <!-- Similar flow but for AddToBestand -->
+                <mxCell id="msg2_note" value="➜ Ähnlicher Flow wie Szenario 1, aber in LagerbestandService.AddToBestand()" style="text;html=1;strokeColor=none;fillColor=#ffffee;align=left;verticalAlign=top;fontStyle=italic;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="850" y="220" width="500" height="30" as="geometry"/>
+                </mxCell>
+
+                <!-- Key Differences -->
+                <mxCell id="key_diff" value="🔑 Key-Unterschied: Wird aufgerufen WENN User Bestand zu anderem Lagerort buchen will" style="text;html=1;strokeColor=none;fillColor=#e3f2fd;align=left;verticalAlign=top;fontStyle=italic;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="850" y="260" width="500" height="20" as="geometry"/>
+                </mxCell>
+
+                <!-- Legend -->
+                <mxCell id="legend_title" value="Legende" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontStyle=bold;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="700" width="100" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend_sync" value="→ = Synchroner Call (blockierend)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="720" width="250" height="15" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend_async" value="⇢ = Asynchroner Call" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="735" width="250" height="15" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend_return" value="← = Return (gestrichelt)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="750" width="250" height="15" as="geometry"/>
+                </mxCell>
+
+                <!-- Technical Notes -->
+                <mxCell id="tech_note" value="⚡ Tech-Details: Fuzzy-Matching ist Case-Insensitive (Input &quot;lag&quot;), aber Speicherung Case-Sensitive (&quot;LagerA&quot;). Normalisierung: Single-Word → Capitalize (&quot;lagerX&quot; → &quot;LagerX&quot;, &quot;LAGERX&quot; → &quot;LagerX&quot;)" style="text;html=1;strokeColor=none;fillColor=#fff3e0;align=left;verticalAlign=top;fontStyle=italic;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="770" width="700" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

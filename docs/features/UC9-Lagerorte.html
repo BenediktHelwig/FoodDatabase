@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UC9 - Lagerorte verwalten | FoodDatabase</title>
+    <title>UC9 - Dynamische Lagerorte | FoodDatabase</title>
     <link rel="stylesheet" href="../css/shared.css">
     <link rel="stylesheet" href="../css/uc9-lagerorte.css">
 </head>
@@ -14,67 +14,127 @@
         </div>
 
         <header>
-            <h1>UC9: Lagerorte verwalten</h1>
+            <h1>UC9: Dynamische Lagerorte Verwaltung</h1>
             <div class="meta">
-                Use-Case <strong>9</strong> |
-                Status: <span class="status-badge todo">⏳ TODO</span>
+                Use-Case <strong>9-Erweiterung</strong> |
+                Status: <span class="status-badge in-progress">⏳ IN ENTWICKLUNG</span> |
+                Dokumentation: <span class="status-badge complete">✅ SPEZIFIZIERT</span>
             </div>
         </header>
 
         <section>
             <h2>📋 Übersicht</h2>
-            <p><strong>Beschreibung</strong>: CRUD für Lagerorte (z.B. Kühlschrank, Vorratsschrank, Gefrierraum). Benutzer kann Speicherorte für Produkte definieren.</p>
+            <p><strong>Beschreibung</strong>: UC9 ist eine Erweiterung des Produktinstanzen-Systems (UC10). Statt vordefinierter Lagerorte (Enums) werden Lagerorte nun <strong>dynamisch angelegt</strong> beim Erstellen von ProduktInstanzen oder beim Buchen zu neuen Orten.</p>
 
             <h3>Hauptziele</h3>
             <ul>
-                <li>Lagerorte erstellen (z.B. "Kühlschrank", "Gefrierschrank")</li>
-                <li>Lagerorte bearbeiten und löschen</li>
-                <li>Lagerorte bei Produktinstanzen referenzieren</li>
+                <li>Dynamische Lagerorte-Anlage (keine vordefinierte Liste)</li>
+                <li>Auto-Complete mit Fuzzy-Matching für Benutzerfreundlichkeit</li>
+                <li>Normalisierung von Eingaben (z.B. "lagerA" → "LagerA")</li>
+                <li>Persistierung in separater Lagerorte-Tabelle (SQLite)</li>
+                <li>Keine Löschung von Lagerorten (Audit-Trail)</li>
             </ul>
 
             <h3>Geschäftsnutzen</h3>
-            <p>Der Benutzer kann sein Lager in verschiedene Bereiche unterteilen (Küche, Keller, etc.) und immer sehen, wo welche Produkte lagern.</p>
+            <p>Der Benutzer kann beliebig viele Lagerorte anlegen, ohne dass diese vorher vom Admin definiert werden müssen. Das System schlägt bereits existierende Lagerorte vor, um Duplikate zu vermeiden. Dies ist essentiell für Lagerverwaltung in dynamischen Umgebungen (Umzüge, neue Lagerbereiche).</p>
+        </section>
+
+        <section>
+            <h2>🔧 Technische Anforderungen (SPEZIFIZIERT)</h2>
+
+            <h3>Normalisierung & Validierung</h3>
+            <table>
+                <tr>
+                    <th>Aspekt</th>
+                    <th>Anforderung</th>
+                    <th>Beispiel</th>
+                </tr>
+                <tr>
+                    <td><strong>Validierung</strong></td>
+                    <td>Nur Buchstaben (A-Z, a-z). Keine Zahlen/Sonderzeichen</td>
+                    <td>"LagerA" ✅, "Lager1" ❌</td>
+                </tr>
+                <tr>
+                    <td><strong>Normalisierung</strong></td>
+                    <td>Single-Word-Input: Capitalize (1. Buchstabe groß, Rest klein)</td>
+                    <td>"lagerA" → "LagerA", "LAGER" → "Lager"</td>
+                </tr>
+                <tr>
+                    <td><strong>Speicherung</strong></td>
+                    <td>Case-Sensitive (wird unterschieden)</td>
+                    <td>"Lager" ≠ "lager" (verschiedene Einträge)</td>
+                </tr>
+                <tr>
+                    <td><strong>Auto-Complete</strong></td>
+                    <td>Partial Prefix Matching (Case-Insensitive Input)</td>
+                    <td>Input "lag" findet "Lager", "LagerA", "LagerB"</td>
+                </tr>
+                <tr>
+                    <td><strong>Duplikat-Handling</strong></td>
+                    <td>GetOrCreate: Existiert bereits? → Return existing, sonst Create</td>
+                    <td>Input "Lager" 2x → Only 1 Eintrag in DB</td>
+                </tr>
+                <tr>
+                    <td><strong>Limits</strong></td>
+                    <td>Keine Limit (beliebig viele Lagerorte)</td>
+                    <td>User kann 100+ Lagerorte anlegen</td>
+                </tr>
+                <tr>
+                    <td><strong>Löschung</strong></td>
+                    <td>NICHT erlaubt (Audit-Trail bleibt sauber)</td>
+                    <td>Gelöschte Lagerorte: → Soft-Delete mit IsArchived-Flag (optional)</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>📦 Database Schema (NEU)</h2>
+
+            <h3>Neue Tabelle: Lagerorte</h3>
+            <pre>
+CREATE TABLE Lagerorte (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100) NOT NULL UNIQUE,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    IsArchived BIT NOT NULL DEFAULT 0
+);
+            </pre>
+
+            <h3>Tabelle: ProduktInstanz (UPDATED)</h3>
+            <pre>
+ALTER TABLE ProduktInstanzen
+ADD COLUMN LagerortId INT NULLABLE,
+ADD CONSTRAINT FK_ProduktInstanz_Lagerort
+    FOREIGN KEY (LagerortId)
+    REFERENCES Lagerorte(Id) ON DELETE SET NULL;
+            </pre>
         </section>
 
         <section>
             <h2>📦 Domain Model</h2>
 
-            <h3>Beteiligte Entities</h3>
-            <table>
-                <tr>
-                    <th>Entity</th>
-                    <th>Rolle</th>
-                    <th>Beziehung</th>
-                </tr>
-                <tr>
-                    <td>Lagerort</td>
-                    <td>Zu verwaltender Speicherort</td>
-                    <td>Primary (CRUD-Ziel)</td>
-                </tr>
-                <tr>
-                    <td>ProduktInstanz</td>
-                    <td>Referenzierendes Produkt</td>
-                    <td>Child (0:N)</td>
-                </tr>
-            </table>
-
             <h3>Neue Entity: Lagerort</h3>
             <pre>
-Lagerort
-├── Id: int (PK)
-├── Name: string (z.B. "Kühlschrank")
-├── Beschreibung: string (optional)
-├── Temperatur: decimal (optional, in °C)
-├── Lagertyp: LagerortTyp (Kühlschrank, Gefrierschrank, Schrank, etc.)
-└── ProduktInstanzen: ICollection&lt;ProduktInstanz&gt;
-
-enum LagerortTyp
+public class Lagerort
 {
-    Kühlschrank,
-    Gefrierschrank,
-    Schrank,
-    Regal,
-    Sonstiges
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public bool IsArchived { get; set; } = false;
+    public ICollection&lt;ProduktInstanz&gt; ProduktInstanzen { get; set; }
+        = new List&lt;ProduktInstanz&gt;();
+}
+            </pre>
+
+            <h3>Service Interfaces</h3>
+            <pre>
+public interface ILagerortService
+{
+    Task&lt;IEnumerable&lt;Lagerort&gt;&gt; GetAlleLagerorte();
+    Task&lt;IEnumerable&lt;Lagerort&gt;&gt; GetLagerorteMitAutoComplete(string prefix);
+    void ValidateLagerort(string name);
+    string NormalisiereLagerort(string input);
+    Task&lt;Lagerort&gt; GetOrCreateAsync(string name);
 }
             </pre>
         </section>
@@ -82,92 +142,61 @@ enum LagerortTyp
         <section>
             <h2>🔄 User Workflows</h2>
 
-            <h3>Hauptworkflow: Lagerort erstellen</h3>
+            <h3>Workflow 1: Neuer Lagerort bei ProduktInstanz-Erstellung (UC10)</h3>
             <pre>
-1. Benutzer öffnet "Lagerorte verwalten"
-2. Klickt "Neuer Lagerort"
-3. Gibt Name und Typ ein (z.B. "Kühlschrank")
-4. Speichert
-5. Lagerort kann jetzt bei ProduktInstanzen verwendet werden
+1. Benutzer öffnet "Produkt hinzufügen"
+2. Füllt Lebensmittel, Menge, MHD aus
+3. Gibt Lagerort ein: "lagerA"
+4. System zeigt Auto-Complete: ["LagerA", "LagerB"]
+5. Benutzer wählt "LagerA" ODER gibt neuen Namen "lagerC" ein
+6. System normalisiert: "lagerC" → "LagerC"
+7. System prüft: Existiert "LagerC" bereits?
+   - Ja: Return existing Lagerort(Id=3)
+   - Nein: Create new Lagerort(Name="LagerC") → Id=3
+8. ProduktInstanz wird mit LagerortId=3 erstellt
+9. Bestätigung: "Produkt zu Lager C hinzugefügt"
             </pre>
 
-            <h3>Weitere Workflows</h3>
-            <p><strong>Bearbeiten</strong>: Benutzer ändert Lagerort-Informationen</p>
-            <p><strong>Löschen</strong>: Benutzer entfernt Lagerort (nur wenn keine Produkte zugeordnet)</p>
+            <h3>Workflow 2: Bestand zu anderem Lagerort buchen (UC2)</h3>
+            <pre>
+1. Benutzer öffnet "Lagerbestand aktualisieren"
+2. Wählt Lebensmittel
+3. Wählt "Zu anderen Lagerort buchen"
+4. Gibt Lagerort ein: "lager2"
+5. System zeigt Auto-Complete
+6. Rest wie Workflow 1
+            </pre>
+
+            <h3>Auto-Complete Fuzzy-Matching</h3>
+            <pre>
+Existierende Lagerorte: ["LagerA", "LagerB", "KuehlraumEins"]
+
+Input: "lag" → Result: ["LagerA", "LagerB"]
+Input: "kue" → Result: ["KuehlraumEins"]
+Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
+            </pre>
         </section>
 
         <section>
-            <h2>🔌 Service Interface</h2>
+            <h2>✅ Tests (GEPLANT)</h2>
 
-            <h3>Service-Methoden</h3>
-            <pre>
-public interface ILagerortService
-{
-    Task&lt;Lagerort&gt; CreateLagerortAsync(Lagerort lagerort);
-    Task&lt;Lagerort&gt; GetLagerortByIdAsync(int id);
-    Task&lt;IEnumerable&lt;Lagerort&gt;&gt; GetAllLagerorteAsync();
-    Task&lt;Lagerort&gt; UpdateLagerortAsync(Lagerort lagerort);
-    Task&lt;bool&gt; DeleteLagerortAsync(int id);
-    Task&lt;bool&gt; CanDeleteAsync(int lagerortId);
-}
-            </pre>
-
-            <h3>REST Endpoints (geplant)</h3>
-            <table>
-                <tr>
-                    <th>Method</th>
-                    <th>Endpoint</th>
-                    <th>Beschreibung</th>
-                </tr>
-                <tr>
-                    <td>POST</td>
-                    <td>/api/lagerorte</td>
-                    <td>Lagerort erstellen</td>
-                </tr>
-                <tr>
-                    <td>GET</td>
-                    <td>/api/lagerorte</td>
-                    <td>Alle Lagerorte</td>
-                </tr>
-                <tr>
-                    <td>GET</td>
-                    <td>/api/lagerorte/{id}</td>
-                    <td>Lagerort abrufen</td>
-                </tr>
-                <tr>
-                    <td>PUT</td>
-                    <td>/api/lagerorte/{id}</td>
-                    <td>Lagerort aktualisieren</td>
-                </tr>
-                <tr>
-                    <td>DELETE</td>
-                    <td>/api/lagerorte/{id}</td>
-                    <td>Lagerort löschen</td>
-                </tr>
-            </table>
-        </section>
-
-        <section>
-            <h2>✅ Tests</h2>
-
-            <h3>Test Coverage</h3>
+            <h3>LagerortService Tests (geplant: 15+)</h3>
             <div class="checklist">
                 <ul>
-                    <li><input type="checkbox"> Create Lagerort (valid)</li>
-                    <li><input type="checkbox"> Read Lagerort by ID</li>
-                    <li><input type="checkbox"> Read all Lagerorte</li>
-                    <li><input type="checkbox"> Update Lagerort</li>
-                    <li><input type="checkbox"> Delete Lagerort (leer)</li>
-                    <li><input type="checkbox"> Delete Lagerort (mit Produkten) - Error</li>
-                    <li><input type="checkbox"> Validierung: Empty Name</li>
-                    <li><input type="checkbox"> Validierung: Duplicate Name</li>
-                    <li><input type="checkbox"> Can Delete Check</li>
+                    <li><input type="checkbox"> Happy Path: GetAlleLagerorte</li>
+                    <li><input type="checkbox"> Happy Path: GetLagerorteMitAutoComplete (Prefix-Match)</li>
+                    <li><input type="checkbox"> Happy Path: ValidateLagerort (nur Buchstaben)</li>
+                    <li><input type="checkbox"> Happy Path: NormalisiereLagerort ("lagerA" → "LagerA")</li>
+                    <li><input type="checkbox"> Happy Path: NormalisiereLagerort ("LAGER" → "Lager")</li>
+                    <li><input type="checkbox"> Happy Path: GetOrCreateAsync (existierend)</li>
+                    <li><input type="checkbox"> Happy Path: GetOrCreateAsync (neu anlegen)</li>
+                    <li><input type="checkbox"> Fehler: Validierung schlägt fehl (Zahlen)</li>
+                    <li><input type="checkbox"> Fehler: Validierung schlägt fehl (Sonderzeichen)</li>
+                    <li><input type="checkbox"> Fuzzy-Matching: Case-Insensitive</li>
+                    <li><input type="checkbox"> Auto-Complete: Keine Matches</li>
+                    <li><input type="checkbox"> Duplikate: GetOrCreate verhindert Duplikate</li>
                 </ul>
             </div>
-
-            <h3>Test-Datei</h3>
-            <p>Location: <code>src/Tests/Unit/Services/LagerortServiceTests.cs</code></p>
-            <p>Tests: 15+ Unit Tests (xUnit + Moq)</p>
         </section>
 
         <section>
@@ -175,15 +204,17 @@ public interface ILagerortService
 
             <h3>Abhängigkeiten (andere UCs)</h3>
             <ul>
-                <li>Wird benötigt von: <strong>UC2: Lagerbestand aktualisieren</strong></li>
-                <li>Wird benötigt von: <strong>UC10: Produktinstanzen mit MHD</strong></li>
+                <li>Erweitert: <strong>UC10: Produktinstanzen mit MHD</strong> (LagerortId FK)</li>
+                <li>Erweitert: <strong>UC2: Lagerbestand</strong> (AddToBestand mit Lagerort-Input)</li>
+                <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong> (indirekt)</li>
             </ul>
 
-            <h3>Externe Libraries</h3>
+            <h3>Externe Abhängigkeiten</h3>
             <ul>
+                <li>SQLite (✅ Vorhanden) – Neue Tabelle Lagerorte</li>
                 <li>Entity Framework Core (✅ Vorhanden)</li>
-                <li>xUnit (✅ Vorhanden)</li>
-                <li>Moq (✅ Vorhanden)</li>
+                <li>.NET 8 Framework (✅ Vorhanden)</li>
+                <li>xUnit + Moq (✅ Vorhanden)</li>
             </ul>
         </section>
 
@@ -192,45 +223,43 @@ public interface ILagerortService
 
             <div class="checklist">
                 <ul>
-                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
-                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
-                    <li><input type="checkbox"> Code Review bestanden</li>
-                    <li><input type="checkbox"> Diagramme aktualisiert</li>
-                    <li><input type="checkbox"> Dokumentation fertig</li>
-                    <li><input type="checkbox"> User Review & Approval</li>
-                    <li><input type="checkbox"> Merged zu Master</li>
+                    <li><input type="checkbox" checked> Anforderungen spezifiziert – ✅ FERTIG</li>
+                    <li><input type="checkbox" checked> Diagramme aktualisiert – ✅ FERTIG</li>
+                    <li><input type="checkbox"> Tests schreiben (TDD Red) – ⏳ NEXT: Test-Agent</li>
+                    <li><input type="checkbox"> Code implementieren (TDD Green) – ⏳ NEXT: Dev-Agent</li>
+                    <li><input type="checkbox"> Code Review – ⏳ NEXT: Review-Agent</li>
+                    <li><input type="checkbox"> Dokumentation fertig – ⏳ NEXT: Doc-Agent</li>
+                    <li><input type="checkbox"> User Review & Approval – ⏳ Pending</li>
+                    <li><input type="checkbox"> Merged zu Master – ⏳ Pending</li>
                 </ul>
             </div>
-
-            <p><strong>Commit</strong>: [Awaiting implementation]</p>
-            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
         </section>
 
         <section>
-            <h2>📐 Diagramme</h2>
+            <h2>📝 Gekärte Fragen ✅</h2>
 
-            <div class="diagram-placeholder">
-                📊 Klassen-Diagramm: Lagerort-Entity<br>
-                <small>(siehe: diagrams/architecture-class.drawio)</small>
-            </div>
-        </section>
-
-        <section>
-            <h2>📝 Notizen</h2>
-
-            <h3>Besonderheiten</h3>
-            <p>Dies ist eine simple CRUD-Entity. Lagerort-Namen sollten eindeutig sein (Unique Constraint).</p>
-
-            <h3>Offene Fragen</h3>
+            <p>Alle 3 offenen Fragen wurden mit User geklärt:</p>
             <ul>
-                <li>Sollen Temperatur/Feuchte-Sensoren gekoppelt werden?</li>
-                <li>Können Lagerorte hierarchisch sein (z.B. "Küche > Kühlschrank")?</li>
+                <li>✅ Normalisierung bei GROSS: Alle normalisieren ("LAGER" → "Lager")</li>
+                <li>✅ Fuzzy-Matching: Partial Prefix ("lag" → ["Lager", "LagerA", "LagerB"])</li>
+                <li>✅ Persistierung: Separate Lagerorte-Tabelle mit Id (Multi-User & Audit-Trail)</li>
             </ul>
         </section>
 
-        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
-            <p>FoodDatabase | UC9 | Lagerorte verwalten</p>
-            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        <section>
+            <h2>🔗 Diagramme & Dokumentation</h2>
+
+            <h3>Zugehörige Dateien</h3>
+            <ul>
+                <li><strong>ER-Diagramm</strong>: <code>diagrams/database-schema.drawio</code></li>
+                <li><strong>Sequence-Diagramm</strong>: <code>diagrams/sequence-uc9-lagerorte.drawio</code></li>
+                <li><strong>Use-Cases</strong>: <code>requirements/use-cases.drawio</code></li>
+                <li><strong>Diese Seite</strong>: <code>docs/features/UC9-Lagerorte.html</code></li>
+            </ul>
+        </section>
+
+        <footer>
+            <p><small>Dokumentation erstellt: 2026-06-25 | Status: SPEZIFIZIERT & READY FOR TEST-AGENT</small></p>
         </footer>
     </div>
 </body>
