@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-06-26" agent="5.0" version="21.5.0" type="device">
+  <diagram name="UC3 Sequence Diagrams - Nährwerte" id="sequence-uc3">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="UC3: Sequence Diagramme - Nährwerte verwalten" style="text;html=1;align=center;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="0" y="10" width="2000" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- SCENARIO 1: CreateNährwertAsync Success -->
+        <mxCell id="scenario1-title" value="Szenario 1: Erfolgreiche Nährwert-Erstellung (Happy Path)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#28a745;backgroundColor:#d4edda;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="950" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 1: Participants -->
+        <mxCell id="s1-actor" value="Benutzer" style="shape=umlActor;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="30" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-ui" value="UI (Blazor)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#cce5ff;strokeColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="130" y="120" width="80" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-service" value="NährwertService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#fff0f5;strokeColor=#d81b60;" vertex="1" parent="1">
+          <mxGeometry x="270" y="120" width="100" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-repo" value="IRepository (DB)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#e1d5e7;strokeColor=#9c27b0;" vertex="1" parent="1">
+          <mxGeometry x="430" y="120" width="80" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 1: Lifelines -->
+        <mxCell id="s1-line-ui" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#0066cc;" edge="1" parent="1">
+          <mxGeometry x="170" y="160" width="1" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-line-service" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#d81b60;" edge="1" parent="1">
+          <mxGeometry x="320" y="160" width="1" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-line-repo" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#9c27b0;" edge="1" parent="1">
+          <mxGeometry x="470" y="160" width="1" height="280" as="geometry"/>
+        </mxCell>
+
+        <!-- Message 1: CreateNährwert -->
+        <mxCell id="s1-msg1" value="CreateNährwertAsync(LebensmittelId, Werte)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="190" as="sourcePoint"/>
+            <mxPoint x="320" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 2: Duplikat prüfen -->
+        <mxCell id="s1-msg2" value="GetAllAsync() [Duplikat-Check]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="210" as="sourcePoint"/>
+            <mxPoint x="470" y="210" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 3: Liste zurück -->
+        <mxCell id="s1-msg3" value="existingNährwerte[]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#9c27b0;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="230" as="sourcePoint"/>
+            <mxPoint x="320" y="230" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 4: Validierung StandardMengeEinheit -->
+        <mxCell id="s1-msg4" value="ValidateStandardMengeEinheitAsync(einheit)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="250" as="sourcePoint"/>
+            <mxPoint x="470" y="250" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 5: Validierung OK -->
+        <mxCell id="s1-msg5" value="true" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#9c27b0;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="270" as="sourcePoint"/>
+            <mxPoint x="320" y="270" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 6: Entity hinzufügen -->
+        <mxCell id="s1-msg6" value="Add(nährwert)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="290" as="sourcePoint"/>
+            <mxPoint x="470" y="290" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 7: SaveChanges -->
+        <mxCell id="s1-msg7" value="SaveChangesAsync()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="310" as="sourcePoint"/>
+            <mxPoint x="470" y="310" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 8: OK zurück -->
+        <mxCell id="s1-msg8" value="nährwert (created)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#9c27b0;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="330" as="sourcePoint"/>
+            <mxPoint x="320" y="330" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 9: UI Update -->
+        <mxCell id="s1-msg9" value="nährwert (display)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#d81b60;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="350" as="sourcePoint"/>
+            <mxPoint x="170" y="350" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SCENARIO 2: UpdateNährwertAsync -->
+        <mxCell id="scenario2-title" value="Szenario 2: Nährwert-Aktualisierung mit Validierung" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#2196f3;backgroundColor=#e3f2fd;" vertex="1" parent="1">
+          <mxGeometry x="20" y="420" width="950" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 2: Participants (same as scenario 1) -->
+        <mxCell id="s2-actor" value="Benutzer" style="shape=umlActor;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="470" width="30" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2-ui" value="UI (Blazor)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#cce5ff;strokeColor=#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="130" y="480" width="80" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2-service" value="NährwertService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor:#fff0f5;strokeColor:#d81b60;" vertex="1" parent="1">
+          <mxGeometry x="270" y="480" width="100" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2-repo" value="IRepository (DB)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor:#e1d5e7;strokeColor=#9c27b0;" vertex="1" parent="1">
+          <mxGeometry x="430" y="480" width="80" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 2: Lifelines -->
+        <mxCell id="s2-line-ui" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#0066cc;" edge="1" parent="1">
+          <mxGeometry x="170" y="520" width="1" height="250" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2-line-service" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#d81b60;" edge="1" parent="1">
+          <mxGeometry x="320" y="520" width="1" height="250" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2-line-repo" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#9c27b0;" edge="1" parent="1">
+          <mxGeometry x="470" y="520" width="1" height="250" as="geometry"/>
+        </mxCell>
+
+        <!-- S2 Message 1: UpdateNährwert -->
+        <mxCell id="s2-msg1" value="UpdateNährwertAsync(id, neuWerte)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="550" as="sourcePoint"/>
+            <mxPoint x="320" y="550" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- S2 Message 2: Validiere Einheit -->
+        <mxCell id="s2-msg2" value="ValidateStandardMengeEinheit(einheit)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="570" as="sourcePoint"/>
+            <mxPoint x="470" y="570" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- S2 Message 3: OK -->
+        <mxCell id="s2-msg3" value="valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#9c27b0;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="590" as="sourcePoint"/>
+            <mxPoint x="320" y="590" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- S2 Message 4: Update in DB -->
+        <mxCell id="s2-msg4" value="Update(id, neuWerte)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="610" as="sourcePoint"/>
+            <mxPoint x="470" y="610" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- S2 Message 5: SaveChanges -->
+        <mxCell id="s2-msg5" value="SaveChangesAsync()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="630" as="sourcePoint"/>
+            <mxPoint x="470" y="630" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- S2 Message 6: Success -->
+        <mxCell id="s2-msg6" value="updated" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#9c27b0;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="650" as="sourcePoint"/>
+            <mxPoint x="320" y="650" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="UC3 Service-Flows: CreateNährwertAsync (Duplikat-Check vor Validierung!), UpdateNährwertAsync (Einheit-Validierung), DeleteNährwertAsync (Soft-Delete), ValidateStandardMengeEinheit (nur 'g' oder 'ml')" style="text;html=1;align=left;verticalAlign=top;fontSize=9;fontStyle=0;fontColor=#666;backgroundColor=#f5f5f5;border=1;borderColor=#ddd;" vertex="1" parent="1">
+          <mxGeometry x="20" y="850" width="950" height="50" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

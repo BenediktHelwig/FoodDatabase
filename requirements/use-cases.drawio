@@ -27,7 +27,7 @@
         </mxCell>
 
         <!-- UC3: Nährwerte verwalten -->
-        <mxCell id="uc3" value="Nährwerte verwalten&#10;(pro 100g/ml)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#ffffff;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+        <mxCell id="uc3" value="✅ Nährwerte verwalten&#10;(pro 100g/ml)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#d4edda;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="490" y="60" width="130" height="70" as="geometry"/>
         </mxCell>
 
@@ -57,7 +57,7 @@
         </mxCell>
 
         <!-- UC9: Lagerorte verwalten (EXTENSION) -->
-        <mxCell id="uc9" value="⏳ Lagerorte verwalten&#10;(UC9-Erweiterung)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#fff3cd;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
+        <mxCell id="uc9" value="✅ Lagerorte verwalten&#10;(UC9-Erweiterung)" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;align=center;verticalAlign=middle;fillColor=#d4edda;strokeWidth=2;fontColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="490" y="380" width="130" height="70" as="geometry"/>
         </mxCell>
 
@@ -109,7 +109,7 @@
         <mxCell id="include10" value="&lt;&lt;include&gt;&gt;&#10;(UC9)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=9;strokeColor:#ff9800;fontColor:#ff9800;" edge="1" parent="1" source="uc2" target="uc9"/>
 
         <!-- Legend -->
-        <mxCell id="legend" value="Status: ✅ Grün = Fertig (gemergt: UC1/UC2/UC6/UC10) | ⏳ Gelb = In Entwicklung (UC9-Erweiterung) | UC10 ist zentral mit eigenem MHD. UC9 = dynamische Lagerorte mit Auto-Complete & Normalisierung" style="text;html=1;align=left;verticalAlign=top;fontSize=10;italic=1;fontColor=#000000;" vertex="1" parent="1">
+        <mxCell id="legend" value="Status: ✅ Grün = Fertig (gemergt: UC1/UC2/UC3/UC6/UC9/UC10 = 6/10 = 60%) | ⏳ Weiß = Queue (UC4/UC5/UC7/UC8) | UC10=zentral (MHD), UC3=Nährwert-Service (23 Tests), UC9=Lagerorte" style="text;html=1;align=left;verticalAlign=top;fontSize=10;italic=1;fontColor=#000000;" vertex="1" parent="1">
           <mxGeometry x="70" y="700" width="730" height="60" as="geometry"/>
         </mxCell>
       </root>
