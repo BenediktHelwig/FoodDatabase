@@ -27,6 +27,9 @@ namespace FoodDatabase.App.Data
         /// <summary>DbSet für Lagerorte (UC9: Dynamische Lagerverwaltung, wird in UC9-Dev-Phase integriert).</summary>
         public DbSet<Lagerort> Lagerorte { get; set; }
 
+        /// <summary>DbSet für Nährwerte (UC3: Nährwertinformationen pro Lebensmittel).</summary>
+        public DbSet<Nährwert> Nährwerte { get; set; }
+
         /// <summary>
         /// Konfiguriert das EF Core-Datenmodell (Constraints, Beziehungen, Indizes).
         /// </summary>
@@ -54,6 +57,19 @@ namespace FoodDatabase.App.Data
 
             // ProduktInstanz → Lagerort Integration kommt in UC9-Dev-Phase
             // Momentan wird Lagerort als string Feld in ProduktInstanz gespeichert
+
+            // Nährwert → LebensmittelKatalog (1:1)
+            // Jedes Lebensmittel hat genau einen Nährwert-Eintrag
+            modelBuilder.Entity<Nährwert>()
+                .HasOne(n => n.LebensmittelKatalog)
+                .WithMany()
+                .HasForeignKey(n => n.LebensmittelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Nährwert: LebensmittelId UNIQUE (Verhindert mehrere Nährwerte pro Lebensmittel)
+            modelBuilder.Entity<Nährwert>()
+                .HasIndex(n => n.LebensmittelId)
+                .IsUnique();
         }
     }
 }
