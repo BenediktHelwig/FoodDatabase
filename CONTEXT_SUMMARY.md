@@ -233,13 +233,57 @@ public class Nährwert
 → UC3 100% COMPLETE ✅
 ```
 
+## 🔵 SESSION 2026-06-30 (IN PROGRESS): UC4 Domain Model & Diagramm-Planung
+
+**Dauer**: ~30 Minuten  
+**Phase**: Doc-Agent Planung + Spezifikation (VOR Test-Agent)  
+**Status**: ✅ UC4 Domain Model COMPLETE!
+
+### Phase 1: Doc-Agent UC4 Spezifikation
+
+**Output**:
+1. ✅ `docs/uc4-domain-model.md` (9-seitig, vollständig)
+   - 1. Domain Model: Rezept + RezeptZutat Entities (mit Constraints)
+   - 2. Services: RezeptService + RezeptZutatService + NährwertCalculator (UC5-Integration)
+   - 3. Use-Case Spezifikation: UC4.1-UC4.4 (Happy Path + Fehlerfälle)
+   - 4. UML-Diagramme (Planung): Class, ER, Sequence, Component
+   - 5. Test-Struktur: RezeptServiceTests (~30), RezeptZutatServiceTests (~25), NährwertCalculatorTests (~12)
+   - 6. Abhängigkeits-Übersicht: UC1 + UC3 + UC5 Integration
+   - 7. Validierungs-Zusammenfassung
+   - 8. Performance & Scalability
+   - 9. Definition-of-Done
+
+2. ✅ `diagrams/architecture-class-uc4.drawio` (Class Diagram)
+   - Rezept Aggregate Root (Entities mit Constraints)
+   - RezeptZutat Value Objects (FK zu LebensmittelKatalog)
+   - Services Interfaces (RezeptService, RezeptZutatService, NährwertCalculator)
+   - Dependencies Injection
+   - Legend & Constraints
+
+3. ✅ `diagrams/database-schema-uc4-update.drawio` (ER-Diagramm Update)
+   - Rezept Table (neue Tabelle)
+   - RezeptZutat Table (neue Tabelle mit FK-Constraints)
+   - Relationships: Rezept 1--N RezeptZutat, RezeptZutat N--1 LebensmittelKatalog
+   - ON DELETE CASCADE/RESTRICT Semantik
+   - SQL Example für Insertions
+
+**Key Insights**:
+- ✅ Rezept Aggregate mit Soft-Delete (IsArchived wie UC3)
+- ✅ RezeptZutat Value Object mit Position für Ordering
+- ✅ FK Constraints: ON DELETE CASCADE (Rezept → Zutaten), ON DELETE RESTRICT (LebensmittelKatalog)
+- ✅ Schwierigkeitsgrad: Enum-like ("Easy", "Medium", "Hard")
+- ✅ Nährwertberechnung: Summe aller Zutaten * Skalierungsfaktor (Menge / 100g)
+- ✅ ~40-50 Tests erwartet (RezeptService ~30, RezeptZutatService ~25, NährwertCalculator ~12)
+
+**Dependencies OK**: UC1 (LebensmittelKatalog) + UC3 (Nährwerte) beide ✅ fertig, UC4 kann starten
+
 ### UC4 (Rezepte verwalten) – Next in Queue
 ```
-1. Doc-Agent: UC4 Domain Model + UML-Diagramme
-2. Test-Agent: UC4 Rezept-Service Tests (TDD Red)
-3. Dev-Agent: UC4 Implementation (TDD Green)
-4. Doc-Agent: 4-Teil-Dokumentation
-5. Doc-Agent: Diagrams (Sequence, ER-Update, use-cases)
+✅ 1. Doc-Agent: UC4 Domain Model + UML-Diagramme (COMPLETE)
+→ 2. Test-Agent: UC4 Rezept-Service Tests (TDD Red)
+→ 3. Dev-Agent: UC4 Implementation (TDD Green)
+→ 4. Doc-Agent: 4-Teil-Dokumentation
+→ 5. Doc-Agent: Diagrams (Sequence, ER-Update, use-cases)
 → UC4 COMPLETE
 ```
 

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="draw.io" modified="2026-06-30" agent="Claude Code" version="1.0">
+  <diagram id="uc4-er-diagram" name="UC4 ER Diagram - Database Schema">
+    <mxGraphModel dx="1000" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1600" math="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="UC4 ER Diagram - Rezepte Schema Update" style="text;fontSize=18;fontStyle=bold;align=center;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="1000" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- REZEPT TABLE (NEW) -->
+        <mxCell id="rezept-table" value="REZEPT (New)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=12;fontStyle=bold;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="220" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rezept-fields" value="Id (PK, AUTOINCREMENT)
+Name (TEXT, UNIQUE, NOT NULL)
+Beschreibung (TEXT)
+Zubereitung (TEXT)
+Portionen (INTEGER, CHECK 1-100)
+ZubereitungszeitMinuten (INTEGER ≥ 0)
+Schwierigkeitsgrad (TEXT, CHECK Easy/Medium/Hard)
+CreatedAt (TEXT, ISO8601 UTC, NOT NULL)
+UpdatedAt (TEXT, ISO8601 UTC, NOT NULL)
+IsArchived (INTEGER, DEFAULT 0)" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontFamily=monospace;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="130" width="220" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- REZEPTZUTAT TABLE (NEW) -->
+        <mxCell id="zutat-table" value="REZEPTZUTAT (New)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;strokeWidth=2;fontSize=12;fontStyle=bold;" vertex="1" parent="1">
+          <mxGeometry x="420" y="100" width="240" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="zutat-fields" value="Id (PK, AUTOINCREMENT)
+RezeptId (FK, NOT NULL, ON DELETE CASCADE)
+LebensmittelId (FK, NOT NULL, ON DELETE RESTRICT)
+Menge (REAL, CHECK 0.01-10000, NOT NULL)
+Einheit (TEXT, CHECK g/ml/Stück/TL/EL/Tasse/Prise)
+Notizen (TEXT)
+Position (INTEGER, NOT NULL, CHECK ≥ 0)
+CreatedAt (TEXT, ISO8601 UTC, NOT NULL)
+UNIQUE (RezeptId, Position)" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontFamily=monospace;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="420" y="130" width="240" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- LEBENSMITTELKATALOG TABLE (EXISTING) -->
+        <mxCell id="lm-table" value="LEBENSMITTELKATALOG (UC1)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;fontSize=12;fontStyle=bold;" vertex="1" parent="1">
+          <mxGeometry x="800" y="100" width="220" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lm-fields" value="Id (PK, AUTOINCREMENT)
+Name (TEXT, UNIQUE, NOT NULL)
+Einheit (TEXT, NOT NULL)
+Kategorie (TEXT)
+CreatedAt (TEXT, ISO8601 UTC)
+UpdatedAt (TEXT, ISO8601 UTC)
+IsArchived (INTEGER, DEFAULT 0)" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontFamily=monospace;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="800" y="130" width="220" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- NÄHRWERT TABLE (UC3) -->
+        <mxCell id="nährwert-table" value="NÄHRWERT (UC3)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C2185B;strokeWidth=2;fontSize=12;fontStyle=bold;" vertex="1" parent="1">
+          <mxGeometry x="800" y="400" width="220" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="nährwert-fields" value="Id (PK, AUTOINCREMENT)
+LebensmittelId (FK, UNIQUE, NOT NULL)
+Kalorien (INTEGER, NOT NULL)
+Fett (REAL, NOT NULL)
+GesättigteFettsäuren (REAL)
+Kohlenhydrate (REAL, NOT NULL)
+Zucker (REAL)
+Protein (REAL, NOT NULL)
+Ballaststoffe (REAL)
+Salz (REAL)
+StandardMengeEinheit (TEXT, CHECK g/ml)
+CreatedAt (TEXT, ISO8601 UTC)
+IsArchived (INTEGER, DEFAULT 0)" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontFamily=monospace;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="800" y="430" width="220" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- RELATIONSHIPS -->
+        <!-- Rezept 1 --N RezeptZutat -->
+        <mxCell id="rel1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=crow;endFill=1;" edge="1" parent="1" source="rezept-table" target="zutat-table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="115" as="sourcePoint" />
+            <mxPoint x="420" y="115" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel1-label" value="1 ──N contains" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel1">
+          <mxGeometry x="0.5" y="0" relative="1" as="geometry">
+            <mxPoint y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- RezeptZutat N --1 LebensmittelKatalog -->
+        <mxCell id="rel2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=crow;endFill=1;strokeColor=#F57F17;" edge="1" parent="1" source="zutat-table" target="lm-table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="660" y="150" as="sourcePoint" />
+            <mxPoint x="800" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel2-label" value="N ──1 references&#xa;ON DELETE RESTRICT" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="rel2">
+          <mxGeometry x="0.5" y="0" relative="1" as="geometry">
+            <mxPoint y="-20" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Nährwert N --1 LebensmittelKatalog -->
+        <mxCell id="rel3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=crow;endFill=1;strokeColor=#C2185B;" edge="1" parent="1" source="nährwert-table" target="lm-table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="400" as="sourcePoint" />
+            <mxPoint x="910" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel3-label" value="N ──1&#xa;ON DELETE RESTRICT" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="rel3">
+          <mxGeometry x="0.5" y="0" relative="1" as="geometry">
+            <mxPoint x="60" y="0" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- NOTES/CONSTRAINTS -->
+        <mxCell id="notes-title" value="UC4 Schema Changes & Notes" style="text;fontSize=12;fontStyle=bold;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="650" width="300" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="notes-box" value="✓ NEW: Rezept table (aggregate root for UC4)
+✓ NEW: RezeptZutat table (M:N via junction)
+✓ Rezept ──1:N──┐
+  │             └─ RezeptZutat ──N:1──┐
+  │                                    └─ LebensmittelKatalog (UC1)
+  │
+  └─ For Nutrition Calculation (UC5):
+     LebensmittelKatalog ──N:1──┐
+                                └─ Nährwert (UC3)
+
+✓ Soft-Delete: Both Rezept &amp; Nährwert use IsArchived flag
+✓ RezeptZutat uses ON DELETE CASCADE (if Rezept deleted, zutaten removed)
+✓ RezeptZutat uses ON DELETE RESTRICT (can't delete Lebensmittel if referenced)
+✓ Position field in RezeptZutat for ingredient ordering
+✓ CreatedAt/UpdatedAt for audit trail" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#757575;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="680" width="900" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- SQL EXAMPLE -->
+        <mxCell id="sql-title" value="Example SQL (for reference)" style="text;fontSize=12;fontStyle=bold;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="900" width="300" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sql-box" value="-- Insert Rezept
+INSERT INTO Rezept (Name, Portionen, ZubereitungszeitMinuten, Schwierigkeitsgrad,
+                    CreatedAt, UpdatedAt, IsArchived)
+VALUES ('Spaghetti Carbonara', 4, 20, 'Medium', datetime('now'), datetime('now'), 0);
+
+-- Insert RezeptZutat (assuming Rezept.Id = 1, LebensmittelKatalog.Id = 10)
+INSERT INTO RezeptZutat (RezeptId, LebensmittelId, Menge, Einheit, Position, CreatedAt)
+VALUES (1, 10, 400.0, 'g', 0, datetime('now'));  -- Spaghetti 400g" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=9;fontFamily=monospace;" vertex="1" parent="1">
+          <mxGeometry x="100" y="930" width="900" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- COLOR LEGEND -->
+        <mxCell id="color-legend" value="Schema Color Legend" style="text;fontSize=11;fontStyle=bold;align=left;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1080" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="color-new" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;width=15;height=15;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1110" width="15" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="color-new-label" value="New Table (UC4)" style="text;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="125" y="1108" width="150" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="color-uc3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C2185B;strokeWidth=2;width=15;height=15;" vertex="1" parent="1">
+          <mxGeometry x="300" y="1110" width="15" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="color-uc3-label" value="Existing UC3" style="text;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="325" y="1108" width="150" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="color-uc1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;width=15;height=15;" vertex="1" parent="1">
+          <mxGeometry x="500" y="1110" width="15" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="color-uc1-label" value="Existing UC1" style="text;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="525" y="1108" width="150" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
