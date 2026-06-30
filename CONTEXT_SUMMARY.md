@@ -233,49 +233,77 @@ public class Nährwert
 → UC3 100% COMPLETE ✅
 ```
 
-## 🔵 SESSION 2026-06-30 (IN PROGRESS): UC4 Domain Model & Diagramm-Planung
+## 🟢 SESSION 2026-06-30 (PHASE 1 COMPLETE): UC4 Doc-Agent Phase 1 FERTIG!
 
-**Dauer**: ~30 Minuten  
-**Phase**: Doc-Agent Planung + Spezifikation (VOR Test-Agent)  
-**Status**: ✅ UC4 Domain Model COMPLETE!
+**Dauer**: ~20 Minuten (Doc-Agent Spezifikation)  
+**Phase**: Doc-Agent Planung + Spezifikation + UML-Diagramme  
+**Status**: ✅ UC4 Domain Model COMPLETE! Ready for Test-Agent
 
-### Phase 1: Doc-Agent UC4 Spezifikation
+### Phase 1: Doc-Agent UC4 Spezifikation & Diagramme
 
-**Output**:
-1. ✅ `docs/uc4-domain-model.md` (9-seitig, vollständig)
-   - 1. Domain Model: Rezept + RezeptZutat Entities (mit Constraints)
-   - 2. Services: RezeptService + RezeptZutatService + NährwertCalculator (UC5-Integration)
-   - 3. Use-Case Spezifikation: UC4.1-UC4.4 (Happy Path + Fehlerfälle)
-   - 4. UML-Diagramme (Planung): Class, ER, Sequence, Component
-   - 5. Test-Struktur: RezeptServiceTests (~30), RezeptZutatServiceTests (~25), NährwertCalculatorTests (~12)
-   - 6. Abhängigkeits-Übersicht: UC1 + UC3 + UC5 Integration
-   - 7. Validierungs-Zusammenfassung
-   - 8. Performance & Scalability
-   - 9. Definition-of-Done
+**Output (4 Dateien + 1 Commit)**:
+
+1. ✅ `docs/uc4-domain-model.md` (9-seitig, 1600+ Zeilen)
+   - **1. Domain Model**: Rezept (Aggregate Root) + RezeptZutat (Value Object)
+     - Rezept: Id, Name, Beschreibung, Zubereitungszeit, Schwierigkeitsgrad, Yield/Portionen (1-100), CreatedAt, UpdatedAt, IsArchived (Soft-Delete wie UC3)
+     - RezeptZutat: Id, RezeptId (FK), LebensmittelId (FK zu LebensmittelKatalog), Menge (0.01-10000), Einheit (g, ml, Stück, TL, EL), Notizen, Position, CreatedAt
+   - **2. Services** (3 Services definiert):
+     - RezeptService: GetById, GetAll, Search, Create, Update, Delete (Soft), Exists
+     - RezeptZutatService: GetZutaten, GetZutat, Add, Update, Delete, Reorder, GetZutatCount
+     - NährwertCalculator: CalcRezeptNährwerte, CalcProPortion
+   - **3. Use-Cases UC4.1-UC4.4**:
+     - UC4.1 Rezept erstellen: Happy Path + Fehler (Keine Zutaten, Zutat nicht vorhanden, Duplikat)
+     - UC4.2 Rezept bearbeiten: Metadaten + Zutaten Management
+     - UC4.3 Rezept löschen: Soft-Delete (IsArchived)
+     - UC4.4 Rezept-Nährwerte: Pro Rezept + Pro Portion
+   - **4. UML-Diagramme (Planung)**: Class, ER, Sequence, Component
+   - **5. Test-Struktur**: 
+     - RezeptServiceTests: ~30 Tests (GetById 3, GetAll 2, Search 3, Create 13, Update 8, Delete 3, Exists 2)
+     - RezeptZutatServiceTests: ~25 Tests (Get 2, GetZutat 3, Add 12, Update 6, Delete 3, Reorder 4, Count 1)
+     - NährwertCalculatorTests: ~12 Tests (Calc 8, CalcPortion 3, Edge Cases 6)
+   - **6. Abhängigkeits-Übersicht**: UC1 + UC3 + UC5 Integration
+   - **7. Validierungs-Zusammenfassung**: Name UNIQUE, Min 1 Zutat, FK-Constraints, Position-Management
+   - **8. Performance & Scalability**: Indexierung, Lazy Loading, Soft-Delete Filters
+   - **9. Definition-of-Done**: Vollständig
 
 2. ✅ `diagrams/architecture-class-uc4.drawio` (Class Diagram)
-   - Rezept Aggregate Root (Entities mit Constraints)
-   - RezeptZutat Value Objects (FK zu LebensmittelKatalog)
-   - Services Interfaces (RezeptService, RezeptZutatService, NährwertCalculator)
-   - Dependencies Injection
-   - Legend & Constraints
+   - Rezept Aggregate Root (mit Soft-Delete IsArchived, Audit Trail CreatedAt/UpdatedAt)
+   - RezeptZutat Value Objects in Rezept-Aggregate (mit Position für Ordering, FK zu LebensmittelKatalog)
+   - 3 Services mit vollständigen Methoden-Signaturen
+   - Dependency Injection Patterns
+   - Legend mit Constraints (Name UNIQUE, Portionen 1-100, Min 1 Zutat, Menge 0.01-10000)
 
-3. ✅ `diagrams/database-schema-uc4-update.drawio` (ER-Diagramm Update)
-   - Rezept Table (neue Tabelle)
-   - RezeptZutat Table (neue Tabelle mit FK-Constraints)
-   - Relationships: Rezept 1--N RezeptZutat, RezeptZutat N--1 LebensmittelKatalog
-   - ON DELETE CASCADE/RESTRICT Semantik
-   - SQL Example für Insertions
+3. ✅ `diagrams/database-schema-uc4-update.drawio` (ER-Diagramm)
+   - Rezept Table: Id (PK), Name (UNIQUE), Beschreibung, Zubereitungszeit, Schwierigkeitsgrad, Yield, CreatedAt, UpdatedAt, IsArchived
+   - RezeptZutat Table: Id (PK), RezeptId (FK), LebensmittelId (FK), Menge, Einheit, Notizen, Position, CreatedAt
+   - Relationships:
+     - Rezept 1 ←→ N RezeptZutat (ON DELETE CASCADE)
+     - RezeptZutat N ←→ 1 LebensmittelKatalog (ON DELETE RESTRICT)
+   - SQL Insert Examples
+   - Schema Color Legend (neue Entities in Weiß → später Grün nach Fertigstellung)
+
+4. ✅ `reviews/uc4-domain-model-validation.md` (Validierungsbericht)
+   - Handover-Checkliste für Test-Agent
+   - Test-Anzahl Breakdown: RezeptService ~30 + RezeptZutatService ~25 + NährwertCalculator ~12 = ~40-50 Tests total
+   - Key Points: Soft-Delete wie UC3, FK-Constraints mit ON DELETE Semantik, Position-Management für Zutaten, Nährwertberechnung mit Skalierungsfaktor
+   - **Status: READY FOR TEST-AGENT 🚀**
+
+5. ✅ Commit `8ecc2f0` - docs(uc4): Add UC4 Domain Model + UML-Diagramme (Doc-Agent Phase 1)
 
 **Key Insights**:
-- ✅ Rezept Aggregate mit Soft-Delete (IsArchived wie UC3)
-- ✅ RezeptZutat Value Object mit Position für Ordering
-- ✅ FK Constraints: ON DELETE CASCADE (Rezept → Zutaten), ON DELETE RESTRICT (LebensmittelKatalog)
+- ✅ Rezept Aggregate mit Soft-Delete (IsArchived wie UC3) + Audit Trail
+- ✅ RezeptZutat Value Object mit Position für Ordering (können neu sortiert werden)
+- ✅ FK Constraints: ON DELETE CASCADE (Rezept → Zutaten Cleanup), ON DELETE RESTRICT (LebensmittelKatalog - Zutaten dürfen nicht gelöscht werden!)
 - ✅ Schwierigkeitsgrad: Enum-like ("Easy", "Medium", "Hard")
-- ✅ Nährwertberechnung: Summe aller Zutaten * Skalierungsfaktor (Menge / 100g)
-- ✅ ~40-50 Tests erwartet (RezeptService ~30, RezeptZutatService ~25, NährwertCalculator ~12)
+- ✅ Nährwertberechnung: Summe aller Zutaten * Skalierungsfaktor (Menge / 100g Standard)
+- ✅ **~40-50 Tests erwartet** (größer als UC3 mit 23 Tests!)
+- ✅ Alle Constraints dokumentiert (Name UNIQUE, Portionen 1-100, Menge 0.01-10000, Min 1 Zutat pro Rezept)
 
-**Dependencies OK**: UC1 (LebensmittelKatalog) + UC3 (Nährwerte) beide ✅ fertig, UC4 kann starten
+**Dependencies Validation**: 
+- UC1 (LebensmittelKatalog) ✅ fertig → FK zur RezeptZutat
+- UC3 (Nährwerte) ✅ fertig → NährwertCalculator nutzt NährwertService
+- UC5 (Nährwertberechnung) 🔵 NICHT blockierend → wird UC4 nutzen
+- **⚠️ Keine blockierenden Dependencies! UC4 kann sofort gestartet werden.**
 
 ### UC4 (Rezepte verwalten) – Next in Queue
 ```
@@ -323,15 +351,18 @@ Last Commits:
 **Ready For**: UC4 (Rezepte verwalten) – vollständiger TDD-Workflow etabliert  
 **Total**: 137/137 Tests GRÜN, 4-Teil-Dokumentation 100%, Alle Diagramme aktualisiert ✅
 
-## 📊 Projekt-Metriken (Session 9-10 Summary)
+## 📊 Projekt-Metriken (Session 9-10 + Session 11 Update)
 
 | Metrik | Wert |
 |--------|------|
-| **UCs Fertig** | 6/10 (60%) |
+| **UCs Fertig** | 6/10 (60%) – UC1, UC2, UC3, UC6, UC9, UC10 |
 | **Tests Gesamt** | 137/137 GRÜN |
-| **Test-Coverage** | 100% der Anforderungen |
-| **Dokumentation** | 4-Teil-Check 100% konsistent |
-| **Diagramme** | Alle UCs visualisiert + Sequence + ER |
-| **Commits** | 35 gesamt, 5 diese Session |
+| **UC4 Status** | 🔵 Doc-Phase COMPLETE, Test-Phase nächster Schritt (~40-50 Tests erwartet) |
+| **Test-Coverage** | 100% der fertiggestellten UCs |
+| **Dokumentation** | 4-Teil-Check 100% konsistent (alle 6 UCs) |
+| **Diagramme** | Alle 6 UCs + Sequence + ER visualisiert, UC4 Class + ER geplant |
+| **Commits** | 36 gesamt (UC3: 5 Commits, UC4-Phase1: 1 Commit) |
 | **Code Quality** | Clean Code + SOLID + KISS ✅ |
-| **TDD-Cycle** | Red → Green → Refactor → Docs → Diagrams ✅ |
+| **TDD-Cycle** | Red → Green → Refactor → Docs → Diagrams ✅ etabliert |
+
+**Nächster Checkpoint**: Test-Agent für UC4 (TDD Red Phase, ~40-50 Tests)
