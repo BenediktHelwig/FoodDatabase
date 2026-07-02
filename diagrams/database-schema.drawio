@@ -62,32 +62,32 @@
                     <mxGeometry y="60" width="240" height="120" as="geometry"/>
                 </mxCell>
 
-                <!-- Rezept Entity -->
-                <mxCell id="entity_rezept" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
-                    <mxGeometry x="50" y="330" width="200" height="150" as="geometry"/>
+                <!-- Rezept Entity (UC4 COMPLETE!) -->
+                <mxCell id="entity_rezept" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor:#d4edda;strokeColor:#28a745;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="330" width="220" height="200" as="geometry"/>
                 </mxCell>
-                <mxCell id="rezept_title" value="Rezept" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_rezept" vertex="1">
-                    <mxGeometry y="26" width="200" height="26" as="geometry"/>
+                <mxCell id="rezept_title" value="✅ Rezept (UC4)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;color=#28a745;" parent="entity_rezept" vertex="1">
+                    <mxGeometry y="26" width="220" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="rezept_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_rezept" vertex="1">
-                    <mxGeometry y="52" width="200" height="8" as="geometry"/>
+                <mxCell id="rezept_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#28a745;" parent="entity_rezept" vertex="1">
+                    <mxGeometry y="52" width="220" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="rezept_attrs" value="PK Id: int&#10;Name: string&#10;Beschreibung: string&#10;Zutaten: ICollection" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_rezept" vertex="1">
-                    <mxGeometry y="60" width="200" height="90" as="geometry"/>
+                <mxCell id="rezept_attrs" value="PK Id: int&#10;Name: string (UNIQUE, max 200)&#10;Beschreibung: string&#10;Zubereitung: string&#10;Portionen: int (1-100)&#10;ZubereitungszeitMinuten: int (0-1440)&#10;Schwierigkeitsgrad: string (Easy|Medium|Hard)&#10;CreatedAt, UpdatedAt: DateTime&#10;IsArchived: bool (Soft-Delete)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_rezept" vertex="1">
+                    <mxGeometry y="60" width="220" height="140" as="geometry"/>
                 </mxCell>
 
-                <!-- RezeptZutat Entity -->
-                <mxCell id="entity_rezeptzutat" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
-                    <mxGeometry x="50" y="550" width="200" height="140" as="geometry"/>
+                <!-- RezeptZutat Entity (UC4 COMPLETE!) -->
+                <mxCell id="entity_rezeptzutat" value="" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;collapsed=0;marginBottom=0;fillColor:#d4edda;strokeColor:#28a745;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="550" width="240" height="180" as="geometry"/>
                 </mxCell>
-                <mxCell id="rezeptzutat_title" value="RezeptZutat" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" parent="entity_rezeptzutat" vertex="1">
-                    <mxGeometry y="26" width="200" height="26" as="geometry"/>
+                <mxCell id="rezeptzutat_title" value="✅ RezeptZutat (UC4)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;color:#28a745;" parent="entity_rezeptzutat" vertex="1">
+                    <mxGeometry y="26" width="240" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="rezeptzutat_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor=#000000;" parent="entity_rezeptzutat" vertex="1">
-                    <mxGeometry y="52" width="200" height="8" as="geometry"/>
+                <mxCell id="rezeptzutat_sep" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;deletable=0;editable=0;connectable=0;strokeColor:#28a745;" parent="entity_rezeptzutat" vertex="1">
+                    <mxGeometry y="52" width="240" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="rezeptzutat_attrs" value="PK Id: int&#10;FK RezeptId: int&#10;FK LebensmittelId: int&#10;Menge: decimal&#10;Einheit: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_rezeptzutat" vertex="1">
-                    <mxGeometry y="60" width="200" height="80" as="geometry"/>
+                <mxCell id="rezeptzutat_attrs" value="PK Id: int&#10;FK RezeptId: int (ON DELETE CASCADE)&#10;FK LebensmittelId: int (ON DELETE RESTRICT)&#10;Menge: double (0.01-10000)&#10;Einheit: string (g|ml|Stück|TL|EL|Tasse|Prise)&#10;Notizen: string (optional)&#10;Position: int (für Ordering)&#10;CreatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="entity_rezeptzutat" vertex="1">
+                    <mxGeometry y="60" width="240" height="120" as="geometry"/>
                 </mxCell>
 
                 <!-- Einkaufsliste Entity -->

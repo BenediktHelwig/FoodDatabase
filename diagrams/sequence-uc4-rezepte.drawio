@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="claude-code-diagrams" modified="2026-07-02" version="1.0" type="document">
+  <diagram name="UC4 - Rezepte verwalten" id="sequence-uc4">
+    <description>
+Sequence Diagramm für UC4 mit 3 Szenarien:
+
+SZENARIO 1: CreateRezeptAsync
+- Benutzer erstellt neues Rezept
+- Validierung: Name (length, null), Duplikat-Check, Portionen, Zeit, Schwierigkeitsgrad
+- Repository.CreateAsync speichert Rezept
+
+SZENARIO 2: AddZutatAsync
+- Benutzer fügt Zutat zu Rezept hinzu
+- Validierung: Rezept existiert, Lebensmittel existiert, Menge, Einheit
+- Position wird automatisch berechnet (MAX+1)
+- Repository.CreateAsync speichert Zutat
+
+SZENARIO 3: CalculateRezeptNährwerteAsync
+- System berechnet Nährwerte
+- Für jede Zutat: Unit-Konvertierung, Skalierungsfaktor, Summation
+- Pro-Portion-Division
+- Rounding auf 1 Dezimalstelle
+
+FLOW CHARTS:
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SZENARIO 1: CreateRezeptAsync (Rezept erstellen)
+
+┌─────────┐     CreateRezeptRequest (Name, Portionen, Zeit, Schwierigkeitsgrad)
+│ Benutzer├────────────────────────────────────────────────────────→ RezeptService
+└─────────┘                                                              │
+                                                                         ├─ Name validieren (Länge, null)
+                                                                         │
+                                                                         ├─ Duplikat-Prüfung
+                                                                         │  Repository.GetAllAsync()
+                                                                         │  ↓
+                                                                         │  Check: existiert bereits? NEIN
+                                                                         │
+                                                                         ├─ Portionen validieren (1-100) ✓
+                                                                         │
+                                                                         ├─ ZubereitungszeitMinuten validieren (0-1440) ✓
+                                                                         │
+                                                                         ├─ Schwierigkeitsgrad validieren (Easy|Medium|Hard) ✓
+                                                                         │
+                                                                         └─ Repository.CreateAsync(rezept)
+                                                                            ↓
+                                                                        SQLite DB
+                                                                            │
+            Rezept mit IsArchived=false ← ← ← ← ← ← ← ← ← ← ← ← ← ←───────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SZENARIO 2: AddZutatAsync (Zutat hinzufügen)
+
+┌─────────┐     AddZutatRequest (RezeptId, LebensmittelId, Menge, Einheit)
+│ Benutzer├───────────────────────────────────────→ RezeptZutatService
+└─────────┘                                            │
+                                                       ├─ RezeptService.RezeptExistsAsync(rezeptId)
+                                                       │  ├─ Repository.GetAllAsync()
+                                                       │  └─ Check: Rezept existiert + !IsArchived? JA
+                                                       │
+                                                       ├─ LebensmittelService.LebensmittelExistsAsync(lebensmittelId)
+                                                       │  └─ Check: Lebensmittel existiert? JA
+                                                       │
+                                                       ├─ Menge validieren (0.01-10000) ✓
+                                                       │
+                                                       ├─ Einheit validieren (g|ml|Stück|TL|EL|Tasse|Prise) ✓
+                                                       │
+                                                       ├─ Position automatisch berechnen
+                                                       │  ├─ Repository.GetAllAsync()
+                                                       │  └─ newPosition = MAX(Position) + 1 oder 0
+                                                       │
+                                                       └─ Repository.CreateAsync(zutat)
+                                                          ↓
+                                                       SQLite DB
+                                                          │
+            RezeptZutat mit Position ← ← ← ← ← ← ← ← ← ←┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SZENARIO 3: CalculateRezeptNährwerteAsync (Nährwerte berechnen)
+
+┌─────────┐     rezeptId
+│ Benutzer├──────────────────────→ NährwertCalculator
+└─────────┘                            │
+                                       ├─ RezeptService.GetRezeptByIdAsync(rezeptId)
+                                       │  └─ rezept = { Id, Name, Portionen, ... }
+                                       │
+                                       ├─ RezeptZutatService.GetZutatenAsync(rezeptId)
+                                       │  └─ zutaten = [ { Menge, Einheit, LebensmittelId }, ... ]
+                                       │
+                                       ├─ FOR EACH zutat:
+                                       │  │
+                                       │  ├─ NährwertService.GetNährwertByLebensmittelId(lebensmittelId)
+                                       │  │  └─ nährwert = { Kalorien, Fett, KH, Protein, ... }
+                                       │  │
+                                       │  ├─ EinheitConverter.ConvertToGramm(menge, einheit)
+                                       │  │  ├─ Wenn "g" → 500g = 500g
+                                       │  │  ├─ Wenn "ml" → 250ml = 250g (Wasser-Äquivalent)
+                                       │  │  ├─ Wenn "Stück" → 4 Stück = 200g (für Eier)
+                                       │  │  └─ mengeInGramm = konvertierte Menge
+                                       │  │
+                                       │  ├─ Skalierungsfaktor berechnen
+                                       │  │  └─ skalierungsfaktor = mengeInGramm / 100.0
+                                       │  │
+                                       │  └─ Nährwerte skalieren und addieren
+                                       │     ├─ gesamt.Kalorien += nährwert.Kalorien * skalierungsfaktor
+                                       │     ├─ gesamt.Fett += nährwert.Fett * skalierungsfaktor
+                                       │     ├─ gesamt.KH += nährwert.KH * skalierungsfaktor
+                                       │     └─ ... (alle 8 Nährwerte)
+                                       │
+                                       ├─ Pro-Portion-Nährwerte berechnen
+                                       │  └─ proPortion = gesamt / rezept.Portionen
+                                       │
+                                       ├─ Dezimalstellen-Rounding
+                                       │  ├─ Kalorien: Integer (z.B. 362)
+                                       │  └─ Alle anderen: 1 Dezimalstelle (z.B. 12.3g)
+                                       │
+            RezeptNährwerteDto ← ← ← ← ← ← ← ← ← ← ← ← ←┘
+            {
+              RezeptId: 1,
+              GesamtnährwerteDto: { Kalorien: 1450, Fett: 52.3, ... },
+              ProPortionNährwerteDto: { Kalorien: 362, Fett: 13.1, ... }
+            }
+
+═══════════════════════════════════════════════════════════════════════════════
+
+EXCEPTIONS & ERROR HANDLING:
+
+CreateRezeptAsync:
+  ❌ ValidationException: Leerer Name, zu lang, ungültige Portionen/Zeit/Schwierigkeitsgrad
+  ❌ DuplicateRezeptException: Name existiert bereits
+
+AddZutatAsync:
+  ❌ NotFoundException: Rezept nicht gefunden, Lebensmittel nicht gefunden
+  ❌ ValidationException: Ungültige Menge, ungültige Einheit
+
+CalculateRezeptNährwerteAsync:
+  ❌ NotFoundException: Rezept nicht gefunden
+  ✅ Zutaten ohne Nährwertinformationen werden ignoriert (continue)
+
+═══════════════════════════════════════════════════════════════════════════════
+    </description>
+  </diagram>
+</mxfile>

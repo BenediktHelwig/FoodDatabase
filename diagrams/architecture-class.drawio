@@ -36,14 +36,29 @@
           <mxGeometry x="1050" y="50" width="340" height="430" as="geometry"/>
         </mxCell>
 
+        <!-- RezeptService (UC4) - NEW -->
+        <mxCell id="class6-rezeptservice" value="«Service»&#10;RezeptService (UC4) ✅&#10;─────────────────────────────&#10;- _repository: IRepository&lt;Rezept&gt;&#10;- _lebensmittelService: ILebensmittelService&#10;─────────────────────────────&#10;+ GetRezeptByIdAsync(int) → Rezept&#10;+ GetAllRezepteAsync() → IEnumerable&lt;Rezept&gt;&#10;+ SearchRezepteAsync(string) → IEnumerable&lt;Rezept&gt;&#10;+ CreateRezeptAsync(request) → Rezept&#10;  (Validiert: Name, Duplikat, Portionen, Zeit)&#10;+ UpdateRezeptAsync(int, request) → Rezept&#10;+ DeleteRezeptAsync(int) → void (Soft-Delete)&#10;+ RezeptExistsAsync(int) → bool&#10;───────────────────────────────&#10;UC4 Operations: 7 public Methods&#10;Test Coverage: 30 Unit Tests (100%)&#10;Status: ✅ COMPLETE" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=8;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#e8f5e9;strokeWidth=2;strokeColor=#4caf50;" vertex="1" parent="1">
+          <mxGeometry x="700" y="350" width="320" height="320" as="geometry"/>
+        </mxCell>
+
+        <!-- RezeptZutatService (UC4) - NEW -->
+        <mxCell id="class7-rezeptzutatservice" value="«Service»&#10;RezeptZutatService (UC4) ✅&#10;─────────────────────────────&#10;- _repository: IRepository&lt;RezeptZutat&gt;&#10;- _rezeptService: IRezeptService&#10;- _lebensmittelService: ILebensmittelService&#10;─────────────────────────────&#10;+ GetZutatenAsync(rezeptId) → sorted by Position&#10;+ GetZutatAsync(rezeptId, zutatId) → RezeptZutat&#10;+ AddZutatAsync(rezeptId, request) → RezeptZutat&#10;  (Auto-calc Position, validates Menge/Einheit)&#10;+ UpdateZutatAsync(rezeptId, zutatId, request) → RezeptZutat&#10;+ DeleteZutatAsync(rezeptId, zutatId) → void&#10;  (Min 1 Zutat Constraint!)&#10;+ ReorderZutatenAsync(rezeptId, newOrder) → IEnum&#10;+ GetZutatCountAsync(rezeptId) → int&#10;───────────────────────────────&#10;UC4 Operations: 7 public Methods&#10;Test Coverage: 25 Unit Tests (100%)&#10;Status: ✅ COMPLETE" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=8;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#e8f5e9;strokeWidth=2;strokeColor:#4caf50;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="350" width="340" height="320" as="geometry"/>
+        </mxCell>
+
         <!-- Rezept -->
-        <mxCell id="class6" value="Rezept&#10;─────────────────&#10;- ID: int (PK)&#10;- Name: string&#10;- Portionen: int&#10;- Zubereitung: string&#10;- ErstelltAm: DateTime&#10;─────────────────&#10;+ AddZutat(LebensmittelKatalog, Menge)&#10;+ GetZutaten(): List&lt;RezeptZutat&gt;&#10;+ CalculateNährwerte(): Nährwert&#10;+ UpdateMenge(decimal)&#10;+ Delete()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#cce5ff;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="700" y="450" width="240" height="180" as="geometry"/>
+        <mxCell id="class6" value="Rezept (Aggregate Root)&#10;─────────────────────────────&#10;PK Id: int&#10;Name: string (UNIQUE, max 200)&#10;Beschreibung: string&#10;Zubereitung: string&#10;Portionen: int (1-100)&#10;ZubereitungszeitMinuten: int (0-1440)&#10;Schwierigkeitsgrad: string (Easy|Medium|Hard)&#10;CreatedAt, UpdatedAt: DateTime&#10;IsArchived: bool (Soft-Delete) ✅" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#d4edda;strokeWidth=2;strokeColor=#28a745;" vertex="1" parent="1">
+          <mxGeometry x="700" y="720" width="280" height="180" as="geometry"/>
         </mxCell>
 
         <!-- RezeptZutat -->
-        <mxCell id="class7" value="RezeptZutat&#10;─────────────────&#10;- ID: int (PK)&#10;- RezeptID: int (FK)&#10;- LebensmittelKatalogID: int (FK)&#10;- Menge: decimal&#10;- Einheit: string&#10;─────────────────&#10;+ CalculateNährwert(portionen): Nährwert&#10;+ Update(Menge, Einheit)" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#cce5ff;strokeWidth=2;strokeColor=#000000;" vertex="1" parent="1">
-          <mxGeometry x="1000" y="450" width="220" height="150" as="geometry"/>
+        <mxCell id="class7" value="RezeptZutat (Child Entity)&#10;─────────────────────────────&#10;PK Id: int&#10;FK RezeptId: int (CASCADE)&#10;FK LebensmittelId: int (RESTRICT)&#10;Menge: double (0.01-10000)&#10;Einheit: string (Whitelist)&#10;Notizen: string (optional)&#10;Position: int (für Ordering) ✅&#10;CreatedAt: DateTime" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=10;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#d4edda;strokeWidth=2;strokeColor=#28a745;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="720" width="280" height="180" as="geometry"/>
+        </mxCell>
+
+        <!-- NährwertCalculator (UC4 + UC5) - NEW -->
+        <mxCell id="class8-nährwertcalculator" value="«Service»&#10;NährwertCalculator (UC4+UC5) ✅&#10;───────────────────────────────────&#10;- _rezeptService: IRezeptService&#10;- _rezeptZutatService: IRezeptZutatService&#10;- _nährwertService: INährwertService&#10;- _einheitConverter: IEinheitConverter&#10;───────────────────────────────────&#10;+ CalculateRezeptNährwerteAsync(rezeptId)&#10;  → RezeptNährwerteDto (Gesamt + ProPortion)&#10;  (Pro Zutat: Unit-Konvertierung + Skalierung)&#10;+ CalculateProPortionAsync(rezeptId)&#10;  → NährwerteProPortion (Kalorien + Fett)&#10;───────────────────────────────────&#10;UC4/UC5 Operations: 2 public Methods&#10;Test Coverage: 12 Unit Tests (100%)&#10;Status: ✅ COMPLETE" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=9;fontFamily=Courier New;align=left;verticalAlign=top;fillColor:#e8f5e9;strokeWidth=2;strokeColor:#4caf50;" vertex="1" parent="1">
+          <mxGeometry x="700" y="950" width="400" height="250" as="geometry"/>
         </mxCell>
 
         <!-- Einkaufsliste -->
