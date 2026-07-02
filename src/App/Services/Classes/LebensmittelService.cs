@@ -123,6 +123,20 @@ namespace FoodDatabase.App.Services.Classes
         }
 
         /// <summary>
+        /// Prüft, ob ein Lebensmittel mit der angegebenen ID existiert.
+        /// </summary>
+        /// <param name="id">Die ID des Lebensmittels.</param>
+        /// <returns>true, wenn existiert; false sonst.</returns>
+        public async Task<bool> LebensmittelExistsAsync(int id)
+        {
+            if (id <= 0)
+                return false;
+
+            var lebensmittel = await _repository.GetByIdAsync(id);
+            return lebensmittel != null;
+        }
+
+        /// <summary>
         /// Validiert ein Lebensmittel-Objekt auf Null-Referenzen und wichtige Felder.
         /// Helper-Methode für Create/Update.
         /// </summary>

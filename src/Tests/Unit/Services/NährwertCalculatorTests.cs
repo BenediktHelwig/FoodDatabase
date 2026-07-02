@@ -7,6 +7,8 @@ using Xunit;
 using FoodDatabase.App.Models;
 using FoodDatabase.App.Services.Interfaces;
 using FoodDatabase.App.Services.Classes;
+using FoodDatabase.App.Services.Dtos;
+using FoodDatabase.App.Services.Exceptions;
 
 namespace FoodDatabase.Tests.Unit.Services
 {
@@ -74,7 +76,7 @@ namespace FoodDatabase.Tests.Unit.Services
         public async Task CalculateRezeptNährwerte_WithNonExistingRezept_ThrowNotFoundException()
         {
             // Arrange
-            _mockRezeptService.Setup(r => r.GetRezeptByIdAsync(999)).ReturnsAsync((RezeptDto?)null);
+            _mockRezeptService.Setup(r => r.GetRezeptByIdAsync(999)).ReturnsAsync((Rezept?)null);
 
             // Act & Assert
             await Assert.ThrowsAsync<NotFoundException>(() => _calculator.CalculateRezeptNährwerteAsync(999));
@@ -407,49 +409,5 @@ namespace FoodDatabase.Tests.Unit.Services
             // 10.567 * (100 / 100) = 10.567, rounded to 10.6
             Assert.True(result.GesamtnährwerteDto.Fett >= 10.5);
         }
-    }
-
-    // ============ DTOs & Interfaces (for Tests) ============
-
-    public class RezeptDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class RezeptNährwerteDto
-    {
-        public int RezeptId { get; set; }
-        public NährwerteDto GesamtnährwerteDto { get; set; }
-        public NährwerteDto ProPortionNährwerteDto { get; set; }
-    }
-
-    public class NährwerteDto
-    {
-        public int Kalorien { get; set; }
-        public double Fett { get; set; }
-        public double GesättigteFettsäuren { get; set; }
-        public double Kohlenhydrate { get; set; }
-        public double Zucker { get; set; }
-        public double Protein { get; set; }
-        public double Ballaststoffe { get; set; }
-        public double Salz { get; set; }
-    }
-
-    public class NährwerteProPortion
-    {
-        public int Kalorien { get; set; }
-        public double Fett { get; set; }
-    }
-
-    public interface IEinheitConverter
-    {
-        double ConvertToGramm(double menge, string einheit);
-    }
-
-    public interface INährwertCalculator
-    {
-        Task<RezeptNährwerteDto> CalculateRezeptNährwerteAsync(int rezeptId);
-        Task<NährwerteProPortion> CalculateProPortionAsync(int rezeptId);
     }
 }

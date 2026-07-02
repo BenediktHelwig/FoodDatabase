@@ -7,6 +7,8 @@ using Xunit;
 using FoodDatabase.App.Models;
 using FoodDatabase.App.Services.Interfaces;
 using FoodDatabase.App.Services.Classes;
+using FoodDatabase.App.Services.Dtos;
+using FoodDatabase.App.Services.Exceptions;
 
 namespace FoodDatabase.Tests.Unit.Services
 {
@@ -361,7 +363,7 @@ namespace FoodDatabase.Tests.Unit.Services
             var existingRezept = new Rezept { Id = 1, Name = "Spaghetti", Portionen = 4, IsArchived = false };
             var request = new UpdateRezeptRequest { Name = "Spaghetti Carbonara", Portionen = 6 };
             _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Rezept> { existingRezept });
-            var updated = new Rezept { Id = 1, Name = request.Name, Portionen = request.Portionen, UpdatedAt = DateTime.UtcNow };
+            var updated = new Rezept { Id = 1, Name = request.Name ?? "Spaghetti", Portionen = request.Portionen ?? 4, UpdatedAt = DateTime.UtcNow };
             _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<Rezept>())).ReturnsAsync(updated);
 
             // Act
@@ -526,22 +528,5 @@ namespace FoodDatabase.Tests.Unit.Services
             // Assert
             Assert.False(result);
         }
-    }
-
-    // ============ Custom Exception Classes (für Tests) ============
-
-    public class DuplicateRezeptException : Exception
-    {
-        public DuplicateRezeptException(string message) : base(message) { }
-    }
-
-    public class ValidationException : Exception
-    {
-        public ValidationException(string message) : base(message) { }
-    }
-
-    public class NotFoundException : Exception
-    {
-        public NotFoundException(string message) : base(message) { }
     }
 }

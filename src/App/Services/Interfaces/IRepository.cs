@@ -33,6 +33,13 @@ namespace FoodDatabase.App.Services.Interfaces
         Task<T> AddAsync(T entity);
 
         /// <summary>
+        /// Erstellt eine neue Entity (Alias für AddAsync für Kompatibilität mit UC4 Tests).
+        /// </summary>
+        /// <param name="entity">Die zu erstellende Entity.</param>
+        /// <returns>Die gespeicherte Entity mit eventuell generierten IDs/Timestamps.</returns>
+        Task<T> CreateAsync(T entity);
+
+        /// <summary>
         /// Aktualisiert eine bestehende Entity.
         /// </summary>
         /// <param name="entity">Die zu aktualisierende Entity mit allen neuen Werten.</param>

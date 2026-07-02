@@ -7,6 +7,8 @@ using Xunit;
 using FoodDatabase.App.Models;
 using FoodDatabase.App.Services.Interfaces;
 using FoodDatabase.App.Services.Classes;
+using FoodDatabase.App.Services.Dtos;
+using FoodDatabase.App.Services.Exceptions;
 
 namespace FoodDatabase.Tests.Unit.Services
 {
@@ -312,13 +314,13 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var zutat = new RezeptZutat { Id = 1, RezeptId = 1 };
             _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<RezeptZutat> { zutat });
-            _mockRepository.Setup(r => r.DeleteAsync(It.IsAny<RezeptZutat>())).ReturnsAsync(true);
+            _mockRepository.Setup(r => r.DeleteAsync(It.IsAny<int>())).ReturnsAsync(true);
 
             // Act
             await _service.DeleteZutatAsync(1, 1);
 
             // Assert
-            _mockRepository.Verify(r => r.DeleteAsync(It.IsAny<RezeptZutat>()), Times.Once);
+            _mockRepository.Verify(r => r.DeleteAsync(It.IsAny<int>()), Times.Once);
         }
 
         [Fact]
@@ -435,22 +437,5 @@ namespace FoodDatabase.Tests.Unit.Services
             // Assert
             Assert.Equal(3, result);
         }
-    }
-
-    // ============ DTOs & Requests (for Tests) ============
-
-    public class AddZutatRequest
-    {
-        public int LebensmittelId { get; set; }
-        public double Menge { get; set; }
-        public string Einheit { get; set; }
-        public string? Notizen { get; set; }
-    }
-
-    public class UpdateZutatRequest
-    {
-        public double? Menge { get; set; }
-        public string? Einheit { get; set; }
-        public string? Notizen { get; set; }
     }
 }

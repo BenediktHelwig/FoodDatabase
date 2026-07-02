@@ -27,5 +27,8 @@ namespace FoodDatabase.App.Services.Interfaces
 
         /// <summary>Löscht ein Lebensmittel anhand seiner ID.</summary>
         Task<bool> DeleteLebensmittelAsync(int id);
+
+        /// <summary>Prüft, ob ein Lebensmittel mit der angegebenen ID existiert.</summary>
+        Task<bool> LebensmittelExistsAsync(int id);
     }
 }

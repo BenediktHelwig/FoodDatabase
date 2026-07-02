@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f \"CONTEXT_SUMMARY.md\" ]; then echo \"{\\\"systemMessage\\\": \\\"📋 Projekt-Kontext geladen: CONTEXT_SUMMARY.md\\\"}\" 2>/dev/null || echo '{}'; else echo '{}'; fi",
+            "shell": "bash",
+            "timeout": 5,
+            "statusMessage": "Lade Projekt-Kontext..."
+          }
+        ]
+      }
+    ]
+  },
+  "language": "de"
+}
