@@ -63,23 +63,10 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<RezeptZutat> AddZutatAsync(int rezeptId, AddZutatRequest request)
         {
-            // Prüfe Rezept-Existenz
-            var rezept = await _rezeptService.GetRezeptByIdAsync(rezeptId);
-            if (rezept == null)
+            // Prüfe Rezept-Existenz (RezeptExistsAsync prüft bereits auf !IsArchived)
+            if (!await _rezeptService.RezeptExistsAsync(rezeptId))
             {
-                // Rezept existiert nicht oder ist archiviert
-                if (!await _rezeptService.RezeptExistsAsync(rezeptId))
-                {
-                    throw new NotFoundException($"Rezept mit ID {rezeptId} nicht gefunden.");
-                }
-                // Falls RezeptExistsAsync=true aber GetRezeptByIdAsync=null, ist es archiviert
-                throw new InvalidOperationException($"Rezept mit ID {rezeptId} ist archiviert.");
-            }
-
-            // Zusätzliche Archiv-Prüfung (für Test-Kompatibilität)
-            if (rezept.IsArchived)
-            {
-                throw new InvalidOperationException($"Rezept mit ID {rezeptId} ist archiviert.");
+                throw new NotFoundException($"Rezept mit ID {rezeptId} nicht gefunden.");
             }
 
             if (!await _lebensmittelService.LebensmittelExistsAsync(request.LebensmittelId))
