@@ -181,11 +181,6 @@ namespace FoodDatabase.Tests.Unit.Services
         public async Task CalculateNährwerteFromZutaten_WithSingleZutat_CalculateCorrectly()
         {
             // Arrange
-            var zutaten = new List<RezeptZutat>
-            {
-                new RezeptZutat { Id = 1, LebensmittelId = 1, Menge = 200, Einheit = "g" }
-            };
-            int portionen = 4;
             var nährwert = new Nährwert
             {
                 Id = 1,
@@ -193,8 +188,18 @@ namespace FoodDatabase.Tests.Unit.Services
                 Kalorien = 150,
                 Fett = 10.0,
                 Protein = 8.0,
-                Kohlenhydrate = 15.0
+                Kohlenhydrate = 15.0,
+                GesättigteFettsäuren = 2.0,
+                Zucker = 0.0,
+                Ballaststoffe = 1.0,
+                Salz = 0.1
             };
+            var lebensmittel = new LebensmittelKatalog { Id = 1, Name = "Milch", Nährwert = nährwert };
+            var zutaten = new List<RezeptZutat>
+            {
+                new RezeptZutat { Id = 1, LebensmittelId = 1, Menge = 200, Einheit = "g", Lebensmittel = lebensmittel }
+            };
+            int portionen = 4;
 
             _mockEinheitConverter.Setup(e => e.ConvertToGramm(200, "g")).Returns(200);
 
@@ -212,11 +217,19 @@ namespace FoodDatabase.Tests.Unit.Services
         public async Task CalculateNährwerteFromZutaten_WithMultipleZutaten_SumCorrectly()
         {
             // Arrange
+            var nährwert1 = new Nährwert { Id = 1, LebensmittelId = 1, Kalorien = 150, Fett = 10.0, Protein = 8.0, Kohlenhydrate = 15.0, GesättigteFettsäuren = 2.0, Zucker = 0.0, Ballaststoffe = 1.0, Salz = 0.1 };
+            var nährwert2 = new Nährwert { Id = 2, LebensmittelId = 2, Kalorien = 100, Fett = 2.0, Protein = 15.0, Kohlenhydrate = 5.0, GesättigteFettsäuren = 0.5, Zucker = 0.0, Ballaststoffe = 0.5, Salz = 0.05 };
+            var nährwert3 = new Nährwert { Id = 3, LebensmittelId = 3, Kalorien = 70, Fett = 5.0, Protein = 6.0, Kohlenhydrate = 1.0, GesättigteFettsäuren = 1.5, Zucker = 0.0, Ballaststoffe = 0.2, Salz = 0.08 };
+
+            var lebensmittel1 = new LebensmittelKatalog { Id = 1, Name = "Milch", Nährwert = nährwert1 };
+            var lebensmittel2 = new LebensmittelKatalog { Id = 2, Name = "Fleisch", Nährwert = nährwert2 };
+            var lebensmittel3 = new LebensmittelKatalog { Id = 3, Name = "Ei", Nährwert = nährwert3 };
+
             var zutaten = new List<RezeptZutat>
             {
-                new RezeptZutat { Id = 1, LebensmittelId = 1, Menge = 200, Einheit = "g" },
-                new RezeptZutat { Id = 2, LebensmittelId = 2, Menge = 100, Einheit = "g" },
-                new RezeptZutat { Id = 3, LebensmittelId = 3, Menge = 3, Einheit = "Stück" }
+                new RezeptZutat { Id = 1, LebensmittelId = 1, Menge = 200, Einheit = "g", Lebensmittel = lebensmittel1 },
+                new RezeptZutat { Id = 2, LebensmittelId = 2, Menge = 100, Einheit = "g", Lebensmittel = lebensmittel2 },
+                new RezeptZutat { Id = 3, LebensmittelId = 3, Menge = 3, Einheit = "Stück", Lebensmittel = lebensmittel3 }
             };
             int portionen = 4;
 
@@ -255,10 +268,14 @@ namespace FoodDatabase.Tests.Unit.Services
         public async Task CalculateNährwerteFromZutaten_WithZutatWithoutNährwert_IgnoreThatZutat()
         {
             // Arrange
+            var nährwert = new Nährwert { Id = 1, LebensmittelId = 1, Kalorien = 150, Fett = 10.0, Protein = 8.0, Kohlenhydrate = 15.0, GesättigteFettsäuren = 2.0, Zucker = 0.0, Ballaststoffe = 1.0, Salz = 0.1 };
+            var lebensmittel1 = new LebensmittelKatalog { Id = 1, Name = "Milch", Nährwert = nährwert };
+            var lebensmittel999 = new LebensmittelKatalog { Id = 999, Name = "Unbekannt", Nährwert = null }; // Kein Nährwert
+
             var zutaten = new List<RezeptZutat>
             {
-                new RezeptZutat { Id = 1, LebensmittelId = 1, Menge = 200, Einheit = "g" },
-                new RezeptZutat { Id = 2, LebensmittelId = 999, Menge = 100, Einheit = "g" } // Zutat ohne Nährwert
+                new RezeptZutat { Id = 1, LebensmittelId = 1, Menge = 200, Einheit = "g", Lebensmittel = lebensmittel1 },
+                new RezeptZutat { Id = 2, LebensmittelId = 999, Menge = 100, Einheit = "g", Lebensmittel = lebensmittel999 }
             };
             int portionen = 4;
 
@@ -268,9 +285,10 @@ namespace FoodDatabase.Tests.Unit.Services
             // Act
             var result = await _service.CalculateNährwerteFromZutatenAsync(zutaten, portionen);
 
-            // Assert - Sollte nur Zutat 1 einrechnen
+            // Assert - Sollte nur Zutat 1 einrechnen (Zutat 2 wird ignoriert da kein Nährwert)
             Assert.NotNull(result);
             Assert.True(result.Kalorien > 0);
+            Assert.Equal(300, result.Kalorien); // 150 * (200/100)
         }
 
         [Fact]

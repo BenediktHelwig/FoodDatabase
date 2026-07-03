@@ -1,0 +1,224 @@
+@using FoodDatabase.App.Services.Interfaces
+@using FoodDatabase.App.Services.Dtos
+@inject IRezeptNährwertService RezeptNährwertService
+
+<div class="rezept-naehrwert-anzeige">
+    @if (IsLoading)
+    {
+        <div class="loading-indicator" aria-label="Lädt Nährwerte...">
+            <p>Lädt Nährwerte...</p>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="error-message" role="alert">
+            <p>Fehler: @ErrorMessage</p>
+        </div>
+    }
+    @if (Nährwerte != null && !IsLoading)
+    {
+        @if (DisplayMode == "full" || DisplayMode == "compact")
+        {
+            <div class="naehrwert-container">
+                <h3>Nährwertinformationen</h3>
+
+                @if (DisplayMode == "full")
+                {
+                    <!-- Gesamtnährwerte Section -->
+                    <div class="naehrwert-section gesamt">
+                        <h4>Gesamt-Nährwerte</h4>
+                        <div class="naehrwert-grid">
+                            <div class="naehrwert-item">
+                                <span class="label">Kalorien:</span>
+                                <span class="value" aria-label="Kalorien gesamt">@Nährwerte.GesamtnährwerteDto.Kalorien kcal</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Fett:</span>
+                                <span class="value" aria-label="Fett gesamt">@Nährwerte.GesamtnährwerteDto.Fett.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Gesättigte Fettsäuren:</span>
+                                <span class="value">@Nährwerte.GesamtnährwerteDto.GesättigteFettsäuren.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Kohlenhydrate:</span>
+                                <span class="value">@Nährwerte.GesamtnährwerteDto.Kohlenhydrate.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Zucker:</span>
+                                <span class="value">@Nährwerte.GesamtnährwerteDto.Zucker.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Protein:</span>
+                                <span class="value">@Nährwerte.GesamtnährwerteDto.Protein.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Ballaststoffe:</span>
+                                <span class="value">@Nährwerte.GesamtnährwerteDto.Ballaststoffe.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Salz:</span>
+                                <span class="value">@Nährwerte.GesamtnährwerteDto.Salz.ToString("F2") g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pro-Portion Section -->
+                    <div class="naehrwert-section pro-portion">
+                        <h4>Nährwerte Pro Portion</h4>
+                        <div class="naehrwert-grid">
+                            <div class="naehrwert-item">
+                                <span class="label">Kalorien:</span>
+                                <span class="value" aria-label="Kalorien pro portion">@Nährwerte.ProPortionNährwerteDto.Kalorien kcal</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Fett:</span>
+                                <span class="value">@Nährwerte.ProPortionNährwerteDto.Fett.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Gesättigte Fettsäuren:</span>
+                                <span class="value">@Nährwerte.ProPortionNährwerteDto.GesättigteFettsäuren.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Kohlenhydrate:</span>
+                                <span class="value">@Nährwerte.ProPortionNährwerteDto.Kohlenhydrate.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Zucker:</span>
+                                <span class="value">@Nährwerte.ProPortionNährwerteDto.Zucker.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Protein:</span>
+                                <span class="value">@Nährwerte.ProPortionNährwerteDto.Protein.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Ballaststoffe:</span>
+                                <span class="value">@Nährwerte.ProPortionNährwerteDto.Ballaststoffe.ToString("F2") g</span>
+                            </div>
+                            <div class="naehrwert-item">
+                                <span class="label">Salz:</span>
+                                <span class="value">@Nährwerte.ProPortionNährwerteDto.Salz.ToString("F2") g</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Portion Adjuster -->
+                    <div class="portion-adjuster">
+                        <h4>Portionsgröße anpassen</h4>
+                        <div class="portion-controls">
+                            <button @onclick="@ReducePortions"
+                                    data-testid="reduce-portion"
+                                    aria-label="Portionen verringern"
+                                    class="btn btn-secondary">
+                                -
+                            </button>
+                            <input type="number"
+                                   @bind="CurrentPortions"
+                                   @onchange="@PortionInputChanged"
+                                   data-testid="portion-input"
+                                   aria-label="Portionsgröße eingeben"
+                                   min="1"
+                                   max="100" />
+                            <button @onclick="@IncreasePortions"
+                                    data-testid="increase-portion"
+                                    aria-label="Portionen erhöhen"
+                                    class="btn btn-secondary">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                }
+                else if (DisplayMode == "compact")
+                {
+                    <!-- Compact mode: nur Kalorien und Protein -->
+                    <div class="naehrwert-compact">
+                        <div class="naehrwert-item">
+                            <span class="label">Kalorien (gesamt):</span>
+                            <span class="value">@Nährwerte.GesamtnährwerteDto.Kalorien kcal</span>
+                        </div>
+                        <div class="naehrwert-item">
+                            <span class="label">Protein:</span>
+                            <span class="value">@Nährwerte.GesamtnährwerteDto.Protein.ToString("F2") g</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int RezeptId { get; set; }
+
+    [Parameter]
+    public string DisplayMode { get; set; } = "full";
+
+    private RezeptNährwerteDto Nährwerte { get; set; }
+    private bool IsLoading { get; set; } = true;
+    private string ErrorMessage { get; set; }
+    private int CurrentPortions { get; set; } = 4;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNährwerte();
+    }
+
+    private async Task LoadNährwerte()
+    {
+        try
+        {
+            IsLoading = true;
+            ErrorMessage = null;
+            Nährwerte = await RezeptNährwertService.GetRezeptNährwerteAsync(RezeptId);
+            CurrentPortions = 4; // Standard
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+            Nährwerte = null;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    public async Task RefreshNährwerte()
+    {
+        await LoadNährwerte();
+    }
+
+    private async Task ReducePortions()
+    {
+        if (CurrentPortions > 1)
+        {
+            CurrentPortions--;
+            await PortionInputChanged();
+        }
+    }
+
+    private async Task IncreasePortions()
+    {
+        if (CurrentPortions < 100)
+        {
+            CurrentPortions++;
+            await PortionInputChanged();
+        }
+    }
+
+    private async Task PortionInputChanged()
+    {
+        try
+        {
+            if (CurrentPortions > 0 && CurrentPortions <= 100)
+            {
+                Nährwerte = await RezeptNährwertService.AdjustNährwerteForPortionAsync(RezeptId, CurrentPortions);
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Fehler bei der Anpassung: {ex.Message}";
+        }
+    }
+}

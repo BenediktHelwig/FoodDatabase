@@ -37,7 +37,10 @@ namespace FoodDatabase.App.Models
         /// </summary>
         public DateTime ErstelltAm { get; set; } = DateTime.UtcNow;
 
-        /// <summary>Navigation property: Sammlung aller ProduktInstanzen dieses Lebensmittels (wird später hinzugefügt).</summary>
+        /// <summary>Navigation property: Nährwert-Information dieses Lebensmittels (UC3).</summary>
+        public Nährwert Nährwert { get; set; }
+
+        /// <summary>Navigation property: Sammlung aller ProduktInstanzen dieses Lebensmittels.</summary>
         // public ICollection<ProduktInstanz> ProduktInstanzen { get; set; }
     }
 }

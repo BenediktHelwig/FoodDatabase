@@ -1,0 +1,3 @@
+Verwendung von != null und ==null, ist keine saubere null prüfung, siehe MS dokumentation -> besser is oder is not null ->
+var ist zu unspezifisch, besser einen spezifischen typ wenn möglich
+Nie zwei klassen/interfaces in einer Datei. Dies ist keine saubere gliederung, bsp. IRezeptRepository.cs
