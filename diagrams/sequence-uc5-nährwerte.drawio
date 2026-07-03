@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-07-03" agent="5.0" version="21.5.0" type="device">
+  <diagram name="UC5 Sequence Diagrams - Rezept Nährwerte" id="sequence-uc5">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="UC5: Sequence Diagramme - Rezept Nährwert-Berechnung und Anzeige" style="text;html=1;align=center;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="0" y="10" width="2000" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- SCENARIO 1: Load Recipe Nutrition -->
+        <mxCell id="scenario1-title" value="Szenario 1: Rezept öffnen -> Nährwerte anzeigen (Happy Path)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor:#28a745;backgroundColor:#d4edda;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="950" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 1: Participants -->
+        <mxCell id="s1-actor" value="Benutzer" style="shape=umlActor;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="30" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-component" value="RezeptNährwertAnzeige.razor" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#cce5ff;strokeColor:#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="120" y="120" width="100" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-service" value="RezeptNährwertService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#fff0f5;strokeColor:#d81b60;" vertex="1" parent="1">
+          <mxGeometry x="300" y="120" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-calculator" value="NährwertCalculator" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffe0b2;strokeColor:#ff9800;" vertex="1" parent="1">
+          <mxGeometry x="500" y="120" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-repo" value="IRepository (DB)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#e1d5e7;strokeColor:#9c27b0;" vertex="1" parent="1">
+          <mxGeometry x="700" y="120" width="90" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 1: Lifelines -->
+        <mxCell id="s1-line-component" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#0066cc;" edge="1" parent="1">
+          <mxGeometry x="170" y="160" width="1" height="380" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-line-service" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#d81b60;" edge="1" parent="1">
+          <mxGeometry x="355" y="160" width="1" height="380" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-line-calculator" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#ff9800;" edge="1" parent="1">
+          <mxGeometry x="555" y="160" width="1" height="380" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-line-repo" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#9c27b0;" edge="1" parent="1">
+          <mxGeometry x="745" y="160" width="1" height="380" as="geometry"/>
+        </mxCell>
+
+        <!-- Message 1: Load RezeptNährwerte -->
+        <mxCell id="s1-msg1" value="OnInitializedAsync() [RezeptId]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#0066cc;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="190" as="sourcePoint"/>
+            <mxPoint x="355" y="190" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 2: Call Calculator -->
+        <mxCell id="s1-msg2" value="GetRezeptNährwerteAsync(rezeptId)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="210" as="sourcePoint"/>
+            <mxPoint x="555" y="210" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 3: Get Rezept -->
+        <mxCell id="s1-msg3" value="GetRezeptByIdAsync(rezeptId)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#ff9800;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="230" as="sourcePoint"/>
+            <mxPoint x="745" y="230" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 4: Return Rezept -->
+        <mxCell id="s1-msg4" value="rezept { Id, Name, Portionen }" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#9c27b0;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="250" as="sourcePoint"/>
+            <mxPoint x="555" y="250" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 5: Get Zutaten -->
+        <mxCell id="s1-msg5" value="GetZutatenAsync(rezeptId) [sorted by Position]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#ff9800;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="270" as="sourcePoint"/>
+            <mxPoint x="745" y="270" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 6: Return Zutaten -->
+        <mxCell id="s1-msg6" value="zutaten[] { Menge, Einheit, LebensmittelId }" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#9c27b0;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="290" as="sourcePoint"/>
+            <mxPoint x="555" y="290" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Loop: For Each Zutat -->
+        <mxCell id="s1-loop" value="loop [for each Zutat]" style="shape=rectangle;html=1;rounded=1;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;fontSize=10;strokeWidth=2;strokeColor=#ff9800;dashed=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="500" y="310" width="295" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- Message 7: Get Nährwert -->
+        <mxCell id="s1-msg7" value="GetNährwertByLebensmittelId(id)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor:#ff9800;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="330" as="sourcePoint"/>
+            <mxPoint x="745" y="330" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 8: Return Nährwert -->
+        <mxCell id="s1-msg8" value="nährwert { Kalorien, Fett, Protein, ... }" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor=#9c27b0;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="350" as="sourcePoint"/>
+            <mxPoint x="555" y="350" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 9: Calculate Skaliert -->
+        <mxCell id="s1-msg9" value="ConvertToGramm(menge, einheit) [Unit Conversion]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor:#ff9800;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="370" as="sourcePoint"/>
+            <mxPoint x="745" y="370" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 10: Return Gramm -->
+        <mxCell id="s1-msg10" value="mengeInGramm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor=#9c27b0;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="745" y="390" as="sourcePoint"/>
+            <mxPoint x="555" y="390" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 11: Add to Gesamt -->
+        <mxCell id="s1-msg11" value="[local] gesamt += nährwert * (mengeInGramm/100)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor:#ff9800;startArrow=none;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="410" as="sourcePoint"/>
+            <mxPoint x="555" y="410" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 12: Return Complete Nährwerte -->
+        <mxCell id="s1-msg12" value="RezeptNährwerteDto { Gesamt, ProPortion }" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#d81b60;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="450" as="sourcePoint"/>
+            <mxPoint x="355" y="450" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 13: Return to Component -->
+        <mxCell id="s1-msg13" value="nährwerteData" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#0066cc;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="470" as="sourcePoint"/>
+            <mxPoint x="170" y="470" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 14: Render Display -->
+        <mxCell id="s1-msg14" value="[UI] Render Nährwert-Tabelle" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#0066cc;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="490" as="sourcePoint"/>
+            <mxPoint x="170" y="490" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SCENARIO 2: Portion Adjustment -->
+        <mxCell id="scenario2-title" value="Szenario 2: Benutzer ändert Portionen -> Nährwerte aktualisieren" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor=#ff9800;backgroundColor=#ffe0b2;" vertex="1" parent="1">
+          <mxGeometry x="20" y="550" width="950" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 2: Participants -->
+        <mxCell id="s2-actor" value="Benutzer" style="shape=umlActor;verticalLabelPosition=bottom;labelPosition=center;align=center;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="600" width="30" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2-component" value="RezeptNährwertAnzeige.razor" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#cce5ff;strokeColor:#0066cc;" vertex="1" parent="1">
+          <mxGeometry x="120" y="610" width="100" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2-service" value="RezeptNährwertService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor:#fff0f5;strokeColor:#d81b60;" vertex="1" parent="1">
+          <mxGeometry x="300" y="610" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2-calculator" value="NährwertCalculator" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor:#ffe0b2;strokeColor:#ff9800;" vertex="1" parent="1">
+          <mxGeometry x="500" y="610" width="110" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Scenario 2: Lifelines -->
+        <mxCell id="s2-line-component" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#0066cc;" edge="1" parent="1">
+          <mxGeometry x="170" y="650" width="1" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2-line-service" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#d81b60;" edge="1" parent="1">
+          <mxGeometry x="355" y="650" width="1" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2-line-calculator" value="" style="line;strokeWidth=2;direction=south;html=1;strokeColor:#ff9800;" edge="1" parent="1">
+          <mxGeometry x="555" y="650" width="1" height="280" as="geometry"/>
+        </mxCell>
+
+        <!-- Message 1: User Input -->
+        <mxCell id="s2-msg1" value="OnPortionenChanged(newPortionen)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#0066cc;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="680" as="sourcePoint"/>
+            <mxPoint x="355" y="680" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 2: Recalculate -->
+        <mxCell id="s2-msg2" value="GetRezeptNährwerteAsync(rezeptId) [cached with new portions]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="700" as="sourcePoint"/>
+            <mxPoint x="555" y="700" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 3: Return Updated Nährwerte -->
+        <mxCell id="s2-msg3" value="RezeptNährwerteDto [ProPortion updated]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor:#d81b60;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="720" as="sourcePoint"/>
+            <mxPoint x="355" y="720" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 4: Return to Component -->
+        <mxCell id="s2-msg4" value="updatedNährwerteData" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#0066cc;dashed=1;startArrow=none;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="740" as="sourcePoint"/>
+            <mxPoint x="170" y="740" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 5: Update UI -->
+        <mxCell id="s2-msg5" value="[UI] Re-render mit neuen ProPortion-Werten" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor:#0066cc;startArrow=none;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="760" as="sourcePoint"/>
+            <mxPoint x="170" y="760" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SCENARIO 3: Ingredient Change -->
+        <mxCell id="scenario3-title" value="Szenario 3: Zutat in Rezept geändert -> Nährwerte automatisch aktualisiert (UC4-Integration)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontStyle=1;fontColor:#2196f3;backgroundColor:#bbdefb;" vertex="1" parent="1">
+          <mxGeometry x="20" y="950" width="950" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Note -->
+        <mxCell id="note" value="NOTES:&#10;&#10;1. RezeptNährwertService ruft NährwertCalculator auf (bereits in UC4)&#10;2. Nährwertberechnung: Pro Zutat (Menge, Einheit) -> Gramm -> Skalierung -> Summation&#10;3. Pro-Portion = Gesamt / rezept.Portionen&#10;4. UI cacht die Daten und aktualisiert nur bei OnInitializedAsync oder Parameter-Änderung&#10;5. Error Handling: NotFoundException bei Rezept nicht gefunden, SkipZutaten ohne Nährwert-Info&#10;6. Performance: Loop ist O(N) wo N = Anzahl Zutaten (typisch &lt;20)&#10;&#10;DEPENDENCIES (UC5 -> UC4/UC3):&#10;  RezeptNährwertService -&gt; NährwertCalculator (UC4)&#10;  RezeptNährwertService -&gt; IRezeptService (UC4)&#10;  RezeptNährwertService -&gt; IRezeptZutatService (UC4)&#10;  RezeptNährwertService -&gt; INährwertService (UC3)&#10;  RezeptNährwertService -&gt; IEinheitConverter (UC4)&#10;&#10;TEST COVERAGE (TDD Red-Phase):&#10;  - 4 Unit Tests für RezeptNährwertService&#10;  - 3 Unit Tests für RezeptNährwertAnzeigeComponent" style="text;html=1;align=left;verticalAlign=top;fontSize=9;fontFamily=Courier New;fontColor=#000000;backgroundColor=#f5f5f5;strokeWidth=1;strokeColor=#cccccc;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1000" width="900" height="280" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
