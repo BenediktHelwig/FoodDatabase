@@ -29,7 +29,7 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<Rezept> GetRezeptByIdAsync(int rezeptId)
         {
-            var rezepte = await _repository.GetAllAsync();
+            IEnumerable<Rezept> rezepte = await _repository.GetAllAsync();
             return rezepte.FirstOrDefault(r => r.Id == rezeptId && !r.IsArchived);
         }
 
@@ -38,7 +38,7 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<IEnumerable<Rezept>> GetAllRezepteAsync()
         {
-            var rezepte = await _repository.GetAllAsync();
+            IEnumerable<Rezept> rezepte = await _repository.GetAllAsync();
             return rezepte.Where(r => !r.IsArchived);
         }
 
@@ -47,7 +47,7 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<IEnumerable<Rezept>> SearchRezepteAsync(string query)
         {
-            var rezepte = await _repository.GetAllAsync();
+            IEnumerable<Rezept> rezepte = await _repository.GetAllAsync();
             return rezepte.Where(r => !r.IsArchived && r.Name.Contains(query, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -64,7 +64,7 @@ namespace FoodDatabase.App.Services.Classes
                 throw new ValidationException("Rezept-Name darf maximal 200 Zeichen lang sein.");
 
             // Prüfe auf Duplikat-Namen (nur nicht-archivierte) VOR anderen Validierungen
-            var existingRezepte = await _repository.GetAllAsync();
+            IEnumerable<Rezept> existingRezepte = await _repository.GetAllAsync();
             if (existingRezepte.Any(r => r.Name == request.Name && !r.IsArchived))
             {
                 throw new DuplicateRezeptException($"Ein Rezept mit dem Namen '{request.Name}' existiert bereits.");
@@ -100,10 +100,10 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<Rezept> UpdateRezeptAsync(int rezeptId, UpdateRezeptRequest request)
         {
-            var rezepte = await _repository.GetAllAsync();
-            var rezept = rezepte.FirstOrDefault(r => r.Id == rezeptId);
+            IEnumerable<Rezept> rezepte = await _repository.GetAllAsync();
+            Rezept rezept = rezepte.FirstOrDefault(r => r.Id == rezeptId);
 
-            if (rezept == null)
+            if (rezept is null)
             {
                 throw new NotFoundException($"Rezept mit ID {rezeptId} nicht gefunden.");
             }
@@ -154,10 +154,10 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task DeleteRezeptAsync(int rezeptId)
         {
-            var rezepte = await _repository.GetAllAsync();
-            var rezept = rezepte.FirstOrDefault(r => r.Id == rezeptId);
+            IEnumerable<Rezept> rezepte = await _repository.GetAllAsync();
+            Rezept rezept = rezepte.FirstOrDefault(r => r.Id == rezeptId);
 
-            if (rezept == null)
+            if (rezept is null)
             {
                 throw new NotFoundException($"Rezept mit ID {rezeptId} nicht gefunden.");
             }
@@ -171,8 +171,8 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<bool> RezeptExistsAsync(int rezeptId)
         {
-            var rezepte = await _repository.GetAllAsync();
-            var rezept = rezepte.FirstOrDefault(r => r.Id == rezeptId);
+            IEnumerable<Rezept> rezepte = await _repository.GetAllAsync();
+            Rezept rezept = rezepte.FirstOrDefault(r => r.Id == rezeptId);
 
             if (rezept == null)
                 return false;
@@ -189,8 +189,8 @@ namespace FoodDatabase.App.Services.Classes
         private async Task<Rezept> InvokeCreateAsync(Rezept rezept)
         {
             // Versuche CreateAsync aufzurufen (via Reflection für Test-Kompatibilität)
-            var createMethod = _repository.GetType().GetMethod("CreateAsync");
-            if (createMethod != null)
+            System.Reflection.MethodInfo createMethod = _repository.GetType().GetMethod("CreateAsync");
+            if (createMethod is not null)
             {
                 return await (Task<Rezept>)createMethod.Invoke(_repository, new object[] { rezept });
             }

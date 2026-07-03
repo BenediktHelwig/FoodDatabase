@@ -38,7 +38,7 @@ namespace FoodDatabase.App.Services.Classes
         {
             // Prüfe ob Rezept existiert
             var rezept = await _rezeptService.GetRezeptByIdAsync(rezeptId);
-            if (rezept == null)
+            if (rezept is null)
             {
                 throw new NotFoundException($"Rezept mit ID {rezeptId} nicht gefunden.");
             }
@@ -63,8 +63,8 @@ namespace FoodDatabase.App.Services.Classes
             {
                 // Hole Nährwertinformationen für diese Zutat
                 var lebensmittelNährwert = await _nährwertService.GetNährwertByLebensmittelIdAsync(zutat.LebensmittelId);
-                
-                if (lebensmittelNährwert == null)
+
+                if (lebensmittelNährwert is null)
                     continue; // Ignoriere Zutaten ohne Nährwertinformationen
 
                 // Konvertiere Menge zu Gramm

@@ -37,7 +37,7 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<IEnumerable<RezeptZutat>> GetZutatenAsync(int rezeptId)
         {
-            var zutaten = await _repository.GetAllAsync();
+            IEnumerable<RezeptZutat> zutaten = await _repository.GetAllAsync();
             return zutaten
                 .Where(z => z.RezeptId == rezeptId)
                 .OrderBy(z => z.Position);
@@ -53,7 +53,7 @@ namespace FoodDatabase.App.Services.Classes
                 throw new NotFoundException($"Rezept mit ID {rezeptId} nicht gefunden.");
             }
 
-            var zutaten = await _repository.GetAllAsync();
+            IEnumerable<RezeptZutat> zutaten = await _repository.GetAllAsync();
             return zutaten.FirstOrDefault(z => z.Id == zutatId && z.RezeptId == rezeptId);
         }
 
@@ -78,8 +78,8 @@ namespace FoodDatabase.App.Services.Classes
             ValidateEinheit(request.Einheit);
 
             // Berechne nächste Position
-            var existingZutaten = await _repository.GetAllAsync();
-            var rezeptZutaten = existingZutaten.Where(z => z.RezeptId == rezeptId).ToList();
+            IEnumerable<RezeptZutat> existingZutaten = await _repository.GetAllAsync();
+            List<RezeptZutat> rezeptZutaten = existingZutaten.Where(z => z.RezeptId == rezeptId).ToList();
             int nextPosition = rezeptZutaten.Any() ? rezeptZutaten.Max(z => z.Position) + 1 : 0;
 
             var zutat = new RezeptZutat
@@ -101,10 +101,10 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<RezeptZutat> UpdateZutatAsync(int rezeptId, int zutatId, UpdateZutatRequest request)
         {
-            var zutaten = await _repository.GetAllAsync();
-            var zutat = zutaten.FirstOrDefault(z => z.Id == zutatId && z.RezeptId == rezeptId);
+            IEnumerable<RezeptZutat> zutaten = await _repository.GetAllAsync();
+            RezeptZutat zutat = zutaten.FirstOrDefault(z => z.Id == zutatId && z.RezeptId == rezeptId);
 
-            if (zutat == null)
+            if (zutat is null)
             {
                 throw new NotFoundException($"Zutat mit ID {zutatId} in Rezept {rezeptId} nicht gefunden.");
             }
@@ -132,16 +132,16 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task DeleteZutatAsync(int rezeptId, int zutatId)
         {
-            var zutaten = await _repository.GetAllAsync();
-            var zutat = zutaten.FirstOrDefault(z => z.Id == zutatId && z.RezeptId == rezeptId);
+            IEnumerable<RezeptZutat> zutaten = await _repository.GetAllAsync();
+            RezeptZutat zutat = zutaten.FirstOrDefault(z => z.Id == zutatId && z.RezeptId == rezeptId);
 
-            if (zutat == null)
+            if (zutat is null)
             {
                 throw new NotFoundException($"Zutat mit ID {zutatId} in Rezept {rezeptId} nicht gefunden.");
             }
 
             // Prüfe ob das die letzte Zutat ist
-            var rezeptZutaten = zutaten.Where(z => z.RezeptId == rezeptId).ToList();
+            List<RezeptZutat> rezeptZutaten = zutaten.Where(z => z.RezeptId == rezeptId).ToList();
             if (rezeptZutaten.Count == 1)
             {
                 throw new ValidationException($"Ein Rezept muss mindestens eine Zutat haben.");
@@ -155,8 +155,8 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<IEnumerable<RezeptZutat>> ReorderZutatenAsync(int rezeptId, List<int> newOrder)
         {
-            var zutaten = await _repository.GetAllAsync();
-            var rezeptZutaten = zutaten.Where(z => z.RezeptId == rezeptId).ToList();
+            IEnumerable<RezeptZutat> zutaten = await _repository.GetAllAsync();
+            List<RezeptZutat> rezeptZutaten = zutaten.Where(z => z.RezeptId == rezeptId).ToList();
 
             // Validiere dass alle IDs vorhanden sind
             if (newOrder.Count != rezeptZutaten.Count)
@@ -193,7 +193,7 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<int> GetZutatCountAsync(int rezeptId)
         {
-            var zutaten = await _repository.GetAllAsync();
+            IEnumerable<RezeptZutat> zutaten = await _repository.GetAllAsync();
             return zutaten.Count(z => z.RezeptId == rezeptId);
         }
 
@@ -201,8 +201,8 @@ namespace FoodDatabase.App.Services.Classes
 
         private async Task<RezeptZutat> InvokeCreateAsync(RezeptZutat zutat)
         {
-            var createMethod = _repository.GetType().GetMethod("CreateAsync");
-            if (createMethod != null)
+            System.Reflection.MethodInfo createMethod = _repository.GetType().GetMethod("CreateAsync");
+            if (createMethod is not null)
             {
                 return await (Task<RezeptZutat>)createMethod.Invoke(_repository, new object[] { zutat });
             }
@@ -216,8 +216,8 @@ namespace FoodDatabase.App.Services.Classes
 
         private async Task InvokeDeleteAsync(int id, RezeptZutat zutat)
         {
-            var deleteMethod = _repository.GetType().GetMethod("DeleteAsync", new[] { typeof(RezeptZutat) });
-            if (deleteMethod != null)
+            System.Reflection.MethodInfo deleteMethod = _repository.GetType().GetMethod("DeleteAsync", new[] { typeof(RezeptZutat) });
+            if (deleteMethod is not null)
             {
                 await (Task)deleteMethod.Invoke(_repository, new object[] { zutat });
             }

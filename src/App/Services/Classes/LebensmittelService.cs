@@ -80,7 +80,7 @@ namespace FoodDatabase.App.Services.Classes
             if (string.IsNullOrWhiteSpace(suchbegriff))
                 return await _repository.GetAllAsync();
 
-            var alle = await _repository.GetAllAsync();
+            IEnumerable<LebensmittelKatalog> alle = await _repository.GetAllAsync();
             // Case-insensitive substring search
             return alle.Where(l => l.Name.Contains(suchbegriff, StringComparison.OrdinalIgnoreCase)).ToList();
         }
@@ -133,7 +133,7 @@ namespace FoodDatabase.App.Services.Classes
                 return false;
 
             var lebensmittel = await _repository.GetByIdAsync(id);
-            return lebensmittel != null;
+            return lebensmittel is not null;
         }
 
         /// <summary>

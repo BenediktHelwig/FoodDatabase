@@ -58,7 +58,7 @@ namespace FoodDatabase.App.Services.Classes
         /// </summary>
         public async Task<NährwerteDto> CalculateNährwerteFromZutatenAsync(IEnumerable<RezeptZutat> zutaten, int portionen)
         {
-            if (zutaten == null)
+            if (zutaten is null)
             {
                 throw new ArgumentNullException(nameof(zutaten));
             }
@@ -104,7 +104,7 @@ namespace FoodDatabase.App.Services.Classes
             foreach (var zutat in zutatenliste)
             {
                 Nährwert lebensmittelNährwert = zutat.Lebensmittel?.Nährwert;
-                if (lebensmittelNährwert == null)
+                if (lebensmittelNährwert is null)
                     continue;
 
                 // Konvertiere Menge zu Gramm
@@ -139,7 +139,7 @@ namespace FoodDatabase.App.Services.Classes
 
             // Hole das Rezept
             var rezept = await _rezeptService.GetRezeptByIdAsync(rezeptId);
-            if (rezept == null)
+            if (rezept is null)
             {
                 throw new NotFoundException($"Rezept mit ID {rezeptId} nicht gefunden.");
             }

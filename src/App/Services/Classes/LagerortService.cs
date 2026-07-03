@@ -155,7 +155,7 @@ namespace FoodDatabase.App.Services.Classes
             var existing = await _context.Lagerorte
                 .FirstOrDefaultAsync(l => l.Name == normalizedName);
 
-            if (existing != null)
+            if (existing is not null)
             {
                 return existing;
             }
