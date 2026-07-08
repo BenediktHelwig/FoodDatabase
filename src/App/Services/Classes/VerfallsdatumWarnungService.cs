@@ -21,15 +21,43 @@ public class VerfallsdatumWarnungService : IVerfallsdatumWarnungService
 
     public async Task<List<VerfallsdatumWarnungDto>> GetWarnungenAsync()
     {
-        throw new NotImplementedException("TDD Red Phase — Implementierung folgt.");
+        IEnumerable<ProduktInstanz> allInstanzen = await _repository.GetAllAsync();
+        if (allInstanzen is null)
+            return new List<VerfallsdatumWarnungDto>();
+
+        DateTime heute = _timeProvider.GetLocalNow().Date;
+
+        List<VerfallsdatumWarnungDto> warnungen = allInstanzen
+            .Select(i => new VerfallsdatumWarnungDto
+            {
+                ProduktInstanzId = i.Id,
+                LebensmittelName = i.LebensmittelKatalog?.Name ?? $"Lebensmittel #{i.LebensmittelKatalogId}",
+                Verfallsdatum = i.Verfallsdatum,
+                TageBisAblauf = (i.Verfallsdatum.Date - heute).Days,
+                Status = BerechneStatus(i.Verfallsdatum, heute)
+            })
+            .Where(w => w.Status != VerfallsdatumStatus.Ok)
+            .OrderBy(w => w.Verfallsdatum)
+            .ToList();
+
+        return warnungen;
     }
 
     /// <summary>
     /// Berechnet die Warnstufe für ein Verfallsdatum.
     /// Reine statische Funktion für direkte Testbarkeit.
+    /// Grenzen: < 0 = Abgelaufen; 0..3 = BaldAblaufend; > 3 = Ok.
     /// </summary>
     public static VerfallsdatumStatus BerechneStatus(DateTime verfallsdatum, DateTime heute)
     {
-        throw new NotImplementedException("TDD Red Phase — Implementierung folgt.");
+        int tage = (verfallsdatum.Date - heute).Days;
+
+        if (tage < 0)
+            return VerfallsdatumStatus.Abgelaufen;
+
+        if (tage <= 3)
+            return VerfallsdatumStatus.BaldAblaufend;
+
+        return VerfallsdatumStatus.Ok;
     }
 }
