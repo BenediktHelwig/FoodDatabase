@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FoodDatabase.App.Models;
 using FoodDatabase.App.Services.Dtos;
@@ -36,7 +37,33 @@ namespace FoodDatabase.App.Services.Classes
         /// </returns>
         public async Task<List<EinkaufslistenEintragDto>> GetEinkaufslisteAsync()
         {
-            throw new NotImplementedException();
+            var allInstanzen = await _repository.GetAllAsync();
+            if (allInstanzen is null)
+                return new List<EinkaufslistenEintragDto>();
+
+            var einkaufsliste = allInstanzen
+                .GroupBy(x => x.LebensmittelKatalogId)
+                .Select(g => new
+                {
+                    LebensmittelId = g.Key,
+                    Gesamtmenge = g.Sum(x => x.Menge),
+                    Mindestbestand = g.FirstOrDefault()?.MindestbestandMenge ?? 0,
+                    ErsteInstanz = g.FirstOrDefault()
+                })
+                .Where(x => x.Gesamtmenge <= x.Mindestbestand)
+                .Select(x => new EinkaufslistenEintragDto
+                {
+                    LebensmittelKatalogId = x.LebensmittelId,
+                    LebensmittelName = x.ErsteInstanz?.LebensmittelKatalog?.Name ?? $"Lebensmittel #{x.LebensmittelId}",
+                    AktuelleGesamtmenge = x.Gesamtmenge,
+                    MindestbestandMenge = x.Mindestbestand,
+                    Fehlmenge = x.Mindestbestand - x.Gesamtmenge,
+                    Einheit = x.ErsteInstanz?.LebensmittelKatalog?.Einheit ?? string.Empty
+                })
+                .OrderBy(x => x.LebensmittelName)
+                .ToList();
+
+            return einkaufsliste;
         }
     }
 }
