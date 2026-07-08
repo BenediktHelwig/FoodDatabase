@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UC7 - Verfallsdatum-Warnungen | FoodDatabase</title>
     <link rel="stylesheet" href="../css/shared.css">
-    <link rel="stylesheet" href="../css/uc7-verfallswarnungen.css">
 </head>
 <body>
     <div class="container">
@@ -17,24 +16,27 @@
             <h1>UC7: Verfallsdatum-Warnungen</h1>
             <div class="meta">
                 Use-Case <strong>7</strong> |
-                Status: <span class="status-badge todo">⏳ TODO</span>
+                Status: <span class="status-badge done">✅ FERTIG (19/19 Tests GRÜN)</span>
             </div>
         </header>
 
         <section>
             <h2>📋 Übersicht</h2>
-            <p><strong>Beschreibung</strong>: Überwachung von Verfallsdaten mit automatischen Warnungen. Produkte werden mit 🟡 Gelb (bald verfallen) oder 🔴 Rot (verfallen) gekennzeichnet.</p>
+            <p><strong>Anforderung</strong>: Automatische Überwachung von Verfallsdaten mit Warnstufen-Anzeige. On-demand berechnet beim Öffnen der Warnliste — keine Persistierung, keine Benachrichtigungen (Phase 2+).</p>
 
-            <h3>Hauptziele</h3>
+            <h3>Warnstufen</h3>
             <ul>
-                <li>MHD von ProduktInstanzen überwachen</li>
-                <li>Gelbe Warnung: X Tage vor MHD</li>
-                <li>Rote Warnung: MHD überschritten</li>
-                <li>Dashboard-Anzeige mit Warnung-Status</li>
+                <li><strong>🟢 Ok</strong>: Verfallsdatum > 3 Tage entfernt</li>
+                <li><strong>🟡 BaldAblaufend</strong>: Verfallsdatum in 0–3 Tagen (MHD == heute ⇒ Gelb!)</li>
+                <li><strong>🔴 Abgelaufen</strong>: Verfallsdatum überschritten (negative Tage)</li>
             </ul>
 
-            <h3>Geschäftsnutzen</h3>
-            <p>Der Benutzer kann schnell sehen, welche Produkte bald verfallen oder bereits abgelaufen sind, um Verschwendung zu vermeiden.</p>
+            <h3>Besonderheiten</h3>
+            <ul>
+                <li>Sortierung: Abgelaufene zuerst, dann nach Datum aufsteigend</li>
+                <li>Integration mit UC6: Verbrauchte Produkte verschwinden automatisch aus der Warnliste</li>
+                <li>Berechnung: `(ProduktInstanz.Verfallsdatum - Heute).Days` → rein on-demand, keine DB-Änderung</li>
+            </ul>
         </section>
 
         <section>
@@ -44,167 +46,194 @@
             <table>
                 <tr>
                     <th>Entity</th>
+                    <th>Felder</th>
                     <th>Rolle</th>
-                    <th>Beziehung</th>
                 </tr>
                 <tr>
                     <td>ProduktInstanz</td>
-                    <td>Zu überwachend (mit MHD)</td>
-                    <td>Primary (Monitor)</td>
+                    <td>Id, Verfallsdatum, Menge, LebensmittelKatalogId</td>
+                    <td>Quelle (existiert bereits)</td>
                 </tr>
                 <tr>
-                    <td>VerfallsdatumWarnung</td>
-                    <td>Status-Tracking</td>
-                    <td>Child (1:1)</td>
+                    <td>LebensmittelKatalog</td>
+                    <td>Id, Name, Einheit</td>
+                    <td>Referenz für Produktname</td>
                 </tr>
             </table>
 
-            <h3>Neue Entity: VerfallsdatumWarnung</h3>
+            <h3>Neue Enum + DTOs</h3>
             <pre>
-VerfallsdatumWarnung
-├── ProduktInstanzId: int (FK)
-├── Status: WarningStatus (Green, Yellow, Red)
-├── TageVerbleibend: int
-├── LastCheckedAt: DateTime
-└── NotifiedAt: DateTime (nullable)
-
-enum WarningStatus
+public enum VerfallsdatumStatus
 {
-    Green = 0,    // Mehr als X Tage
-    Yellow = 1,   // X Tage oder weniger
-    Red = 2       // Verfallen
+    Ok = 0,
+    BaldAblaufend = 1,
+    Abgelaufen = 2
+}
+
+public class VerfallsdatumWarnungDto
+{
+    public int ProduktInstanzId { get; set; }
+    public string LebensmittelName { get; set; }
+    public DateTime Verfallsdatum { get; set; }
+    public int TageBisAblauf { get; set; }  // negativ = abgelaufen
+    public VerfallsdatumStatus Status { get; set; }
 }
             </pre>
-        </section>
 
-        <section>
-            <h2>🔄 User Workflows</h2>
-
-            <h3>Hauptworkflow: Dashboard anzeigen</h3>
-            <pre>
-1. Benutzer öffnet Dashboard/Übersicht
-2. System berechnet Status für alle ProduktInstanzen
-   - Vergleicht Heute mit MHD
-   - Setzt Status (Green/Yellow/Red)
-3. Zeigt Warnungen visuell an:
-   🟢 Grün: OK
-   🟡 Gelb: Bald verfallen (z.B. 3 Tage)
-   🔴 Rot: Verfallen (MHD &lt; Heute)
-4. Benutzer kann auf Warnung klicken → Details
-            </pre>
-
-            <h3>Fehlerfall</h3>
-            <p><strong>MHD nicht vorhanden</strong>: System zeigt keine Warnung (oder Neutral)</p>
+            <h3>⚠️ Keine persistierte Entity</h3>
+            <p>Umgehung: Warnstufen werden <strong>on-demand berechnet</strong> aus <code>ProduktInstanz.Verfallsdatum</code>. Kein <code>VerfallsdatumWarnung</code>-Entity, keine EF-Migration, keine Synchronisationsprobleme.</p>
         </section>
 
         <section>
             <h2>🔌 Service Interface</h2>
 
-            <h3>Service-Methoden</h3>
             <pre>
-public interface IVerfallsdatumService
+public interface IVerfallsdatumWarnungService
 {
-    Task&lt;WarningStatus&gt; GetWarningStatusAsync(int produktInstanzId);
-    Task&lt;List&lt;ProduktInstanzWarning&gt;&gt; GetAllWarningsAsync();
-    Task&lt;List&lt;ProduktInstanzWarning&gt;&gt; GetYellowWarningsAsync();
-    Task&lt;List&lt;ProduktInstanzWarning&gt;&gt; GetRedWarningsAsync();
-    Task RefreshAllWarningsAsync();
+    /// &lt;summary&gt;
+    /// Gibt alle Produkte mit kritischem Verfallsdatum zurück.
+    /// Sortiert: Abgelaufene zuerst, dann nach Datum aufsteigend.
+    /// &lt;/summary&gt;
+    Task&lt;List&lt;VerfallsdatumWarnungDto&gt;&gt; GetWarnungenAsync();
 }
 
-public class ProduktInstanzWarning
+public class VerfallsdatumWarnungService : IVerfallsdatumWarnungService
 {
-    public int ProduktInstanzId { get; set; }
-    public string ProduktName { get; set; }
-    public DateTime MHD { get; set; }
-    public WarningStatus Status { get; set; }
-    public int TageVerbleibend { get; set; }
+    public VerfallsdatumWarnungService(
+        IRepository&lt;ProduktInstanz&gt; repository,
+        TimeProvider timeProvider)
+    { }
+
+    public async Task&lt;List&lt;VerfallsdatumWarnungDto&gt;&gt; GetWarnungenAsync()
+    {
+        // On-demand: GetAllAsync → berechne Status → filter Ok → sort Datum
+        // Rückgabe: nur BaldAblaufend + Abgelaufen
+    }
+
+    /// &lt;summary&gt;
+    /// Reine statische Funktion für direkte Testbarkeit.
+    /// &lt;/summary&gt;
+    public static VerfallsdatumStatus BerechneStatus(
+        DateTime verfallsdatum,
+        DateTime heute)
+    {
+        // &lt; 0 Tage: Abgelaufen
+        // 0..3 Tage: BaldAblaufend
+        // &gt; 3 Tage: Ok
+    }
 }
             </pre>
+
+            <h3>Warum TimeProvider?</h3>
+            <p>Injektion statt <code>DateTime.Today</code> → Tests mit festem Datum möglich (Boundary-Tests: heute, +3, +4, gestern).</p>
+        </section>
+
+        <section>
+            <h2>🔄 User Workflows</h2>
+
+            <h3>Workflow: Warnliste anzeigen</h3>
+            <pre>
+1. Benutzer öffnet "Warnungen"-Seite
+2. System ruft GetWarnungenAsync() auf (~millisekunden)
+3. Berechnung: Verfallsdatum - Heute für alle Produkte
+4. Filterung: nur BaldAblaufend + Abgelaufen
+5. Sortierung: Abgelaufene zuerst
+6. Anzeige: Liste mit Warnstufen-Farben
+7. Benutzer sieht sofort: "2 Produkte bald verfallen, 1 abgelaufen"
+            </pre>
+
+            <h3>Integration mit UC6</h3>
+            <p>Wenn UC6 eine ProduktInstanz löscht oder konsumiert → nächster Aufruf von GetWarnungenAsync() gibt die verbrauchte Instanz nicht mehr zurück (Repository-Abfrage liefert sie nicht). <strong>Keine Synchronisations-Logik nötig.</strong></p>
         </section>
 
         <section>
             <h2>✅ Tests</h2>
 
-            <h3>Test Coverage</h3>
-            <div class="checklist">
-                <ul>
-                    <li><input type="checkbox"> Status: Green (MHD > +3 Tage)</li>
-                    <li><input type="checkbox"> Status: Yellow (MHD in 3 Tagen)</li>
-                    <li><input type="checkbox"> Status: Red (MHD &lt; Heute)</li>
-                    <li><input type="checkbox"> Status: Red (MHD = Heute)</li>
-                    <li><input type="checkbox"> Berechnung: Tage verbleibend</li>
-                    <li><input type="checkbox"> Fehler: MHD null</li>
-                    <li><input type="checkbox"> Fehler: ProduktInstanz nicht gefunden</li>
-                    <li><input type="checkbox"> Performance: Refresh bei 1000+ Produkten</li>
-                </ul>
-            </div>
+            <h3>Test-Übersicht (19 Tests)</h3>
+            <table>
+                <tr>
+                    <th>Kategorie</th>
+                    <th>Tests</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>BerechneStatus (pur)</td>
+                    <td>7</td>
+                    <td>✅ GRÜN</td>
+                </tr>
+                <tr>
+                    <td>GetWarnungenAsync</td>
+                    <td>12</td>
+                    <td>✅ GRÜN</td>
+                </tr>
+            </table>
+
+            <h3>BerechneStatus Tests</h3>
+            <ul>
+                <li>Gestern → Abgelaufen (-1 Tage)</li>
+                <li><strong>Heute → BaldAblaufend (0 Tage, MHD == heute ⇒ Gelb!)</strong></li>
+                <li>+1 Tag → BaldAblaufend</li>
+                <li>+3 Tage → BaldAblaufend (Boundary, inklusiv)</li>
+                <li>+4 Tage → Ok (Boundary, exklusiv)</li>
+                <li>Weit vergangenheit → Abgelaufen</li>
+                <li>Weit zukunft → Ok</li>
+            </ul>
+
+            <h3>GetWarnungenAsync Tests</h3>
+            <ul>
+                <li>Leeres Repository → leere Liste</li>
+                <li>Null vom Repository → leere Liste</li>
+                <li>Nur Ok-Produkte → leere Liste (herausgefiltert)</li>
+                <li>Abgelaufenes Produkt → Rot-Warnung</li>
+                <li>Bald ablaufendes Produkt → Gelb-Warnung</li>
+                <li>Gemischt (Ok+Gelb+Rot) → nur 2 zurück (Ok heraus)</li>
+                <li>Mehrere mit unterschiedlichen Daten → Sortierung korrekt</li>
+                <li>MHD heute → TageBisAblauf = 0</li>
+                <li>Abgelaufen → TageBisAblauf negativ</li>
+                <li>LebensmittelKatalog vorhanden → Name gemappt</li>
+                <li>LebensmittelKatalog null → Fallback "Lebensmittel #ID"</li>
+                <li>Vollständiger Mapping (Id, MHD, Status)</li>
+            </ul>
 
             <h3>Test-Datei</h3>
-            <p>Location: <code>src/Tests/Unit/Services/VerfallsdatumServiceTests.cs</code></p>
-            <p>Tests: 15+ Unit Tests (xUnit + Moq)</p>
+            <p>Location: <code>src/Tests/Unit/Services/VerfallsdatumWarnungServiceTests.cs</code></p>
+            <p>Stil: xUnit + Moq, `FixedTimeProvider` für maschinenunabhängige Datums-Tests</p>
         </section>
 
         <section>
             <h2>🔗 Dependencies</h2>
 
-            <h3>Abhängigkeiten (andere UCs)</h3>
+            <h3>Abhängigkeiten</h3>
             <ul>
-                <li>Abhängt von: <strong>UC10: Produktinstanzen mit MHD</strong> (MHD-Feld)</li>
+                <li><strong>UC2</strong>: ProduktInstanz liefert Verfallsdatum</li>
+                <li><strong>UC1</strong>: LebensmittelKatalog für Produktname</li>
+                <li><strong>UC6</strong>: Verbrauchte Produkte verschwinden automatisch</li>
             </ul>
 
-            <h3>Externe Libraries</h3>
-            <ul>
-                <li>Entity Framework Core (✅ Vorhanden)</li>
-                <li>xUnit (✅ Vorhanden)</li>
-                <li>Moq (✅ Vorhanden)</li>
-            </ul>
+            <h3>Unabhängigkeit</h3>
+            <p>UC7 hat keine neuen Entities/Migrationen, daher keine Abhängigkeit zu DB-Schema-Änderungen.</p>
         </section>
 
         <section>
-            <h2>📊 Implementation Status</h2>
+            <h2>📝 Implementierungs-Notizen</h2>
 
-            <div class="checklist">
-                <ul>
-                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
-                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
-                    <li><input type="checkbox"> Code Review bestanden</li>
-                    <li><input type="checkbox"> Diagramme aktualisiert</li>
-                    <li><input type="checkbox"> Dokumentation fertig</li>
-                    <li><input type="checkbox"> User Review & Approval</li>
-                    <li><input type="checkbox"> Merged zu Master</li>
-                </ul>
-            </div>
+            <h3>On-Demand-Strategie (Phase 1)</h3>
+            <p>Warnungen werden <strong>zur Laufzeit berechnet</strong>, nicht gespeichert. Grund: Verfallsdatum ist eine unveränderliche Basis-Information; die Warnstufe ergibt sich jederzeit automatisch aus der Tagesberechnung. Keine Persistierung = keine Sync-Fehler.</p>
 
-            <p><strong>Commit</strong>: [Awaiting implementation]</p>
-            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
-        </section>
+            <h3>Phase 2+ Vorgriff: Push-Benachrichtigungen</h3>
+            <p>Die `TimeProvider`-Injektion und saubere Service-Schnittstelle ermöglichen später einen BackgroundService, der z.B. stündlich prüft und Benachrichtigungen versendet — ohne UC7 zu ändern. Die `BerechneStatus()`-Funktion bleibt das zentrale Rechenwerk.</p>
 
-        <section>
-            <h2>📐 Diagramme</h2>
-
-            <div class="diagram-placeholder">
-                📊 Sequenz-Diagramm: Verfallsdatum-Überwachung<br>
-                <small>(siehe: diagrams/sequence-verfallsdatum.drawio)</small>
-            </div>
-        </section>
-
-        <section>
-            <h2>📝 Notizen</h2>
-
-            <h3>Besonderheiten</h3>
-            <p>Die Warnung-Schwelle (Yellow bei X Tagen) sollte konfigurierbar sein. Default: 3 Tage vor MHD.</p>
-
-            <h3>Offene Fragen</h3>
+            <h3>Code-Style Standards</h3>
             <ul>
-                <li>Sollen Benachrichtigungen (Push/Email) gesendet werden?</li>
-                <li>Wie oft sollen Warnings aktualisiert werden (täglich, stündlich)?</li>
-                <li>Ist die Schwelle für Yellow global oder pro Produkt-Kategorie?</li>
+                <li>✅ `is null` / `is not null` (nicht `== null`)</li>
+                <li>✅ Explizite Typen statt `var` (außer offensichtlich)</li>
+                <li>✅ Ein Typ pro Datei (VerfallsdatumStatus.cs, VerfallsdatumWarnungDto.cs, etc.)</li>
+                <li>✅ XML-Docs auf allen public Members</li>
             </ul>
         </section>
 
-        <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
-            <p>FoodDatabase | UC7 | Verfallsdatum-Warnungen</p>
-            <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
+        <footer>
+            <p><small>Dokument: UC7-Verfallswarnungen.html | Aktualisiert: 2026-07-08 | Status: ✅ IMPLEMENTIERT</small></p>
         </footer>
     </div>
 </body>
