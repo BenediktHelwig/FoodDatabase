@@ -17,23 +17,24 @@
             <h1>UC8: Einkaufslisten generieren</h1>
             <div class="meta">
                 Use-Case <strong>8</strong> |
-                Status: <span class="status-badge todo">⏳ TODO</span>
+                Status: <span class="status-badge done">✅ FERTIG (17/17 Tests GRÜN)</span>
             </div>
         </header>
 
         <section>
             <h2>📋 Übersicht</h2>
-            <p><strong>Beschreibung</strong>: Automatische Generierung von Einkaufslisten basierend auf Mindestbestandsgrenzen. Wenn Menge eines Produkts unter Grenzwert fällt, wird es zur Einkaufsliste hinzugefügt.</p>
+            <p><strong>Beschreibung</strong>: On-demand Generierung von Einkaufslisten basierend auf Mindestbestandsgrenzen. Wenn Gesamtmenge eines Lebensmittels den Mindestbestand erreicht oder unterschreitet (<code><=</code>), wird es zur Einkaufsliste hinzugefügt.</p>
 
             <h3>Hauptziele</h3>
             <ul>
-                <li>Mindestbestand pro Lebensmittel definieren</li>
-                <li>Automatisch Einkaufslisten generieren</li>
-                <li>Einkaufte Produkte abhaken/erfassen</li>
+                <li>Flache Liste mit einem Eintrag pro Lebensmittel (aggregiert)</li>
+                <li>On-demand Berechnung (keine Persistierung)</li>
+                <li>Trigger: Gesamtmenge <= MindestbestandMenge (aggregiert über alle Instanzen)</li>
+                <li>Sortierung nach Lebensmittel-Name</li>
             </ul>
 
             <h3>Geschäftsnutzen</h3>
-            <p>Der Benutzer sieht automatisch, welche Produkte zum Einkaufen notwendig sind. Keine manuelle Liste erforderlich.</p>
+            <p>Der Benutzer sieht in Echtzeit, welche Produkte zum Einkaufen notwendig sind, ohne dass die Liste manuell gepflegt werden muss. Die Aggregation über alle Packungen ermöglicht realistische Mindestbestands-Prüfungen.</p>
         </section>
 
         <section>
@@ -47,74 +48,91 @@
                     <th>Beziehung</th>
                 </tr>
                 <tr>
-                    <td>Einkaufsliste</td>
-                    <td>Zu verwaltende Liste</td>
-                    <td>Primary (CRUD)</td>
-                </tr>
-                <tr>
-                    <td>EinkaufslisteEintrag</td>
-                    <td>Item in der Liste</td>
-                    <td>Child (1:N)</td>
+                    <td>ProduktInstanz</td>
+                    <td>Quell-Entity für Aggregation</td>
+                    <td>Primary (gelesen, nicht persistiert)</td>
                 </tr>
                 <tr>
                     <td>LebensmittelKatalog</td>
-                    <td>Referenziertes Produkt</td>
-                    <td>Foreign Key</td>
+                    <td>Referenziertes Lebensmittel (Name, Einheit)</td>
+                    <td>Navigation Property</td>
                 </tr>
             </table>
 
-            <h3>Neue Attribute</h3>
+            <h3>DTOs (On-demand, keine neuen DB-Entities)</h3>
             <pre>
-LebensmittelKatalog
-├── ... (existing)
-└── MindestbestandMenge: decimal (NEW)
-
-Einkaufsliste
-├── Name: string
-├── ErstelltAm: DateTime
-├── Status: ListStatus (Open, Completed)
-└── Einträge: ICollection&lt;EinkaufslisteEintrag&gt;
-
-EinkaufslisteEintrag
-├── EinkaufslisteId: int (FK)
-├── LebensmittelKatalogId: int (FK)
-├── EmpfohlenenMenge: decimal
-└── Gekauft: bool
+EinkaufslistenEintragDto
+├── LebensmittelKatalogId: int
+├── LebensmittelName: string (mit Fallback: "Lebensmittel #ID")
+├── AktuelleGesamtmenge: decimal (Sum über alle Instanzen)
+├── MindestbestandMenge: decimal (aus First-Instanz)
+├── Fehlmenge: decimal (Mindestbestand - Gesamtmenge)
+└── Einheit: string (aus LebensmittelKatalog oder "")
             </pre>
+
+            <h3>Wichtige Hinweise</h3>
+            <ul>
+                <li><strong>Keine neue DB-Entity</strong>: Einkaufslistendata wird nicht persistiert</li>
+                <li><strong>Aggregation pro Lebensmittel</strong>: Alle ProduktInstanzen desselben LebensmittelKatalogId werden summiert</li>
+                <li><strong>Trigger: `<=` nicht `<`</strong>: Wenn Menge == Mindestbestand, ist das auch Unterschreitung</li>
+                <li><strong>Fallback-Handling</strong>: Wenn LebensmittelKatalog-Navigation null ist, wird "Lebensmittel #ID" verwendet</li>
+            </ul>
         </section>
 
         <section>
             <h2>🔄 User Workflows</h2>
 
-            <h3>Hauptworkflow: Einkaufsliste generieren</h3>
+            <h3>Hauptworkflow: Einkaufsliste generieren (On-Demand)</h3>
             <pre>
-1. Benutzer klickt "Einkaufsliste generieren"
-2. System prüft alle Lebensmittel:
-   - Aktuelle Menge &lt; Mindestbestand? → In Liste
-3. System zeigt generierte Liste
-4. Benutzer kann Mengen anpassen
-5. Benutzer speichert Liste
-6. Beim Einkaufen: Abhaken wenn gekauft
+1. Benutzer klickt "Einkaufsliste anzeigen"
+2. System ruft GetEinkaufslisteAsync() auf
+3. System aggregiert ProduktInstanzen pro LebensmittelKatalogId
+4. System prüft: Gesamtmenge <= Mindestbestand?
+5. System generiert DTO-Liste (ein Eintrag pro Lebensmittel)
+6. System sortiert alphabetisch nach LebensmittelName
+7. Benutzer sieht Einkaufsliste mit Fehlmengen
+8. → Keine Persistierung, kein "Abhaken"
             </pre>
 
-            <h3>Alternative Flows</h3>
-            <p><strong>Manuelle Erstellung</strong>: Benutzer erstellt Liste manuell</p>
-            <p><strong>Listen-Template</strong>: Vorgespeicherte Listen (z.B. "Wöchentlicher Einkauf")</p>
+            <h3>Beispiel: Aggregation</h3>
+            <pre>
+ProduktInstanzen:
+  - ID 1: Milch, Menge 500ml, Mindestbestand 1000ml
+  - ID 2: Milch, Menge 200ml, Mindestbestand 1000ml
+
+Aggregation:
+  → Gesamtmenge = 500 + 200 = 700ml
+  → Mindestbestand = 1000ml
+  → 700 <= 1000? JA → In Einkaufsliste
+  → Fehlmenge = 1000 - 700 = 300ml
+            </pre>
         </section>
 
         <section>
             <h2>🔌 Service Interface</h2>
 
-            <h3>Service-Methoden</h3>
+            <h3>Service-Definition</h3>
             <pre>
-public interface IEinkaufslisteService
+public interface IEinkaufslistenService
 {
-    Task&lt;Einkaufsliste&gt; GenerateFromMindestbestandAsync();
-    Task&lt;Einkaufsliste&gt; CreateEinkaufslisteAsync(Einkaufsliste liste);
-    Task&lt;Einkaufsliste&gt; GetEinkaufslisteByIdAsync(int id);
-    Task&lt;IEnumerable&lt;Einkaufsliste&gt;&gt; GetAllEinkaufslistenAsync();
-    Task&lt;Einkaufsliste&gt; UpdateEinkaufslisteAsync(Einkaufsliste liste);
-    Task&lt;bool&gt; DeleteEinkaufslisteAsync(int id);
+    /// <summary>
+    /// Generiert eine Einkaufsliste für Lebensmittel, deren Gesamtbestand
+    /// den Mindestbestand erreicht oder unterschreitet (<=).
+    /// </summary>
+    Task&lt;List&lt;EinkaufslistenEintragDto&gt;&gt; GetEinkaufslisteAsync();
+}
+            </pre>
+
+            <h3>DTO-Definition</h3>
+            <pre>
+public class EinkaufslistenEintragDto
+{
+    public int LebensmittelKatalogId { get; set; }
+    public string LebensmittelName { get; set; }
+    public decimal AktuelleGesamtmenge { get; set; }
+    public decimal MindestbestandMenge { get; set; }
+    public decimal Fehlmenge { get; set; }
+    public string Einheit { get; set; }
 }
             </pre>
         </section>
@@ -122,23 +140,30 @@ public interface IEinkaufslisteService
         <section>
             <h2>✅ Tests</h2>
 
-            <h3>Test Coverage</h3>
+            <h3>Test Coverage (17 Tests)</h3>
             <div class="checklist">
                 <ul>
-                    <li><input type="checkbox"> Generieren: Keine Einträge nötig</li>
-                    <li><input type="checkbox"> Generieren: Ein Produkt unter Grenzwert</li>
-                    <li><input type="checkbox"> Generieren: Multiple Produkte</li>
-                    <li><input type="checkbox"> Create Liste (manuell)</li>
-                    <li><input type="checkbox"> Update Liste + Einträge</li>
-                    <li><input type="checkbox"> Delete Liste</li>
-                    <li><input type="checkbox"> Fehler: Produkt nicht gefunden</li>
-                    <li><input type="checkbox"> Fehler: Negative Mengen</li>
+                    <li><input type="checkbox" checked> Empty & Null Repository Handling (2)</li>
+                    <li><input type="checkbox" checked> Boundary Cases: `<=` Trigger (3)</li>
+                    <li><input type="checkbox" checked> Aggregation: Multiple Instances pro Lebensmittel (3)</li>
+                    <li><input type="checkbox" checked> Mixed Scenarios: OK + Unterschritten (2)</li>
+                    <li><input type="checkbox" checked> Fehlmenge Berechnung & Sortierung (3)</li>
+                    <li><input type="checkbox" checked> Navigation Property & Fallbacks (3)</li>
+                    <li><input type="checkbox" checked> Edge Case: Mindestbestand=0 (1)</li>
                 </ul>
             </div>
 
-            <h3>Test-Datei</h3>
-            <p>Location: <code>src/Tests/Unit/Services/EinkaufslisteServiceTests.cs</code></p>
-            <p>Tests: 20+ Unit Tests (xUnit + Moq)</p>
+            <h3>Test-Datei & Statistik</h3>
+            <p>Location: <code>src/Tests/Unit/Services/EinkaufslistenServiceTests.cs</code></p>
+            <p>Tests: <strong>17/17 GRÜN</strong> ✅</p>
+            <p>Code-Coverage: Boundaries, Aggregation, Fallbacks, Sorting</p>
+
+            <h3>Kritische Boundary-Tests</h3>
+            <ul>
+                <li><code>GetEinkaufslisteAsync_WithMengeGleichMindestbestand_ReturnsEintrag</code> — Verifiziert `<=` nicht `<`</li>
+                <li><code>GetEinkaufslisteAsync_WithMultipleInstanzenDesselbenLebensmittels_AggregiertGesamtmenge</code> — Verifiziert Summe über alle Instanzen</li>
+                <li><code>GetEinkaufslisteAsync_WithNullLebensmittelKatalog_UsesFallbackName</code> — Verifiziert Fallback bei null Navigation</li>
+            </ul>
         </section>
 
         <section>
@@ -146,15 +171,18 @@ public interface IEinkaufslisteService
 
             <h3>Abhängigkeiten (andere UCs)</h3>
             <ul>
-                <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong></li>
-                <li>Abhängt von: <strong>UC2: Lagerbestand aktualisieren</strong></li>
+                <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong> (LebensmittelKatalog.Name, Einheit)</li>
+                <li>Abhängt von: <strong>UC10: ProduktInstanzen</strong> (Menge, MindestbestandMenge, Verfallsdatum)</li>
             </ul>
+
+            <h3>Keine Abhängigkeiten von UC2</h3>
+            <p><strong>Bewusst unangetastet</strong>: UC2 (LagerbestandService) und dessen `GetEinkaufslistenEintraegeAsync()` bleiben unverändert. UC8 ist ein separater Service mit eigener Logik.</p>
 
             <h3>Externe Libraries</h3>
             <ul>
-                <li>Entity Framework Core (✅ Vorhanden)</li>
-                <li>xUnit (✅ Vorhanden)</li>
-                <li>Moq (✅ Vorhanden)</li>
+                <li>System.Linq (✅ Vorhanden, für GroupBy + Filter)</li>
+                <li>xUnit (✅ Vorhanden, für Tests)</li>
+                <li>Moq (✅ Vorhanden, für Mock Repository)</li>
             </ul>
         </section>
 
@@ -163,44 +191,67 @@ public interface IEinkaufslisteService
 
             <div class="checklist">
                 <ul>
-                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
-                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
-                    <li><input type="checkbox"> Code Review bestanden</li>
-                    <li><input type="checkbox"> Diagramme aktualisiert</li>
-                    <li><input type="checkbox"> Dokumentation fertig</li>
-                    <li><input type="checkbox"> User Review & Approval</li>
-                    <li><input type="checkbox"> Merged zu Master</li>
+                    <li><input type="checkbox" checked> Tests geschrieben (TDD Red Phase) — Commit 3bddb69</li>
+                    <li><input type="checkbox" checked> Review-Agent validiert Tests — ✅ APPROVED</li>
+                    <li><input type="checkbox" checked> Code implementiert (TDD Green Phase) — Commit d2392fa</li>
+                    <li><input type="checkbox" checked> Review-Agent validiert Code — ✅ APPROVED (17/17 Tests GRÜN)</li>
+                    <li><input type="checkbox" checked> UC2 Regression-Check — ✅ LagerbestandService 29/29 GRÜN</li>
+                    <li><input type="checkbox" checked> Dokumentation aktualisiert — Dieses Dokument + Architecture-Overview</li>
+                    <li><input type="checkbox"> Diagramme aktualisiert — In Progress (use-cases.drawio, sequence-uc8)</li>
+                    <li><input type="checkbox"> User Review & Approval — Pending</li>
+                    <li><input type="checkbox"> Merged zu Master — Pending</li>
                 </ul>
             </div>
 
-            <p><strong>Commit</strong>: [Awaiting implementation]</p>
-            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
+            <p><strong>Test-Commits</strong>:
+                <code>3bddb69</code> (Tests rot),
+                <code>d2392fa</code> (Code grün + Review-Reports)
+            </p>
+            <p><strong>Aktueller Branch</strong>: `master` (auf UC8 Implementierung)</p>
         </section>
 
         <section>
             <h2>📐 Diagramme</h2>
 
+            <h3>Sequenz-Diagramm</h3>
             <div class="diagram-placeholder">
-                📊 Sequenz-Diagramm: Einkaufslisten-Generierung<br>
-                <small>(siehe: diagrams/sequence-einkaufsliste.drawio)</small>
+                📊 Sequenz: UI → EinkaufslistenService → Repository → LINQ Aggregation → DTO-Liste<br>
+                <small>(siehe: diagrams/sequence-uc8-einkaufslisten.drawio)</small>
             </div>
+
+            <h3>Use-Case-Diagramm</h3>
+            <p>UC8 ist im <code>requirements/use-cases.drawio</code> dokumentiert und mit Status markiert.</p>
         </section>
 
         <section>
-            <h2>📝 Notizen</h2>
+            <h2>📝 Besonderheiten & Bekannte Einschränkungen</h2>
 
-            <h3>Besonderheiten</h3>
-            <p>Mindestbestand sollte pro Lebensmittel individuell definierbar sein. Default: 0 (nicht verwendet).</p>
-
-            <h3>Offene Fragen</h3>
+            <h3>Design-Entscheidungen</h3>
             <ul>
-                <li>Können Listen synchronisiert werden (z.B. mit Shopping-App)?</li>
-                <li>Sollen gekaufte Einträge automatisch zum Lagerbestand hinzugefügt werden?</li>
+                <li><strong>On-Demand, nicht persistiert</strong>: Einkaufsliste wird bei jedem Aufruf neu berechnet (keine DB-Performance-Überlegung, aber auch keine Konsistenz-Probleme)</li>
+                <li><strong>Flache Liste, ein Eintrag pro Lebensmittel</strong>: Mehrere ProduktInstanzen desselben Lebensmittels werden aggregiert → Übersicht</li>
+                <li><strong>Trigger `<=` nicht `<`</strong>: Wenn Menge exakt Mindestbestand erreicht, ist es bereits ein Unterschreitung (nicht erst darunter)</li>
+                <li><strong>Keine Abhaken-Logik</strong>: UC8 ist rein read-only. Gekaufte Waren werden später durch UC6 (VerbrauchAusbuchung) verwaltet</li>
             </ul>
+
+            <h3>Bekannte Einschränkung</h3>
+            <p><strong>Lebensmittel ohne Instanzen</strong>: Wenn ein Lebensmittel keine ProduktInstanzen hat (komplett verbraucht), kann es nicht auf der Einkaufsliste erscheinen, da Mindestbestand auf Instanzen lebt. Das ist eine akzeptierte Lücke der aktuellen Architektur.</p>
+        </section>
+
+        <section>
+            <h2>🔄 Phase-2 Vorgriff</h2>
+
+            <p>Der Service ist <strong>designet für Erweiterung</strong>:</p>
+            <ul>
+                <li>BackgroundService kann später `GetEinkaufslisteAsync()` periodisch aufrufen</li>
+                <li>Push-Benachrichtigungen könnten an diese Liste andocken</li>
+                <li>Mobile App könnte Read-Only Zugriff bekommen</li>
+            </ul>
+            <p>Keine Änderungen nötig; der Service ist bereits extensible.</p>
         </section>
 
         <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
-            <p>FoodDatabase | UC8 | Einkaufslisten generieren</p>
+            <p>FoodDatabase | UC8 | Einkaufslisten generieren | Session 2026-07-08</p>
             <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
         </footer>
     </div>
