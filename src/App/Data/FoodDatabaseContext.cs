@@ -30,6 +30,12 @@ namespace FoodDatabase.App.Data
         /// <summary>DbSet für Nährwerte (UC3: Nährwertinformationen pro Lebensmittel).</summary>
         public DbSet<Nährwert> Nährwerte { get; set; }
 
+        /// <summary>DbSet für Rezepte (UC4: Rezeptverwaltung mit Zutaten).</summary>
+        public DbSet<Rezept> Rezepte { get; set; }
+
+        /// <summary>DbSet für Rezept-Zutaten (UC4: Zutaten innerhalb eines Rezepts).</summary>
+        public DbSet<RezeptZutat> RezeptZutaten { get; set; }
+
         /// <summary>
         /// Konfiguriert das EF Core-Datenmodell (Constraints, Beziehungen, Indizes).
         /// </summary>
@@ -70,6 +76,44 @@ namespace FoodDatabase.App.Data
             modelBuilder.Entity<Nährwert>()
                 .HasIndex(n => n.LebensmittelId)
                 .IsUnique();
+
+            // Rezept: Name UNIQUE (Verhindert Duplikate)
+            modelBuilder.Entity<Rezept>()
+                .HasIndex(r => r.Name)
+                .IsUnique();
+
+            // RezeptZutat → Rezept (N:1) mit CASCADE
+            modelBuilder.Entity<RezeptZutat>()
+                .HasOne(z => z.Rezept)
+                .WithMany(r => r.Zutaten)
+                .HasForeignKey(z => z.RezeptId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // RezeptZutat → LebensmittelKatalog (N:1) mit RESTRICT
+            modelBuilder.Entity<RezeptZutat>()
+                .HasOne(z => z.Lebensmittel)
+                .WithMany()
+                .HasForeignKey(z => z.LebensmittelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // RezeptZutat: (RezeptId, Position) UNIQUE (Verhindert Duplikate)
+            modelBuilder.Entity<RezeptZutat>()
+                .HasIndex(z => new { z.RezeptId, z.Position })
+                .IsUnique();
+
+            // AutoIncludes für Navigation-Properties (generisches Repo lädt sonst keine Props)
+            // NICHT RezeptZutat.Rezept oder Rezept.Zutaten (Zyklus!)
+            modelBuilder.Entity<ProduktInstanz>()
+                .Navigation(p => p.LebensmittelKatalog)
+                .AutoInclude();
+
+            modelBuilder.Entity<RezeptZutat>()
+                .Navigation(z => z.Lebensmittel)
+                .AutoInclude();
+
+            modelBuilder.Entity<LebensmittelKatalog>()
+                .Navigation(l => l.Nährwert)
+                .AutoInclude();
         }
     }
 }

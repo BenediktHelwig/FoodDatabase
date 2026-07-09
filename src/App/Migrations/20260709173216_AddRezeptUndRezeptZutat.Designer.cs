@@ -3,6 +3,7 @@ using System;
 using FoodDatabase.App.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodDatabase.App.Migrations
 {
     [DbContext(typeof(FoodDatabaseContext))]
-    partial class FoodDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260709173216_AddRezeptUndRezeptZutat")]
+    partial class AddRezeptUndRezeptZutat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
