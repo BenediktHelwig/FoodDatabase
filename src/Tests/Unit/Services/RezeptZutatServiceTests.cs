@@ -75,6 +75,7 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var zutat = new RezeptZutat { Id = 1, RezeptId = 1, LebensmittelId = 1, Menge = 400, Einheit = "g" };
             _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<RezeptZutat> { zutat });
+            _mockRezeptService.Setup(r => r.RezeptExistsAsync(1)).ReturnsAsync(true);
 
             // Act
             var result = await _service.GetZutatAsync(1, 1);
@@ -89,6 +90,7 @@ namespace FoodDatabase.Tests.Unit.Services
         {
             // Arrange
             _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<RezeptZutat>());
+            _mockRezeptService.Setup(r => r.RezeptExistsAsync(1)).ReturnsAsync(true);
 
             // Act
             var result = await _service.GetZutatAsync(1, 999);
@@ -157,6 +159,7 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var request = new AddZutatRequest { LebensmittelId = 1, Menge = 0, Einheit = "g" };
             _mockRezeptService.Setup(r => r.RezeptExistsAsync(1)).ReturnsAsync(true);
+            _mockLebensmittelService.Setup(l => l.LebensmittelExistsAsync(1)).ReturnsAsync(true);
 
             // Act & Assert
             await Assert.ThrowsAsync<ValidationException>(() => _service.AddZutatAsync(1, request));
@@ -168,6 +171,7 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var request = new AddZutatRequest { LebensmittelId = 1, Menge = 10001, Einheit = "g" };
             _mockRezeptService.Setup(r => r.RezeptExistsAsync(1)).ReturnsAsync(true);
+            _mockLebensmittelService.Setup(l => l.LebensmittelExistsAsync(1)).ReturnsAsync(true);
 
             // Act & Assert
             await Assert.ThrowsAsync<ValidationException>(() => _service.AddZutatAsync(1, request));
@@ -179,21 +183,22 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var request = new AddZutatRequest { LebensmittelId = 1, Menge = 400, Einheit = "Kanister" };
             _mockRezeptService.Setup(r => r.RezeptExistsAsync(1)).ReturnsAsync(true);
+            _mockLebensmittelService.Setup(l => l.LebensmittelExistsAsync(1)).ReturnsAsync(true);
 
             // Act & Assert
             await Assert.ThrowsAsync<ValidationException>(() => _service.AddZutatAsync(1, request));
         }
 
         [Fact]
-        public async Task AddZutat_ToArchivedRezept_ThrowInvalidOperationException()
+        public async Task AddZutat_ToArchivedRezept_ThrowNotFoundException()
         {
             // Arrange
+            // RezeptExistsAsync() prüft auch auf IsArchived (siehe RezeptZutatService Zeile 66)
             var request = new AddZutatRequest { LebensmittelId = 1, Menge = 400, Einheit = "g" };
-            var archivedRezept = new Rezept { Id = 1, IsArchived = true };
-            _mockRezeptService.Setup(r => r.GetRezeptByIdAsync(1)).ReturnsAsync(archivedRezept);
+            _mockRezeptService.Setup(r => r.RezeptExistsAsync(1)).ReturnsAsync(false); // Archiviertes Rezept -> false
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _service.AddZutatAsync(1, request));
+            await Assert.ThrowsAsync<NotFoundException>(() => _service.AddZutatAsync(1, request));
         }
 
         [Fact]
@@ -312,8 +317,10 @@ namespace FoodDatabase.Tests.Unit.Services
         public async Task DeleteZutat_WithValidId_RemoveZutat()
         {
             // Arrange
-            var zutat = new RezeptZutat { Id = 1, RezeptId = 1 };
-            _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<RezeptZutat> { zutat });
+            // Rezept muss MINDESTENS 2 Zutaten haben, um die 1. löschen zu können
+            var zutat1 = new RezeptZutat { Id = 1, RezeptId = 1 };
+            var zutat2 = new RezeptZutat { Id = 2, RezeptId = 1 };
+            _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<RezeptZutat> { zutat1, zutat2 });
             _mockRepository.Setup(r => r.DeleteAsync(It.IsAny<int>())).ReturnsAsync(true);
 
             // Act

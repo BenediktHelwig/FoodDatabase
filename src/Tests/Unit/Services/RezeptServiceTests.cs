@@ -191,7 +191,21 @@ namespace FoodDatabase.Tests.Unit.Services
                 Zubereitung = "1. Wasser aufkochen..."
             };
             _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Rezept>());
-            _mockRepository.Setup(r => r.CreateAsync(It.IsAny<Rezept>())).ReturnsAsync(new Rezept { Id = 1, Name = request.Name });
+            // Mock muss die komplette Entity mit allen Feldern zurückgeben!
+            _mockRepository.Setup(r => r.CreateAsync(It.IsAny<Rezept>()))
+                .ReturnsAsync((Rezept rezept) => new Rezept
+                {
+                    Id = 1,
+                    Name = rezept.Name,
+                    Portionen = rezept.Portionen,
+                    ZubereitungszeitMinuten = rezept.ZubereitungszeitMinuten,
+                    Schwierigkeitsgrad = rezept.Schwierigkeitsgrad,
+                    Beschreibung = rezept.Beschreibung,
+                    Zubereitung = rezept.Zubereitung,
+                    CreatedAt = rezept.CreatedAt,
+                    UpdatedAt = rezept.UpdatedAt,
+                    IsArchived = rezept.IsArchived
+                });
 
             // Act
             var result = await _service.CreateRezeptAsync(request);

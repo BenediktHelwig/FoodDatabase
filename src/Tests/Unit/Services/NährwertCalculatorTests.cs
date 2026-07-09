@@ -192,7 +192,7 @@ namespace FoodDatabase.Tests.Unit.Services
             {
                 new RezeptZutat { Id = 1, LebensmittelId = 1, Menge = 400, Einheit = "g" }
             };
-            var nährwert = new Nährwert { Kalorien = 1200 };
+            var nährwert = new Nährwert { Kalorien = 300 };
 
             _mockRezeptService.Setup(r => r.GetRezeptByIdAsync(1)).ReturnsAsync(rezept);
             _mockRezeptZutatService.Setup(r => r.GetZutatenAsync(1)).ReturnsAsync(zutaten);
@@ -204,7 +204,7 @@ namespace FoodDatabase.Tests.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            // 1200 / 4 = 300
+            // Nährwert 300 kcal/100g, 400g Menge = (300 * 4) / 4 Portionen = 300 pro Portion
             Assert.Equal(300, result.ProPortionNährwerteDto.Kalorien);
         }
 
@@ -244,7 +244,7 @@ namespace FoodDatabase.Tests.Unit.Services
             {
                 new RezeptZutat { Id = 1, LebensmittelId = 1, Menge = 400, Einheit = "g" }
             };
-            var nährwert = new Nährwert { Kalorien = 1200 };
+            var nährwert = new Nährwert { Kalorien = 300 };
 
             _mockRezeptService.Setup(r => r.GetRezeptByIdAsync(1)).ReturnsAsync(rezept);
             _mockRezeptZutatService.Setup(r => r.GetZutatenAsync(1)).ReturnsAsync(zutaten);
@@ -256,6 +256,7 @@ namespace FoodDatabase.Tests.Unit.Services
 
             // Assert
             Assert.NotNull(result);
+            // Nährwert 300 kcal/100g, 400g Menge = (300 * 4) / 4 Portionen = 300 pro Portion
             Assert.Equal(300, result.Kalorien);
         }
 
@@ -268,7 +269,7 @@ namespace FoodDatabase.Tests.Unit.Services
             {
                 new RezeptZutat { Id = 1, LebensmittelId = 1, Menge = 1000, Einheit = "g" }
             };
-            var nährwert = new Nährwert { Kalorien = 3000 };
+            var nährwert = new Nährwert { Kalorien = 300 };
 
             _mockRezeptService.Setup(r => r.GetRezeptByIdAsync(1)).ReturnsAsync(rezept);
             _mockRezeptZutatService.Setup(r => r.GetZutatenAsync(1)).ReturnsAsync(zutaten);
@@ -280,7 +281,8 @@ namespace FoodDatabase.Tests.Unit.Services
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(300, result.Kalorien); // 3000 / 10 = 300
+            // Nährwert 300 kcal/100g, 1000g Menge = (300 * 10) / 10 Portionen = 300 pro Portion
+            Assert.Equal(300, result.Kalorien);
         }
 
         // ============ Edge Case Tests ============
