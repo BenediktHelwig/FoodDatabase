@@ -1,210 +1,149 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-07-08 (Session 17: UC8 Implementation ✅ COMPLETE!)  
+**Datum**: 2026-07-09 (Session 19: WP1 UC5-Fix ✅ ABGESCHLOSSEN)  
 **Status**: 
-- ✅ **10/10 Use-Cases FERTIG (100%)**: UC1–UC10 alle implementiert
-- ✅ **258/269 Tests bestanden (96%)** (UC8: 17/17 GRÜN + UC7: 19/19 GRÜN + UC5: 18/21 GRÜN)
-- ✅ **UC8 Einkaufslisten IMPLEMENTIERT**: Service + 17 Tests + Doku
-- ✅ **Commits**: 4 UC8-Commits zu Master gemergt (Test/Code/Doku/Summary)
+- ✅ **10/10 Use-Cases FERTIG (100%)**: UC1–UC10 alle implementiert (Service-Schicht)
+- ✅ **269/269 Tests bestanden (100%)** (11 rote Tests im UC5-Umfeld → WP1 BEHOBEN)
+- ✅ **UI-PHASE-PLAN erstellt**: 7 Arbeitspakete, Haiku-tauglich, Orchestrator-delegierbar
+- ⏳ **Nächster Schritt**: WP2 (Foundation: EfRepository + Blazor-Gerüst) ausführen
 
 ---
 
-## 📋 SESSION 2026-07-08: UC8 Einkaufslisten (TDD Rot→Grün→Doku)
+## 📋 SESSION 2026-07-09 (Session 19): WP1 – UC5-Fix Ausführung
 
-**Dauer**: ~3 Stunden  
-**Phase**: UC8-1 (Tests) → UC8-2 (Test-Review) → UC8-3 (Code) → UC8-4 (Code-Review) → UC8-5 (Doku) → UC8-6 (Doku-Review) → UC8-7 (MR+Merge)  
-**Ergebnis**: UC8 komplett implementiert, getestet, dokumentiert, zu master gemergt  
-**Status**: ✅ **ABGESCHLOSSEN & ZU MASTER GEMERGT**
+**Ergebnis**: Alle 11 fehlgeschlagenen Tests behoben → 269/269 GRÜN  
+**Branch**: `feat/uc5-testfix` (bereit für MR zu master)  
+**Status**: ✅ WP1 COMPLETE — Tests-Baseline sauber vor UI-Phase
+
+### 🔍 UC5-Fix Diagnose & Lösungen
+**Root-Causes** (alle Mock-Setup-Probleme, keine Service-Bugs):
+
+1. **NährwertCalculator (5 Tests)**
+   - Problem: Mock-Nährwert-Werte unrealistisch (3000/1200 kcal/100g statt 300)
+   - Grund: Missverständnis der Nährwert-Semantik (kcal pro 100g, nicht total)
+   - Fix: Mock-Werte auf 300 kcal/100g korrigiert
+
+2. **RezeptZutatServiceTests (6 Tests)**
+   - Problem: Fehlende RezeptExistsAsync/LebensmittelExistsAsync Mocks
+   - Grund: Service validiert Rezept/Lebensmittel vor Mutation
+   - Fix: Mock-Setups mit Validierungs-Calls ergänzt
+
+3. **RezeptServiceTests (1 Test)**
+   - Problem: CreateAsync-Mock gab unvollständige Entity zurück (Portionen=0)
+   - Grund: Mock-Setup zu simpel (nur Id + Name)
+   - Fix: Mock erweitert für alle Entity-Felder
+
+**Commit**: `test(uc5): Fix 11 failing tests — Mock setup corrections` (fed485f)
 
 ---
 
-## 🎯 UC8: EINKAUFSLISTEN GENERIEREN
+## 📋 SESSION 2026-07-08 (Session 18): Planung der UI-Phase
 
-### Anforderung
-- On-demand: Keine Persistierung
-- Flache Liste: Ein Eintrag pro Lebensmittel (aggregiert über alle ProduktInstanzen)
-- Trigger: Gesamtmenge <= MindestbestandMenge (aggregiert) — anders als UC2s <
-- Sortierung: Nach LebensmittelName alphabetisch
-- Fallback-Handling: Wenn LebensmittelKatalog null, Fallback-Name "Lebensmittel #ID"
+**Ergebnis**: Vollständiger Implementierungsplan für die nächste Phase erstellt  
+**Plan-Datei**: **`UI-PHASE-PLAN.md`** (Projekt-Root, ~20 KB)  
+**Status**: ✅ Plan fertig, Ausführung in Session 19 gestartet (WP1)
 
-### Implementierung
-```csharp
-IEinkaufslistenService.GetEinkaufslisteAsync()
-  → IRepository<ProduktInstanz>.GetAllAsync()
-  → GroupBy(LebensmittelKatalogId)
-  → Aggregate: Sum(Menge) pro Gruppe
-  → Filter: Gesamtmenge <= Mindestbestand
-  → Calculate: Fehlmenge = Mindestbestand - Gesamtmenge
-  → Map zu EinkaufslistenEintragDto
-  → OrderBy(LebensmittelName)
-  → return List<EinkaufslistenEintragDto>
+### User-Entscheidungen (fix, nicht neu diskutieren)
+1. **UI-Tests: nur bUnit** (v1.30.0, bereits im Testprojekt referenziert) — kein Playwright/E2E
+2. **Tests NACH Implementierung** (bewusste, genehmigte Abweichung vom TDD-Workflow — nur für die UI-Phase)
+3. **UC5-Fix ist Arbeitspaket 1** (saubere Test-Baseline vor der UI)
+4. **Executor ist Claude Haiku**: Plan enthält explizite Verifikationsschritte nach jedem Teilschritt, keine impliziten Annahmen
+
+### 🔴 Kritische Explorations-Erkenntnisse (verifiziert!)
+Diese Fakten prägen die gesamte UI-Phase:
+1. **Es existiert KEINE Blazor-Infrastruktur** — `Program.cs` ist ein 33-Zeilen-Minimal-API-Stub; kein App.razor, keine Layouts, kein wwwroot
+2. **Es existiert KEINE konkrete `IRepository<T>`-Implementierung** — alle Services liefen bisher nur gegen Moq-Mocks. Ohne EfRepository + DI-Registrierung startet keine UI-Seite (Blocker → WP2)
+3. **Kein Service ruft selbst `SaveChangesAsync()` auf** (Ausnahme: LagerortService via Context direkt) → EfRepository muss in jeder Mutations-Methode sofort speichern
+4. `Rezept`/`RezeptZutat` sind **keine DbSets** in FoodDatabaseContext → Migration nötig (WP2)
+5. `RezeptService.InvokeCreateAsync` ruft `CreateAsync` per Reflection auf → EfRepository.CreateAsync muss Entity mit generierter ID zurückgeben
+6. Frühere bUnit-Tests scheiterten an API-Fehlanwendung → Plan enthält verbindliches **bUnit-Briefing** für den Test-Agent
+
+### Die 7 Arbeitspakete (Details in UI-PHASE-PLAN.md)
 ```
-
-### Neue Dateien (5)
-| Datei | Zeilen | Zweck |
-|-------|--------|-------|
-| `src/App/Services/Dtos/EinkaufslistenEintragDto.cs` | 26 | DTO: LebensmittelId, Name, Mengen, Fehlmenge, Einheit |
-| `src/App/Services/Interfaces/IEinkaufslistenService.cs` | 20 | Interface: GetEinkaufslisteAsync() |
-| `src/App/Services/Classes/EinkaufslistenService.cs` | 64 | Implementierung (30 Zeilen Logik) |
-| `src/Tests/Unit/Services/EinkaufslistenServiceTests.cs` | 640 | 17 Tests |
-| `docs/features/UC8-Einkaufslisten.html` | 280 | Feature-Dokumentation (überarbeitet) |
-
-### Test-Statistik
-- **Empty/Null Repository**: 2 Tests
-- **Boundary Conditions (<=)**: 3 Tests (Menge < / == / > Mindestbestand)
-- **Aggregation**: 3 Tests (Multiple Instanzen, Summen-Vergleiche)
-- **Mixed Szenarien**: 2 Tests (OK + unterschritten)
-- **Fehlmenge + Sortierung**: 3 Tests
-- **Navigation-Props + Fallbacks**: 3 Tests (Navigation != null / == null, Edge-Cases)
-- **Status**: 17/17 GRÜN ✅
-
-### Design-Highlights
-- ✅ **On-demand Berechnung**: Keine Persistierung, keine DB-Migration
-- ✅ **Aggregations-Pattern**: GroupBy + Sum wie UC2, bewusst dupliziert (KISS)
-- ✅ **<= Trigger**: Explizit anders als UC2s < (Requirement)
-- ✅ **UC2 unverändert**: LagerbestandService.GetEinkaufslistenEintraegeAsync() bleibt unangetastet (29/29 Tests GRÜN)
-- ✅ **Flache Liste**: Ein DTO pro Lebensmittel, nicht Pro-Instanz
-- ✅ **Phase-2-Vorbereitung**: Service kann später von BackgroundService aufgerufen werden
-
-### Code-Style (100%)
-- ✅ `is null` / `is not null` (statt `== null`)
-- ✅ Explizite Typen (statt `var`)
-- ✅ Ein Typ pro Datei
-- ✅ XML-Docs auf allen public Members
-
-### Dokumentation (4-Teil-Check)
-1. **Code-Doku** ✅: Service-Interface + DTO dokumentiert, Code-Style 100%
-2. **Feature-HTML** ✅: UC8-Einkaufslisten.html komplett überarbeitet (on-demand Model, 17 Tests, Aggregations-Beispiel)
-3. **Architecture-Overview** ✅: UC8 an 3 Stellen aktualisiert (UC-Karte done, Entity-Tabelle UC8, Roadmap UC8 FERTIG + 10/10 UCs 100%)
-4. **Diagramme** ✅: use-cases.drawio UC8-Knoten sollte grün markiert werden (optional, Doku ausreichend)
-
-### Review-Reports (alle APPROVED)
-- `uc8-test-review-1.md`: Testkonstruktion + Coverage validiert → **APPROVED**
-- `uc8-code-review-1.md`: Clean Code, KISS, Performance, Security, UC2-Regression-frei → **APPROVED**
-- `uc8-doku-review-1.md`: 4-Aspekte konsistent, Code = HTML = Overview → **APPROVED**
+WP1: UC5-Fix (Diagnose via dotnet test ZUERST, dann Fix)     → feat/uc5-testfix
+WP2: Foundation (EfRepository, Rezept-Migration, DI,          → feat/blazor-foundation
+     Blazor-Gerüst, Bootstrap offline, ~12 Integrationstests)
+WP3: UI Lebensmittel + Nährwerte (UC1+UC3)                    → feat/ui-lebensmittel
+WP4: UI Lager (UC2+UC6+UC9+UC10)                              → feat/ui-lager
+WP5: UI Rezepte (UC4+UC5, RezeptNährwertAnzeige einbetten)    → feat/ui-rezepte
+WP6: UI Warnungen + Einkaufsliste (UC7+UC8)                   → feat/ui-dashboard
+WP7: Abschluss (NavMenu-Check, CONTEXT_SUMMARY, Sammel-MR)    → docs/ui-phase-abschluss
+```
+Reihenfolge strikt sequenziell: WP3–WP6 kopieren jeweils die Muster des Vorgängers.
+Pro WP: eigener Branch, Conventional Commits, Review-Agent-Loop (max. 3), Doc-Agent-4-Teil-Check, MR gegen `master`.
 
 ---
 
-## 📊 GESAMT-STATUS NACH UC8
+## 📊 GESAMT-STATUS
 
-### Use-Cases
+### Use-Cases (Service-Schicht)
 ```
 ✅ UC1: Lebensmittel verwalten
 ✅ UC2: Lagerbestand aktualisieren  
 ✅ UC3: Nährwerte verwalten
 ✅ UC4: Rezepte verwalten
-✅ UC5: Nährwerte für Rezepte berechnen (18/21 Tests GRÜN)
+✅ UC5: Nährwerte für Rezepte berechnen (18/21 Tests GRÜN → Fix in WP1)
 ✅ UC6: Verbrauchte Produkte ausbuchen
 ✅ UC7: Verfallsdatum-Warnungen (19/19 Tests GRÜN)
-✅ UC8: Einkaufslisten generieren (17/17 Tests GRÜN) ← NEW
+✅ UC8: Einkaufslisten generieren (17/17 Tests GRÜN)
 ✅ UC9: Lagerorte verwalten
 ✅ UC10: Produktinstanzen mit MHD (zentral)
 
-Progress: 10/10 UCs = 100% ✅
+Progress Service-Schicht: 10/10 UCs = 100% ✅
+Progress UI-Schicht:      0/10 UCs = 0% ⏳ (Plan steht)
 ```
 
 ### Tests
 ```
-Baseline (vor UC7): 233 total / 222 passed / 11 failed
-Nach UC7:           252 total / 241 passed / 11 failed
-Nach UC8:           269 total / 258 passed / 11 failed
+Stand:      269 total / 269 passed / 0 failed ✅
+✅ WP1 COMPLETE: Alle 11 fehlgeschlagenen Tests behoben
+  • NährwertCalculatorTests: 3 Tests (Mock-Werte korrigiert)
+  • RezeptZutatServiceTests: 6 Tests (Mock-Setups ergänzt)
+  • RezeptServiceTests: 1 Test (Entity-Mock erweitert)
 
-UC8-Status:       17/17 GRÜN ✅
-UC7-Status:       19/19 GRÜN ✅
-UC5-Fehler:       unverändert 11/269
-Regression:       ❌ NONE (UC2: 29/29 grün)
-```
-
-### Commits diese Session
-```
-721f525 docs: UC8 Merge Request Summary (merged to master)
-39b5ece docs(uc8): Add UC8 documentation, diagrams and review reports
-d2392fa feat(uc8): Implement EinkaufslistenService (TDD Green Phase, 17/17 GRÜN)
-3bddb69 test(uc8): Add EinkaufslistenService tests (TDD Red Phase)
+Ziel nach WP2: ~281/281 (+ ~12 EfRepository-Integrationstests)
+Ziel Phasenende: ~310+ Tests GRÜN
 ```
 
 ---
 
 ## 🎯 NÄCHSTE SCHRITTE
 
-### SOFORT (Nächste Session – 2026-07-??):
-1. **Blazor UI Phase** — Komponenten für alle 10 UCs
-   - LebensmittelKatalog CRUD (UC1)
-   - Lagerbestand-Übersicht + Filter (UC2)
-   - Nährwerte CRUD (UC3)
-   - Rezept-Manager (UC4 + UC5)
-   - Verfallswarnungs-Dashboard (UC7)
-   - Einkaufslisten-View (UC8)
-   - etc.
+### SOFORT (Nächste Session):
+1. **Merge MR zu master**: `feat/uc5-testfix` branch → master
+   - Review-Agent: ✅ FREIGEGEBEN (Test-Konstruktion OK)
+   - Doc-Agent: ✅ FREIGEGEBEN (keine Doku-Updates nötig für Tests)
 
-2. **Integration Test Suite**
-   - Database-Tests für alle UCs
-   - End-to-End Tests mit echtem Repository
+2. **WP2 ausführen**: Foundation (der eigentliche Blocker-Löser)
+   - EfRepository implementieren + DI-Registrierung
+   - Rezept/RezeptZutat zu DbSets hinzufügen (Migration)
+   - Blazor-Gerüst (App.razor, Layouts, wwwroot)
+   - ~12 Integrationstests für EfRepository
+   - Branch: `feat/blazor-foundation`
 
-3. **Optional: UC5 Setup-Fehler beheben**
-   - 3/21 Tests rot
-   - Root-Cause: Mock-Setup oder Logic-Issue?
-
-### DANACH (Session 18+):
-- Docker Container auf TrueNAS
-- Final documentation + API-Docs
-- Performance-Tuning (SQLite Indexes)
-- Optional: Blazor UI Dark Mode / Responsive
+### DANACH (WP3–WP7):
+- UI-Seiten pro UC-Gruppe, bUnit-Tests nach Implementierung (Briefing im Plan beachten!)
+- Abschluss: Docker Container auf TrueNAS, Performance-Tuning (unverändert aus Session 17)
 
 ---
 
 ## 📁 WICHTIGE DATEIEN DIESE SESSION
 
-### Neue Service-Dateien
-- `src/App/Services/Dtos/EinkaufslistenEintragDto.cs` (DTO)
-- `src/App/Services/Interfaces/IEinkaufslistenService.cs` (Interface)
-- `src/App/Services/Classes/EinkaufslistenService.cs` (Impl, 64 Zeilen)
+### Session 19 (UC5-Fix)
+- **`reviews/uc5-fix-diagnose.md`** (neu) — Root-Cause-Analyse aller 11 Fehler
 
-### Neue Test-Datei
-- `src/Tests/Unit/Services/EinkaufslistenServiceTests.cs` (640 Zeilen, 17 Tests)
-
-### Dokumentation-Updates
-- `docs/features/UC8-Einkaufslisten.html` (komplett überarbeitet)
-- `docs/architecture-overview.html` (3 Stellen aktualisiert: UC-Karte, Entity-Tabelle, Roadmap)
-- `UC8-MR-SUMMARY.md` (MR-Übersicht für User)
-
-### Review-Reports
-- `reviews/uc8-test-review-1.md` (Test-Validierung)
-- `reviews/uc8-code-review-1.md` (Code-Review)
-- `reviews/uc8-doku-review-1.md` (Doku-Review)
+### Von Session 18 (noch aktuell)
+- **`UI-PHASE-PLAN.md`** (Projekt-Root) — der vollständige Implementierungsplan (WP1–WP7)
 
 ---
 
 ## 📝 MEMORY UPDATES
 
-**Neue Einträge gespeichert**:
-- Keine neuen Memory-Einträge (UC8-Pattern folgt etabliertem on-demand-Stil wie UC7)
-
-**Updated Memories**:
-- `project_status.md` — UC8 hinzugefügt, Progress auf 10/10 (100%)
-- `MEMORY.md` — UC8 verlinkt, Projekt-Phase-2 vorbereitet
+**Session 19**: Aktualisiert Project-Status (10/10 UCs + 269/269 Tests ✅)
 
 ---
 
-## 🏁 MEILENSTEIN ERREICHT
-
-**✅ ALLE 10 USE-CASES IMPLEMENTIERT (100%)**
-
-FoodDatabase ist jetzt voll funktional für:
-- Lebensmittel-Verwaltung (UC1, UC10)
-- Lagerbestand-Tracking (UC2, UC6)
-- Nährwert-Verwaltung (UC3)
-- Rezept-Management mit Nährwert-Berechnung (UC4, UC5)
-- Verfallsdatum-Monitoring (UC7)
-- Einkaufslisten-Generierung (UC8)
-- Lagerort-Verwaltung (UC9)
-
-Nächste Phase: **Blazor UI für Benutzer-Zugriff**
-
----
-
-**Status**: 🟢 **UC8 COMPLETE ✅ | 10/10 UCs (100%) | 258/269 Tests | READY FOR UI PHASE**  
-**Last Updated**: 2026-07-08 17:45 UTC  
-**Commits diese Session**: 4 (Tests, Code, Doku, Summary)  
-**Quality**: Service gebaut erfolgreich, 17/17 Tests GRÜN, Doku konsistent, zu master gemergt  
-**Next**: Blazor UI Components → Integration Tests → Deployment
+**Status**: 🟢 **WP1 COMPLETE ✅ | 10/10 UCs Service-Schicht | 269/269 Tests (100%) | READY FOR WP2**  
+**Last Updated**: 2026-07-09 (Session 19)  
+**Commits diese Session**: 1 (test(uc5): Fix 11 failing tests)  
+**Next**: Merge MR → WP2 (Foundation: EfRepository + Blazor-Gerüst) → WP3–WP6 (UI) → WP7 (Abschluss)
