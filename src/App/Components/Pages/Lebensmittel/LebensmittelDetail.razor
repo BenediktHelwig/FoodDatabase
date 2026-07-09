@@ -1,0 +1,277 @@
+@page "/lebensmittel/{Id:int}"
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Interfaces
+@inject ILebensmittelService LebensmittelService
+@inject INährwertService NährwertService
+@inject NavigationManager NavigationManager
+
+<div class="container mt-4">
+    @if (lädt)
+    {
+        <div class="alert alert-info">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Lädt...
+        </div>
+    }
+    else if (lebensmittel is null)
+    {
+        <div class="alert alert-danger" data-testid="alert-fehler">
+            @fehler
+        </div>
+    }
+    else
+    {
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2>@lebensmittel.Name</h2>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="/lebensmittel/@Id/bearbeiten" class="btn btn-warning" data-testid="btn-bearbeiten">
+                    Bearbeiten
+                </a>
+                <a href="/lebensmittel" class="btn btn-secondary" data-testid="btn-zurück">
+                    Zurück
+                </a>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Lebensmittel-Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Einheit:</strong> @lebensmittel.Einheit
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Kategorie:</strong> @lebensmittel.Kategorie
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Erstellt:</strong> @lebensmittel.ErstelltAm.ToString("dd.MM.yyyy HH:mm")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(fehlerNährwert))
+        {
+            <div class="alert alert-danger" data-testid="alert-fehler-nährwert">
+                @fehlerNährwert
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <h5>Nährwert (pro 100 @(lebensmittel.Einheit))</h5>
+            </div>
+            <div class="card-body">
+                @if (lädt)
+                {
+                    <div class="alert alert-info">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Lädt Nährwert...
+                    </div>
+                }
+                else if (nährwert is not null)
+                {
+                    <EditForm Model="nährwert" OnValidSubmit="NährwertSpeichernAsync">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="alert alert-warning" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="kalorien" class="form-label">Kalorien (kcal) *</label>
+                                <InputNumber id="kalorien"
+                                            @bind-Value="nährwert.Kalorien"
+                                            class="form-control"
+                                            data-testid="input-kalorien" />
+                                <ValidationMessage For="() => nährwert.Kalorien" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="standardEinheit" class="form-label">Standardeinheit *</label>
+                                <InputSelect id="standardEinheit"
+                                            @bind-Value="nährwert.StandardMengeEinheit"
+                                            class="form-select"
+                                            data-testid="select-standard-einheit">
+                                    <option value="">-- Einheit wählen --</option>
+                                    <option value="g">Gramm (g)</option>
+                                    <option value="ml">Milliliter (ml)</option>
+                                </InputSelect>
+                                <ValidationMessage For="() => nährwert.StandardMengeEinheit" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fett" class="form-label">Fett (g)</label>
+                                <InputNumber id="fett"
+                                            @bind-Value="nährwert.Fett"
+                                            class="form-control"
+                                            step="0.1"
+                                            data-testid="input-fett" />
+                                <ValidationMessage For="() => nährwert.Fett" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gesättigteFettsäuren" class="form-label">Gesättigte Fettsäuren (g)</label>
+                                <InputNumber id="gesättigteFettsäuren"
+                                            @bind-Value="nährwert.GesättigteFettsäuren"
+                                            class="form-control"
+                                            step="0.1"
+                                            data-testid="input-gesättigte-fettsäuren" />
+                                <ValidationMessage For="() => nährwert.GesättigteFettsäuren" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="kohlenhydrate" class="form-label">Kohlenhydrate (g)</label>
+                                <InputNumber id="kohlenhydrate"
+                                            @bind-Value="nährwert.Kohlenhydrate"
+                                            class="form-control"
+                                            step="0.1"
+                                            data-testid="input-kohlenhydrate" />
+                                <ValidationMessage For="() => nährwert.Kohlenhydrate" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="zucker" class="form-label">Zucker (g)</label>
+                                <InputNumber id="zucker"
+                                            @bind-Value="nährwert.Zucker"
+                                            class="form-control"
+                                            step="0.1"
+                                            data-testid="input-zucker" />
+                                <ValidationMessage For="() => nährwert.Zucker" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="protein" class="form-label">Protein (g)</label>
+                                <InputNumber id="protein"
+                                            @bind-Value="nährwert.Protein"
+                                            class="form-control"
+                                            step="0.1"
+                                            data-testid="input-protein" />
+                                <ValidationMessage For="() => nährwert.Protein" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="ballaststoffe" class="form-label">Ballaststoffe (g)</label>
+                                <InputNumber id="ballaststoffe"
+                                            @bind-Value="nährwert.Ballaststoffe"
+                                            class="form-control"
+                                            step="0.1"
+                                            data-testid="input-ballaststoffe" />
+                                <ValidationMessage For="() => nährwert.Ballaststoffe" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="salz" class="form-label">Salz (g)</label>
+                                <InputNumber id="salz"
+                                            @bind-Value="nährwert.Salz"
+                                            class="form-control"
+                                            step="0.1"
+                                            data-testid="input-salz" />
+                                <ValidationMessage For="() => nährwert.Salz" />
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit"
+                                    class="btn btn-primary"
+                                    data-testid="btn-nährwert-speichern"
+                                    disabled="@(lädt)">
+                                Speichern
+                            </button>
+                            <a href="/lebensmittel/@Id" class="btn btn-secondary" data-testid="btn-nährwert-abbrechen">
+                                Abbrechen
+                            </a>
+                        </div>
+                    </EditForm>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        Kein Nährwert definiert. <a href="#" @onclick:preventDefault>Erstelle einen</a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private LebensmittelKatalog? lebensmittel;
+    private Nährwert? nährwert;
+    private bool lädt = false;
+    private string fehler = "";
+    private string fehlerNährwert = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LadenAsync();
+    }
+
+    private async Task LadenAsync()
+    {
+        lädt = true;
+        fehler = "";
+        try
+        {
+            lebensmittel = await LebensmittelService.GetLebensmittelByIdAsync(Id);
+            nährwert = await NährwertService.GetNährwertByLebensmittelIdAsync(Id);
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Laden: {ex.Message}";
+            lebensmittel = null;
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+
+    private async Task NährwertSpeichernAsync()
+    {
+        if (nährwert is null)
+        {
+            return;
+        }
+
+        lädt = true;
+        fehlerNährwert = "";
+        try
+        {
+            if (nährwert.Id == 0)
+            {
+                nährwert.LebensmittelId = Id;
+                nährwert = await NährwertService.CreateNährwertAsync(nährwert);
+            }
+            else
+            {
+                nährwert = await NährwertService.UpdateNährwertAsync(nährwert);
+            }
+        }
+        catch (ArgumentException ex)
+        {
+            fehlerNährwert = $"Validierungsfehler: {ex.Message}";
+        }
+        catch (InvalidOperationException ex)
+        {
+            fehlerNährwert = $"Fehler: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            fehlerNährwert = $"Fehler beim Speichern des Nährwerts: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+}
