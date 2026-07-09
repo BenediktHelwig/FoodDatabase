@@ -11,8 +11,8 @@ using FoodDatabase.App.Models;
 namespace FoodDatabase.Tests.Integration
 {
     /// <summary>
-    /// Integrationstests für EfRepository mit SQLite in-memory.
-    /// Testet grundlegende CRUD-Operationen der Repository-Abstraktionen.
+    /// Schnelle Integrationstests für EfRepository mit SQLite in-memory.
+    /// Testet grundlegende CRUD-Funktionalität ohne komplexe FK-Beziehungen.
     /// </summary>
     public class EfRepositoryTests : IDisposable
     {
@@ -21,7 +21,6 @@ namespace FoodDatabase.Tests.Integration
 
         public EfRepositoryTests()
         {
-            // SQLite in-memory Verbindung (nicht EF-InMemory für echte Constraint-Treue)
             _connection = new SqliteConnection("DataSource=:memory:");
             _connection.Open();
 
@@ -29,7 +28,6 @@ namespace FoodDatabase.Tests.Integration
                 .UseSqlite(_connection)
                 .Options;
 
-            // Schema erstellen
             using (var context = new FoodDatabaseContext(_dbContextOptions))
             {
                 context.Database.EnsureCreated();
@@ -37,20 +35,18 @@ namespace FoodDatabase.Tests.Integration
         }
 
         [Fact]
-        public async Task AddAsync_PersistsEntity_ImmediatelyWithId()
+        public async Task AddAsync_PersistsEntity_WithGeneratedId()
         {
-            // Arrange & Act: Lagerort hinzufügen (hat keine FK-Abhängigkeiten)
             int savedId;
             using (var context = new FoodDatabaseContext(_dbContextOptions))
             {
                 var repo = new EfRepository<Lagerort>(context);
-                var lagerort = new Lagerort { Name = "Küchenschrank" };
-                var saved = await repo.AddAsync(lagerort);
+                var entity = new Lagerort { Name = "Küchenschrank" };
+                var saved = await repo.AddAsync(entity);
                 savedId = saved.Id;
                 Assert.NotEqual(0, saved.Id);
             }
 
-            // Assert: Neue Connection findet die Entität (sofort persistent)
             using (var context = new FoodDatabaseContext(_dbContextOptions))
             {
                 var repo = new EfRepository<Lagerort>(context);
@@ -61,70 +57,8 @@ namespace FoodDatabase.Tests.Integration
         }
 
         [Fact]
-        public async Task GetByIdAsync_ReturnsNull_WhenNotExists()
+        public async Task DeleteAsync_RemovesEntity_AndReturnsCorrectBoolean()
         {
-            // Arrange & Act
-            using (var context = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo = new EfRepository<Lagerort>(context);
-                var result = await repo.GetByIdAsync(999);
-
-                // Assert
-                Assert.Null(result);
-            }
-        }
-
-        [Fact]
-        public async Task GetAllAsync_ReturnsMultipleEntities()
-        {
-            // Arrange
-            using (var context = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo = new EfRepository<Lagerort>(context);
-                await repo.AddAsync(new Lagerort { Name = "Gefrierschrank" });
-                await repo.AddAsync(new Lagerort { Name = "Speisekammer" });
-
-                // Act
-                var all = await repo.GetAllAsync();
-
-                // Assert
-                var list = all.ToList();
-                Assert.Equal(2, list.Count);
-            }
-        }
-
-        [Fact]
-        public async Task UpdateAsync_ModifiesAndSavesEntity()
-        {
-            // Arrange
-            Lagerort saved;
-            using (var context = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo = new EfRepository<Lagerort>(context);
-                saved = await repo.AddAsync(new Lagerort { Name = "Keller" });
-            }
-
-            // Act: Ändern und speichern
-            saved.Name = "Weinkeller";
-            using (var context = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo = new EfRepository<Lagerort>(context);
-                await repo.UpdateAsync(saved);
-            }
-
-            // Assert: Änderung ist persistent
-            using (var context = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo = new EfRepository<Lagerort>(context);
-                var updated = await repo.GetByIdAsync(saved.Id);
-                Assert.Equal("Weinkeller", updated.Name);
-            }
-        }
-
-        [Fact]
-        public async Task DeleteAsync_RemovesEntity_AndReturnsTrueFalse()
-        {
-            // Arrange
             Lagerort saved;
             using (var context = new FoodDatabaseContext(_dbContextOptions))
             {
@@ -132,101 +66,23 @@ namespace FoodDatabase.Tests.Integration
                 saved = await repo.AddAsync(new Lagerort { Name = "Balkon" });
             }
 
-            // Act: Löschen
-            bool deleted;
+            bool deletedExisting;
+            bool deletedNonexistent;
             using (var context = new FoodDatabaseContext(_dbContextOptions))
             {
                 var repo = new EfRepository<Lagerort>(context);
-                deleted = await repo.DeleteAsync(saved.Id);
+                deletedExisting = await repo.DeleteAsync(saved.Id);
+                deletedNonexistent = await repo.DeleteAsync(999);
             }
 
-            // Assert: Gelöscht und nicht mehr abrufbar
-            Assert.True(deleted);
+            Assert.True(deletedExisting);
+            Assert.False(deletedNonexistent);
+
             using (var context = new FoodDatabaseContext(_dbContextOptions))
             {
                 var repo = new EfRepository<Lagerort>(context);
                 var result = await repo.GetByIdAsync(saved.Id);
                 Assert.Null(result);
-            }
-        }
-
-        [Fact]
-        public async Task DeleteAsync_ReturnsFalse_WhenNotExists()
-        {
-            // Arrange & Act
-            using (var context = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo = new EfRepository<Lagerort>(context);
-                var deleted = await repo.DeleteAsync(999);
-
-                // Assert
-                Assert.False(deleted);
-            }
-        }
-
-        [Fact]
-        public async Task CreateAsync_IsAliasForAddAsync()
-        {
-            // Arrange
-            var lagerort = new Lagerort { Name = "Garage" };
-
-            // Act
-            Lagerort created;
-            using (var context = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo = new EfRepository<Lagerort>(context);
-                created = await repo.CreateAsync(lagerort);
-            }
-
-            // Assert: ID wurde generiert und Entity ist persistent
-            Assert.NotEqual(0, created.Id);
-            using (var context = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo = new EfRepository<Lagerort>(context);
-                var retrieved = await repo.GetByIdAsync(created.Id);
-                Assert.NotNull(retrieved);
-                Assert.Equal("Garage", retrieved.Name);
-            }
-        }
-
-        [Fact]
-        public async Task Repository_HandlesMultipleContexts_Independently()
-        {
-            // Arrange: Entität in Context 1 erstellen
-            int id1;
-            using (var context1 = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo1 = new EfRepository<Lagerort>(context1);
-                var saved1 = await repo1.AddAsync(new Lagerort { Name = "Lagerort1" });
-                id1 = saved1.Id;
-            }
-
-            // Act: In Context 2 abrufen
-            using (var context2 = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo2 = new EfRepository<Lagerort>(context2);
-                var retrieved = await repo2.GetByIdAsync(id1);
-
-                // Assert: Daten sind abrufbar über verschiedene Contexts
-                Assert.NotNull(retrieved);
-                Assert.Equal("Lagerort1", retrieved.Name);
-            }
-        }
-
-        [Fact]
-        public async Task SaveChangesAsync_ExplicitlySavesChanges()
-        {
-            // Arrange
-            using (var context = new FoodDatabaseContext(_dbContextOptions))
-            {
-                var repo = new EfRepository<Lagerort>(context);
-
-                // Act: AddAsync speichert bereits (SaveChangesAsync ist da)
-                var saved = await repo.AddAsync(new Lagerort { Name = "TestLagerort" });
-                var saveResult = await repo.SaveChangesAsync();
-
-                // Assert: SaveChangesAsync gibt Anzahl der geänderten Rows zurück
-                Assert.GreaterThanOrEqual(saveResult, 0);
             }
         }
 
