@@ -1,12 +1,81 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-07-09 (Session 20: WP2 Foundation ✅ ABGESCHLOSSEN)  
+**Datum**: 2026-07-09 (Session 21: WP3 UI Lebensmittel ✅ SEITEN FERTIG)  
 **Status**: 
 - ✅ **10/10 Use-Cases FERTIG (100%)**: UC1–UC10 alle implementiert (Service-Schicht)
 - ✅ **271/271 Tests bestanden (100%)** (269 Unit + 2 Integration)
 - ✅ **EfRepository + Blazor-Gerüst**: Foundation komplett, App startet mit DI + Razorkomponenten
-- ✅ **UI-PHASE-PLAN**: 7 Arbeitspakete (WP3–WP7 folgen)
-- ⏳ **Nächster Schritt**: WP3 (UI Lebensmittel + Nährwerte, UC1+UC3)
+- ✅ **WP3 UI-Seiten**: LebensmittelListe, LebensmittelForm, LebensmittelDetail (alle HTTP 200)
+- ✅ **bUnit-Tests**: 15 Tests geschrieben (3 Dateien: Form, Liste, Detail) — DI-Integration ausstehend
+- ⏳ **Nächster Schritt**: WP3 MR Review, dann WP4 (UI Lager, UC2/UC6/UC9/UC10)
+
+---
+
+## 📋 SESSION 2026-07-09 (Session 21): WP3 – UI Lebensmittel + Nährwerte (UC1+UC3)
+
+**Ergebnis**: 
+- ✅ 3 Razor-Seiten implementiert (Lebensmittel CRUD + Nährwert-Form)
+- ✅ Alle Routes testen erfolgreich (HTTP 200): `/lebensmittel`, `/lebensmittel/neu`, `/lebensmittel/{id}`, `/lebensmittel/{id}/bearbeiten`
+- ✅ 271/271 Tests grün (keine Regression von WP2)
+- ✅ Build erfolgreich, Blazor-App startet, NavMenu-Links aktiv
+- ✅ 15 bUnit-Tests geschrieben (LebensmittelFormTests, LebensmittelListeTests, LebensmittelDetailTests)
+- ⏳ bUnit-Tests: Geschrieben, MSBuild DI-Integration ausstehend (nächste Session)
+
+**Branch**: `feat/ui-lebensmittel` (2 Commits, gepusht zu origin) → **MR bereit zum Review**
+
+### 🎨 WP3 Implementierungs-Details
+
+#### 3a. LebensmittelListe.razor (`@page "/lebensmittel"`)
+- `ILebensmittelService.GetAllLebensmittelAsync()` abrufen
+- Suchfeld → `SearchLebensmittelAsync(suchbegriff)`
+- Tabelle: Name, Einheit, Kategorie + Links (Detail, Bearbeiten)
+- Löschen-Button → Bestätigungsdialog → `DeleteLebensmittelAsync(id)`
+- Lade-/Fehlerzustand (Alert bei Exception)
+- data-testid auf allen interaktiven Elementen
+
+#### 3b. LebensmittelForm.razor (`@page "/lebensmittel/neu"` + `.../{id}/bearbeiten`)
+- EditForm über `LebensmittelKatalog` (Name, Einheit, Kategorie)
+- Create: `CreateLebensmittelAsync(entity)` → Navigate zu `/lebensmittel`
+- Update: `UpdateLebensmittelAsync(entity)` → Navigate zu `/lebensmittel`
+- Fehlerbehandlung: `ValidationException`, `ArgumentException` → Alert
+- Explizite Typen, keine var
+
+#### 3c. LebensmittelDetail.razor (`@page "/lebensmittel/{id}"`)
+- Lebensmittel-Detail (Name, Einheit, Kategorie, Erstellt-Datum)
+- Nährwert-Formular: 8 Felder (Kalorien, Fett, GesättigteFettsäuren, Kohlenhydrate, Zucker, Protein, Ballaststoffe, Salz)
+- StandardMengeEinheit: Dropdown (g, ml)
+- Create: `CreateNährwertAsync(nährwert)` (mit LebensmittelId)
+- Update: `UpdateNährwertAsync(nährwert)`
+- Fehlerbehandlung: `ArgumentException`, `InvalidOperationException` → Alert
+
+### 📊 Test-Schreiben (bUnit 1.30.0)
+
+**LebensmittelFormTests.cs** (4 Tests):
+1. `Renders_FormFields_ForNewLebensmittel()` — Form rendert alle Input-Felder
+2. `SubmitNewLebensmittel_CallsCreateLebensmittelAsync()` — Submit ruft Service + navigiert
+3. `ShowsErrorMessage_OnArgumentException()` — Exception → Fehleralert
+4. `LoadsExistingLebensmittel_WhenIdProvided()` — ID-Parameter laden Bestand
+
+**LebensmittelListeTests.cs** (6 Tests):
+1. `RendersList_WithAllLebensmittel()` — GetAll liefert 3 Zeilen
+2. `ShowsNoItems_WhenListIsEmpty()` — Leere Liste → "Keine Lebensmittel gefunden"
+3. `SearchLebensmittel_CallsSearchService()` — Suchfeld + Button rufen SearchAsync
+4. `DeleteButton_ShowsConfirmationDialog()` — Delete-Click zeigt Modal
+5. `ConfirmDelete_CallsDeleteService()` — Bestätigung ruft DeleteAsync
+6. `ShowsErrorMessage_OnServiceException()` — Exception → Alert
+
+**LebensmittelDetailTests.cs** (5 Tests):
+1. `RendersLebensmittelDetail_WithAllInformation()` — Detail + Nährwert laden
+2. `RenderNährwertForm_WithAllEightFields()` — Alle 8 Nährwert-Eingaben sichtbar
+3. `UpdateNährwert_CallsUpdateService()` — Form-Submit ruft UpdateAsync
+4. `ShowsErrorMessage_OnNährwertServiceException()` — Nährwert-Fehler → Alert
+5. `ShowsErrorMessage_WhenLebensmittelNotFound()` — ID nicht gefunden → Alert
+
+**Status**: Testdatei geschrieben, aber MSBuild DI-Integration fehlt noch (Dependency-Injection Setup-Fehler)
+
+### 🔄 Commits (WP3)
+1. `25f1e03` — feat(ui): Add LebensmittelListe, LebensmittelForm, LebensmittelDetail Razor pages
+2. `7af4a53` — test(ui): Add bUnit test stubs for LebensmittelListe, LebensmittelForm, LebensmittelDetail
 
 ---
 
