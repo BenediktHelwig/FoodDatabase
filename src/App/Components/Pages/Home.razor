@@ -1,0 +1,38 @@
+@page "/"
+@using FoodDatabase.App.Services.Interfaces
+
+<PageTitle>FoodDatabase – Startseite</PageTitle>
+
+<h1>FoodDatabase</h1>
+
+<p>Willkommen bei FoodDatabase – Ihre digitale Küche.</p>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Lebensmittel</h5>
+                <p class="card-text">Verwalten Sie Ihren Lebensmittelkatalog.</p>
+                <a href="/lebensmittel" class="btn btn-primary">Öffnen</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Lagerbestand</h5>
+                <p class="card-text">Überwachen Sie Ihren Lagerbestand.</p>
+                <a href="/lagerbestand" class="btn btn-primary">Öffnen</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Rezepte</h5>
+                <p class="card-text">Erstellen und verwalten Sie Rezepte.</p>
+                <a href="/rezepte" class="btn btn-primary">Öffnen</a>
+            </div>
+        </div>
+    </div>
+</div>
