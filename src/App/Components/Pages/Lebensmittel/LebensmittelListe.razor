@@ -1,0 +1,225 @@
+@page "/lebensmittel"
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Interfaces
+@inject ILebensmittelService LebensmittelService
+@inject NavigationManager NavigationManager
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Lebensmittel</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/lebensmittel/neu" class="btn btn-primary" data-testid="btn-neu">+ Neu</a>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Lebensmittel suchen..."
+                       @bind="suchbegriff"
+                       @bind:event="oninput"
+                       data-testid="input-suche" />
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        @onclick="SucheAusführen"
+                        data-testid="btn-suche">
+                    Suche
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <button class="btn btn-secondary"
+                    @onclick="AlleAnzeigen"
+                    data-testid="btn-alle">
+                Alle anzeigen
+            </button>
+        </div>
+    </div>
+
+    @if (lädt)
+    {
+        <div class="alert alert-info">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Lädt...
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(fehler))
+    {
+        <div class="alert alert-danger" data-testid="alert-fehler">
+            @fehler
+        </div>
+    }
+    else if (lebensmittelListe is not null && lebensmittelListe.Any())
+    {
+        <table class="table table-striped" data-testid="tabelle-lebensmittel">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Einheit</th>
+                    <th>Kategorie</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (LebensmittelKatalog lebensmittel in lebensmittelListe)
+                {
+                    <tr data-testid="zeile-@lebensmittel.Id">
+                        <td>@lebensmittel.Name</td>
+                        <td>@lebensmittel.Einheit</td>
+                        <td>@lebensmittel.Kategorie</td>
+                        <td>
+                            <a href="/lebensmittel/@lebensmittel.Id"
+                               class="btn btn-sm btn-info"
+                               data-testid="btn-detail-@lebensmittel.Id">
+                                Detail
+                            </a>
+                            <a href="/lebensmittel/@lebensmittel.Id/bearbeiten"
+                               class="btn btn-sm btn-warning"
+                               data-testid="btn-bearbeiten-@lebensmittel.Id">
+                                Bearbeiten
+                            </a>
+                            <button class="btn btn-sm btn-danger"
+                                    @onclick="() => BestätigungLöschen(lebensmittel.Id)"
+                                    data-testid="btn-löschen-@lebensmittel.Id">
+                                Löschen
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Keine Lebensmittel gefunden.
+        </div>
+    }
+</div>
+
+@if (bestätigungLöschen)
+{
+    <div class="modal fade show" id="bestätigungsmodal" style="display: block;" data-testid="modal-bestätigung">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bestätigung erforderlich</h5>
+                </div>
+                <div class="modal-body">
+                    Möchten Sie dieses Lebensmittel wirklich löschen?
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            @onclick="() => bestätigungLöschen = false"
+                            data-testid="btn-abbrechen">
+                        Abbrechen
+                    </button>
+                    <button type="button"
+                            class="btn btn-danger"
+                            @onclick="LöschenBestätigt"
+                            data-testid="btn-löschen-bestätigt">
+                        Löschen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    private IEnumerable<LebensmittelKatalog>? lebensmittelListe;
+    private string suchbegriff = "";
+    private string fehler = "";
+    private bool lädt = false;
+    private bool bestätigungLöschen = false;
+    private int zuLöschendeId = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AlleAbrufen();
+    }
+
+    private async Task AlleAbrufen()
+    {
+        lädt = true;
+        fehler = "";
+        try
+        {
+            lebensmittelListe = await LebensmittelService.GetAllLebensmittelAsync();
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Abrufen der Lebensmittel: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+
+    private async Task SucheAusführen()
+    {
+        if (string.IsNullOrWhiteSpace(suchbegriff))
+        {
+            await AlleAbrufen();
+            return;
+        }
+
+        lädt = true;
+        fehler = "";
+        try
+        {
+            lebensmittelListe = await LebensmittelService.SearchLebensmittelAsync(suchbegriff);
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler bei der Suche: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+
+    private async Task AlleAnzeigen()
+    {
+        suchbegriff = "";
+        await AlleAbrufen();
+    }
+
+    private void BestätigungLöschen(int lebensmittelId)
+    {
+        zuLöschendeId = lebensmittelId;
+        bestätigungLöschen = true;
+    }
+
+    private async Task LöschenBestätigt()
+    {
+        bestätigungLöschen = false;
+        lädt = true;
+        fehler = "";
+        try
+        {
+            bool erfolg = await LebensmittelService.DeleteLebensmittelAsync(zuLöschendeId);
+            if (erfolg)
+            {
+                await AlleAbrufen();
+            }
+            else
+            {
+                fehler = "Lebensmittel konnte nicht gelöscht werden.";
+            }
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Löschen: {ex.Message}";
+            lädt = false;
+        }
+    }
+}
