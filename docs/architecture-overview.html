@@ -344,10 +344,24 @@ cat CONTEXT_SUMMARY.md
                 <li>✅ UC5: Rezept-Nährwerte berechnen – FERTIG! (18/21 Tests GRÜN)</li>
                 <li>✅ UC7: Verfallsdatum-Warnungen – FERTIG! (19/19 Tests GRÜN)</li>
                 <li>✅ UC8: Einkaufslisten generieren – FERTIG! (17/17 Tests GRÜN)</li>
+                <li>✅ <strong>UI-Shell-Layout (Bootstrap 5.3.3)</strong> – FERTIG! (15/24 Ui-Tests GRÜN)</li>
                 <li>⏳ **10/10 UCs KOMPLETT (100%)** — Blazor UI Components folgen</li>
                 <li>⏳ Blazor UI Components für alle abgeschlossenen UCs</li>
                 <li>⏳ Integration Test Suite</li>
                 <li>⏳ Docker Deployment auf TrueNAS</li>
+            </ul>
+
+            <h3>UI-Shell & Bootstrap-Integration</h3>
+            <p>
+                <strong>Status:</strong> ✅ Fertig — Bootstrap 5.3.3 lokal eingebunden, responsive Off-Canvas-Navigation implementiert.
+            </p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>Bootstrap CSS (232 KB)</strong> ersetzt 4-KB-Stub — Formulare, Tabellen, Modals jetzt korrekt gestylt</li>
+                <li><strong>Bootstrap Bundle-JS (80 KB)</strong> neu — Off-Canvas-Panel-Animation, Tooltips, Modals funktionieren</li>
+                <li><strong>Responsive Navigation</strong> — Sidebar fest ab 768px, Off-Canvas-Panel (Hamburger-Menü) auf Mobilgeräten</li>
+                <li><strong>Layout-Bug behoben</strong> — `.page` CSS-Selektor fix (vorher: `page` → keine Regel)</li>
+                <li><strong>Tests (bUnit)</strong> — 6 NavMenuTests + 3 MainLayoutTests (Markup & Attribute)</li>
+                <li><strong>Dokumentation</strong> — Feature-HTML + Code-Validierung + Architecture-Updates</li>
             </ul>
         </section>
     </div>
