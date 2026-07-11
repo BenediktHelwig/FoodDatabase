@@ -1,0 +1,176 @@
+@page "/lagerbestand"
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Interfaces
+@inject IProduktInstanzService ProduktInstanzService
+@inject ILebensmittelService LebensmittelService
+@inject NavigationManager NavigationManager
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Lagerbestand</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/lagerbestand/neu" class="btn btn-primary" data-testid="btn-neu">+ Neue Packung</a>
+        </div>
+    </div>
+
+    @if (lädt)
+    {
+        <div class="alert alert-info">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Lädt...
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(fehler))
+    {
+        <div class="alert alert-danger" data-testid="alert-fehler">
+            @fehler
+        </div>
+    }
+    else if (bestaende is not null && bestaende.Any())
+    {
+        <table class="table table-striped" data-testid="tabelle-bestaende">
+            <thead>
+                <tr>
+                    <th>Lebensmittel</th>
+                    <th>Menge</th>
+                    <th>Verfallsdatum</th>
+                    <th>Lagerort</th>
+                    <th>Einkauft</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var instanz in bestaende)
+                {
+                    var lebensmittel = lebensmittelMap.ContainsKey(instanz.LebensmittelKatalogId)
+                        ? lebensmittelMap[instanz.LebensmittelKatalogId]
+                        : null;
+
+                    var istAbgelaufen = instanz.Verfallsdatum < DateTime.Today;
+                    var verfallKlasse = istAbgelaufen ? "table-danger" : "";
+
+                    <tr data-testid="zeile-@instanz.Id" class="@verfallKlasse">
+                        <td>@lebensmittel?.Name</td>
+                        <td>@instanz.Menge @lebensmittel?.Einheit</td>
+                        <td>@instanz.Verfallsdatum:D</td>
+                        <td>@instanz.Lagerort</td>
+                        <td>@instanz.Einkaufsdatum:d</td>
+                        <td>
+                            <a href="/lagerbestand/@instanz.Id/bearbeiten"
+                               class="btn btn-sm btn-warning"
+                               data-testid="btn-bearbeiten-@instanz.Id">
+                                Bearbeiten
+                            </a>
+                            <button class="btn btn-sm btn-danger"
+                                    @onclick="() => BestätigungLöschen(instanz.Id)"
+                                    data-testid="btn-löschen-@instanz.Id">
+                                Löschen
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Kein Lagerbestand vorhanden.
+        </div>
+    }
+</div>
+
+@if (bestätigungLöschen)
+{
+    <div class="modal fade show" id="bestätigungsmodal" style="display: block;" data-testid="modal-bestätigung">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bestätigung erforderlich</h5>
+                </div>
+                <div class="modal-body">
+                    Möchten Sie diese Packung wirklich löschen?
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            @onclick="() => bestätigungLöschen = false"
+                            data-testid="btn-abbrechen">
+                        Abbrechen
+                    </button>
+                    <button type="button"
+                            class="btn btn-danger"
+                            @onclick="LöschenBestätigt"
+                            data-testid="btn-löschen-bestätigt">
+                        Löschen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    private List<ProduktInstanz>? bestaende;
+    private Dictionary<int, LebensmittelKatalog> lebensmittelMap = new();
+    private string fehler = "";
+    private bool lädt = false;
+    private bool bestätigungLöschen = false;
+    private int zuLöschendeId = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AlleAbrufen();
+    }
+
+    private async Task AlleAbrufen()
+    {
+        lädt = true;
+        fehler = "";
+        try
+        {
+            bestaende = await ProduktInstanzService.GetNachVerfallsdatumSortiertAsync();
+
+            if (bestaende is not null && bestaende.Any())
+            {
+                var alleLebensmittel = await LebensmittelService.GetAllLebensmittelAsync();
+                lebensmittelMap = alleLebensmittel
+                    .ToDictionary(l => l.Id, l => l);
+            }
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Abrufen des Lagerbestands: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+
+    private void BestätigungLöschen(int instanzId)
+    {
+        zuLöschendeId = instanzId;
+        bestätigungLöschen = true;
+    }
+
+    private async Task LöschenBestätigt()
+    {
+        bestätigungLöschen = false;
+        lädt = true;
+        fehler = "";
+        try
+        {
+            await ProduktInstanzService.DeleteAsync(zuLöschendeId);
+            await AlleAbrufen();
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Löschen: {ex.Message}";
+            lädt = false;
+        }
+    }
+}
