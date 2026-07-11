@@ -1,0 +1,196 @@
+@page "/lagerbestand/neu"
+@page "/lagerbestand/{Id:int}/bearbeiten"
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Interfaces
+@inject IProduktInstanzService ProduktInstanzService
+@inject ILebensmittelService LebensmittelService
+@inject NavigationManager NavigationManager
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>@(Id == 0 ? "Neue Packung" : "Packung bearbeiten")</h2>
+
+            @if (lädt)
+            {
+                <div class="alert alert-info">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Lädt...
+                </div>
+            }
+            else
+            {
+                @if (!string.IsNullOrEmpty(fehler))
+                {
+                    <div class="alert alert-danger" data-testid="alert-fehler">
+                        @fehler
+                    </div>
+                }
+
+                <EditForm Model="model" OnValidSubmit="SpeichernAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="alert alert-warning" />
+
+                    <div class="mb-3">
+                        <label for="lebensmittel" class="form-label">Lebensmittel *</label>
+                        <InputSelect id="lebensmittel"
+                                     @bind-Value="model.LebensmittelKatalogId"
+                                     class="form-select"
+                                     data-testid="select-lebensmittel"
+                                     disabled="@(Id > 0)">
+                            <option value="0">-- Lebensmittel wählen --</option>
+                            @foreach (var lm in alleLebensmittel)
+                            {
+                                <option value="@lm.Id">@lm.Name (@lm.Einheit)</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="() => model.LebensmittelKatalogId" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="menge" class="form-label">Menge *</label>
+                        <InputNumber id="menge"
+                                     @bind-Value="model.Menge"
+                                     class="form-control"
+                                     placeholder="z.B. 500"
+                                     data-testid="input-menge" />
+                        <ValidationMessage For="() => model.Menge" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="verfallsdatum" class="form-label">Verfallsdatum *</label>
+                        <InputDate id="verfallsdatum"
+                                   @bind-Value="model.Verfallsdatum"
+                                   class="form-control"
+                                   data-testid="input-verfallsdatum" />
+                        <ValidationMessage For="() => model.Verfallsdatum" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="lagerort" class="form-label">Lagerort *</label>
+                        <InputSelect id="lagerort"
+                                     @bind-Value="model.Lagerort"
+                                     class="form-select"
+                                     data-testid="select-lagerort">
+                            <option value="">-- Lagerort wählen --</option>
+                            <option value="Kühlschrank">Kühlschrank</option>
+                            <option value="Tiefkühler">Tiefkühler</option>
+                            <option value="Pantry">Pantry</option>
+                            <option value="Anderes">Anderes</option>
+                        </InputSelect>
+                        <ValidationMessage For="() => model.Lagerort" />
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit"
+                                class="btn btn-primary"
+                                data-testid="btn-speichern"
+                                disabled="@(lädt || !string.IsNullOrEmpty(fehler))">
+                            Speichern
+                        </button>
+                        <a href="/lagerbestand" class="btn btn-secondary" data-testid="btn-abbrechen">
+                            Abbrechen
+                        </a>
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private ProduktInstanzFormModel model = new ProduktInstanzFormModel();
+    private List<LebensmittelKatalog> alleLebensmittel = new();
+    private string fehler = "";
+    private bool lädt = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LadeLebensmittel();
+
+        if (Id > 0)
+        {
+            lädt = true;
+            try
+            {
+                var instanz = await ProduktInstanzService.GetByIdAsync(Id);
+                if (instanz is not null)
+                {
+                    model.LebensmittelKatalogId = instanz.LebensmittelKatalogId;
+                    model.Menge = instanz.Menge;
+                    model.Verfallsdatum = instanz.Verfallsdatum;
+                    model.Lagerort = instanz.Lagerort;
+                }
+            }
+            catch (Exception ex)
+            {
+                fehler = $"Fehler beim Laden der Packung: {ex.Message}";
+            }
+            finally
+            {
+                lädt = false;
+            }
+        }
+    }
+
+    private async Task LadeLebensmittel()
+    {
+        try
+        {
+            var result = await LebensmittelService.GetAllLebensmittelAsync();
+            alleLebensmittel = result.ToList();
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Laden der Lebensmittel: {ex.Message}";
+        }
+    }
+
+    private async Task SpeichernAsync()
+    {
+        lädt = true;
+        fehler = "";
+        try
+        {
+            if (Id == 0)
+            {
+                await ProduktInstanzService.CreateAsync(
+                    model.LebensmittelKatalogId,
+                    model.Menge,
+                    model.Verfallsdatum,
+                    model.Lagerort);
+            }
+            else
+            {
+                await ProduktInstanzService.UpdateAsync(
+                    Id,
+                    model.Menge,
+                    model.Verfallsdatum,
+                    model.Lagerort);
+            }
+
+            NavigationManager.NavigateTo("/lagerbestand");
+        }
+        catch (ArgumentException ex)
+        {
+            fehler = $"Eingabefehler: {ex.Message}";
+            lädt = false;
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Speichern: {ex.Message}";
+            lädt = false;
+        }
+    }
+
+    private class ProduktInstanzFormModel
+    {
+        public int LebensmittelKatalogId { get; set; }
+        public decimal Menge { get; set; }
+        public DateTime Verfallsdatum { get; set; } = DateTime.Today.AddDays(30);
+        public string Lagerort { get; set; } = "";
+    }
+}

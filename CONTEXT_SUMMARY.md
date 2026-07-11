@@ -1,313 +1,99 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-07-09 (Session 21: WP3 UI Lebensmittel ✅ SEITEN FERTIG)  
+**Datum**: 2026-07-11 (Session 24: WP4 UI-Lagerbestand Start)  
 **Status**: 
-- ✅ **10/10 Use-Cases FERTIG (100%)**: UC1–UC10 alle implementiert (Service-Schicht)
-- ✅ **271/271 Tests bestanden (100%)** (269 Unit + 2 Integration)
-- ✅ **EfRepository + Blazor-Gerüst**: Foundation komplett, App startet mit DI + Razorkomponenten
-- ✅ **WP3 UI-Seiten**: LebensmittelListe, LebensmittelForm, LebensmittelDetail (alle HTTP 200)
-- ✅ **bUnit-Tests**: 15 Tests geschrieben (3 Dateien: Form, Liste, Detail) — DI-Integration ausstehend
-- ⏳ **Nächster Schritt**: WP3 MR Review, dann WP4 (UI Lager, UC2/UC6/UC9/UC10)
+- ✅ **10/10 Use-Cases FERTIG (100%)**: UC1–UC10 Service-Schicht komplett
+- ✅ **312/312 Tests grün**: 269 Unit + 2 Integration + 41 UI (bUnit)
+- ✅ **WP-Shell + WP3 UI Lebensmittel**: Gemergt (Sessions 22-23)
+- 🚀 **WP4 UC2 START**: LagerbestandBearbeiten.razor + ProduktInstanzForm.razor + 12 Tests ✅
 
 ---
 
-## 📋 SESSION 2026-07-09 (Session 21): WP3 – UI Lebensmittel + Nährwerte (UC1+UC3)
+## 📋 SESSION 2026-07-11 (Session 24): WP4 UC2 Lagerbestand – Code + Tests
 
-**Ergebnis**: 
-- ✅ 3 Razor-Seiten implementiert (Lebensmittel CRUD + Nährwert-Form)
-- ✅ Alle Routes testen erfolgreich (HTTP 200): `/lebensmittel`, `/lebensmittel/neu`, `/lebensmittel/{id}`, `/lebensmittel/{id}/bearbeiten`
-- ✅ 271/271 Tests grün (keine Regression von WP2)
-- ✅ Build erfolgreich, Blazor-App startet, NavMenu-Links aktiv
-- ✅ 15 bUnit-Tests geschrieben (LebensmittelFormTests, LebensmittelListeTests, LebensmittelDetailTests)
-- ⏳ bUnit-Tests: Geschrieben, MSBuild DI-Integration ausstehend (nächste Session)
+**Ergebnis**:
+- ✅ **UI-Komponenten** (Dev-Agent):
+  - `LagerbestandBearbeiten.razor`: Tabelle aller Produktinstanzen (FIFO-Sortierung nach Verfallsdatum)
+    - Lebensmittel-Namen, Menge, Verfallsdatum, Lagerort, Einkaufsdatum
+    - Abgelaufene Produkte rot markiert (table-danger)
+    - Bearbeiten/Löschen-Buttons pro Zeile, Lösch-Bestätigung Modal
+  - `ProduktInstanzForm.razor`: Bearbeitungsformular (Neu + Edit-Modus)
+    - Lebensmittel-Dropdown (readonly im Edit-Modus)
+    - Menge-Input, Verfallsdatum-Datepicker (default +30 Tage)
+    - Lagerort-Select (Kühlschrank, Tiefkühler, Pantry, Anderes)
+    - Speichern/Abbrechen-Buttons
 
-**Branch**: `feat/ui-lebensmittel` (2 Commits, gepusht zu origin) → **MR bereit zum Review**
+- ✅ **bUnit-Tests** (Test-Agent):
+  - LagerbestandBearbeitenTests (5 Tests):
+    - Tabelle mit ProduktInstanzen rendern
+    - Leere Liste: "Kein Lagerbestand vorhanden"
+    - Abgelaufene Produkte rot hervorgehoben
+    - Löschen-Button vorhanden
+    - Neu-Button vorhanden
+  - ProduktInstanzFormTests (7 Tests):
+    - Neue Packung (Id=0) vs. Bearbeiten (Id>0)
+    - Lebensmittel-Dropdown mit Einheiten
+    - Lagerort-Dropdown mit 4 Optionen
+    - Menge + Verfallsdatum Eingabefelder
+    - Lebensmittel-Dropdown in Edit-Mode disabled
+    - Speichern-Button vorhanden
+  - **Alle 12 Tests GRÜN** ✅ (5 + 7 Tests)
 
-### 🎨 WP3 Implementierungs-Details
+- 🔧 **Fixes**:
+  - ProduktInstanzForm: `.ToList()` für LebensmittelService.GetAllLebensmittelAsync()
+  - LebensmittelListeTests: Entfernt `async/await` auf `WaitForAssertion()` (gibt void zurück)
 
-#### 3a. LebensmittelListe.razor (`@page "/lebensmittel"`)
-- `ILebensmittelService.GetAllLebensmittelAsync()` abrufen
-- Suchfeld → `SearchLebensmittelAsync(suchbegriff)`
-- Tabelle: Name, Einheit, Kategorie + Links (Detail, Bearbeiten)
-- Löschen-Button → Bestätigungsdialog → `DeleteLebensmittelAsync(id)`
-- Lade-/Fehlerzustand (Alert bei Exception)
-- data-testid auf allen interaktiven Elementen
+**Branch**: `feat/wp4-lagerbestand` (3 Commits: Components + Tests + Fixes)
 
-#### 3b. LebensmittelForm.razor (`@page "/lebensmittel/neu"` + `.../{id}/bearbeiten`)
-- EditForm über `LebensmittelKatalog` (Name, Einheit, Kategorie)
-- Create: `CreateLebensmittelAsync(entity)` → Navigate zu `/lebensmittel`
-- Update: `UpdateLebensmittelAsync(entity)` → Navigate zu `/lebensmittel`
-- Fehlerbehandlung: `ValidationException`, `ArgumentException` → Alert
-- Explizite Typen, keine var
-
-#### 3c. LebensmittelDetail.razor (`@page "/lebensmittel/{id}"`)
-- Lebensmittel-Detail (Name, Einheit, Kategorie, Erstellt-Datum)
-- Nährwert-Formular: 8 Felder (Kalorien, Fett, GesättigteFettsäuren, Kohlenhydrate, Zucker, Protein, Ballaststoffe, Salz)
-- StandardMengeEinheit: Dropdown (g, ml)
-- Create: `CreateNährwertAsync(nährwert)` (mit LebensmittelId)
-- Update: `UpdateNährwertAsync(nährwert)`
-- Fehlerbehandlung: `ArgumentException`, `InvalidOperationException` → Alert
-
-### 📊 Test-Schreiben (bUnit 1.30.0)
-
-**LebensmittelFormTests.cs** (4 Tests):
-1. `Renders_FormFields_ForNewLebensmittel()` — Form rendert alle Input-Felder
-2. `SubmitNewLebensmittel_CallsCreateLebensmittelAsync()` — Submit ruft Service + navigiert
-3. `ShowsErrorMessage_OnArgumentException()` — Exception → Fehleralert
-4. `LoadsExistingLebensmittel_WhenIdProvided()` — ID-Parameter laden Bestand
-
-**LebensmittelListeTests.cs** (6 Tests):
-1. `RendersList_WithAllLebensmittel()` — GetAll liefert 3 Zeilen
-2. `ShowsNoItems_WhenListIsEmpty()` — Leere Liste → "Keine Lebensmittel gefunden"
-3. `SearchLebensmittel_CallsSearchService()` — Suchfeld + Button rufen SearchAsync
-4. `DeleteButton_ShowsConfirmationDialog()` — Delete-Click zeigt Modal
-5. `ConfirmDelete_CallsDeleteService()` — Bestätigung ruft DeleteAsync
-6. `ShowsErrorMessage_OnServiceException()` — Exception → Alert
-
-**LebensmittelDetailTests.cs** (5 Tests):
-1. `RendersLebensmittelDetail_WithAllInformation()` — Detail + Nährwert laden
-2. `RenderNährwertForm_WithAllEightFields()` — Alle 8 Nährwert-Eingaben sichtbar
-3. `UpdateNährwert_CallsUpdateService()` — Form-Submit ruft UpdateAsync
-4. `ShowsErrorMessage_OnNährwertServiceException()` — Nährwert-Fehler → Alert
-5. `ShowsErrorMessage_WhenLebensmittelNotFound()` — ID nicht gefunden → Alert
-
-**Status**: Testdatei geschrieben, aber MSBuild DI-Integration fehlt noch (Dependency-Injection Setup-Fehler)
-
-### 🔄 Commits (WP3)
-1. `25f1e03` — feat(ui): Add LebensmittelListe, LebensmittelForm, LebensmittelDetail Razor pages
-2. `7af4a53` — test(ui): Add bUnit test stubs for LebensmittelListe, LebensmittelForm, LebensmittelDetail
-
----
-
-## 📋 SESSION 2026-07-09 (Session 20): WP2 – Foundation (EfRepository + Blazor-Gerüst)
-
-**Ergebnis**: 
-- ✅ EfRepository<T> implementiert (generisches CRUD mit sofort-Speichern)
-- ✅ Rezept DbSets + Migration (additiv, 269/269 Tests bleiben grün)
-- ✅ Program.cs rewritten (13 Service-DI + Blazor-Setup)
-- ✅ Blazor-Server-Gerüst (App.razor, Routes, Layouts, NavMenu, Bootstrap)
-- ✅ Integrationstests für EfRepository (2 Core-Tests)
-- ✅ **271/271 Tests bestanden** (269 + 2 neue)
-
-**Branch**: `feat/blazor-foundation` → **merged zu master** ✅
-
-### 🏗️ WP2 Implementierungs-Details
-
-#### 2a. EfRepository<T> (`src/App/Data/Repositories/EfRepository.cs`)
-- Implementiert `IRepository<T>` generic pattern
-- **Kritisch**: Jede Mutations-Methode speichert sofort (`SaveChangesAsync()`)
-  - `AddAsync(entity)` → Add + Save + return
-  - `CreateAsync(entity)` → Alias für AddAsync
-  - `UpdateAsync(entity)` → Update + Save + return
-  - `DeleteAsync(id)` → Find + Remove + Save + return bool
-- `GetByIdAsync()` / `GetAllAsync()` für Lesezugriffe
-- Reason: Services (z.B. RezeptService) rufen nie selbst SaveChanges auf
-
-#### 2b. Rezept-Integration in Datenbank
-- **DbSets hinzugefügt**:
-  - `public DbSet<Rezept> Rezepte { get; set; }`
-  - `public DbSet<RezeptZutat> RezeptZutaten { get; set; }`
-- **OnModelCreating erweitert**:
-  - Rezept: Unique Index auf `Name`
-  - RezeptZutat → Rezept: FK mit `DeleteBehavior.Cascade` + `WithMany(r => r.Zutaten)`
-  - RezeptZutat → LebensmittelKatalog: FK mit `DeleteBehavior.Restrict`
-  - RezeptZutat: Unique Index auf `(RezeptId, Position)`
-  - **AutoIncludes**: `ProduktInstanz.LebensmittelKatalog`, `RezeptZutat.Lebensmittel`, `LebensmittelKatalog.Nährwert`
-- **Migration**: `20260709173216_AddRezeptUndRezeptZutat`
-  - Additiv, keine bestehenden Tabellen geändert
-  - CreateTable für Rezepte + RezeptZutaten
-  - Indizes + ForeignKeys automatisch erstellt
-  - Backup vor Migration: `fooddatabase.db.bak`
-
-#### 2c. Program.cs Rewrite
-- **Vorher**: 33 Zeilen, Minimal-API-Stub
-- **Nachher**: Vollständige Blazor-Server-Konfiguration
-  - `AddRazorComponents().AddInteractiveServerComponents()` aktiviert
-  - Generic Repository DI: `AddScoped(typeof(IRepository<>), typeof(EfRepository<>))`
-  - **13 Service-Registrierungen**:
-    - ILebensmittelService, ILagerbestandService, INährwertService, IRezeptService
-    - IRezeptZutatService, IEinheitConverter, INährwertCalculator, IRezeptNährwertService
-    - IVerbrauchAusbuchangService, IVerfallsdatumWarnungService, IEinkaufslistenService
-    - ILagerortService, IProduktInstanzService
-  - `TimeProvider.System` für UC7 (VerfallsdatumWarnungen)
-  - `MapRazorComponents<App>().AddInteractiveServerRenderMode()`
-  - `/health` endpoint für Monitoring
-
-#### 2d. Blazor-Server-Gerüst
-| Datei | Zweck |
-|-------|-------|
-| `Components/App.razor` | Root-Komponente mit HTML-Hülle, Rendering-Mode |
-| `Components/Routes.razor` | Router-Setup, NotFound-Handler |
-| `Components/_Imports.razor` | Global usings (Componenten, Modelle, Services) |
-| `Components/Layout/MainLayout.razor` | Page Layout (Sidebar + Main Content) |
-| `Components/Layout/NavMenu.razor` | Navigation (7 Links: Startseite, Lebensmittel, Lager, Lagerorte, Rezepte, Warnungen, Einkaufsliste) |
-| `Components/Pages/Home.razor` | Landing Page mit Kacheln |
-| `Components/Pages/Error.razor` | Error-Fallback-Seite |
-| `wwwroot/app.css` | CSS für Layout + Responsive |
-| `wwwroot/bootstrap/bootstrap.min.css` | Bootstrap 5 minimal (lokal, kein CDN) |
-
-#### 2e. Integrationstests
-- **Framework**: SQLite in-memory (nicht EF-InMemory, echte FK-Treue)
-- **2 Core-Tests**:
-  1. `AddAsync_PersistsEntity_WithGeneratedId` — Sofort-Speichern, ID-Generierung
-  2. `DeleteAsync_RemovesEntity_AndReturnsCorrectBoolean` — Löschen mit True/False Semantik
-- **Grund für 2 Tests (statt 12 geplant)**: FK-Constraints in Rezept-Integration komplexer als erwartet; Unit-Tests (269) sind primär; Integrationstests auf einfache Entities (Lagerort) begrenzt
-
-### 📊 Test-Verifikation
-
-| Test-Suite | Count | Status |
-|-----------|-------|--------|
-| Unit-Tests (alle Services) | 269 | ✅ Grün |
-| Integration-Tests (EfRepository) | 2 | ✅ Grün |
-| **GESAMT** | **271** | **✅ 100%** |
-
-**Baseline**: Keine Regression (269 → 271)
-
-### 🔄 Commits (WP2)
-1. `feat(foundation): Add EfRepository generic repository implementation`
-2. `feat(foundation): Add Rezept and RezeptZutat DbSets with migration`
-3. `feat(foundation): Add Blazor Server scaffolding and DI configuration`
-4. `test(foundation): Add EfRepository integration tests`
-5. `test(foundation): Simplify EfRepository integration tests (2 core tests)`
-
----
-
-## 📋 SESSION 2026-07-09 (Session 19): WP1 – UC5-Fix Ausführung
-
-**Ergebnis**: Alle 11 fehlgeschlagenen Tests behoben → 269/269 GRÜN  
-**Branch**: `feat/uc5-testfix` (merged zu master in Session 20)  
-**Status**: ✅ WP1 COMPLETE — Tests-Baseline sauber vor UI-Phase
-
-### 🔍 UC5-Fix Diagnose & Lösungen
-**Root-Causes** (alle Mock-Setup-Probleme, keine Service-Bugs):
-
-1. **NährwertCalculator (5 Tests)**
-   - Problem: Mock-Nährwert-Werte unrealistisch (3000/1200 kcal/100g statt 300)
-   - Grund: Missverständnis der Nährwert-Semantik (kcal pro 100g, nicht total)
-   - Fix: Mock-Werte auf 300 kcal/100g korrigiert
-
-2. **RezeptZutatServiceTests (6 Tests)**
-   - Problem: Fehlende RezeptExistsAsync/LebensmittelExistsAsync Mocks
-   - Grund: Service validiert Rezept/Lebensmittel vor Mutation
-   - Fix: Mock-Setups mit Validierungs-Calls ergänzt
-
-3. **RezeptServiceTests (1 Test)**
-   - Problem: CreateAsync-Mock gab unvollständige Entity zurück (Portionen=0)
-   - Grund: Mock-Setup zu simpel (nur Id + Name)
-   - Fix: Mock erweitert für alle Entity-Felder
-
-**Commit**: `test(uc5): Fix 11 failing tests — Mock setup corrections` (fed485f)
-
----
-
-## 📋 SESSION 2026-07-08 (Session 18): Planung der UI-Phase
-
-**Ergebnis**: Vollständiger Implementierungsplan für die nächste Phase erstellt  
-**Plan-Datei**: **`UI-PHASE-PLAN.md`** (Projekt-Root, ~20 KB)  
-**Status**: ✅ Plan fertig, Ausführung in Session 19 gestartet (WP1)
-
-### User-Entscheidungen (fix, nicht neu diskutieren)
-1. **UI-Tests: nur bUnit** (v1.30.0, bereits im Testprojekt referenziert) — kein Playwright/E2E
-2. **Tests NACH Implementierung** (bewusste, genehmigte Abweichung vom TDD-Workflow — nur für die UI-Phase)
-3. **UC5-Fix ist Arbeitspaket 1** (saubere Test-Baseline vor der UI)
-4. **Executor ist Claude Haiku**: Plan enthält explizite Verifikationsschritte nach jedem Teilschritt, keine impliziten Annahmen
-
-### 🔴 Kritische Explorations-Erkenntnisse (verifiziert!)
-Diese Fakten prägen die gesamte UI-Phase:
-1. **Es existiert KEINE Blazor-Infrastruktur** — `Program.cs` war ein 33-Zeilen-Minimal-API-Stub; kein App.razor, keine Layouts, kein wwwroot (→ in WP2 behoben ✅)
-2. **Es existiert KEINE konkrete `IRepository<T>`-Implementierung** — alle Services liefen bisher nur gegen Moq-Mocks. (→ EfRepository in WP2 erstellt ✅)
-3. **Kein Service ruft selbst `SaveChangesAsync()` auf** (Ausnahme: LagerortService via Context direkt) → EfRepository muss in jeder Mutations-Methode sofort speichern (→ implementiert ✅)
-4. `Rezept`/`RezeptZutat` waren **keine DbSets** in FoodDatabaseContext (→ in WP2 hinzugefügt ✅)
-5. `RezeptService.InvokeCreateAsync` ruft `CreateAsync` per Reflection auf → EfRepository.CreateAsync muss Entity mit generierter ID zurückgeben (→ implementiert ✅)
-6. Frühere bUnit-Tests scheiterten an API-Fehlverwendung → Plan enthält verbindliches **bUnit-Briefing** für den Test-Agent
-
-### Die 7 Arbeitspakete (Rest WP3–WP7)
-```
-✅ WP1: UC5-Fix (Diagnose → Fix)                          → feat/uc5-testfix → MERGED
-✅ WP2: Foundation (EfRepository, Rezept, DI, Blazor)      → feat/blazor-foundation → MERGED
-⏳ WP3: UI Lebensmittel + Nährwerte (UC1+UC3)              → feat/ui-lebensmittel (nächst)
-⏳ WP4: UI Lager (UC2+UC6+UC9+UC10)                        → feat/ui-lager
-⏳ WP5: UI Rezepte (UC4+UC5, RezeptNährwertAnzeige)       → feat/ui-rezepte
-⏳ WP6: UI Warnungen + Einkaufsliste (UC7+UC8)            → feat/ui-dashboard
-⏳ WP7: Abschluss (NavMenu-Check, CONTEXT_SUMMARY)         → docs/ui-phase-abschluss
-```
-Reihenfolge strikt sequenziell: WP3–WP6 kopieren jeweils die Muster des Vorgängers.
-Pro WP: eigener Branch, Conventional Commits, Review-Agent-Loop (max. 3), Doc-Agent-4-Teil-Check, MR gegen `master`.
+**Test-Status**: 312/312 Tests (269 Unit + 2 Integration + **41 UI**)
 
 ---
 
 ## 📊 GESAMT-STATUS
 
-### Use-Cases (Service-Schicht)
-```
-✅ UC1: Lebensmittel verwalten
-✅ UC2: Lagerbestand aktualisieren  
-✅ UC3: Nährwerte verwalten
-✅ UC4: Rezepte verwalten
-✅ UC5: Nährwerte für Rezepte berechnen (269/269 Tests GRÜN)
-✅ UC6: Verbrauchte Produkte ausbuchen
-✅ UC7: Verfallsdatum-Warnungen
-✅ UC8: Einkaufslisten generieren
-✅ UC9: Lagerorte verwalten
-✅ UC10: Produktinstanzen mit MHD
+### Service-Schicht (100% ✅)
+- 10/10 Use-Cases implementiert
+- 269/269 Unit-Tests grün
+- 2/2 Integration-Tests grün
 
-Progress Service-Schicht: 10/10 UCs = 100% ✅
-Progress UI-Schicht:      0/10 UCs = 0% ⏳ (WP3 nächst)
+### UI-Schicht (Fortschritt)
 ```
+✅ WP-Shell: Bootstrap 5.3.3, Off-Canvas Navigation (gemergt)
+✅ WP3: UI Lebensmittel (LebensmittelListe, LebensmittelForm, LebensmittelDetail + 16 Tests) (gemergt)
+🚀 WP4: UC2 Lagerbestand (LagerbestandBearbeiten, ProduktInstanzForm + 12 Tests) [AKTIV]
+⏳ WP4: UC6/UC9/UC10 (noch zu starten)
+⏳ WP5: UI Rezepte (UC4/UC5)
+⏳ WP6: UI Dashboard (UC7/UC8)
 
-### Tests
-```
-Stand:      271 total / 271 passed / 0 failed ✅
-✅ WP1 COMPLETE: Alle 11 fehlgeschlagenen Tests behoben (269/269)
-✅ WP2 COMPLETE: 2 EfRepository Integrationstests hinzugefügt (271/271)
-
-Ziel nach WP3: ~285/285 (+14 bUnit für UC1+UC3)
-Ziel Phasenende: ~340+ Tests GRÜN
+UI-Schicht: 2.5/6 WPs ≈ 42% | 41/41 UI-Tests GRÜN
 ```
 
-### Infrastruktur
+### Infra
 ```
-✅ Service-Schicht: Vollständig implementiert (13 Services)
-✅ Repository-Layer: EfRepository<T> + DI konfiguriert
-✅ Datenbank: SQLite mit Rezept-Migration
-✅ Web-Framework: Blazor Server konfiguriert
-⏳ UI-Schicht: Foundation da, Seiten folgen (WP3–WP6)
+✅ ASP.NET Core 8 + Blazor Server
+✅ SQLite mit Migrations
+✅ 13 Services implementiert + DI
+✅ Bootstrap 5.3.3 lokal (kein CDN)
+✅ Responsive Layout (768px Breakpoint)
 ```
 
 ---
 
 ## 🎯 NÄCHSTE SCHRITTE
 
-### SOFORT (Nächste Session - WP3):
-1. **Branch erstellen**: `git checkout -b feat/ui-lebensmittel`
-2. **UI-Seiten implementieren** (UC1+UC3):
-   - `LebensmittelListe.razor` — Liste mit Suchfeld, Löschen, Links
-   - `LebensmittelForm.razor` — Create/Update (EditForm, Validation)
-   - `LebensmittelDetail.razor` — Detail + Nährwert-Formular
-3. **bUnit-Tests schreiben** (nach Implementierung, per Briefing aus UI-PHASE-PLAN.md)
-4. **App-Start verifizieren**: `dotnet run ... --urls http://localhost:5099`, curl für Routes
+### SOFORT:
+1. **Doc-Agent**: Feature-HTML + Architecture-Overview + Diagramme aktualisieren (WP4 UC2)
+2. **MR erstellen**: `feat/wp4-lagerbestand` → master
+3. **WP4 UC6/UC9/UC10**: Nächste Komponenten starten
 
-### DANACH (WP4–WP7):
-- UI-Seiten pro UC-Gruppe, bUnit-Tests, MRs gegen master
-- Final: Abschluss, Docker-Integration auf TrueNAS, Performance-Tuning
+### LANGFRISTIG:
+- WP5/WP6: Rezepte + Dashboard UI
+- TrueNAS Docker-Integration
+- Performance-Tuning
 
 ---
 
-## 📁 WICHTIGE DATEIEN DIESE SESSION
-
-### Session 20 (WP2 – Foundation)
-- **`src/App/Data/Repositories/EfRepository.cs`** (neu)
-- **`src/App/Migrations/20260709173216_AddRezeptUndRezeptZutat.cs`** (neu)
-- **`src/App/Program.cs`** (rewritten)
-- **`src/App/Components/`** (9 neue Blazor-Dateien)
-- **`src/Tests/Integration/EfRepositoryTests.cs`** (neu)
-
-### Von Session 18–19 (noch aktuell)
-- **`UI-PHASE-PLAN.md`** (Projekt-Root) — der vollständige Implementierungsplan (WP1–WP7)
-
----
-
-**Status**: 🟢 **WP2 COMPLETE ✅ | EfRepository + Blazor-Gerüst | 271/271 Tests (100%) | READY FOR WP3**  
-**Last Updated**: 2026-07-09 (Session 20)  
-**Commits diese Session**: 5 (WP2)  
-**Next**: WP3 (UI Lebensmittel + Nährwerte)
+**Status**: 🟢 **312/312 Tests ✅ | WP4 UC2 Code + Tests komplett | Doc ausstehend**  
+**Last Updated**: 2026-07-11 (Session 24)  
+**Current Branch**: `feat/wp4-lagerbestand` (3 Commits, Push ausstehend)  
+**Next**: Doc-Agent → MR Review → WP4 UC6/UC9/UC10
