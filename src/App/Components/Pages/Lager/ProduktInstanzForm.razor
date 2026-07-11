@@ -140,7 +140,8 @@
     {
         try
         {
-            alleLebensmittel = await LebensmittelService.GetAllLebensmittelAsync();
+            var result = await LebensmittelService.GetAllLebensmittelAsync();
+            alleLebensmittel = result.ToList();
         }
         catch (Exception ex)
         {

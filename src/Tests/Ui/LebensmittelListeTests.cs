@@ -67,7 +67,7 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
-        public async Task SearchLebensmittel_CallsSearchService()
+        public void SearchLebensmittel_CallsSearchService()
         {
             // Arrange
             var allItems = new List<LebensmittelKatalog>
@@ -91,21 +91,21 @@ namespace FoodDatabase.Tests.Ui
             IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
 
             // Act
-            await cut.WaitForAssertion(() =>
+            cut.WaitForAssertion(() =>
             {
                 cut.Find("[data-testid='input-suche']").Input("Mehl");
                 cut.Find("[data-testid='btn-suche']").Click();
             }, TimeSpan.FromSeconds(2));
 
             // Assert
-            await cut.WaitForAssertion(() =>
+            cut.WaitForAssertion(() =>
             {
                 mock.Verify(s => s.SearchLebensmittelAsync("Mehl"), Times.Once);
             }, TimeSpan.FromSeconds(2));
         }
 
         [Fact]
-        public async Task DeleteButton_ShowsConfirmationDialog()
+        public void DeleteButton_ShowsConfirmationDialog()
         {
             // Arrange
             var lebensmittel = new List<LebensmittelKatalog>
@@ -122,7 +122,7 @@ namespace FoodDatabase.Tests.Ui
             IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
 
             // Act
-            await cut.WaitForAssertion(async () =>
+            cut.WaitForAssertion(() =>
             {
                 cut.Find("[data-testid='btn-löschen-1']").Click();
             }, TimeSpan.FromSeconds(2));
@@ -133,7 +133,7 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
-        public async Task ConfirmDelete_CallsDeleteService()
+        public void ConfirmDelete_CallsDeleteService()
         {
             // Arrange
             var lebensmittel = new List<LebensmittelKatalog>
@@ -152,7 +152,7 @@ namespace FoodDatabase.Tests.Ui
             IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
 
             // Act
-            await cut.WaitForAssertion(async () =>
+            cut.WaitForAssertion(() =>
             {
                 cut.Find("[data-testid='btn-löschen-1']").Click();
             }, TimeSpan.FromSeconds(2));
@@ -160,14 +160,14 @@ namespace FoodDatabase.Tests.Ui
             cut.Find("[data-testid='btn-löschen-bestätigt']").Click();
 
             // Assert
-            await cut.WaitForAssertion(() =>
+            cut.WaitForAssertion(() =>
             {
                 mock.Verify(s => s.DeleteLebensmittelAsync(1), Times.Once);
             }, TimeSpan.FromSeconds(2));
         }
 
         [Fact]
-        public async Task ShowsErrorMessage_OnServiceException()
+        public void ShowsErrorMessage_OnServiceException()
         {
             // Arrange
             var mock = new Mock<ILebensmittelService>();
@@ -180,7 +180,7 @@ namespace FoodDatabase.Tests.Ui
             IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
 
             // Assert
-            await cut.WaitForAssertion(() =>
+            cut.WaitForAssertion(() =>
             {
                 var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
                 Assert.NotEmpty(errorAlert);
