@@ -1,3 +1,4 @@
+using AngleSharp.Dom;
 using Bunit;
 using Bunit.TestDoubles;
 using FoodDatabase.App.Components.Pages.Lebensmittel;
@@ -26,7 +27,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Formularfelder_Im_Neu_Modus_Rendern()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             // Act
@@ -48,7 +49,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Korrekte_Title_Im_Neu_Modus_Anzeigen()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             // Act
@@ -58,7 +59,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var heading = cut.Find("h2");
+                IElement heading = cut.Find("h2");
                 Assert.Contains("Neues Lebensmittel", heading.TextContent);
             }, TimeSpan.FromSeconds(2));
         }
@@ -67,7 +68,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Einheit_Select_Mit_Optionen_Haben()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             // Act
@@ -77,7 +78,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var select = cut.Find("[data-testid='select-einheit']");
+                IElement select = cut.Find("[data-testid='select-einheit']");
                 Assert.Contains("Gramm (g)", select.OuterHtml);
                 Assert.Contains("Milliliter (ml)", select.OuterHtml);
                 Assert.Contains("Stück", select.OuterHtml);
@@ -88,7 +89,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Speichern_Button_Im_Neu_Modus_Haben()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             // Act
@@ -98,7 +99,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var button = cut.Find("[data-testid='btn-speichern']");
+                IElement button = cut.Find("[data-testid='btn-speichern']");
                 Assert.NotNull(button);
                 Assert.Contains("Speichern", button.TextContent);
             }, TimeSpan.FromSeconds(2));
@@ -108,7 +109,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Abbrechen_Button_Haben()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             // Act
@@ -118,7 +119,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var button = cut.Find("[data-testid='btn-abbrechen']");
+                IElement button = cut.Find("[data-testid='btn-abbrechen']");
                 Assert.NotNull(button);
                 Assert.Contains("Abbrechen", button.TextContent);
                 Assert.Contains("/lebensmittel", button.GetAttribute("href"));
@@ -130,7 +131,7 @@ namespace FoodDatabase.Tests.Ui
         {
             // Arrange
             var mock = new Mock<ILebensmittelService>();
-            var createdItem = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog createdItem = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .WithName("Mehl")
                 .WithEinheit("g")
@@ -139,7 +140,7 @@ namespace FoodDatabase.Tests.Ui
             mock.Setup(s => s.CreateLebensmittelAsync(It.IsAny<LebensmittelKatalog>()))
                 .ReturnsAsync(createdItem);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
-            var nav = Services.GetRequiredService<FakeNavigationManager>();
+            FakeNavigationManager nav = Services.GetRequiredService<FakeNavigationManager>();
 
             // Act
             IRenderedComponent<LebensmittelForm> cut = RenderComponent<LebensmittelForm>(
@@ -165,13 +166,13 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Bestehend_Lebensmittel_Laden()
         {
             // Arrange
-            var existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(5)
                 .WithName("Zucker")
                 .WithEinheit("g")
                 .WithKategorie("Süßstoffe")
                 .Build();
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetLebensmittelByIdAsync(5))
                 .ReturnsAsync(existingItem);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -207,7 +208,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var heading = cut.Find("h2");
+                IElement heading = cut.Find("h2");
                 Assert.Contains("Lebensmittel bearbeiten", heading.TextContent);
             }, TimeSpan.FromSeconds(2));
         }
@@ -216,13 +217,13 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Bestehend_Lebensmittel_Aktualisieren()
         {
             // Arrange
-            var existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(5)
                 .WithName("Zucker")
                 .WithEinheit("g")
                 .WithKategorie("Süßstoffe")
                 .Build();
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetLebensmittelByIdAsync(5))
                 .ReturnsAsync(existingItem);
             mock.Setup(s => s.UpdateLebensmittelAsync(It.IsAny<LebensmittelKatalog>()))
@@ -272,7 +273,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler']");
                 Assert.NotEmpty(errorAlert);
                 Assert.True(cut.Markup.Contains("Eingabefehler"));
             }, TimeSpan.FromSeconds(2));
@@ -302,7 +303,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler']");
                 Assert.NotEmpty(errorAlert);
                 Assert.True(cut.Markup.Contains("Validierungsfehler"));
             }, TimeSpan.FromSeconds(2));
@@ -332,7 +333,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler']");
                 Assert.NotEmpty(errorAlert);
                 Assert.True(cut.Markup.Contains("Fehler beim Speichern"));
             }, TimeSpan.FromSeconds(2));
@@ -354,7 +355,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler']");
                 Assert.NotEmpty(errorAlert);
                 Assert.True(cut.Markup.Contains("Fehler beim Laden"));
             }, TimeSpan.FromSeconds(2));
@@ -379,7 +380,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var button = cut.Find("[data-testid='btn-speichern']");
+                IElement button = cut.Find("[data-testid='btn-speichern']");
                 Assert.NotNull(button);
                 Assert.Contains("Speichern", button.TextContent);
             }, TimeSpan.FromSeconds(2));
@@ -389,7 +390,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Leer_Formular_Im_Neu_Modus_Anzeigen()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             // Act
@@ -410,13 +411,13 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Formular_Mit_Existierendem_Lebensmittel_Füllen()
         {
             // Arrange
-            var existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(5)
                 .WithName("Zucker")
                 .WithEinheit("g")
                 .WithKategorie("Süßstoffe")
                 .Build();
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetLebensmittelByIdAsync(5))
                 .ReturnsAsync(existingItem);
             Services.AddSingleton<ILebensmittelService>(mock.Object);

@@ -1,3 +1,4 @@
+using AngleSharp.Dom;
 using Bunit;
 using FoodDatabase.App.Components.Pages.Lebensmittel;
 using FoodDatabase.App.Models;
@@ -24,25 +25,25 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Lebensmittel_Information_Anzeigen()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .WithName("Mehl")
                 .WithEinheit("g")
                 .WithKategorie("Getreide")
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .WithStandardMehlValues()
                 .WithStandardMengeEinheit("g")
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
 
@@ -94,7 +95,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var heading = cut.Find("h2");
+                IElement heading = cut.Find("h2");
                 Assert.Contains("Mehl", heading.TextContent);
             }, TimeSpan.FromSeconds(2));
         }
@@ -130,7 +131,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var button = cut.Find("[data-testid='btn-bearbeiten']");
+                IElement button = cut.Find("[data-testid='btn-bearbeiten']");
                 Assert.NotNull(button);
                 Assert.Contains("Bearbeiten", button.TextContent);
                 Assert.Contains("/lebensmittel/1/bearbeiten", button.GetAttribute("href"));
@@ -168,7 +169,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var button = cut.Find("[data-testid='btn-zurück']");
+                IElement button = cut.Find("[data-testid='btn-zurück']");
                 Assert.NotNull(button);
                 Assert.Contains("Zurück", button.TextContent);
                 Assert.Contains("/lebensmittel", button.GetAttribute("href"));
@@ -249,7 +250,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var select = cut.Find("[data-testid='select-standard-einheit']");
+                IElement select = cut.Find("[data-testid='select-standard-einheit']");
                 Assert.NotNull(select);
                 Assert.Contains("Gramm (g)", select.OuterHtml);
                 Assert.Contains("Milliliter (ml)", select.OuterHtml);
@@ -287,7 +288,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var button = cut.Find("[data-testid='btn-nährwert-speichern']");
+                IElement button = cut.Find("[data-testid='btn-nährwert-speichern']");
                 Assert.NotNull(button);
                 Assert.Contains("Speichern", button.TextContent);
             }, TimeSpan.FromSeconds(2));
@@ -324,7 +325,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var button = cut.Find("[data-testid='btn-nährwert-abbrechen']");
+                IElement button = cut.Find("[data-testid='btn-nährwert-abbrechen']");
                 Assert.NotNull(button);
                 Assert.Contains("Abbrechen", button.TextContent);
             }, TimeSpan.FromSeconds(2));
@@ -442,7 +443,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler']");
                 Assert.NotEmpty(errorAlert);
                 Assert.True(cut.Markup.Contains("Fehler beim Laden"));
             }, TimeSpan.FromSeconds(2));
@@ -474,7 +475,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var errorAlert = cut.FindAll("[data-testid='alert-fehler-nährwert']");
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler-nährwert']");
                 Assert.NotEmpty(errorAlert);
             }, TimeSpan.FromSeconds(2));
         }
@@ -518,7 +519,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var errorAlert = cut.FindAll("[data-testid='alert-fehler-nährwert']");
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler-nährwert']");
                 Assert.NotEmpty(errorAlert);
                 Assert.True(cut.Markup.Contains("Validierungsfehler"));
             }, TimeSpan.FromSeconds(2));
@@ -563,7 +564,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var errorAlert = cut.FindAll("[data-testid='alert-fehler-nährwert']");
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler-nährwert']");
                 Assert.NotEmpty(errorAlert);
                 Assert.True(cut.Markup.Contains("Fehler"));
             }, TimeSpan.FromSeconds(2));
