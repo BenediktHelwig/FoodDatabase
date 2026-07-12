@@ -94,7 +94,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Meldung_Anzeigen_Wenn_Liste_Leer()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(new List<LebensmittelKatalog>());
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -124,7 +124,7 @@ namespace FoodDatabase.Tests.Ui
                     .Build()
             };
 
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(allItems);
             mock.Setup(s => s.SearchLebensmittelAsync("Mehl"))
@@ -151,8 +151,8 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Alle_Abrufen_Bei_Leerer_Suche()
         {
             // Arrange
-            var allItems = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
-            var mock = new Mock<ILebensmittelService>();
+            List<LebensmittelKatalog> allItems = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(allItems);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -177,7 +177,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Alle_Anzeigen_Button_Haben()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(new List<LebensmittelKatalog>());
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -204,7 +204,7 @@ namespace FoodDatabase.Tests.Ui
                 allItems[0]
             };
 
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(allItems);
             mock.Setup(s => s.SearchLebensmittelAsync(It.IsAny<string>()))
@@ -231,7 +231,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Neu_Button_Haben()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(new List<LebensmittelKatalog>());
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -253,8 +253,8 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Detail_Links_Haben()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
-            var mock = new Mock<ILebensmittelService>();
+            List<LebensmittelKatalog> lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(lebensmittel);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -275,8 +275,8 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Bearbeiten_Links_Haben()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
-            var mock = new Mock<ILebensmittelService>();
+            List<LebensmittelKatalog> lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(lebensmittel);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -297,8 +297,8 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Löschen_Buttons_Haben()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
-            var mock = new Mock<ILebensmittelService>();
+            List<LebensmittelKatalog> lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(lebensmittel);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -425,7 +425,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Fehler_Anzeigen_Bei_Service_Exception()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ThrowsAsync(new Exception("Service Error"));
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -476,8 +476,8 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Suche_Fehler_Anzeigen()
         {
             // Arrange
-            var allItems = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
-            var mock = new Mock<ILebensmittelService>();
+            List<LebensmittelKatalog> allItems = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(allItems);
             mock.Setup(s => s.SearchLebensmittelAsync(It.IsAny<string>()))
@@ -506,11 +506,11 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Tabelle_Nach_Löschen_Neu_Laden()
         {
             // Arrange
-            var initialList = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
-            var listAfterDelete = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+            List<LebensmittelKatalog> initialList = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            List<LebensmittelKatalog> listAfterDelete = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
 
-            var mock = new Mock<ILebensmittelService>();
-            var callCount = 0;
+            Mock<ILebensmittelService> mock = new();
+            int callCount = 0;
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .Returns(() =>
                 {
@@ -539,3 +539,5 @@ namespace FoodDatabase.Tests.Ui
         }
     }
 }
+
+

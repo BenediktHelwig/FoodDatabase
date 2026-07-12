@@ -67,21 +67,21 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Lebensmittel_Name_Im_Heading_Anzeigen()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .WithName("Mehl")
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
 
@@ -104,20 +104,20 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Bearbeiten_Button_Haben()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
 
@@ -142,20 +142,20 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Zurück_Button_Haben()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
 
@@ -180,21 +180,21 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Nährwert_Formularfelder_Rendern()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .WithStandardMehlValues()
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
 
@@ -223,20 +223,20 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Standard_Einheit_Select_Haben()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
 
@@ -261,20 +261,20 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Nährwert_Speichern_Button_Haben()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
 
@@ -298,20 +298,20 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Nährwert_Abbrechen_Button_Haben()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
 
@@ -335,21 +335,21 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Bestehenden_Nährwert_Aktualisieren()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .WithStandardMehlValues()
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
             nährwertMock.Setup(s => s.UpdateNährwertAsync(It.IsAny<Nährwert>()))
@@ -379,11 +379,11 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Neuen_Nährwert_Erstellen()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var newNährwert = new Nährwert
+            Nährwert newNährwert = new Nährwert
             {
                 Id = 0,
                 LebensmittelId = 1,
@@ -391,7 +391,7 @@ namespace FoodDatabase.Tests.Ui
                 StandardMengeEinheit = "g"
             };
 
-            var createdNährwert = new Nährwert
+            Nährwert createdNährwert = new Nährwert
             {
                 Id = 1,
                 LebensmittelId = 1,
@@ -399,11 +399,11 @@ namespace FoodDatabase.Tests.Ui
                 StandardMengeEinheit = "g"
             };
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync((Nährwert?)null);
             nährwertMock.Setup(s => s.CreateNährwertAsync(It.IsAny<Nährwert>()))
@@ -427,11 +427,11 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Fehler_Anzeigen_Wenn_Lebensmittel_Nicht_Geladen()
         {
             // Arrange
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(999))
                 .ThrowsAsync(new Exception("Lebensmittel nicht gefunden"));
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
 
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
@@ -453,15 +453,15 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Fehler_Beim_Nährwert_Laden_Anzeigen()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ThrowsAsync(new Exception("Nährwert Service Error"));
 
@@ -484,20 +484,20 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Argument_Exception_Bei_Nährwert_Speichern_Anzeigen()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
             nährwertMock.Setup(s => s.UpdateNährwertAsync(It.IsAny<Nährwert>()))
@@ -529,20 +529,20 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Invalid_Operation_Exception_Bei_Nährwert_Speichern_Anzeigen()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
             nährwertMock.Setup(s => s.UpdateNährwertAsync(It.IsAny<Nährwert>()))
@@ -574,23 +574,23 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Lebensmittel_Information_Kartentext_Rendern()
         {
             // Arrange
-            var lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .WithName("Mehl")
                 .WithEinheit("g")
                 .WithKategorie("Getreide")
                 .Build();
 
-            var nährwert = new NährwertTestDataBuilder()
+            Nährwert nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
 
-            var lebensmittelMock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> lebensmittelMock = new();
             lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
                 .ReturnsAsync(lebensmittel);
 
-            var nährwertMock = new Mock<INährwertService>();
+            Mock<INährwertService> nährwertMock = new();
             nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
                 .ReturnsAsync(nährwert);
 
@@ -612,3 +612,6 @@ namespace FoodDatabase.Tests.Ui
         }
     }
 }
+
+
+

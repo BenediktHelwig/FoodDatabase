@@ -130,7 +130,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Neues_Lebensmittel_Erstellen()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             LebensmittelKatalog createdItem = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(1)
                 .WithName("Mehl")
@@ -193,10 +193,10 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Korrekte_Title_Im_Bearbeiten_Modus_Anzeigen()
         {
             // Arrange
-            var existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(5)
                 .Build();
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetLebensmittelByIdAsync(5))
                 .ReturnsAsync(existingItem);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -229,7 +229,7 @@ namespace FoodDatabase.Tests.Ui
             mock.Setup(s => s.UpdateLebensmittelAsync(It.IsAny<LebensmittelKatalog>()))
                 .ReturnsAsync(existingItem);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
-            var nav = Services.GetRequiredService<FakeNavigationManager>();
+            FakeNavigationManager nav = Services.GetRequiredService<FakeNavigationManager>();
 
             // Act
             IRenderedComponent<LebensmittelForm> cut = RenderComponent<LebensmittelForm>(
@@ -253,7 +253,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Argument_Exception_Anzeigen()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.CreateLebensmittelAsync(It.IsAny<LebensmittelKatalog>()))
                 .ThrowsAsync(new ArgumentException("Name ist erforderlich"));
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -283,7 +283,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Validation_Exception_Anzeigen()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.CreateLebensmittelAsync(It.IsAny<LebensmittelKatalog>()))
                 .ThrowsAsync(new ValidationException("Validierung fehlgeschlagen"));
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -313,7 +313,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Generische_Exception_Anzeigen()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.CreateLebensmittelAsync(It.IsAny<LebensmittelKatalog>()))
                 .ThrowsAsync(new Exception("Unerwarteter Fehler"));
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -343,7 +343,7 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Laden_Fehler_Anzeigen()
         {
             // Arrange
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetLebensmittelByIdAsync(5))
                 .ThrowsAsync(new Exception("Lebensmittel nicht gefunden"));
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -365,10 +365,10 @@ namespace FoodDatabase.Tests.Ui
         public void Sollte_Speichern_Button_Im_Bearbeiten_Modus_Haben()
         {
             // Arrange
-            var existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
+            LebensmittelKatalog existingItem = LebensmittelTestDataBuilder.CreateLebensmittel()
                 .WithId(5)
                 .Build();
-            var mock = new Mock<ILebensmittelService>();
+            Mock<ILebensmittelService> mock = new();
             mock.Setup(s => s.GetLebensmittelByIdAsync(5))
                 .ReturnsAsync(existingItem);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
@@ -400,8 +400,8 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var nameInput = cut.Find("[data-testid='input-name']");
-                var value = nameInput.GetAttribute("value") ?? "";
+                IElement nameInput = cut.Find("[data-testid='input-name']");
+                string value = nameInput.GetAttribute("value") ?? "";
                 // In Blazor Forms ist der Wert bei neuem Formular leer
                 Assert.True(string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value));
             }, TimeSpan.FromSeconds(2));
@@ -434,3 +434,5 @@ namespace FoodDatabase.Tests.Ui
         }
     }
 }
+
+
