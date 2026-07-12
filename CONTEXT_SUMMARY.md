@@ -81,18 +81,51 @@ TOTAL:       352/352 Tests GRÜN ✅
 
 ---
 
-## 🚀 NÄCHSTE SCHRITTE
+## 🚀 ROADMAP & NÄCHSTE SCHRITTE
 
-### Sofort verfügbar:
-1. **WP4 UC3 (Lagerbestand exportieren)** – UI-Komponente
-2. **WP4 UC4 (Rezept-Nährwerte)** – UI-Komponente + Service-Integration
-3. **WP4 UC6/UC9/UC10** – Weitere UI-Komponenten
+### Phase 1: UI-Komponenten (aktuell)
+**Status**: WP3 + WP4 UC1+UC2 fertig → **WP4 UC3/UC4/UC6 starten**
 
-### Später:
-- WP5: UI Rezepte (UC4/UC5 Backend-Integration)
-- WP6: UI Dashboard (UC7/UC8)
-- TrueNAS Docker-Integration
-- Performance-Tuning
+- ✅ WP-Shell (Navigations-Shell) – fertig
+- ✅ WP3 (Lebensmittel Liste) – fertig
+- ✅ WP4 UC1 (Lebensmittel-Katalog CRUD) – fertig
+- ✅ WP4 UC2 (Lagerbestand aktualisieren) – fertig
+- ⏳ **WP4 UC3** (Lagerbestand exportieren) – TODO
+- ⏳ **WP4 UC4** (Rezept-Nährwerte anzeigen) – TODO
+- ⏳ **WP4 UC6** (Verbrauchte Produkte ausbuchen) – TODO
+- ⏳ **WP4 UC9** (Lagerorte verwalten) – TODO
+- ⏳ **WP4 UC10** (Produktinstanzen MHD) – TODO
+
+### Phase 2: UI Rezepte (WP5)
+**Abhängigkeiten**: Alle WP4 UC3/UC4/UC6 müssen fertig sein
+
+- **WP5 UC4**: Rezepte CRUD UI (Liste, Form, Detail)
+- **WP5 UC5**: Rezept-Nährwerte automatisch berechnen (UI)
+- Service-Layer bereits implementiert ✅
+
+### Phase 3: UI Dashboard (WP6)
+**Abhängigkeiten**: WP4 + WP5 komplett
+
+- **WP6 UC7**: Verfallsdatum-Warnungen Dashboard
+- **WP6 UC8**: Einkaufslisten Generator UI
+- Service-Layer teilweise implementiert (UC8 noch TODO)
+
+### Phase 4: Infrastruktur & Deployment
+**Abhängigkeiten**: Alle UI-Komponenten komplett
+
+- **TrueNAS Docker-Integration**:
+  - Dockerfile für ASP.NET Core 8 Blazor
+  - Docker Compose (App + SQLite)
+  - TrueNAS Container Deployment
+  - Networking + SSL/TLS (optional: reverse proxy)
+  - Referenz: `diagrams/architecture-deployment.drawio` (teilweise vorhanden)
+
+- **Performance-Tuning**:
+  - Database Query Optimization (Indexing)
+  - UI Rendering Performance (Blazor SSR vs Server)
+  - Caching Strategy (Output Cache, Service Cache)
+  - Load Testing (3 concurrent users requirement)
+  - Monitoring & Logging (optional)
 
 ---
 
