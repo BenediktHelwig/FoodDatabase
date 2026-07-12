@@ -47,7 +47,7 @@ namespace FoodDatabase.App.Services.Classes
             var zutaten = await _rezeptZutatService.GetZutatenAsync(rezeptId);
 
             // Berechne Gesamt-Nährwerte
-            var gesamtNährwerte = new NährwerteDto
+            NährwerteDto gesamtNährwerte = new()
             {
                 Kalorien = 0,
                 Fett = 0,
@@ -85,7 +85,7 @@ namespace FoodDatabase.App.Services.Classes
             }
 
             // Berechne pro-Portion-Nährwerte
-            var proPortionNährwerte = new NährwerteDto
+            NährwerteDto proPortionNährwerte = new()
             {
                 Kalorien = (int)Math.Round((double)gesamtNährwerte.Kalorien / rezept.Portionen),
                 Fett = RoundToDecimalPlace(gesamtNährwerte.Fett / rezept.Portionen, 1),

@@ -117,7 +117,7 @@ namespace FoodDatabase.App.Services.Classes
             if (lowerToUpperTransitions == 1 && upperCaseCount <= 2)
             {
                 // Behalte Pattern: Erkenne Lower-to-Upper Übergänge
-                var result = new System.Text.StringBuilder();
+                System.Text.StringBuilder result = new();
                 result.Append(char.ToUpper(input[0]));
 
                 for (int i = 1; i < input.Length; i++)
@@ -161,7 +161,7 @@ namespace FoodDatabase.App.Services.Classes
             }
 
             // Neu anlegen
-            var newLagerort = new Lagerort
+            Lagerort newLagerort = new()
             {
                 Name = normalizedName,
                 CreatedAt = DateTime.UtcNow,

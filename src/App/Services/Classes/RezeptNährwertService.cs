@@ -68,7 +68,7 @@ namespace FoodDatabase.App.Services.Classes
                 throw new ArgumentException("Portionen müssen größer als 0 sein.", nameof(portionen));
             }
 
-            var zutatenliste = zutaten.ToList();
+            List<RezeptZutat> zutatenliste = zutaten.ToList();
 
             // Wenn keine Zutaten vorhanden, gebe Null-Nährwerte zurück
             if (!zutatenliste.Any())
@@ -89,7 +89,7 @@ namespace FoodDatabase.App.Services.Classes
             // Berechne Gesamt-Nährwerte (ohne Portionierung)
             // Diese Methode funktioniert mit den Zutaten direkt
             // Annahme: Zutaten haben Navigation Properties zu Lebensmittel und Nährwert
-            var gesamtNährwerte = new NährwerteDto
+            NährwerteDto gesamtNährwerte = new()
             {
                 Kalorien = 0,
                 Fett = 0,
@@ -151,7 +151,7 @@ namespace FoodDatabase.App.Services.Classes
             double skalierungsfaktor = (double)newPortionen / rezept.Portionen;
 
             // Skaliere die Gesamt-Nährwerte
-            var angepassteGesamtnährwerte = new NährwerteDto
+            NährwerteDto angepassteGesamtnährwerte = new()
             {
                 Kalorien = (int)Math.Round(aktuelleNährwerte.GesamtnährwerteDto.Kalorien * skalierungsfaktor),
                 Fett = RoundToDecimalPlace(aktuelleNährwerte.GesamtnährwerteDto.Fett * skalierungsfaktor, 1),
@@ -165,7 +165,7 @@ namespace FoodDatabase.App.Services.Classes
 
             // Pro-Portion-Nährwerte bleiben gleich (werden immer basierend auf 1 Portion berechnet)
             // Aber wir skalieren sie auch für die neue Portionszahl
-            var angepassteProPortionNährwerte = new NährwerteDto
+            NährwerteDto angepassteProPortionNährwerte = new()
             {
                 Kalorien = (int)Math.Round(angepassteGesamtnährwerte.Kalorien / (double)newPortionen),
                 Fett = RoundToDecimalPlace(angepassteGesamtnährwerte.Fett / newPortionen, 1),

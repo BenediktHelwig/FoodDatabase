@@ -146,7 +146,7 @@ namespace FoodDatabase.App.Services.Classes
             if (verfallsdatum < DateTime.Today)
                 throw new ArgumentException("Verfallsdatum darf nicht in der Vergangenheit liegen.", nameof(verfallsdatum));
 
-            var newInstanz = new ProduktInstanz
+            ProduktInstanz newInstanz = new()
             {
                 LebensmittelKatalogId = lebensmittelKatalogId,
                 Menge = menge,

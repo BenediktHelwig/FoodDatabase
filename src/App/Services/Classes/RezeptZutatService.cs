@@ -82,7 +82,7 @@ namespace FoodDatabase.App.Services.Classes
             List<RezeptZutat> rezeptZutaten = existingZutaten.Where(z => z.RezeptId == rezeptId).ToList();
             int nextPosition = rezeptZutaten.Any() ? rezeptZutaten.Max(z => z.Position) + 1 : 0;
 
-            var zutat = new RezeptZutat
+            RezeptZutat zutat = new()
             {
                 RezeptId = rezeptId,
                 LebensmittelId = request.LebensmittelId,

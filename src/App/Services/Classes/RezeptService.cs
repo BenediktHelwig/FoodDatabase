@@ -78,7 +78,7 @@ namespace FoodDatabase.App.Services.Classes
             var schwierigkeitsgrad = string.IsNullOrWhiteSpace(request.Schwierigkeitsgrad) ? "Medium" : request.Schwierigkeitsgrad;
             ValidateSchwierigkeitsgrad(schwierigkeitsgrad);
 
-            var rezept = new Rezept
+            Rezept rezept = new()
             {
                 Name = request.Name,
                 Beschreibung = request.Beschreibung,

@@ -53,7 +53,7 @@ namespace FoodDatabase.App.Services.Classes
             if (!LagerortKonstanten.IsValidLagerort(lagerort))
                 throw new ArgumentException($"Ungültiger Lagerort: {lagerort}");
 
-            var produktInstanz = new ProduktInstanz
+            ProduktInstanz produktInstanz = new()
             {
                 LebensmittelKatalogId = lebensmittelKatalogId,
                 Menge = menge,

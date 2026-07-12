@@ -109,7 +109,7 @@ namespace FoodDatabase.App.Services.Classes
     public async Task<Nährwert> DeleteNährwertAsync(int nährwertId)
     {
         // Soft-Delete: Erstelle einen Nährwert mit der ID und setze IsArchived=true
-        var nährwert = new Nährwert { Id = nährwertId, IsArchived = true };
+        Nährwert nährwert = new() { Id = nährwertId, IsArchived = true };
         return await _repository.UpdateAsync(nährwert);
     }
 
