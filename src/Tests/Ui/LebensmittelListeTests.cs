@@ -2,12 +2,17 @@ using Bunit;
 using FoodDatabase.App.Components.Pages.Lebensmittel;
 using FoodDatabase.App.Models;
 using FoodDatabase.App.Services.Interfaces;
+using FoodDatabase.Tests.Ui.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 
 namespace FoodDatabase.Tests.Ui
 {
+    /// <summary>
+    /// bUnit Tests für LebensmittelListe.razor Komponente (UC1).
+    /// Testet Funktionalität: Tabelle rendern, Suche, Lösch-Modal, Neu/Bearbeiten-Navigation.
+    /// </summary>
     public class LebensmittelListeTests : TestContext
     {
         public LebensmittelListeTests()
@@ -16,20 +21,13 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
-        public void RendersList_WithAllLebensmittel()
+        public void Sollte_Tabelle_Mit_Lebensmitteln_Rendern()
         {
             // Arrange
-            var lebensmittel = new List<LebensmittelKatalog>
-            {
-                new LebensmittelKatalog { Id = 1, Name = "Mehl", Einheit = "g", Kategorie = "Getreide" },
-                new LebensmittelKatalog { Id = 2, Name = "Zucker", Einheit = "g", Kategorie = "Süßstoffe" },
-                new LebensmittelKatalog { Id = 3, Name = "Milch", Einheit = "ml", Kategorie = "Milchprodukte" }
-            };
-
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(3);
             var mock = new Mock<ILebensmittelService>();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(lebensmittel);
-
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             // Act
@@ -40,20 +38,64 @@ namespace FoodDatabase.Tests.Ui
             {
                 var rows = cut.FindAll("[data-testid^='zeile-']");
                 Assert.Equal(3, rows.Count);
-                Assert.True(cut.Markup.Contains("Mehl"));
-                Assert.True(cut.Markup.Contains("Zucker"));
-                Assert.True(cut.Markup.Contains("Milch"));
+                Assert.True(cut.Markup.Contains("Lebensmittel 1"));
+                Assert.True(cut.Markup.Contains("Lebensmittel 2"));
+                Assert.True(cut.Markup.Contains("Lebensmittel 3"));
             }, TimeSpan.FromSeconds(2));
         }
 
         [Fact]
-        public void ShowsNoItems_WhenListIsEmpty()
+        public void Sollte_Korrekte_Spalten_In_Tabellenkopf_Haben()
+        {
+            // Arrange
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(lebensmittel);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                var table = cut.Find("[data-testid='tabelle-lebensmittel']");
+                Assert.NotNull(table);
+                Assert.True(table.Markup.Contains("<th>Name</th>"));
+                Assert.True(table.Markup.Contains("<th>Einheit</th>"));
+                Assert.True(table.Markup.Contains("<th>Kategorie</th>"));
+                Assert.True(table.Markup.Contains("<th>Aktionen</th>"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Keine_Meldung_Anzeigen_Wenn_Liste_Nicht_Leer()
+        {
+            // Arrange
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(lebensmittel);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                Assert.False(cut.Markup.Contains("Keine Lebensmittel gefunden"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Meldung_Anzeigen_Wenn_Liste_Leer()
         {
             // Arrange
             var mock = new Mock<ILebensmittelService>();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(new List<LebensmittelKatalog>());
-
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             // Act
@@ -67,17 +109,18 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
-        public void SearchLebensmittel_CallsSearchService()
+        public void Sollte_Suche_Ausführen_Mit_Suchbegriff()
         {
             // Arrange
-            var allItems = new List<LebensmittelKatalog>
-            {
-                new LebensmittelKatalog { Id = 1, Name = "Mehl", Einheit = "g", Kategorie = "Getreide" },
-                new LebensmittelKatalog { Id = 2, Name = "Zucker", Einheit = "g", Kategorie = "Süßstoffe" }
-            };
+            var allItems = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
             var searchResults = new List<LebensmittelKatalog>
             {
-                new LebensmittelKatalog { Id = 1, Name = "Mehl", Einheit = "g", Kategorie = "Getreide" }
+                LebensmittelTestDataBuilder.CreateLebensmittel()
+                    .WithId(1)
+                    .WithName("Mehl")
+                    .WithEinheit("g")
+                    .WithKategorie("Getreide")
+                    .Build()
             };
 
             var mock = new Mock<ILebensmittelService>();
@@ -85,7 +128,6 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(allItems);
             mock.Setup(s => s.SearchLebensmittelAsync("Mehl"))
                 .ReturnsAsync(searchResults);
-
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
@@ -105,18 +147,181 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
-        public void DeleteButton_ShowsConfirmationDialog()
+        public void Sollte_Alle_Abrufen_Bei_Leerer_Suche()
         {
             // Arrange
-            var lebensmittel = new List<LebensmittelKatalog>
+            var allItems = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(allItems);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Act
+            cut.WaitForAssertion(() =>
             {
-                new LebensmittelKatalog { Id = 1, Name = "Mehl", Einheit = "g", Kategorie = "Getreide" }
+                cut.Find("[data-testid='input-suche']").Input("");
+                cut.Find("[data-testid='btn-suche']").Click();
+            }, TimeSpan.FromSeconds(2));
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                mock.Verify(s => s.GetAllLebensmittelAsync(), Times.AtLeastOnce);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Alle_Anzeigen_Button_Haben()
+        {
+            // Arrange
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(new List<LebensmittelKatalog>());
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                var button = cut.Find("[data-testid='btn-alle']");
+                Assert.NotNull(button);
+                Assert.Contains("Alle anzeigen", button.TextContent);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Alle_Anzeigen_Button_Funktionieren()
+        {
+            // Arrange
+            var allItems = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            var searchResults = new List<LebensmittelKatalog>
+            {
+                allItems[0]
             };
 
             var mock = new Mock<ILebensmittelService>();
             mock.Setup(s => s.GetAllLebensmittelAsync())
-                .ReturnsAsync(lebensmittel);
+                .ReturnsAsync(allItems);
+            mock.Setup(s => s.SearchLebensmittelAsync(It.IsAny<string>()))
+                .ReturnsAsync(searchResults);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
 
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Act
+            cut.WaitForAssertion(() =>
+            {
+                cut.Find("[data-testid='input-suche']").Input("Test");
+                cut.Find("[data-testid='btn-alle']").Click();
+            }, TimeSpan.FromSeconds(2));
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                mock.Verify(s => s.GetAllLebensmittelAsync(), Times.AtLeastOnce);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Neu_Button_Haben()
+        {
+            // Arrange
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(new List<LebensmittelKatalog>());
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                var button = cut.Find("[data-testid='btn-neu']");
+                Assert.NotNull(button);
+                Assert.Contains("Neu", button.TextContent);
+                Assert.Contains("/lebensmittel/neu", button.GetAttribute("href"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Detail_Links_Haben()
+        {
+            // Arrange
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(lebensmittel);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                var detailLink1 = cut.Find("[data-testid='btn-detail-1']");
+                Assert.NotNull(detailLink1);
+                Assert.Contains("/lebensmittel/1", detailLink1.GetAttribute("href"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Bearbeiten_Links_Haben()
+        {
+            // Arrange
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(lebensmittel);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                var editLink1 = cut.Find("[data-testid='btn-bearbeiten-1']");
+                Assert.NotNull(editLink1);
+                Assert.Contains("/lebensmittel/1/bearbeiten", editLink1.GetAttribute("href"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Löschen_Buttons_Haben()
+        {
+            // Arrange
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(lebensmittel);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                var deleteBtn1 = cut.Find("[data-testid='btn-löschen-1']");
+                Assert.NotNull(deleteBtn1);
+                Assert.Contains("Löschen", deleteBtn1.TextContent);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Bestätigungsmodal_Öffnen_Beim_Löschen()
+        {
+            // Arrange
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(lebensmittel);
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
@@ -130,23 +335,17 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             var modal = cut.FindAll("[data-testid='modal-bestätigung']");
             Assert.NotEmpty(modal);
+            Assert.True(cut.Markup.Contains("Bestätigung erforderlich"));
         }
 
         [Fact]
-        public void ConfirmDelete_CallsDeleteService()
+        public void Sollte_Bestätigungsmodal_Schließen_Beim_Abbrechen()
         {
             // Arrange
-            var lebensmittel = new List<LebensmittelKatalog>
-            {
-                new LebensmittelKatalog { Id = 1, Name = "Mehl", Einheit = "g", Kategorie = "Getreide" }
-            };
-
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
             var mock = new Mock<ILebensmittelService>();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ReturnsAsync(lebensmittel);
-            mock.Setup(s => s.DeleteLebensmittelAsync(1))
-                .ReturnsAsync(true);
-
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
@@ -155,9 +354,34 @@ namespace FoodDatabase.Tests.Ui
             cut.WaitForAssertion(() =>
             {
                 cut.Find("[data-testid='btn-löschen-1']").Click();
+                cut.Find("[data-testid='btn-abbrechen']").Click();
             }, TimeSpan.FromSeconds(2));
 
-            cut.Find("[data-testid='btn-löschen-bestätigt']").Click();
+            // Assert
+            var modal = cut.FindAll("[data-testid='modal-bestätigung']");
+            Assert.Empty(modal);
+        }
+
+        [Fact]
+        public void Sollte_Bestätigung_Service_Aufrufen()
+        {
+            // Arrange
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(lebensmittel);
+            mock.Setup(s => s.DeleteLebensmittelAsync(1))
+                .ReturnsAsync(true);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Act
+            cut.WaitForAssertion(() =>
+            {
+                cut.Find("[data-testid='btn-löschen-1']").Click();
+                cut.Find("[data-testid='btn-löschen-bestätigt']").Click();
+            }, TimeSpan.FromSeconds(2));
 
             // Assert
             cut.WaitForAssertion(() =>
@@ -167,13 +391,42 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
-        public void ShowsErrorMessage_OnServiceException()
+        public void Sollte_Fehler_Anzeigen_Wenn_Löschen_Fehlschlägt()
+        {
+            // Arrange
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(lebensmittel);
+            mock.Setup(s => s.DeleteLebensmittelAsync(1))
+                .ReturnsAsync(false);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Act
+            cut.WaitForAssertion(() =>
+            {
+                cut.Find("[data-testid='btn-löschen-1']").Click();
+                cut.Find("[data-testid='btn-löschen-bestätigt']").Click();
+            }, TimeSpan.FromSeconds(2));
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
+                Assert.NotEmpty(errorAlert);
+                Assert.True(cut.Markup.Contains("konnte nicht gelöscht werden"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Fehler_Anzeigen_Bei_Service_Exception()
         {
             // Arrange
             var mock = new Mock<ILebensmittelService>();
             mock.Setup(s => s.GetAllLebensmittelAsync())
                 .ThrowsAsync(new Exception("Service Error"));
-
             Services.AddSingleton<ILebensmittelService>(mock.Object);
 
             // Act
@@ -184,6 +437,103 @@ namespace FoodDatabase.Tests.Ui
             {
                 var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
                 Assert.NotEmpty(errorAlert);
+                Assert.True(cut.Markup.Contains("Fehler beim Abrufen"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Fehler_Anzeigen_Beim_Löschen_Mit_Exception()
+        {
+            // Arrange
+            var lebensmittel = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(lebensmittel);
+            mock.Setup(s => s.DeleteLebensmittelAsync(1))
+                .ThrowsAsync(new Exception("Delete failed"));
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Act
+            cut.WaitForAssertion(() =>
+            {
+                cut.Find("[data-testid='btn-löschen-1']").Click();
+                cut.Find("[data-testid='btn-löschen-bestätigt']").Click();
+            }, TimeSpan.FromSeconds(2));
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
+                Assert.NotEmpty(errorAlert);
+                Assert.True(cut.Markup.Contains("Fehler beim Löschen"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Suche_Fehler_Anzeigen()
+        {
+            // Arrange
+            var allItems = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+            var mock = new Mock<ILebensmittelService>();
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(allItems);
+            mock.Setup(s => s.SearchLebensmittelAsync(It.IsAny<string>()))
+                .ThrowsAsync(new Exception("Search error"));
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Act
+            cut.WaitForAssertion(() =>
+            {
+                cut.Find("[data-testid='input-suche']").Input("Test");
+                cut.Find("[data-testid='btn-suche']").Click();
+            }, TimeSpan.FromSeconds(2));
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                var errorAlert = cut.FindAll("[data-testid='alert-fehler']");
+                Assert.NotEmpty(errorAlert);
+                Assert.True(cut.Markup.Contains("Fehler bei der Suche"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Tabelle_Nach_Löschen_Neu_Laden()
+        {
+            // Arrange
+            var initialList = LebensmittelTestDataBuilder.CreateTestLebensmittelList(2);
+            var listAfterDelete = LebensmittelTestDataBuilder.CreateTestLebensmittelList(1);
+
+            var mock = new Mock<ILebensmittelService>();
+            var callCount = 0;
+            mock.Setup(s => s.GetAllLebensmittelAsync())
+                .Returns(() =>
+                {
+                    callCount++;
+                    return Task.FromResult<IEnumerable<LebensmittelKatalog>>(
+                        callCount == 1 ? initialList : listAfterDelete);
+                });
+            mock.Setup(s => s.DeleteLebensmittelAsync(1))
+                .ReturnsAsync(true);
+            Services.AddSingleton<ILebensmittelService>(mock.Object);
+
+            IRenderedComponent<LebensmittelListe> cut = RenderComponent<LebensmittelListe>();
+
+            // Act
+            cut.WaitForAssertion(() =>
+            {
+                cut.Find("[data-testid='btn-löschen-1']").Click();
+                cut.Find("[data-testid='btn-löschen-bestätigt']").Click();
+            }, TimeSpan.FromSeconds(2));
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                mock.Verify(s => s.GetAllLebensmittelAsync(), Times.AtLeast(2));
             }, TimeSpan.FromSeconds(2));
         }
     }
