@@ -1,35 +1,50 @@
 @namespace FoodDatabase.App.Components.Layout
 
-<div class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
+<nav class="navbar navbar-expand-md p-0 align-items-stretch flex-md-column" data-bs-theme="dark">
+    <div class="d-flex w-100 align-items-center justify-content-between px-3 py-2">
         <a class="navbar-brand" href="/">FoodDatabase</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="offcanvas" data-bs-target="#navbarOffcanvas"
+                aria-controls="navbarOffcanvas" aria-label="Navigation öffnen">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+    </div>
+
+    <div class="offcanvas offcanvas-start w-100" tabindex="-1"
+         id="navbarOffcanvas" aria-labelledby="navbarOffcanvasLabel">
+
+        @* Nur mobil sichtbar: ab 768px uebernimmt der navbar-brand oben diese Rolle. *@
+        <div class="offcanvas-header d-md-none">
+            <h5 class="offcanvas-title" id="navbarOffcanvasLabel">Navigation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Schließen"></button>
+        </div>
+
+        <div class="offcanvas-body p-0">
+            @* data-bs-dismiss auf jedem Link: Blazor navigiert ohne Seiten-Reload,
+               sonst bliebe das Panel ueber der neuen Seite offen stehen. *@
+            <ul class="navbar-nav flex-column w-100 px-3">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Start</a>
+                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All" data-bs-dismiss="offcanvas">Start</NavLink>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/lebensmittel">Lebensmittel</a>
+                    <NavLink class="nav-link" href="/lebensmittel" data-bs-dismiss="offcanvas">Lebensmittel</NavLink>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/lagerbestand">Lagerbestand</a>
+                    <NavLink class="nav-link" href="/lagerbestand" data-bs-dismiss="offcanvas">Lagerbestand</NavLink>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/lagerorte">Lagerorte</a>
+                    <NavLink class="nav-link" href="/lagerorte" data-bs-dismiss="offcanvas">Lagerorte</NavLink>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/rezepte">Rezepte</a>
+                    <NavLink class="nav-link" href="/rezepte" data-bs-dismiss="offcanvas">Rezepte</NavLink>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/warnungen">Warnungen</a>
+                    <NavLink class="nav-link" href="/warnungen" data-bs-dismiss="offcanvas">Warnungen</NavLink>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/einkaufsliste">Einkaufsliste</a>
+                    <NavLink class="nav-link" href="/einkaufsliste" data-bs-dismiss="offcanvas">Einkaufsliste</NavLink>
                 </li>
             </ul>
         </div>
     </div>
-</div>
+</nav>
