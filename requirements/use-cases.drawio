@@ -109,7 +109,7 @@
         <mxCell id="include10" value="&lt;&lt;include&gt;&gt;&#10;(UC9)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;strokeWidth=1.5;fontSize=9;strokeColor:#ff9800;fontColor:#ff9800;" edge="1" parent="1" source="uc2" target="uc9"/>
 
         <!-- Legend -->
-        <mxCell id="legend" value="Status: ✅ Grün = Fertig (gemergt: UC1/UC2/UC3/UC6/UC9/UC10 = 6/10 = 60%) | ⏳ Weiß = Queue (UC4/UC5/UC7/UC8) | UC10=zentral (MHD), UC3=Nährwert-Service (23 Tests), UC9=Lagerorte" style="text;html=1;align=left;verticalAlign=top;fontSize=10;italic=1;fontColor=#000000;" vertex="1" parent="1">
+        <mxCell id="legend" value="Status: ✅ Grün = Service + UI Complete (UC1: 19 Service + 51 UI | UC2: 29 Service + 12 UI | UC3/UC6/UC9/UC10: Service only) | 🟡 Weiß = Service only, UI TODO | ⏳ Weiß = Queue (UC4/UC5/UC7/UC8)" style="text;html=1;align=left;verticalAlign=top;fontSize=9;italic=1;fontColor:#000000;" vertex="1" parent="1">
           <mxGeometry x="70" y="700" width="730" height="60" as="geometry"/>
         </mxCell>
       </root>

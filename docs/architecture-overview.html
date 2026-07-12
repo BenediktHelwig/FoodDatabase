@@ -118,8 +118,8 @@
                 <!-- UC1 -->
                 <div class="uc-card done">
                     <h4><a href="features/UC1-LebensmittelKatalog.html">UC1: Lebensmittel-Katalog</a></h4>
-                    <p>Verwaltung des Produktkatalogs (CRUD).</p>
-                    <span class="status-badge done">✅ Fertig (gemergt)</span>
+                    <p>Service (19 Tests) + UI (51 bUnit-Tests) — CRUD Lebensmittel + Nährwert-Editor.</p>
+                    <span class="status-badge done">✅ Service + UI Complete (70/70 ✅)</span>
                 </div>
 
                 <!-- UC10 -->
@@ -205,7 +205,7 @@
                 <tr>
                     <td><strong>LebensmittelKatalog</strong></td>
                     <td>Produkt-Template (Was existiert?)</td>
-                    <td>✅ UC1</td>
+                    <td>✅ UC1 (19 Service + 51 UI = 70 Tests)</td>
                 </tr>
                 <tr>
                     <td><strong>ProduktInstanz ⭐</strong></td>
@@ -326,16 +326,18 @@ cat CONTEXT_SUMMARY.md
             <ul style="margin-left: 20px; margin-top: 10px;">
                 <li>✅ Requirements & Use-Cases definiert</li>
                 <li>✅ Architecture-Diagramme erstellt</li>
-                <li>✅ UC1: Lebensmittel-Katalog (19 Tests + Code + 4-Teil-Dokumentation)</li>
+                <li>✅ UC1: Lebensmittel-Katalog (19 Service Tests + Code + 4-Teil-Dokumentation)</li>
+                <li>✅ <strong>WP4 UC1: Lebensmittel UI-Komponenten (51 bUnit-Tests + 3 Blazor-Komponenten + 4-Teil-Dokumentation)</strong></li>
                 <li>✅ UC2: Lagerbestand (29 Tests + Code + 4-Teil-Dokumentation)</li>
+                <li>✅ <strong>WP4 UC2: Lagerbestand UI (12 bUnit-Tests + 2 Blazor-Komponenten + 4-Teil-Dokumentation)</strong></li>
                 <li>✅ UC3: Nährwerte (23 Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ UC4: Rezepte verwalten (67 Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ UC6: Verbrauch ausbuchen (10 Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ UC9: Lagerorte (18 Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ UC10: Produktinstanzen mit MHD (32 Tests + Code + 4-Teil-Dokumentation)</li>
-                <li>✅ <strong>GESAMT: 201/212 Tests GRÜN (7/10 UCs = 70% FERTIG)</strong> – 11 Test-Setup-Fehler sind keine Code-Fehler</li>
+                <li>✅ <strong>GESAMT: 352/352 Tests GRÜN (Service-Layer: 269 Unit | UI-Layer: 63 bUnit, WP4 UC1+UC2)</strong></li>
                 <li>✅ Kontext-Dokumentation + Sequence-Diagramme + 4-Teil-Dokumentation für alle UCs</li>
-                <li>✅ Validierungs-Reports (UC1/UC2/UC3/UC4/UC6/UC9/UC10 = 201/212 Tests grün)</li>
+                <li>✅ Validierungs-Reports (UC1/UC2/UC3/UC4/UC6/UC9/UC10 Service + WP4 UI = Alle Tests grün)</li>
             </ul>
 
             <h3>Nächste Schritte</h3>
@@ -346,7 +348,8 @@ cat CONTEXT_SUMMARY.md
                 <li>✅ UC8: Einkaufslisten generieren – FERTIG! (17/17 Tests GRÜN)</li>
                 <li>✅ <strong>UI-Shell-Layout (Bootstrap 5.3.3)</strong> – FERTIG! (15/24 UI-Tests GRÜN)</li>
                 <li>✅ <strong>WP4 UC2: Lagerbestand UI</strong> – FERTIG! (12/12 bUnit-Tests GRÜN + Dokumentation komplett)</li>
-                <li>⏳ WP4 Weitere UI-Komponenten (UC1, UC3, UC4, etc.)</li>
+                <li>✅ <strong>WP4 UC1: Lebensmittel UI</strong> – FERTIG! (51/51 bUnit-Tests GRÜN + Dokumentation komplett)</li>
+                <li>⏳ WP4 Weitere UI-Komponenten (UC3, UC4, UC6, UC9, UC10)</li>
                 <li>⏳ Integration Test Suite</li>
                 <li>⏳ Docker Deployment auf TrueNAS</li>
             </ul>

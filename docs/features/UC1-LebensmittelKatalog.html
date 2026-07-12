@@ -169,33 +169,141 @@ public interface ILebensmittelService {
             <p><strong>UC1 hängt ab von:</strong> Keine (Basis-Entity)</p>
         </section>
 
+        <!-- UI Components (WP4) -->
+        <section class="section">
+            <h2>🎨 UI-Komponenten (WP4 UC1)</h2>
+            <p><strong>Status</strong>: ✅ COMPLETE – 3 Blazor-Komponenten + 51 bUnit-Tests</p>
+
+            <h3>1. LebensmittelListe.razor (Tabelle mit Suche & Löschen)</h3>
+            <ul>
+                <li><strong>Route</strong>: <code>/lebensmittel</code></li>
+                <li><strong>Zeilen</strong>: 226</li>
+                <li><strong>Funktion</strong>: Tabelle aller Lebensmittel mit Suchfunktion + Löschen-Modal</li>
+                <li><strong>Columns</strong>: Name, Einheit, Kategorie, Aktionen (Detail/Bearbeiten/Löschen)</li>
+                <li><strong>Features</strong>:
+                    <ul>
+                        <li>✅ Real-time Suche (on-input binding)</li>
+                        <li>✅ "Alle anzeigen" Button zum Reset</li>
+                        <li>✅ Bestätigungsmodal vor Löschen (FIFO-Pattern)</li>
+                        <li>✅ Error-Handling mit Try-Catch auf alle Service-Calls</li>
+                        <li>✅ Loading-Spinner während Lade-State</li>
+                    </ul>
+                </li>
+                <li><strong>Tests</strong>: 20 bUnit-Tests (Rendering, Suche, Löschen, Fehlerbehandlung, Navigation)</li>
+            </ul>
+
+            <h3>2. LebensmittelForm.razor (Neu/Bearbeiten-Formular)</h3>
+            <ul>
+                <li><strong>Routes</strong>: <code>/lebensmittel/neu</code> (Create) | <code>/lebensmittel/{Id:int}/bearbeiten</code> (Update)</li>
+                <li><strong>Zeilen</strong>: 150</li>
+                <li><strong>Funktion</strong>: EditForm für Lebensmittel-Eingabe mit Validierung</li>
+                <li><strong>Felder</strong>:
+                    <ul>
+                        <li>Name (required, Text-Input)</li>
+                        <li>Einheit (required, Select: g, ml, Stück)</li>
+                        <li>Kategorie (required, Text-Input)</li>
+                    </ul>
+                </li>
+                <li><strong>Features</strong>:
+                    <ul>
+                        <li>✅ Mode-Detection (Neu vs. Bearbeiten je nach URL)</li>
+                        <li>✅ Daten-Preload bei Edit-Mode</li>
+                        <li>✅ DataAnnotationsValidator für Validierung</li>
+                        <li>✅ Loading-State während Speichern</li>
+                        <li>✅ Spezifische Exception-Handling (ValidationException, ArgumentException)</li>
+                        <li>✅ Navigation zurück zu Liste nach Speichern</li>
+                    </ul>
+                </li>
+                <li><strong>Tests</strong>: 16 bUnit-Tests (Mode-Detection, Datenladen, Speichern, Fehlerbehandlung)</li>
+            </ul>
+
+            <h3>3. LebensmittelDetail.razor (Detail-View + Nährwert-Edit)</h3>
+            <ul>
+                <li><strong>Route</strong>: <code>/lebensmittel/{Id:int}</code></li>
+                <li><strong>Zeilen</strong>: 278</li>
+                <li><strong>Funktion</strong>: Detail-Ansicht + inline Nährwert-Editor</li>
+                <li><strong>Cards</strong>:
+                    <ul>
+                        <li><strong>Card 1: Lebensmittel-Information</strong>
+                            <ul>
+                                <li>Name (H2-Überschrift)</li>
+                                <li>Einheit, Kategorie, ErstelltAm (dd.MM.yyyy HH:mm Format)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Card 2: Nährwert-Editor (pro 100g/ml)</strong>
+                            <ul>
+                                <li>Kalorien (required), StandardMengeEinheit (g/ml)</li>
+                                <li>Optional: Fett, GesättigteFettsäuren, Kohlenhydrate, Zucker, Protein, Ballaststoffe, Salz</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Features</strong>:
+                    <ul>
+                        <li>✅ Parallel-Laden (LebensmittelService + NährwertService parallel)</li>
+                        <li>✅ Create vs. Update für Nährwert (automatisch erkannt)</li>
+                        <li>✅ Separate Error-Handling für Nährwert (fehlerNährwert)</li>
+                        <li>✅ Bearbeiten + Zurück Navigation-Buttons</li>
+                        <li>✅ "Kein Nährwert definiert" Message + Create-Link</li>
+                    </ul>
+                </li>
+                <li><strong>Tests</strong>: 15 bUnit-Tests (Rendering, Datenladen, Nährwert-Speichern, Fehlerbehandlung)</li>
+            </ul>
+
+            <h3>Test-Konstruktion (bUnit)</h3>
+            <ul>
+                <li><strong>Framework</strong>: Bunit + xUnit + Moq</li>
+                <li><strong>Pattern</strong>: Arrange/Act/Assert (AAA)</li>
+                <li><strong>Mocks</strong>: ILebensmittelService, INährwertService, NavigationManager</li>
+                <li><strong>Async-Testing</strong>: WaitForAssertion() mit TimeSpan.FromSeconds(2) für Component-Render-Zyklen</li>
+                <li><strong>Test-Hilfer</strong>: LebensmittelTestDataBuilder (Test-Daten-Generierung)</li>
+            </ul>
+
+            <h3>Code-Standards (UC1 WP4 Komponenten)</h3>
+            <ul>
+                <li>✅ <strong>Null-Checks</strong>: `is null` / `is not null` (nicht `== null`)</li>
+                <li>✅ <strong>Variablen-Deklarationen</strong>: Explizite Typen (z.B. `List<LebensmittelKatalog> lebensmittelListe = new()` statt `var`)</li>
+                <li>✅ <strong>Error-Handling</strong>: Try-Catch-Finally auf alle Service-Calls</li>
+                <li>✅ <strong>KISS-Prinzip</strong>: Einfach & klar strukturiert</li>
+                <li>✅ <strong>Dokumentation</strong>: Validierungsbericht: <code>reviews/uc1-wp4-documentation-validation.md</code></li>
+            </ul>
+        </section>
+
         <!-- Implementation Status -->
         <section class="section">
             <h2>📊 Implementation Status</h2>
             <table class="status-table">
                 <tr>
                     <td><strong>Status</strong></td>
-                    <td>✅ COMPLETE</td>
+                    <td>✅ COMPLETE (Service + UI)</td>
                 </tr>
                 <tr>
-                    <td><strong>Tests</strong></td>
-                    <td>✅ 19/19 PASSING</td>
+                    <td><strong>Service-Tests</strong></td>
+                    <td>✅ 19/19 PASSING (LebensmittelService CRUD)</td>
                 </tr>
                 <tr>
-                    <td><strong>Service</strong></td>
+                    <td><strong>UI-Tests</strong></td>
+                    <td>✅ 51/51 PASSING (LebensmittelListe/Form/Detail bUnit-Tests)</td>
+                </tr>
+                <tr>
+                    <td><strong>Total Tests</strong></td>
+                    <td>✅ 70/70 PASSING</td>
+                </tr>
+                <tr>
+                    <td><strong>Service Layer</strong></td>
                     <td>✅ LebensmittelService.cs implemented</td>
                 </tr>
                 <tr>
                     <td><strong>Model</strong></td>
-                    <td>✅ LebensmittelKatalog.cs</td>
+                    <td>✅ LebensmittelKatalog.cs + Nährwert.cs</td>
                 </tr>
                 <tr>
                     <td><strong>Interfaces</strong></td>
-                    <td>✅ IRepository, ILebensmittelService</td>
+                    <td>✅ IRepository, ILebensmittelService, INährwertService</td>
                 </tr>
                 <tr>
                     <td><strong>Blazor UI</strong></td>
-                    <td>⏳ TODO</td>
+                    <td>✅ LebensmittelListe + LebensmittelForm + LebensmittelDetail</td>
                 </tr>
             </table>
         </section>
@@ -320,7 +428,7 @@ IRepository&lt;LebensmittelKatalog&gt;
 
         <!-- Footer -->
         <footer>
-            <p>Zuletzt aktualisiert: 2026-06-19 | Status: ✅ Complete & Tested (19/19 Tests Passing) | Doc Version: 2.0</p>
+            <p>Zuletzt aktualisiert: 2026-07-12 | Status: ✅ Complete & Tested (70/70 Tests Passing: 19 Service + 51 UI) | Doc Version: 3.0</p>
             <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
         </footer>
     </div>
