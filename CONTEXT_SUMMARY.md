@@ -1,11 +1,12 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-07-12 (Session 25: WP4 UC2 Dokumentation Complete)  
+**Datum**: 2026-07-12 (Session 26: Code-Style Standards dokumentiert)  
 **Status**: 
 - ✅ **10/10 Use-Cases FERTIG (100%)**: UC1–UC10 Service-Schicht komplett
 - ✅ **312/312 Tests grün**: 269 Unit + 2 Integration + 41 UI (bUnit)
 - ✅ **WP-Shell + WP3 UI Lebensmittel**: Gemergt (Sessions 22-23)
-- ✅ **WP4 UC2 KOMPLETT**: Code + Tests + 4-Teil-Dokumentation ✅ (Ready for Merge)
+- ✅ **WP4 UC2 KOMPLETT**: Code + Tests + 4-Teil-Dokumentation ✅ + Gemergt zu master
+- ✅ **Code-Style Standards**: Dokumentiert + in alle Agenten integriert
 
 ---
 
@@ -89,6 +90,29 @@
 
 ---
 
+## 📋 SESSION 2026-07-12 (Session 26): Code-Style Standards – Mandatory var Usage Rule
+
+**Ergebnis**:
+- ✅ **Code-Style Standards dokumentiert**:
+  - Explizite Typ-Deklarationen sind Standard (z.B. `Recipe recipe = new()`)
+  - `var` darf NUR bei Typ-Variabilität verwendet werden (z.B. LINQ-Queries)
+  - `is null` / `is not null` für Null-Prüfungen
+  - Eine Klasse/Interface pro Datei
+
+- ✅ **Integrationin alle Agenten**:
+  - **Dev-Agent**: Code-Style Standards Abschnitt + Checklist
+  - **Review-Agent**: Punkt 1 "Code-Style Standards (KRITISCH)" in Review-Kriterien
+  - **CLAUDE.md**: Neuer Abschnitt "Code-Style Standards" mit Tabelle
+  - **Feedback Memory**: Aktualisierte `feedback_code_style_standards.md` mit präziser Regel
+
+- ✅ **Commit erstellt**: `df76512` – "docs: Add mandatory code-style standards for var usage"
+
+**Motivation**: Häufige Verwendung von `var` statt spezifischen Typen gefährdet Code-Wartbarkeit bei Refactorings.
+
+**Status**: Code-Style Standards sind jetzt verbindlich für alle zukünftigen Commits. Review-Agent wird darauf achten.
+
+---
+
 ## 📊 GESAMT-STATUS
 
 ### Service-Schicht (100% ✅)
@@ -122,8 +146,8 @@ UI-Schicht: 2.5/6 WPs ≈ 42% | 41/41 UI-Tests GRÜN
 ## 🎯 NÄCHSTE SCHRITTE
 
 ### SOFORT:
-1. ✅ **Doc-Agent**: Feature-HTML + Architecture-Overview + Diagramme aktualisiert ✅
-2. ⏳ **User-Review**: Lokaler PR-Review & Merge zu `master`
+1. ✅ **WP4 UC2 gemergt zu master** ✅
+2. ✅ **Code-Style Standards dokumentiert** ✅
 3. ⏳ **WP4 UC1/UC3/UC4**: Nächste UI-Komponenten starten
 
 ### LANGFRISTIG:
@@ -134,7 +158,7 @@ UI-Schicht: 2.5/6 WPs ≈ 42% | 41/41 UI-Tests GRÜN
 
 ---
 
-**Status**: 🟢 **312/312 Tests ✅ | WP4 UC2 KOMPLETT (Code + Tests + Doc) | READY FOR MERGE**  
-**Last Updated**: 2026-07-12 (Session 25)  
-**Current Branch**: `feat/wp4-lagerbestand` (4 Commits, Konflikt behoben)  
-**Next**: User-Review → Merge → WP4 UC1/UC3/UC4
+**Status**: 🟢 **312/312 Tests ✅ | master branch clean | Code-Style Standards mandatory**  
+**Last Updated**: 2026-07-12 (Session 26)  
+**Current Branch**: `master` (9 Commits)  
+**Next**: WP4 UC1/UC3/UC4 UI-Komponenten starten
