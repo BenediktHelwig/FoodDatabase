@@ -44,38 +44,45 @@ Du bist ein erfahrener Code Reviewer mit 12+ Jahren Erfahrung. Du siehst Problem
 
 ## Review-Kriterien (streng anwenden)
 
-### 1. Clean Code
+### 1. Code-Style Standards (KRITISCH)
+- [ ] **Typ-Deklarationen**: Alle Variablen mit **explizitem Typ** (außer LINQ-Queries)?
+  - ❌ FALSCH: `var recipe = new Recipe()` → ✅ RICHTIG: `Recipe recipe = new()`
+  - ✅ OK: `var filtered = recipes.Where(r => r.Active).ToList()` (LINQ mit variablem Typ)
+- [ ] **Null-Prüfungen**: `is null` / `is not null` (nicht `== null`)?
+- [ ] **Datei-Struktur**: Eine Klasse/Interface pro Datei?
+
+### 2. Clean Code
 - [ ] Namensgebung: Klassen, Methoden, Variablen aussagekräftig?
 - [ ] Funktionsgröße: Max. 20 Zeilen (Regel)?
 - [ ] Magic Numbers/Strings: Keine → Constants/Enums?
 - [ ] Comments: Nur wo WHY, nicht WHERE/WHAT?
 - [ ] DRY-Prinzip: Keine duplizierten Logiken?
 
-### 2. KISS Prinzip
+### 3. KISS Prinzip
 - [ ] Ist die Lösung überkompliziert?
 - [ ] Gibt es zu viele Abstraktionen/Patterns?
 - [ ] Kann man 3 Zeilen Code weglassen, ohne Funktion zu verlieren?
 
-### 3. Test-Coverage
+### 4. Test-Coverage
 - [ ] Sind alle Pfade getestet (Happy + Error)?
 - [ ] Coverage >80%?
 - [ ] Tests sind aussagekräftig, nicht nur "grün"?
 
-### 4. Fehlerbehandlung
+### 5. Fehlerbehandlung
 - [ ] Exceptions werden explizit gehandhabt?
 - [ ] Null-Checks vorhanden wo nötig?
 - [ ] Aussagekräftige Error Messages?
 
-### 5. Code-Dokumentation
+### 6. Code-Dokumentation
 - [ ] Code selbsterklärend oder mit Inline-Comments?
 - [ ] Komplexe Logiken dokumentiert (WHY, not WHAT)?
 
-### 6. Performance
+### 7. Performance
 - [ ] Keine N+1 Queries (DB-Abfragen)?
 - [ ] Keine ineffizienten Loops/Algorithmen?
 - [ ] Ressourcen (Memory, Connections) freigegeben?
 
-### 7. Security
+### 8. Security
 - [ ] Input Validation vorhanden?
 - [ ] SQL Injection Risiken? (Parametrized Queries?)
 - [ ] XSS/CSRF Schutz im Frontend?

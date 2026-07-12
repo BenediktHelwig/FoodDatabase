@@ -754,6 +754,24 @@ claude agent --load "claude/agents/orchestrator.md"
 
 ---
 
+## 🎨 Code-Style Standards (VERBINDLICH)
+
+Alle zukünftigen Code-Commits müssen folgende Standards einhalten:
+
+| Standard | Regel | Beispiel |
+|----------|-------|---------|
+| **Null-Prüfungen** | `is null` / `is not null` (nicht `== null` / `!= null`) | ✅ `if (obj is null)` nicht ❌ `if (obj == null)` |
+| **Typ-Deklarationen** | **Explizite Typen** verwenden. `var` nur bei Typ-Variabilität (z.B. LINQ) | ✅ `List<Recipe> recipes = new()` nicht ❌ `var recipes = new List<Recipe>()` |
+| **var-Regel** | `var` nur wenn der Type zur Runtime wechseln könnte (LINQ-Queries, etc.) | ✅ `var filtered = recipes.Where(r => r.Active).ToList()` OK; ❌ `var recipe = new Recipe()` → Nutze `Recipe recipe = new()` |
+| **Datei-Struktur** | Eine Klasse/Interface pro Datei | `Recipe.cs` mit nur `class Recipe`, `IRecipeRepository.cs` mit nur `interface IRecipeRepository` |
+
+**Dev-Agent Checklist vor jedem Commit**:
+- [ ] Alle Null-Prüfungen mit `is null` / `is not null`?
+- [ ] Alle Variablen-Deklarationen mit **explizitem Typ** (außer LINQ)?
+- [ ] Eine Klasse/Interface pro Datei?
+
+---
+
 ## 📝 Wichtige Constraints & Prinzipien
 
 | Prinzip | Beschreibung |
