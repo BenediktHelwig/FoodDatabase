@@ -192,4 +192,13 @@ namespace FoodDatabase.Tests.Ui.TestHelpers
                 .Build();
         }
     }
+
+    /// <summary>
+    /// Statische Factory-Klasse für komfortable Erstellung von Test-Nährwerten.
+    /// </summary>
+    public static class NährwertTestDataBuilderFactory
+    {
+        /// <summary>Erstellt einen neuen Nährwert-Builder.</summary>
+        public static NährwertTestDataBuilder CreateNährwert() => new NährwertTestDataBuilder();
+    }
 }

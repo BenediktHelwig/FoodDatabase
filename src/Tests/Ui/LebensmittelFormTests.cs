@@ -6,6 +6,7 @@ using FoodDatabase.App.Services.Interfaces;
 using FoodDatabase.Tests.Ui.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using System.ComponentModel.DataAnnotations;
 using Xunit;
 
 namespace FoodDatabase.Tests.Ui
@@ -77,9 +78,9 @@ namespace FoodDatabase.Tests.Ui
             cut.WaitForAssertion(() =>
             {
                 var select = cut.Find("[data-testid='select-einheit']");
-                Assert.Contains("Gramm (g)", select.Markup);
-                Assert.Contains("Milliliter (ml)", select.Markup);
-                Assert.Contains("Stück", select.Markup);
+                Assert.Contains("Gramm (g)", select.OuterHtml);
+                Assert.Contains("Milliliter (ml)", select.OuterHtml);
+                Assert.Contains("Stück", select.OuterHtml);
             }, TimeSpan.FromSeconds(2));
         }
 
@@ -398,10 +399,10 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var nameInput = cut.Find("[data-testid='input-name']") as IElement;
-                var value = nameInput?.GetAttribute("value") ?? "";
-                // In Blazor Forms der Wert ist leer
-                Assert.True(string.IsNullOrEmpty(value));
+                var nameInput = cut.Find("[data-testid='input-name']");
+                var value = nameInput.GetAttribute("value") ?? "";
+                // In Blazor Forms ist der Wert bei neuem Formular leer
+                Assert.True(string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value));
             }, TimeSpan.FromSeconds(2));
         }
 

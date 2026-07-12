@@ -31,7 +31,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithKategorie("Getreide")
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .WithStandardMehlValues()
@@ -71,7 +71,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithName("Mehl")
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
@@ -107,7 +107,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithId(1)
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
@@ -145,7 +145,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithId(1)
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
@@ -183,7 +183,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithId(1)
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .WithStandardMehlValues()
@@ -226,7 +226,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithId(1)
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
@@ -251,8 +251,8 @@ namespace FoodDatabase.Tests.Ui
             {
                 var select = cut.Find("[data-testid='select-standard-einheit']");
                 Assert.NotNull(select);
-                Assert.Contains("Gramm (g)", select.Markup);
-                Assert.Contains("Milliliter (ml)", select.Markup);
+                Assert.Contains("Gramm (g)", select.OuterHtml);
+                Assert.Contains("Milliliter (ml)", select.OuterHtml);
             }, TimeSpan.FromSeconds(2));
         }
 
@@ -264,7 +264,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithId(1)
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
@@ -301,7 +301,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithId(1)
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
@@ -338,7 +338,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithId(1)
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .WithStandardMehlValues()
@@ -487,7 +487,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithId(1)
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
@@ -532,7 +532,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithId(1)
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();
@@ -580,7 +580,7 @@ namespace FoodDatabase.Tests.Ui
                 .WithKategorie("Getreide")
                 .Build();
 
-            var nährwert = NährwertTestDataBuilder.CreateNährwert()
+            var nährwert = new NährwertTestDataBuilder()
                 .WithId(1)
                 .WithLebensmittelId(1)
                 .Build();

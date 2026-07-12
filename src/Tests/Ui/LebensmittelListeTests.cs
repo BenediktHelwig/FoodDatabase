@@ -62,10 +62,10 @@ namespace FoodDatabase.Tests.Ui
             {
                 var table = cut.Find("[data-testid='tabelle-lebensmittel']");
                 Assert.NotNull(table);
-                Assert.True(table.Markup.Contains("<th>Name</th>"));
-                Assert.True(table.Markup.Contains("<th>Einheit</th>"));
-                Assert.True(table.Markup.Contains("<th>Kategorie</th>"));
-                Assert.True(table.Markup.Contains("<th>Aktionen</th>"));
+                Assert.True(table.OuterHtml.Contains("<th>Name</th>"));
+                Assert.True(table.OuterHtml.Contains("<th>Einheit</th>"));
+                Assert.True(table.OuterHtml.Contains("<th>Kategorie</th>"));
+                Assert.True(table.OuterHtml.Contains("<th>Aktionen</th>"));
             }, TimeSpan.FromSeconds(2));
         }
 
