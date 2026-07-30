@@ -1,0 +1,89 @@
+@page "/lagerorte/neu"
+@using System.ComponentModel.DataAnnotations
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Interfaces
+@inject ILagerortService LagerortService
+@inject NavigationManager NavigationManager
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Neuer Lagerort</h2>
+
+            @if (!string.IsNullOrEmpty(fehler))
+            {
+                <div class="alert alert-danger" data-testid="alert-fehler">@fehler</div>
+            }
+
+            <EditForm Model="formModel" OnValidSubmit="SpeichernAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="alert alert-warning" />
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name *</label>
+                    <InputText id="name"
+                               @bind-Value="formModel.Name"
+                               class="form-control"
+                               placeholder="z.B. Kühlschrank"
+                               data-testid="input-name" />
+                    <ValidationMessage For="() => formModel.Name" />
+                    <div class="form-text">Nur Buchstaben (A–Z, a–z) erlaubt.</div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit"
+                            class="btn btn-primary"
+                            data-testid="btn-speichern"
+                            disabled="@lädt">
+                        Speichern
+                    </button>
+                    <a href="/lagerorte" class="btn btn-secondary" data-testid="btn-abbrechen">
+                        Abbrechen
+                    </a>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Formular für neue Lagerorte (UC9: Lagerorte verwalten).
+    /// Validiert Namen und ruft ILagerortService.GetOrCreateAsync() auf.
+    /// </summary>
+    private LagerortFormModel formModel = new();
+    private bool lädt = false;
+    private string fehler = "";
+
+    private async Task SpeichernAsync()
+    {
+        lädt = true;
+        fehler = "";
+        try
+        {
+            await LagerortService.GetOrCreateAsync(formModel.Name);
+            NavigationManager.NavigateTo("/lagerorte");
+        }
+        catch (ArgumentNullException ex)
+        {
+            fehler = $"Eingabefehler: {ex.Message}";
+            lädt = false;
+        }
+        catch (ArgumentException ex)
+        {
+            fehler = $"Eingabefehler: {ex.Message}";
+            lädt = false;
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Speichern: {ex.Message}";
+            lädt = false;
+        }
+    }
+
+    private class LagerortFormModel
+    {
+        [Required(ErrorMessage = "Name ist erforderlich.")]
+        public string Name { get; set; } = "";
+    }
+}

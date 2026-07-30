@@ -1,0 +1,85 @@
+@page "/lagerorte"
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Interfaces
+@inject ILagerortService LagerortService
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Lagerorte</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/lagerorte/neu" class="btn btn-primary" data-testid="btn-neu">+ Neu</a>
+        </div>
+    </div>
+
+    @if (lädt)
+    {
+        <div class="alert alert-info">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Lädt...
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(fehler))
+    {
+        <div class="alert alert-danger" data-testid="alert-fehler">@fehler</div>
+    }
+    else if (lagerortListe is not null && lagerortListe.Any())
+    {
+        <table class="table table-striped" data-testid="tabelle-lagerorte">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Erstellt am</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Lagerort lagerort in lagerortListe)
+                {
+                    <tr data-testid="zeile-@lagerort.Id">
+                        <td>@lagerort.Name</td>
+                        <td>@lagerort.CreatedAt.ToString("dd.MM.yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">Keine Lagerorte gefunden.</div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Liste der Lagerorte (UC9: Lagerorte verwalten).
+    /// Zeigt alle aktiven Lagerorte in einer Tabelle an.
+    /// Ermöglicht das Anlegen neuer Lagerorte über den "Neu"-Button.
+    /// </summary>
+    private IEnumerable<Lagerort>? lagerortListe;
+    private string fehler = "";
+    private bool lädt = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AlleAbrufen();
+    }
+
+    private async Task AlleAbrufen()
+    {
+        lädt = true;
+        fehler = "";
+        try
+        {
+            lagerortListe = await LagerortService.GetAlleLagerorte();
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Abrufen der Lagerorte: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+}
