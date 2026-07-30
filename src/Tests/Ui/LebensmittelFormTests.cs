@@ -148,9 +148,9 @@ namespace FoodDatabase.Tests.Ui
 
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-name']").Input("Mehl");
+                cut.Find("[data-testid='input-name']").Change("Mehl");
                 cut.Find("[data-testid='select-einheit']").Change("g");
-                cut.Find("[data-testid='input-kategorie']").Input("Getreide");
+                cut.Find("[data-testid='input-kategorie']").Change("Getreide");
                 cut.Find("form").Submit();
             }, TimeSpan.FromSeconds(2));
 
@@ -237,7 +237,7 @@ namespace FoodDatabase.Tests.Ui
 
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-name']").Input("Zucker Updated");
+                cut.Find("[data-testid='input-name']").Change("Zucker Updated");
                 cut.Find("form").Submit();
             }, TimeSpan.FromSeconds(2));
 
@@ -264,9 +264,9 @@ namespace FoodDatabase.Tests.Ui
 
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-name']").Input("Test");
+                cut.Find("[data-testid='input-name']").Change("Test");
                 cut.Find("[data-testid='select-einheit']").Change("g");
-                cut.Find("[data-testid='input-kategorie']").Input("Test");
+                cut.Find("[data-testid='input-kategorie']").Change("Test");
                 cut.Find("form").Submit();
             }, TimeSpan.FromSeconds(2));
 
@@ -294,9 +294,9 @@ namespace FoodDatabase.Tests.Ui
 
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-name']").Input("Test");
+                cut.Find("[data-testid='input-name']").Change("Test");
                 cut.Find("[data-testid='select-einheit']").Change("g");
-                cut.Find("[data-testid='input-kategorie']").Input("Test");
+                cut.Find("[data-testid='input-kategorie']").Change("Test");
                 cut.Find("form").Submit();
             }, TimeSpan.FromSeconds(2));
 
@@ -324,9 +324,9 @@ namespace FoodDatabase.Tests.Ui
 
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-name']").Input("Test");
+                cut.Find("[data-testid='input-name']").Change("Test");
                 cut.Find("[data-testid='select-einheit']").Change("g");
-                cut.Find("[data-testid='input-kategorie']").Input("Test");
+                cut.Find("[data-testid='input-kategorie']").Change("Test");
                 cut.Find("form").Submit();
             }, TimeSpan.FromSeconds(2));
 

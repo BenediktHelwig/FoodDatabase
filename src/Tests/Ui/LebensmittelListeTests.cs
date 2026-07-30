@@ -136,7 +136,7 @@ namespace FoodDatabase.Tests.Ui
             // Act
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-suche']").Input("Mehl");
+                cut.Find("[data-testid='input-suche']").Change("Mehl");
                 cut.Find("[data-testid='btn-suche']").Click();
             }, TimeSpan.FromSeconds(2));
 
@@ -162,7 +162,7 @@ namespace FoodDatabase.Tests.Ui
             // Act
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-suche']").Input("");
+                cut.Find("[data-testid='input-suche']").Change("");
                 cut.Find("[data-testid='btn-suche']").Click();
             }, TimeSpan.FromSeconds(2));
 
@@ -216,7 +216,7 @@ namespace FoodDatabase.Tests.Ui
             // Act
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-suche']").Input("Test");
+                cut.Find("[data-testid='input-suche']").Change("Test");
                 cut.Find("[data-testid='btn-alle']").Click();
             }, TimeSpan.FromSeconds(2));
 
@@ -489,7 +489,7 @@ namespace FoodDatabase.Tests.Ui
             // Act
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-suche']").Input("Test");
+                cut.Find("[data-testid='input-suche']").Change("Test");
                 cut.Find("[data-testid='btn-suche']").Click();
             }, TimeSpan.FromSeconds(2));
 

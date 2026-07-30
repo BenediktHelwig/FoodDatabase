@@ -364,7 +364,7 @@ namespace FoodDatabase.Tests.Ui
             // Act
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-kalorien']").Input("400");
+                cut.Find("[data-testid='input-kalorien']").Change("400");
                 cut.Find("form").Submit();
             }, TimeSpan.FromSeconds(2));
 
@@ -512,7 +512,7 @@ namespace FoodDatabase.Tests.Ui
             // Act
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-kalorien']").Input("400");
+                cut.Find("[data-testid='input-kalorien']").Change("400");
                 cut.Find("form").Submit();
             }, TimeSpan.FromSeconds(2));
 
@@ -557,7 +557,7 @@ namespace FoodDatabase.Tests.Ui
             // Act
             cut.WaitForAssertion(() =>
             {
-                cut.Find("[data-testid='input-kalorien']").Input("400");
+                cut.Find("[data-testid='input-kalorien']").Change("400");
                 cut.Find("form").Submit();
             }, TimeSpan.FromSeconds(2));
 

@@ -1,44 +1,47 @@
   Wiederherzustellende Projekte werden ermittelt...
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj : warning NU1603: FoodDatabase.Tests hängt von bunit (>= 1.30.0) ab, aber bunit 1.30.0 wurde nicht gefunden. bunit 1.30.3 wurde stattdessen aufgelöst.
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj : warning NU1603: FoodDatabase.Tests hängt von bunit (>= 1.30.0) ab, aber bunit 1.30.0 wurde nicht gefunden. bunit 1.30.3 wurde stattdessen aufgelöst. [C:\Users\bened\source\repos\FoodDatabase\FoodDatabase.sln]
   Alle Projekte sind für die Wiederherstellung auf dem neuesten Stand.
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj : warning NU1603: FoodDatabase.Tests hängt von bunit (>= 1.30.0) ab, aber bunit 1.30.0 wurde nicht gefunden. bunit 1.30.3 wurde stattdessen aufgelöst.
+C:\Users\bened\source\repos\FoodDatabase\src\App\Components\Pages\Error.razor(3,1): warning RZ10012: Found markup element with unexpected name 'PageTitle'. If this is intended to be a component, add a @using directive for its namespace. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Components\Pages\Home.razor(4,1): warning RZ10012: Found markup element with unexpected name 'PageTitle'. If this is intended to be a component, add a @using directive for its namespace. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Components\Routes.razor(9,9): warning RZ10012: Found markup element with unexpected name 'PageTitle'. If this is intended to be a component, add a @using directive for its namespace. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Lagerort.cs(20,23): warning CS8618: Non-Nullable-Eigenschaft „Name“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Models\LebensmittelKatalog.cs(20,23): warning CS8618: Non-Nullable-Eigenschaft „Name“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Models\LebensmittelKatalog.cs(26,23): warning CS8618: Non-Nullable-Eigenschaft „Einheit“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Models\LebensmittelKatalog.cs(32,23): warning CS8618: Non-Nullable-Eigenschaft „Kategorie“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Models\LebensmittelKatalog.cs(41,25): warning CS8618: Non-Nullable-Eigenschaft „Nährwert“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Models\ProduktInstanz.cs(45,23): warning CS8618: Non-Nullable-Eigenschaft „Lagerort“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Models\ProduktInstanz.cs(54,36): warning CS8618: Non-Nullable-Eigenschaft „LebensmittelKatalog“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Models\RezeptZutat.cs(28,23): warning CS8618: Non-Nullable-Eigenschaft „Rezept“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Models\RezeptZutat.cs(31,36): warning CS8618: Non-Nullable-Eigenschaft „Lebensmittel“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Models\RezeptZutat.cs(44,23): warning CS8618: Non-Nullable-Eigenschaft „Einheit“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Lagerort.cs(20,23): warning CS8618: Non-Nullable-Eigenschaft „Name“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Nährwert.cs(71,23): warning CS8618: Non-Nullable-Eigenschaft „StandardMengeEinheit“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Nährwert.cs(89,36): warning CS8618: Non-Nullable-Eigenschaft „LebensmittelKatalog“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Rezept.cs(19,23): warning CS8618: Non-Nullable-Eigenschaft „Name“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Rezept.cs(47,23): warning CS8618: Non-Nullable-Eigenschaft „Schwierigkeitsgrad“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\AddZutatRequest.cs(8,23): warning CS8618: Non-Nullable-Eigenschaft „Einheit“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\CreateRezeptRequest.cs(6,23): warning CS8618: Non-Nullable-Eigenschaft „Name“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\CreateRezeptRequest.cs(11,23): warning CS8618: Non-Nullable-Eigenschaft „Schwierigkeitsgrad“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\RezeptNährwerteDto.cs(7,29): warning CS8618: Non-Nullable-Eigenschaft „GesamtnährwerteDto“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\RezeptNährwerteDto.cs(8,29): warning CS8618: Non-Nullable-Eigenschaft „ProPortionNährwerteDto“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Rezept.cs(19,23): warning CS8618: Non-Nullable-Eigenschaft „Name“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Rezept.cs(47,23): warning CS8618: Non-Nullable-Eigenschaft „Schwierigkeitsgrad“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\EinkaufslistenEintragDto.cs(14,23): warning CS8618: Non-Nullable-Eigenschaft „LebensmittelName“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\EinkaufslistenEintragDto.cs(26,23): warning CS8618: Non-Nullable-Eigenschaft „Einheit“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Models\ProduktInstanz.cs(45,23): warning CS8618: Non-Nullable-Eigenschaft „Lagerort“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Models\ProduktInstanz.cs(54,36): warning CS8618: Non-Nullable-Eigenschaft „LebensmittelKatalog“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\CreateRezeptRequest.cs(6,23): warning CS8618: Non-Nullable-Eigenschaft „Name“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\CreateRezeptRequest.cs(11,23): warning CS8618: Non-Nullable-Eigenschaft „Schwierigkeitsgrad“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Dtos\AddZutatRequest.cs(8,23): warning CS8618: Non-Nullable-Eigenschaft „Einheit“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Nährwert.cs(71,23): warning CS8618: Non-Nullable-Eigenschaft „StandardMengeEinheit“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Models\Nährwert.cs(89,36): warning CS8618: Non-Nullable-Eigenschaft „LebensmittelKatalog“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\NährwertService.cs(41,16): warning CS8603: Mögliche Nullverweisrückgabe. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptService.cs(33,20): warning CS8603: Mögliche Nullverweisrückgabe. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(57,20): warning CS8603: Mögliche Nullverweisrückgabe. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptNährwertService.cs(106,49): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Components\RezeptNährwertAnzeige.razor(172,28): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Components\RezeptNährwertAnzeige.razor(179,25): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(57,20): warning CS8603: Mögliche Nullverweisrückgabe. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Components\RezeptNährwertAnzeige.razor(157,32): warning CS8618: Non-Nullable-Eigenschaft „Nährwerte“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Components\RezeptNährwertAnzeige.razor(159,20): warning CS8618: Non-Nullable-Eigenschaft „ErrorMessage“ muss beim Beenden des Konstruktors einen Wert ungleich NULL enthalten. Fügen Sie ggf. den „erforderlichen“ Modifizierer hinzu, oder deklarieren Sie den Eigenschaft als NULL-Werte zulassend. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptNährwertService.cs(106,49): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(105,33): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptService.cs(104,29): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(136,33): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptService.cs(158,29): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(105,33): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptService.cs(175,29): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptService.cs(192,57): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptService.cs(195,30): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptService.cs(195,30): warning CS8602: Dereferenzierung eines möglichen Nullverweises. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(136,33): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(204,57): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(207,30): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(207,30): warning CS8602: Dereferenzierung eines möglichen Nullverweises. [C:\Users\bened\source\repos\FoodDatabase\src\App\FoodDatabase.App.csproj]
@@ -49,25 +52,25 @@ C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatSer
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\EinkaufslistenServiceTests.cs(51,31): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\EinkaufslistenServiceTests.cs(51,31): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LebensmittelServiceTests.cs(71,24): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\ProduktInstanzServiceTests.cs(89,74): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs(79,13): warning CS8620: Das Argument vom Typ "ISetup<IRezeptService, Task<Rezept>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<IRezeptService, Task<Rezept?>>" in "IReturnsResult<IRezeptService> ReturnsExtensions.ReturnsAsync<IRezeptService, Rezept?>(IReturns<IRezeptService, Task<Rezept?>> mock, Rezept? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(93,31): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(93,31): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\ProduktInstanzServiceTests.cs(89,74): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LebensmittelServiceTests.cs(125,31): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LebensmittelServiceTests.cs(124,13): warning CS8620: Das Argument vom Typ "ISetup<IRepository<LebensmittelKatalog>, Task<LebensmittelKatalog>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<IRepository<LebensmittelKatalog>, Task<LebensmittelKatalog?>>" in "IReturnsResult<IRepository<LebensmittelKatalog>> ReturnsExtensions.ReturnsAsync<IRepository<LebensmittelKatalog>, LebensmittelKatalog?>(IReturns<IRepository<LebensmittelKatalog>, Task<LebensmittelKatalog?>> mock, LebensmittelKatalog? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(93,31): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(93,31): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\ProduktInstanzServiceTests.cs(124,31): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\ProduktInstanzServiceTests.cs(123,13): warning CS8620: Das Argument vom Typ "ISetup<IRepository<ProduktInstanz>, Task<ProduktInstanz>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>>" in "IReturnsResult<IRepository<ProduktInstanz>> ReturnsExtensions.ReturnsAsync<IRepository<ProduktInstanz>, ProduktInstanz?>(IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>> mock, ProduktInstanz? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerortServiceTests.cs(206,98): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertServiceTests.cs(188,40): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptNährwertServiceTests.cs(273,102): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptServiceTests.cs(221,60): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertServiceTests.cs(294,75): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertServiceTests.cs(188,40): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs(153,13): warning CS8620: Das Argument vom Typ "ISetup<INährwertService, Task<Nährwert>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<INährwertService, Task<Nährwert?>>" in "IReturnsResult<INährwertService> ReturnsExtensions.ReturnsAsync<INährwertService, Nährwert?>(IReturns<INährwertService, Task<Nährwert?>> mock, Nährwert? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\VerfallsdatumWarnungServiceTests.cs(364,39): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertServiceTests.cs(294,75): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs(176,13): warning CS8620: Das Argument vom Typ "ISetup<INährwertService, Task<Nährwert>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<INährwertService, Task<Nährwert?>>" in "IReturnsResult<INährwertService> ReturnsExtensions.ReturnsAsync<INährwertService, Nährwert?>(IReturns<INährwertService, Task<Nährwert?>> mock, Nährwert? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\ProduktInstanzServiceTests.cs(276,31): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\ProduktInstanzServiceTests.cs(275,13): warning CS8620: Das Argument vom Typ "ISetup<IRepository<ProduktInstanz>, Task<ProduktInstanz>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>>" in "IReturnsResult<IRepository<ProduktInstanz>> ReturnsExtensions.ReturnsAsync<IRepository<ProduktInstanz>, ProduktInstanz?>(IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>> mock, ProduktInstanz? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(293,61): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs(176,13): warning CS8620: Das Argument vom Typ "ISetup<INährwertService, Task<Nährwert>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<INährwertService, Task<Nährwert?>>" in "IReturnsResult<INährwertService> ReturnsExtensions.ReturnsAsync<INährwertService, Nährwert?>(IReturns<INährwertService, Task<Nährwert?>> mock, Nährwert? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\VerfallsdatumWarnungServiceTests.cs(364,39): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptServiceTests.cs(235,60): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\EinkaufslistenServiceTests.cs(518,43): warning CS8625: Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(402,31): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(401,13): warning CS8620: Das Argument vom Typ "ISetup<IRepository<ProduktInstanz>, Task<ProduktInstanz>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>>" in "IReturnsResult<IRepository<ProduktInstanz>> ReturnsExtensions.ReturnsAsync<IRepository<ProduktInstanz>, ProduktInstanz?>(IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>> mock, ProduktInstanz? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
@@ -75,466 +78,484 @@ C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandSer
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(434,13): warning CS8620: Das Argument vom Typ "ISetup<IRepository<ProduktInstanz>, Task<ProduktInstanz>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>>" in "IReturnsResult<IRepository<ProduktInstanz>> ReturnsExtensions.ReturnsAsync<IRepository<ProduktInstanz>, ProduktInstanz?>(IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>> mock, ProduktInstanz? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\ProduktInstanzServiceTests.cs(525,31): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\ProduktInstanzServiceTests.cs(524,13): warning CS8620: Das Argument vom Typ "ISetup<IRepository<ProduktInstanz>, Task<ProduktInstanz>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>>" in "IReturnsResult<IRepository<ProduktInstanz>> ReturnsExtensions.ReturnsAsync<IRepository<ProduktInstanz>, ProduktInstanz?>(IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>> mock, ProduktInstanz? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(407,13): warning CS8620: Das Argument vom Typ "ISetup<INährwertService, Task<Nährwert>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<INährwertService, Task<Nährwert?>>" in "IReturnsResult<INährwertService> ReturnsExtensions.ReturnsAsync<INährwertService, Nährwert?>(IReturns<INährwertService, Task<Nährwert?>> mock, Nährwert? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(522,31): warning CS8600: Das NULL-Literal oder ein möglicher NULL-Wert wird in einen Non-Nullable-Typ konvertiert. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
 C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\LagerbestandServiceTests.cs(521,13): warning CS8620: Das Argument vom Typ "ISetup<IRepository<ProduktInstanz>, Task<ProduktInstanz>>" kann aufgrund von Unterschieden in der NULL-Zulässigkeit von Verweistypen nicht für den Parameter "mock" vom Typ "IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>>" in "IReturnsResult<IRepository<ProduktInstanz>> ReturnsExtensions.ReturnsAsync<IRepository<ProduktInstanz>, ProduktInstanz?>(IReturns<IRepository<ProduktInstanz>, Task<ProduktInstanz?>> mock, ProduktInstanz? value)" verwendet werden. [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs(44,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerortListeTests.cs(46,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerortListeTests.cs(47,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerortListeTests.cs(48,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerbestandBearbeitenTests.cs(69,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerbestandBearbeitenTests.cs(70,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(60,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(61,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(62,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerortListeTests.cs(73,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerortListeTests.cs(74,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(43,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(44,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(45,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerortListeTests.cs(93,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerortFormTests.cs(92,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerbestandBearbeitenTests.cs(95,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(86,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(66,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(67,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(68,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(69,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerortListeTests.cs(136,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(89,17): warning xUnit2009: Do not use Assert.False() to check for substrings. Use Assert.DoesNotContain instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(42,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(43,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(44,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(117,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(118,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(108,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(148,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(149,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(150,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(151,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs(187,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LagerbestandBearbeitenTests.cs(206,13): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\ProduktInstanzFormTests.cs(248,13): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs(278,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs(308,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs(338,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs(360,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(339,13): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs(432,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(420,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(441,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(471,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs(501,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(422,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(448,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(524,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(569,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(607,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(608,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(609,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
+C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs(610,17): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.Contains instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [C:\Users\bened\source\repos\FoodDatabase\src\Tests\FoodDatabase.Tests.csproj]
   FoodDatabase.Tests -> C:\Users\bened\source\repos\FoodDatabase\src\Tests\bin\Debug\net8.0\FoodDatabase.Tests.dll
 Testlauf für "C:\Users\bened\source\repos\FoodDatabase\src\Tests\bin\Debug\net8.0\FoodDatabase.Tests.dll" (.NETCoreApp,Version=v8.0)
 VSTest-Version 17.12.0 (x64)
 
 Die Testausführung wird gestartet, bitte warten...
 Insgesamt 1 Testdateien stimmten mit dem angegebenen Muster überein.
-C:\Users\bened\source\repos\FoodDatabase\src\Tests\bin\Debug\net8.0\FoodDatabase.Tests.dll
-[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.28)
-[xUnit.net 00:00:00.18]   Discovering: FoodDatabase.Tests
-[xUnit.net 00:00:00.25]   Discovered:  FoodDatabase.Tests
-[xUnit.net 00:00:00.25]   Starting:    FoodDatabase.Tests
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.ValidateStandardMengeEinheit_WithValidEinheit_ReturnTrue(einheit: "g") [67 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.ValidateStandardMengeEinheit_WithValidEinheit_ReturnTrue(einheit: "ml") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetByIdAsync_WithNonExistentId_ShouldReturnNull [73 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.GetRezeptNährwerte_WithInvalidRezeptId_ThrowNotFoundException [75 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.UpdateAsync_WithNegativeMenge_ShouldThrowArgumentException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.CreateNährwert_WithInvalidEinheit_ThrowException [6 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.CheckMindestbestandUnterschrittenAsync_WhenAboveMindestand_ShouldReturnFalse [77 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.GetAllLebensmittel_WhenEmpty_ShouldReturnEmptyList [77 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_SetsCreatedAtTimestamp [79 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.AdjustNährwerteForMengenänderung_SamePortionen_ReturnUnchanged [3 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetNachVerfallsdatumSortiertAsync_WithMultipleItems_ShouldMaintainFIFOOrder [3 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.CreateLebensmittel_WithDuplicateName_ShouldThrowException [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_ShouldIgnoreDifferentLebensmittel [78 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithMehrerenEintraegen_SortsByLebensmittelName [77 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetBestaendePorLagerortAsync_WithValidLagerort_ShouldReturnList [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithMixedStatus_FiltersOutOkProdukte [77 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithNegativeZubereitungszeit_ThrowValidationException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.CreateNährwert_WithDecimalValues_Success [3 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithMehrerenUnterschrittenenLebensmitteln_ReturnsEinEintragProLebensmittel [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithMultipleWarnungen_SortsAbgelaufeneZuerstDannNachDatumAufsteigend [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.CalculateNährwerteFromZutaten_WithVeryLargePortionen_HandleCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithAllValidLagerorte_ShouldSucceed(lagerort: "Tiefkühler") [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithEmptyRepository_ReturnsEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.RezeptExists_WithNonExistingRezept_ReturnFalse [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetGesamtmengeAsync_WithNullResult_ShouldReturnZero [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithAllValidLagerorte_ShouldSucceed(lagerort: "Anderes") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithAllValidLagerorte_ShouldSucceed(lagerort: "Kühlschrank") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithAllValidLagerorte_ShouldSucceed(lagerort: "Pantry") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithNameTooLong_ThrowValidationException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.DeleteLebensmittel_WithValidId_ShouldCallDelete [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.GetNährwertByLebensmittelId_WithArchivedNährwert_ReturnNull [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.DeleteAsync_WithNonExistentId_ShouldThrowKeyNotFoundException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.CreateLebensmittel_WithEmptyName_ShouldThrowException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.DeleteLebensmittel_WithInvalidId_ShouldReturnFalse [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.CalculateNährwerteFromZutaten_WithZutatWithoutNährwert_IgnoreThatZutat [3 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithMengeGleichMindestbestand_ReturnsFehlmengeZero [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithZeroMenge_ShouldSucceed [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.AddToBestandAsync_WithValidData_ShouldReturnProduktInstanz [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.AdjustNährwerteForMengenänderung_WithNegativePortionen_ThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithNullLebensmittelKatalog_UsesFallbackName [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.DeleteLebensmittel_WithProduktInstanzen_ShouldDeleteAllInstances [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithVerfallsdatumToday_ShouldSucceed [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithAbgelaufenemProdukt_ReturnsAbgelaufenWarnung [4 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.UpdateRezept_WithArchivedRezept_ThrowInvalidOperationException [3 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.GetAllNährwerte_ReturnAllNonArchived [3 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.GetRezeptNährwerte_WithArchivedRezept_ShouldStillReturnNährwerte [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithMindestbestandZero_ReturnsEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.UpdateMengeAsync_WithNonExistentId_ShouldThrowKeyNotFoundException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.CreateLebensmittel_WithValidEinheit_ShouldSucceed(einheit: "ml") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithVerfallsdatumHeute_ReturnsTageBisAblaufZero [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.CreateLebensmittel_WithValidEinheit_ShouldSucceed(einheit: "Stück") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.GetNährwertByLebensmittelId_WithInvalidId_ReturnNull [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.CreateLebensmittel_WithValidEinheit_ShouldSucceed(einheit: "g") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.CheckMindestbestandUnterschrittenAsync_WhenEqualMindestand_ShouldReturnFalse [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithUnterschreitung_BerechnetFehlmengeKorrekt [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithOnlyOkProdukten_ReturnsEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.SearchRezepte_WithNoResults_ReturnEmptyList [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.ValidateStandardMengeEinheit_WithInvalidEinheit_ReturnFalse(einheit: "Portion") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetVerfallenenAsync_WithExpiredProducts_ShouldReturnExpiredItems [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.ValidateStandardMengeEinheit_WithInvalidEinheit_ReturnFalse(einheit: "kg") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.GetRezeptNährwerte_ProPortionCalculatesCorrectly_For4Portionen [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.ValidateStandardMengeEinheit_WithInvalidEinheit_ReturnFalse(einheit: "") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.ValidateStandardMengeEinheit_WithInvalidEinheit_ReturnFalse(einheit: "l") [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.CreateLebensmittel_WithNullName_ShouldThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.BerechneStatus_VerfallsdatumHeute_ReturnsBaldAblaufend [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithMengeUnterMindestbestand_ReturnsEintrag [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.BerechneStatus_VerfallsdatumGestern_ReturnsAbgelaufen [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.DeleteAsync_WithValidId_ShouldDeleteSuccessfully [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.BerechneStatus_VerfallsdatumWeitInZukunft_ReturnsOk [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.BerechneStatus_VerfallsdatumInVierTagen_ReturnsOk [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.CreateNährwert_WithNullEinheit_ThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithNullOptionalFields_Succeed [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithNullLagerort_ShouldThrowArgumentNullException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.GetRezeptNährwerte_WithValidRezeptId_ReturnCompleteNährwerte [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.UpdateLebensmittel_WithEmptyName_ShouldThrowException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithMengeGleichMindestbestand_ReturnsEintrag [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_WithNoProduktAvailable_ShouldReturnFailure [9 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithWarnung_MapsProduktInstanzIdAndVerfallsdatum [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.CreateLebensmittel_WithInvalidEinheit_ShouldThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_WithLebensmittelIdZero_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithNullFromRepository_ReturnsEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.CalculateNährwerteFromZutaten_DividesCorrectlyByPortionen [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetEinkaufslistenEintraegeAsync_WithNoUnterschrittenBestaende_ShouldReturnEmpty [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.GetRezeptById_WithArchivedRezept_ReturnNull [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithNullFromRepository_ReturnsEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_WithNegativeLebensmittelId_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetTagesBisVerfallAsync_WithNonExistentId_ShouldThrowKeyNotFoundException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.CalculateNährwerteFromZutaten_WithSingleZutat_CalculateCorrectly [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithEmptyRepository_ReturnsEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithSummeUeberMindestbestand_ReturnsEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.UpdateNährwert_WithValidData_UpdateSuccessful [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.GetAllLebensmittel_ShouldReturnAllItems [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.ValidateBestandAsync_WithNonExistentId_ShouldThrowKeyNotFoundException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetByIdAsync_WithValidId_ShouldReturnProduktInstanz [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithNullLebensmittelKatalog_UsesFallbackName [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithMultipleInstanzenDesselbenLebensmittels_AggregiertGesamtmenge [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.CreateNährwert_WithDuplicateLebensmittelId_ThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.BerechneStatus_VerfallsdatumInEinemTag_ReturnsBaldAblaufend [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.GetLebensmittelById_WithInvalidId_ShouldReturnNull [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.BerechneStatus_VerfallsdatumInDreiTagen_ReturnsBaldAblaufend [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_WithMultipleProdukte_ShouldDeleteOldestByVerfallsdatum [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.BerechneStatus_VerfallsdatumWeitInVergangenheit_ReturnsAbgelaufen [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetBestaendePorLagerortAsync_WithEmptyLagerort_ShouldReturnEmpty [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.AdjustNährwerteForMengenänderung_ReducePortions_RecalculateCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithLebensmittelKatalogNavigation_MapsNameUndEinheit [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.CreateNährwert_WithNullLebensmittelId_ThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithLebensmittelKatalogNavigation_MapsLebensmittelName [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.AddToBestandAsync_WithZeroMenge_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.CreateLebensmittel_WithValidData_ShouldReturnCreatedLebensmittel [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetByLebensmittelAsync_WithMultipleInstances_ShouldReturnAll [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.DeleteRezept_RemovedFromGetAllRezepte [3 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_WithSingleProdukt_ShouldDeleteIt [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithMengeKnappUeberMindestbestand_ReturnsEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.CheckMindestbestandUnterschrittenAsync_WithNoInstanzen_ShouldReturnTrue [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithAbgelaufenemProdukt_ReturnsNegativeTageBisAblauf [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.CreateNährwert_WithValidData_ReturnNährwert [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithAllMengenUeberMindestbestand_ReturnsEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_SetsIsArchivedToFalse [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.AddToBestandAsync_WithNegativeMenge_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.AdjustNährwerteForMengenänderung_IncreasePortions_RecalculateCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerfallsdatumWarnungServiceTests.GetWarnungenAsync_WithBaldAblaufendemProdukt_ReturnsBaldAblaufendWarnung [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_WithExpiredProdukt_ShouldStillDelete [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.UpdateNährwert_WithInvalidEinheit_ThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.UpdateAsync_WithValidData_ShouldUpdateSuccessfully [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.SearchLebensmittel_ByName_ShouldReturnMatches [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.GetRezeptById_WithValidId_ReturnRezept [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithEintrag_MapsLebensmittelKatalogIdUndMindestbestand [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithInvalidLagerort_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.CreateNährwert_WithVeryHighCalories_Success [< 1 ms]
-[xUnit.net 00:00:00.40]     FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateProPortion_WithValidRezept_ReturnDividedNährwerte [FAIL]
-[xUnit.net 00:00:00.40]       Assert.Equal() Failure: Values differ
-[xUnit.net 00:00:00.40]       Expected: 300
-[xUnit.net 00:00:00.40]       Actual:   1200
-[xUnit.net 00:00:00.40]       Stack Trace:
-[xUnit.net 00:00:00.40]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs(259,0): at FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateProPortion_WithValidRezept_ReturnDividedNährwerte()
-[xUnit.net 00:00:00.40]         --- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.GetRezeptNährwerte_CachedResults_ReturnConsistently [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.RezeptExists_WithArchivedRezept_ReturnFalse [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.EinkaufslistenServiceTests.GetEinkaufslisteAsync_WithMixedLebensmitteln_ReturnsOnlyUnterschritteneEintraege [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_WithValidLebensmittelId_ShouldDeleteOldestProdukt [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.UpdateLebensmittel_WithValidData_ShouldReturnUpdatedLebensmittel [1 ms]
-  Fehler FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateProPortion_WithValidRezept_ReturnDividedNährwerte [80 ms]
+[xUnit.net 00:00:01.68]     FoodDatabase.Tests.Ui.MainLayoutTests.BodyIsRenderedInsideContentArticle [FAIL]
+[xUnit.net 00:00:01.69]     FoodDatabase.Tests.Ui.MainLayoutTests.DoesNotContainMicrosoftTemplateLink [FAIL]
+  Fehler FoodDatabase.Tests.Ui.MainLayoutTests.BodyIsRenderedInsideContentArticle [2 ms]
   Fehlermeldung:
-   Assert.Equal() Failure: Values differ
-Expected: 300
-Actual:   1200
+   System.ArgumentException : The component 'FoodDatabase.App.Components.Layout.MainLayout' does not have a ChildContent [Parameter] attribute. (Parameter 'childContent')
   Stapelverfolgung:
-     at FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateProPortion_WithValidRezept_ReturnDividedNährwerte() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs:line 259
---- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.DeleteRezept_WithNonExistingRezept_ThrowNotFoundException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetByLagerortAsync_WithEmptyLagerort_ShouldThrowArgumentNullException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.DeleteNährwert_WithValidId_MarkAsArchived [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.RemoveFromBestandAsync_WithValidId_ShouldDeleteSuccessfully [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.GetLebensmittelById_WithValidId_ShouldReturnLebensmittel [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_ShouldRespectFIFOOrderingByVerfallsdatum [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.UpdateAsync_WithInvalidLagerort_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.AdjustNährwerteForMengenänderung_MaxPortionBoundary_HandleCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.UpdateRezept_WithDuplicateName_ThrowDuplicateException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.CreateNährwert_WithZeroProtein_Success [< 1 ms]
-[xUnit.net 00:00:00.40]     FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateProPortion_WithLargeRecipe_HandleCorrectly [FAIL]
-[xUnit.net 00:00:00.40]       Assert.Equal() Failure: Values differ
-[xUnit.net 00:00:00.40]       Expected: 300
-[xUnit.net 00:00:00.40]       Actual:   3000
-[xUnit.net 00:00:00.40]       Stack Trace:
-[xUnit.net 00:00:00.40]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs(283,0): at FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateProPortion_WithLargeRecipe_HandleCorrectly()
-[xUnit.net 00:00:00.40]         --- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetGesamtmengeAsync_WithValidLebensmittelId_ShouldSumAllMengen [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithLebensmittelKatalogIdZero_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LebensmittelServiceTests.UpdateLebensmittel_WithNonExistentId_ShouldThrowException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.VerbrauchAusbuchangServiceTests.VerbauchtProduktAsync_WithDeleteRepositoryFailure_ShouldReturnFailure [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.CalculateNährwerteFromZutaten_WithMultipleZutaten_SumCorrectly [8 ms]
-  Fehler FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateProPortion_WithLargeRecipe_HandleCorrectly [1 ms]
+     at Bunit.ComponentParameterCollectionBuilder`1.AddChildContent(RenderFragment childContent) in /_/src/bunit.core/ComponentParameterCollectionBuilder.cs:line 253
+   at Bunit.ComponentParameterCollectionBuilder`1.AddChildContent(String markup) in /_/src/bunit.core/ComponentParameterCollectionBuilder.cs:line 270
+   at FoodDatabase.Tests.Ui.MainLayoutTests.<>c.<BodyIsRenderedInsideContentArticle>b__2_0(ComponentParameterCollectionBuilder`1 parameters) in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\MainLayoutTests.cs:line 36
+   at Bunit.ComponentParameterCollectionBuilder`1..ctor(Action`1 parameterAdder) in /_/src/bunit.core/ComponentParameterCollectionBuilder.cs:line 40
+   at Bunit.TestContext.RenderComponent[TComponent](Action`1 parameterBuilder) in /_/src/bunit.web/TestContext.cs:line 50
+   at FoodDatabase.Tests.Ui.MainLayoutTests.BodyIsRenderedInsideContentArticle() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\MainLayoutTests.cs:line 35
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Fehler FoodDatabase.Tests.Ui.MainLayoutTests.DoesNotContainMicrosoftTemplateLink [< 1 ms]
   Fehlermeldung:
-   Assert.Equal() Failure: Values differ
-Expected: 300
-Actual:   3000
+   System.ArgumentException : The component 'FoodDatabase.App.Components.Layout.MainLayout' does not have a ChildContent [Parameter] attribute. (Parameter 'childContent')
   Stapelverfolgung:
-     at FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateProPortion_WithLargeRecipe_HandleCorrectly() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs:line 283
---- End of stack trace from previous location ---
-[xUnit.net 00:00:00.40]     FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithValidData_ReturnRezept [FAIL]
-[xUnit.net 00:00:00.40]       Assert.Equal() Failure: Values differ
-[xUnit.net 00:00:00.40]       Expected: 4
-[xUnit.net 00:00:00.40]       Actual:   0
-[xUnit.net 00:00:00.40]       Stack Trace:
-[xUnit.net 00:00:00.40]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptServiceTests.cs(202,0): at FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithValidData_ReturnRezept()
-[xUnit.net 00:00:00.40]         --- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.CreateNährwert_WithNegativeKalorien_ThrowException [8 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetEinkaufslistenEintraegeAsync_WithEmptyRepository_ShouldReturnEmpty [8 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.ValidateStandardMengeEinheit_WithNull_ReturnFalse [< 1 ms]
-  Fehler FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithValidData_ReturnRezept [8 ms]
+     at Bunit.ComponentParameterCollectionBuilder`1.AddChildContent(RenderFragment childContent) in /_/src/bunit.core/ComponentParameterCollectionBuilder.cs:line 253
+   at Bunit.ComponentParameterCollectionBuilder`1.AddChildContent(String markup) in /_/src/bunit.core/ComponentParameterCollectionBuilder.cs:line 270
+   at FoodDatabase.Tests.Ui.MainLayoutTests.<>c.<DoesNotContainMicrosoftTemplateLink>b__3_0(ComponentParameterCollectionBuilder`1 parameters) in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\MainLayoutTests.cs:line 50
+   at Bunit.ComponentParameterCollectionBuilder`1..ctor(Action`1 parameterAdder) in /_/src/bunit.core/ComponentParameterCollectionBuilder.cs:line 40
+   at Bunit.TestContext.RenderComponent[TComponent](Action`1 parameterBuilder) in /_/src/bunit.web/TestContext.cs:line 50
+   at FoodDatabase.Tests.Ui.MainLayoutTests.DoesNotContainMicrosoftTemplateLink() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\MainLayoutTests.cs:line 49
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.69]     FoodDatabase.Tests.Ui.MainLayoutTests.RendersSidebarAndMain [FAIL]
+  Fehler FoodDatabase.Tests.Ui.MainLayoutTests.RendersSidebarAndMain [< 1 ms]
   Fehlermeldung:
-   Assert.Equal() Failure: Values differ
-Expected: 4
-Actual:   0
+   System.ArgumentException : The component 'FoodDatabase.App.Components.Layout.MainLayout' does not have a ChildContent [Parameter] attribute. (Parameter 'childContent')
   Stapelverfolgung:
-     at FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithValidData_ReturnRezept() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptServiceTests.cs:line 202
---- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithValidData_ShouldReturnCreatedProduktInstanz [8 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetGesamtmengeAsync_WithDifferentLebensmittelIds_ShouldFilterCorrectly [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertServiceTests.GetNährwertByLebensmittelId_WithValidId_ReturnNährwert [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.AdjustNährwerteForMengenänderung_AllNährwertPropertiesAdjust [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithPortionenGreaterThanHundred_ThrowValidationException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithZutatWithoutNährwert_IgnoreThatZutat [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.RemoveFromBestandAsync_WithNonExistentId_ShouldThrowKeyNotFoundException [< 1 ms]
-[xUnit.net 00:00:00.40]     FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithInvalidEinheit_ThrowValidationException [FAIL]
-[xUnit.net 00:00:00.40]       Assert.Throws() Failure: Exception type was not an exact match
-[xUnit.net 00:00:00.40]       Expected: typeof(FoodDatabase.App.Services.Exceptions.ValidationException)
-[xUnit.net 00:00:00.40]       Actual:   typeof(FoodDatabase.App.Services.Exceptions.NotFoundException)
-[xUnit.net 00:00:00.40]       ---- FoodDatabase.App.Services.Exceptions.NotFoundException : Lebensmittel mit ID 1 nicht gefunden.
-[xUnit.net 00:00:00.40]       Stack Trace:
-[xUnit.net 00:00:00.40]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs(184,0): at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithInvalidEinheit_ThrowValidationException()
-[xUnit.net 00:00:00.40]         --- End of stack trace from previous location ---
-[xUnit.net 00:00:00.40]         ----- Inner Stack Trace -----
-[xUnit.net 00:00:00.40]         C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(74,0): at FoodDatabase.App.Services.Classes.RezeptZutatService.AddZutatAsync(Int32 rezeptId, AddZutatRequest request)
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetByLagerortAsync_WithValidLagerort_ShouldReturnFilteredList [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.CheckMindestbestandUnterschrittenAsync_WhenUnderMindestand_ShouldReturnTrue [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.GetRezeptNährwerte_AllNährwertFieldsPopulated [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithZubereitzeitGreaterThanMax_ThrowValidationException [< 1 ms]
-  Fehler FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithInvalidEinheit_ThrowValidationException [78 ms]
+     at Bunit.ComponentParameterCollectionBuilder`1.AddChildContent(RenderFragment childContent) in /_/src/bunit.core/ComponentParameterCollectionBuilder.cs:line 253
+   at Bunit.ComponentParameterCollectionBuilder`1.AddChildContent(String markup) in /_/src/bunit.core/ComponentParameterCollectionBuilder.cs:line 270
+   at FoodDatabase.Tests.Ui.MainLayoutTests.<>c.<RendersSidebarAndMain>b__1_0(ComponentParameterCollectionBuilder`1 parameters) in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\MainLayoutTests.cs:line 20
+   at Bunit.ComponentParameterCollectionBuilder`1..ctor(Action`1 parameterAdder) in /_/src/bunit.core/ComponentParameterCollectionBuilder.cs:line 40
+   at Bunit.TestContext.RenderComponent[TComponent](Action`1 parameterBuilder) in /_/src/bunit.web/TestContext.cs:line 50
+   at FoodDatabase.Tests.Ui.MainLayoutTests.RendersSidebarAndMain() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\MainLayoutTests.cs:line 19
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:04.46]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Suche_Fehler_Anzeigen [FAIL]
+[xUnit.net 00:00:04.54]     FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Argument_Exception_Bei_Nährwert_Speichern_Anzeigen [FAIL]
+[xUnit.net 00:00:04.54]     FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Validation_Exception_Anzeigen [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Suche_Fehler_Anzeigen [3 s]
   Fehlermeldung:
-   Assert.Throws() Failure: Exception type was not an exact match
-Expected: typeof(FoodDatabase.App.Services.Exceptions.ValidationException)
-Actual:   typeof(FoodDatabase.App.Services.Exceptions.NotFoundException)
----- FoodDatabase.App.Services.Exceptions.NotFoundException : Lebensmittel mit ID 1 nicht gefunden.
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput', nor any other events.
   Stapelverfolgung:
-     at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithInvalidEinheit_ThrowValidationException() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs:line 184
---- End of stack trace from previous location ---
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Suche_Fehler_Anzeigen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 490
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
 ----- Inner Stack Trace -----
-   at FoodDatabase.App.Services.Classes.RezeptZutatService.AddZutatAsync(Int32 rezeptId, AddZutatRequest request) in C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs:line 74
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithMultipleZutaten_SumCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetVerfallenenAsync_WithCustomStanddate_ShouldFilterCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.CalculateNährwerteFromZutaten_WithEmptyZutatenList_ReturnZeroNährwerte [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.ValidateBestandAsync_WithInsufficientMenge_ShouldReturnFalse [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithNegativeMenge_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.SearchRezepte_WithValidName_ReturnMatchingRezepte [1 ms]
-[xUnit.net 00:00:00.40]     FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_ProPortionCalculation [FAIL]
-[xUnit.net 00:00:00.40]       Assert.Equal() Failure: Values differ
-[xUnit.net 00:00:00.40]       Expected: 300
-[xUnit.net 00:00:00.40]       Actual:   1200
-[xUnit.net 00:00:00.40]       Stack Trace:
-[xUnit.net 00:00:00.40]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs(208,0): at FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_ProPortionCalculation()
-[xUnit.net 00:00:00.40]         --- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.AddToBestandAsync_WithPastVerfallsdatum_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.AdjustNährwerteForMengenänderung_MinPortionBoundary_HandleCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.CreateAsync_WithVerfallsdatumInPast_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.SearchRezepte_CaseInsensitive [< 1 ms]
-  Fehler FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_ProPortionCalculation [1 ms]
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass19_0.<Sollte_Suche_Fehler_Anzeigen>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 492
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+  Fehler FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Argument_Exception_Bei_Nährwert_Speichern_Anzeigen [2 s]
   Fehlermeldung:
-   Assert.Equal() Failure: Values differ
-Expected: 300
-Actual:   1200
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput'. It does however have an event handler for the 'onchange' event.
   Stapelverfolgung:
-     at FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_ProPortionCalculation() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\NährwertCalculatorTests.cs:line 208
---- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutatCount_WithValidRezeptId_ReturnCount [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.ValidateBestandAsync_WithEqualMenge_ShouldReturnTrue [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.DeleteAsync_WithNegativeId_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.CalculateNährwerteFromZutaten_WithFractionalPortionen_CalculateCorrectly [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.GetAllRezepte_ReturnOnlyNonArchivedRezepte [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetGesamtmengeAsync_WithNoInstanzen_ShouldReturnZero [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.RezeptExists_WithExistingNonArchivedRezept_ReturnTrue [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithDecimalNährwerte_HandleCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetByLebensmittelAsync_WithValidId_ShouldReturnFilteredList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptNährwertServiceTests.AdjustNährwerteForMengenänderung_WithInvalidNewPortionen_ThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutat_WithInvalidRezeptId_ThrowNotFoundException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithPortionenLessThanOne_ThrowValidationException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.UpdateAsync_WithNonExistentId_ShouldThrowKeyNotFoundException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithAllZutatenWithoutNährwert_ReturnZeroNährwerte [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.RemoveFromBestandAsync_WithValidId_ShouldCallRepositoryDelete [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.UpdateRezept_UpdatesUpdatedAtTimestamp [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetTagesBisVerfallAsync_WithFutureExpiry_ShouldReturnCorrectDays [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.DeleteZutat_LastZutat_ThrowValidationException [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithNonExistingRezept_ThrowNotFoundException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.UpdateRezept_WithValidData_ReturnUpdatedRezept [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetNachVerfallsdatumSortiertAsync_ShouldReturnSortedByExpiryAscending [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.UpdateMengeAsync_WithValidData_ShouldUpdateSuccessfully [1 ms]
-[xUnit.net 00:00:00.40]     FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutat_WithInvalidZutatId_ReturnNull [FAIL]
-[xUnit.net 00:00:00.40]       FoodDatabase.App.Services.Exceptions.NotFoundException : Rezept mit ID 1 nicht gefunden.
-[xUnit.net 00:00:00.40]       Stack Trace:
-[xUnit.net 00:00:00.40]         C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(53,0): at FoodDatabase.App.Services.Classes.RezeptZutatService.GetZutatAsync(Int32 rezeptId, Int32 zutatId)
-[xUnit.net 00:00:00.40]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs(94,0): at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutat_WithInvalidZutatId_ReturnNull()
-[xUnit.net 00:00:00.40]         --- End of stack trace from previous location ---
-  Fehler FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutat_WithInvalidZutatId_ReturnNull [< 1 ms]
-  Fehlermeldung:
-   FoodDatabase.App.Services.Exceptions.NotFoundException : Rezept mit ID 1 nicht gefunden.
-  Stapelverfolgung:
-     at FoodDatabase.App.Services.Classes.RezeptZutatService.GetZutatAsync(Int32 rezeptId, Int32 zutatId) in C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs:line 53
-   at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutat_WithInvalidZutatId_ReturnNull() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs:line 94
---- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.UpdateRezept_WithNonExistingRezept_ThrowNotFoundException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithMaximumMenge_CalculateCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.UpdateMengeAsync_WithNegativeMenge_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.ProduktInstanzServiceTests.GetVerfallenenAsync_WithVerfallsdatumToday_ShouldIncludeItem [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithInvalidSchwierigkeitsgrad_ThrowValidationException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetEinkaufslistenEintraegeAsync_WithUnterschrittenBestaende_ShouldReturnList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.GetAllRezepte_WithNoRezepte_ReturnEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithDecimalValues_RoundCorrectly [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.GetRezeptById_WithInvalidId_ReturnNull [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.GetBestaendePorLagerortAsync_WithNullLagerort_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithEmptyName_ThrowValidationException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.UpdateMengeAsync_WithZeroMenge_ShouldThrowArgumentException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithSingleZutat_CalculateCorrectly [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithDuplicateName_ThrowDuplicateException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerbestandServiceTests.ValidateBestandAsync_WithValidMenge_ShouldReturnTrue [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithTablespoonEinheit_ConvertCorrectly [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.UpdateRezept_WithInvalidPortionen_ThrowValidationException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.ReorderZutaten_WithValidList_UpdatePositions [4 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.CreateRezept_WithNullName_ThrowValidationException [< 1 ms]
-[xUnit.net 00:00:00.41]     FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithMengeGreaterThanMaximum_ThrowValidationException [FAIL]
-[xUnit.net 00:00:00.41]       Assert.Throws() Failure: Exception type was not an exact match
-[xUnit.net 00:00:00.41]       Expected: typeof(FoodDatabase.App.Services.Exceptions.ValidationException)
-[xUnit.net 00:00:00.41]       Actual:   typeof(FoodDatabase.App.Services.Exceptions.NotFoundException)
-[xUnit.net 00:00:00.41]       ---- FoodDatabase.App.Services.Exceptions.NotFoundException : Lebensmittel mit ID 1 nicht gefunden.
-[xUnit.net 00:00:00.41]       Stack Trace:
-[xUnit.net 00:00:00.41]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs(173,0): at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithMengeGreaterThanMaximum_ThrowValidationException()
-[xUnit.net 00:00:00.41]         --- End of stack trace from previous location ---
-[xUnit.net 00:00:00.41]         ----- Inner Stack Trace -----
-[xUnit.net 00:00:00.41]         C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(74,0): at FoodDatabase.App.Services.Classes.RezeptZutatService.AddZutatAsync(Int32 rezeptId, AddZutatRequest request)
-[xUnit.net 00:00:00.41]     FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithMengeLessThanMinimum_ThrowValidationException [FAIL]
-[xUnit.net 00:00:00.41]       Assert.Throws() Failure: Exception type was not an exact match
-[xUnit.net 00:00:00.41]       Expected: typeof(FoodDatabase.App.Services.Exceptions.ValidationException)
-[xUnit.net 00:00:00.41]       Actual:   typeof(FoodDatabase.App.Services.Exceptions.NotFoundException)
-[xUnit.net 00:00:00.41]       ---- FoodDatabase.App.Services.Exceptions.NotFoundException : Lebensmittel mit ID 1 nicht gefunden.
-[xUnit.net 00:00:00.41]       Stack Trace:
-[xUnit.net 00:00:00.41]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs(162,0): at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithMengeLessThanMinimum_ThrowValidationException()
-[xUnit.net 00:00:00.41]         --- End of stack trace from previous location ---
-[xUnit.net 00:00:00.41]         ----- Inner Stack Trace -----
-[xUnit.net 00:00:00.41]         C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(74,0): at FoodDatabase.App.Services.Classes.RezeptZutatService.AddZutatAsync(Int32 rezeptId, AddZutatRequest request)
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithValidRezept_ReturnCompleteNährwerte [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithTeaspoonEinheit_ConvertCorrectly [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.NährwertCalculatorTests.CalculateRezeptNährwerte_WithMinimumMenge_CalculateCorrectly [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_SecondZutat_PositionIncremented [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptServiceTests.DeleteRezept_WithValidId_SetsIsArchivedToTrue [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.UpdateZutat_WithValidData_ReturnUpdatedZutat [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.ReorderZutaten_WithInvalidZutatId_ThrowNotFoundException [< 1 ms]
-  Fehler FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithMengeGreaterThanMaximum_ThrowValidationException [< 1 ms]
-  Fehlermeldung:
-   Assert.Throws() Failure: Exception type was not an exact match
-Expected: typeof(FoodDatabase.App.Services.Exceptions.ValidationException)
-Actual:   typeof(FoodDatabase.App.Services.Exceptions.NotFoundException)
----- FoodDatabase.App.Services.Exceptions.NotFoundException : Lebensmittel mit ID 1 nicht gefunden.
-  Stapelverfolgung:
-     at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithMengeGreaterThanMaximum_ThrowValidationException() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs:line 173
---- End of stack trace from previous location ---
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Argument_Exception_Bei_Nährwert_Speichern_Anzeigen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs:line 513
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
 ----- Inner Stack Trace -----
-   at FoodDatabase.App.Services.Classes.RezeptZutatService.AddZutatAsync(Int32 rezeptId, AddZutatRequest request) in C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs:line 74
-  Fehler FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithMengeLessThanMinimum_ThrowValidationException [< 1 ms]
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelDetailTests.<>c__DisplayClass13_0.<Sollte_Argument_Exception_Bei_Nährwert_Speichern_Anzeigen>b__4() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs:line 515
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+  Fehler FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Validation_Exception_Anzeigen [2 s]
   Fehlermeldung:
-   Assert.Throws() Failure: Exception type was not an exact match
-Expected: typeof(FoodDatabase.App.Services.Exceptions.ValidationException)
-Actual:   typeof(FoodDatabase.App.Services.Exceptions.NotFoundException)
----- FoodDatabase.App.Services.Exceptions.NotFoundException : Lebensmittel mit ID 1 nicht gefunden.
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput'. It does however have an event handler for the 'onchange' event.
   Stapelverfolgung:
-     at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithMengeLessThanMinimum_ThrowValidationException() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs:line 162
---- End of stack trace from previous location ---
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Validation_Exception_Anzeigen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 295
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
 ----- Inner Stack Trace -----
-   at FoodDatabase.App.Services.Classes.RezeptZutatService.AddZutatAsync(Int32 rezeptId, AddZutatRequest request) in C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs:line 74
-[xUnit.net 00:00:00.41]     FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.DeleteZutat_WithValidId_RemoveZutat [FAIL]
-[xUnit.net 00:00:00.41]       FoodDatabase.App.Services.Exceptions.ValidationException : Ein Rezept muss mindestens eine Zutat haben.
-[xUnit.net 00:00:00.41]       Stack Trace:
-[xUnit.net 00:00:00.41]         C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(147,0): at FoodDatabase.App.Services.Classes.RezeptZutatService.DeleteZutatAsync(Int32 rezeptId, Int32 zutatId)
-[xUnit.net 00:00:00.41]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs(320,0): at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.DeleteZutat_WithValidId_RemoveZutat()
-[xUnit.net 00:00:00.41]         --- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.UpdateZutat_WithInvalidEinheit_ThrowValidationException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithValidData_ReturnZutat [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.NormalisiereLagerort_MixedCase_ShouldCapitalize [127 ms]
-  Fehler FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.DeleteZutat_WithValidId_RemoveZutat [1 ms]
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.<>c__DisplayClass11_0.<Sollte_Validation_Exception_Anzeigen>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 297
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:06.48]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Tabelle_Nach_Löschen_Neu_Laden [FAIL]
+[xUnit.net 00:00:06.56]     FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Generische_Exception_Anzeigen [FAIL]
+[xUnit.net 00:00:06.57]     FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Invalid_Operation_Exception_Bei_Nährwert_Speichern_Anzeigen [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Tabelle_Nach_Löschen_Neu_Laden [2 s]
   Fehlermeldung:
-   FoodDatabase.App.Services.Exceptions.ValidationException : Ein Rezept muss mindestens eine Zutat haben.
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'onclick', nor any other events.
   Stapelverfolgung:
-     at FoodDatabase.App.Services.Classes.RezeptZutatService.DeleteZutatAsync(Int32 rezeptId, Int32 zutatId) in C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs:line 147
-   at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.DeleteZutat_WithValidId_RemoveZutat() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs:line 320
---- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.UpdateZutat_WithInvalidMenge_ThrowValidationException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithInvalidLebensmittelId_ThrowNotFoundException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_SetsCreatedAtTimestamp [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.ReorderZutaten_WithDuplicateIds_ThrowValidationException [< 1 ms]
-[xUnit.net 00:00:00.42]     FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_ToArchivedRezept_ThrowInvalidOperationException [FAIL]
-[xUnit.net 00:00:00.42]       Assert.Throws() Failure: Exception type was not an exact match
-[xUnit.net 00:00:00.42]       Expected: typeof(System.InvalidOperationException)
-[xUnit.net 00:00:00.42]       Actual:   typeof(FoodDatabase.App.Services.Exceptions.NotFoundException)
-[xUnit.net 00:00:00.42]       ---- FoodDatabase.App.Services.Exceptions.NotFoundException : Rezept mit ID 1 nicht gefunden.
-[xUnit.net 00:00:00.42]       Stack Trace:
-[xUnit.net 00:00:00.42]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs(196,0): at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_ToArchivedRezept_ThrowInvalidOperationException()
-[xUnit.net 00:00:00.42]         --- End of stack trace from previous location ---
-[xUnit.net 00:00:00.42]         ----- Inner Stack Trace -----
-[xUnit.net 00:00:00.42]         C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(69,0): at FoodDatabase.App.Services.Classes.RezeptZutatService.AddZutatAsync(Int32 rezeptId, AddZutatRequest request)
-[xUnit.net 00:00:00.42]     FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutat_WithValidIds_ReturnZutat [FAIL]
-[xUnit.net 00:00:00.42]       FoodDatabase.App.Services.Exceptions.NotFoundException : Rezept mit ID 1 nicht gefunden.
-[xUnit.net 00:00:00.42]       Stack Trace:
-[xUnit.net 00:00:00.42]         C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs(53,0): at FoodDatabase.App.Services.Classes.RezeptZutatService.GetZutatAsync(Int32 rezeptId, Int32 zutatId)
-[xUnit.net 00:00:00.42]         C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs(80,0): at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutat_WithValidIds_ReturnZutat()
-[xUnit.net 00:00:00.42]         --- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.ValidateLagerort_WithWhitespace_ShouldThrowException [4 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.ReorderZutaten_WithIncompleteList_ThrowValidationException [< 1 ms]
-  Fehler FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_ToArchivedRezept_ThrowInvalidOperationException [< 1 ms]
-  Fehlermeldung:
-   Assert.Throws() Failure: Exception type was not an exact match
-Expected: typeof(System.InvalidOperationException)
-Actual:   typeof(FoodDatabase.App.Services.Exceptions.NotFoundException)
----- FoodDatabase.App.Services.Exceptions.NotFoundException : Rezept mit ID 1 nicht gefunden.
-  Stapelverfolgung:
-     at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_ToArchivedRezept_ThrowInvalidOperationException() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs:line 196
---- End of stack trace from previous location ---
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Tabelle_Nach_Löschen_Neu_Laden() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 528
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
 ----- Inner Stack Trace -----
-   at FoodDatabase.App.Services.Classes.RezeptZutatService.AddZutatAsync(Int32 rezeptId, AddZutatRequest request) in C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs:line 69
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutaten_WithValidRezeptId_ReturnSortedByPosition [1 ms]
-  Fehler FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutat_WithValidIds_ReturnZutat [< 1 ms]
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.MouseEventDispatchExtensions.ClickAsync(IElement element, MouseEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 373
+   at Bunit.MouseEventDispatchExtensions.Click(IElement element, Int64 detail, Double screenX, Double screenY, Double clientX, Double clientY, Double pageX, Double pageY, Double offsetX, Double offsetY, Int64 button, Int64 buttons, Boolean ctrlKey, Boolean shiftKey, Boolean altKey, Boolean metaKey, String type) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 289
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass20_0.<Sollte_Tabelle_Nach_Löschen_Neu_Laden>b__3() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 530
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+  Fehler FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Generische_Exception_Anzeigen [2 s]
   Fehlermeldung:
-   FoodDatabase.App.Services.Exceptions.NotFoundException : Rezept mit ID 1 nicht gefunden.
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput'. It does however have an event handler for the 'onchange' event.
   Stapelverfolgung:
-     at FoodDatabase.App.Services.Classes.RezeptZutatService.GetZutatAsync(Int32 rezeptId, Int32 zutatId) in C:\Users\bened\source\repos\FoodDatabase\src\App\Services\Classes\RezeptZutatService.cs:line 53
-   at FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutat_WithValidIds_ReturnZutat() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Unit\Services\RezeptZutatServiceTests.cs:line 80
---- End of stack trace from previous location ---
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.DeleteZutat_WithInvalidZutatId_ThrowNotFoundException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.UpdateZutat_WithInvalidZutatId_ThrowNotFoundException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_WithInvalidRezeptId_ThrowNotFoundException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.AddZutat_FirstZutat_PositionZero [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.RezeptZutatServiceTests.GetZutaten_WithEmptyRezept_ReturnEmptyList [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetOrCreateAsync_WithExistingLagerort_ShouldReturnExisting [418 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.ValidateLagerort_WithNumbers_ShouldThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.ValidateLagerort_WithNull_ShouldThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.ValidateLagerort_WithSQLInjectionAttempt_ShouldThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetAlleLagerorte_WithOnlyArchivierteLagerorte_ShouldReturnEmpty [29 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.ValidateLagerort_WithEmptyString_ShouldThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.ValidateLagerort_WithSpecialCharacters_ShouldThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetOrCreateAsync_PreventsDuplicates_OnMultipleCalls [16 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.ValidateLagerort_WithOnlyLetters_ShouldNotThrow [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetOrCreateAsync_WithNewLagerort_ShouldCreateAndReturn [4 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetAlleLagerorte_WithMultipleLagerorte_ShouldReturnAllNotArchived [2 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetLagerorteMitAutoComplete_WithNoMatches_ShouldReturnEmpty [10 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetOrCreateAsync_WithInvalidInput_ShouldThrowException [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.NormalisiereLagerort_AlreadyNormalized_ShouldRemainUnchanged [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetAlleLagerorte_WithNoLagerorte_ShouldReturnEmpty [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetLagerorteMitAutoComplete_CaseInsensitiveInput_ShouldFindMatches [< 1 ms]
-[xUnit.net 00:00:00.91]   Finished:    FoodDatabase.Tests
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetOrCreateAsync_WithInputNeedingNormalization_ShouldNormalizeBeforeCreate [3 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetLagerorteMitAutoComplete_WithSQLInjectionAttempt_ShouldNotCrash [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetLagerorteMitAutoComplete_ExcludesArchivierteLagerorte [1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.GetLagerorteMitAutoComplete_WithPartialPrefixMatch_ShouldReturnMatches [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.NormalisiereLagerort_AllUppercase_ShouldCapitalize [< 1 ms]
-  Bestanden FoodDatabase.Tests.Unit.Services.LagerortServiceTests.NormalisiereLagerort_LowercaseWithCapitals_ShouldCapitalize [< 1 ms]
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Generische_Exception_Anzeigen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 325
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.<>c__DisplayClass12_0.<Sollte_Generische_Exception_Anzeigen>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 327
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+  Fehler FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Invalid_Operation_Exception_Bei_Nährwert_Speichern_Anzeigen [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput'. It does however have an event handler for the 'onchange' event.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Invalid_Operation_Exception_Bei_Nährwert_Speichern_Anzeigen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs:line 558
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelDetailTests.<>c__DisplayClass14_0.<Sollte_Invalid_Operation_Exception_Bei_Nährwert_Speichern_Anzeigen>b__4() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs:line 560
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:08.50]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Bestätigungsmodal_Öffnen_Beim_Löschen [FAIL]
+[xUnit.net 00:00:08.58]     FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Bestehend_Lebensmittel_Aktualisieren [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Bestätigungsmodal_Öffnen_Beim_Löschen [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'onclick', nor any other events.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Bestätigungsmodal_Öffnen_Beim_Löschen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 331
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.MouseEventDispatchExtensions.ClickAsync(IElement element, MouseEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 373
+   at Bunit.MouseEventDispatchExtensions.Click(IElement element, Int64 detail, Double screenX, Double screenY, Double clientX, Double clientY, Double pageX, Double pageY, Double offsetX, Double offsetY, Int64 button, Int64 buttons, Boolean ctrlKey, Boolean shiftKey, Boolean altKey, Boolean metaKey, String type) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 289
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass13_0.<Sollte_Bestätigungsmodal_Öffnen_Beim_Löschen>b__1() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 333
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+  Fehler FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Bestehend_Lebensmittel_Aktualisieren [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput'. It does however have an event handler for the 'onchange' event.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Bestehend_Lebensmittel_Aktualisieren() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 238
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.<>c__DisplayClass9_0.<Sollte_Bestehend_Lebensmittel_Aktualisieren>b__3() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 240
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:08.59]     FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Fehler_Beim_Nährwert_Laden_Anzeigen [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Fehler_Beim_Nährwert_Laden_Anzeigen [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Assert.NotEmpty() Failure: Collection was empty
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Fehler_Beim_Nährwert_Laden_Anzeigen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs:line 476
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at FoodDatabase.Tests.Ui.LebensmittelDetailTests.<>c__DisplayClass12_0.<Sollte_Fehler_Beim_Nährwert_Laden_Anzeigen>b__3() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs:line 479
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:10.52]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Bestätigungsmodal_Schließen_Beim_Abbrechen [FAIL]
+[xUnit.net 00:00:10.59]     FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Argument_Exception_Anzeigen [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Bestätigungsmodal_Schließen_Beim_Abbrechen [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'onclick', nor any other events.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Bestätigungsmodal_Schließen_Beim_Abbrechen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 355
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.MouseEventDispatchExtensions.ClickAsync(IElement element, MouseEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 373
+   at Bunit.MouseEventDispatchExtensions.Click(IElement element, Int64 detail, Double screenX, Double screenY, Double clientX, Double clientY, Double pageX, Double pageY, Double offsetX, Double offsetY, Int64 button, Int64 buttons, Boolean ctrlKey, Boolean shiftKey, Boolean altKey, Boolean metaKey, String type) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 289
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass14_0.<Sollte_Bestätigungsmodal_Schließen_Beim_Abbrechen>b__1() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 357
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+  Fehler FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Argument_Exception_Anzeigen [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput'. It does however have an event handler for the 'onchange' event.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Argument_Exception_Anzeigen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 265
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.<>c__DisplayClass10_0.<Sollte_Argument_Exception_Anzeigen>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 267
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:10.61]     FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Bestehenden_Nährwert_Aktualisieren [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Bestehenden_Nährwert_Aktualisieren [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput'. It does however have an event handler for the 'onchange' event.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelDetailTests.Sollte_Bestehenden_Nährwert_Aktualisieren() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs:line 365
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelDetailTests.<>c__DisplayClass9_0.<Sollte_Bestehenden_Nährwert_Aktualisieren>b__4() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelDetailTests.cs:line 367
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:12.53]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Bestätigung_Service_Aufrufen [FAIL]
+[xUnit.net 00:00:12.60]     FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Neues_Lebensmittel_Erstellen [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Bestätigung_Service_Aufrufen [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'onclick', nor any other events.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Bestätigung_Service_Aufrufen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 381
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.MouseEventDispatchExtensions.ClickAsync(IElement element, MouseEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 373
+   at Bunit.MouseEventDispatchExtensions.Click(IElement element, Int64 detail, Double screenX, Double screenY, Double clientX, Double clientY, Double pageX, Double pageY, Double offsetX, Double offsetY, Int64 button, Int64 buttons, Boolean ctrlKey, Boolean shiftKey, Boolean altKey, Boolean metaKey, String type) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 289
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass15_0.<Sollte_Bestätigung_Service_Aufrufen>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 383
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+  Fehler FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Neues_Lebensmittel_Erstellen [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput'. It does however have an event handler for the 'onchange' event.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.Sollte_Neues_Lebensmittel_Erstellen() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 149
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelFormTests.<>c__DisplayClass6_0.<Sollte_Neues_Lebensmittel_Erstellen>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelFormTests.cs:line 151
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:14.53]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Suche_Ausführen_Mit_Suchbegriff [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Suche_Ausführen_Mit_Suchbegriff [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput', nor any other events.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Suche_Ausführen_Mit_Suchbegriff() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 137
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass5_0.<Sollte_Suche_Ausführen_Mit_Suchbegriff>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 139
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:16.54]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Fehler_Anzeigen_Beim_Löschen_Mit_Exception [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Fehler_Anzeigen_Beim_Löschen_Mit_Exception [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'onclick', nor any other events.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Fehler_Anzeigen_Beim_Löschen_Mit_Exception() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 460
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.MouseEventDispatchExtensions.ClickAsync(IElement element, MouseEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 373
+   at Bunit.MouseEventDispatchExtensions.Click(IElement element, Int64 detail, Double screenX, Double screenY, Double clientX, Double clientY, Double pageX, Double pageY, Double offsetX, Double offsetY, Int64 button, Int64 buttons, Boolean ctrlKey, Boolean shiftKey, Boolean altKey, Boolean metaKey, String type) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 289
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass18_0.<Sollte_Fehler_Anzeigen_Beim_Löschen_Mit_Exception>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 462
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:18.56]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Fehler_Anzeigen_Wenn_Löschen_Fehlschlägt [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Fehler_Anzeigen_Wenn_Löschen_Fehlschlägt [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'onclick', nor any other events.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Fehler_Anzeigen_Wenn_Löschen_Fehlschlägt() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 409
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.MouseEventDispatchExtensions.ClickAsync(IElement element, MouseEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 373
+   at Bunit.MouseEventDispatchExtensions.Click(IElement element, Int64 detail, Double screenX, Double screenY, Double clientX, Double clientY, Double pageX, Double pageY, Double offsetX, Double offsetY, Int64 button, Int64 buttons, Boolean ctrlKey, Boolean shiftKey, Boolean altKey, Boolean metaKey, String type) in /_/src/bunit.web/EventDispatchExtensions/MouseEventDispatchExtensions.cs:line 289
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass16_0.<Sollte_Fehler_Anzeigen_Wenn_Löschen_Fehlschlägt>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 411
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:20.57]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Alle_Abrufen_Bei_Leerer_Suche [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Alle_Abrufen_Bei_Leerer_Suche [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput', nor any other events.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Alle_Abrufen_Bei_Leerer_Suche() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 163
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass6_0.<Sollte_Alle_Abrufen_Bei_Leerer_Suche>b__1() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 165
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
+[xUnit.net 00:00:22.59]     FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Alle_Anzeigen_Button_Funktionieren [FAIL]
+  Fehler FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Alle_Anzeigen_Button_Funktionieren [2 s]
+  Fehlermeldung:
+   Bunit.Extensions.WaitForHelpers.WaitForFailedException : The assertion did not pass within the timeout period. Check count: 1. Component render count: 1. Total render count: 1.
+---- Bunit.MissingEventHandlerException : The element does not have an event handler for the event 'oninput', nor any other events.
+  Stapelverfolgung:
+     at Bunit.RenderedFragmentWaitForHelperExtensions.WaitForAssertion(IRenderedFragmentBase renderedFragment, Action assertion, Nullable`1 timeout) in /_/src/bunit.core/Extensions/WaitForHelpers/RenderedFragmentWaitForHelperExtensions.cs:line 75
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.Sollte_Alle_Anzeigen_Button_Funktionieren() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 217
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at Bunit.TriggerEventDispatchExtensions.TriggerBubblingEventAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 121
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventsAsync(ITestRenderer renderer, IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 93
+   at Bunit.TriggerEventDispatchExtensions.<>c__DisplayClass3_0.<TriggerEventAsync>b__0() in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 80
+   at Bunit.TriggerEventDispatchExtensions.TriggerEventAsync(IElement element, String eventName, EventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/TriggerEventDispatchExtensions.cs:line 79
+   at Bunit.InputEventDispatchExtensions.InputAsync(IElement element, ChangeEventArgs eventArgs) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 78
+   at Bunit.InputEventDispatchExtensions.Input[T](IElement element, T value) in /_/src/bunit.web/EventDispatchExtensions/InputEventDispatchExtensions.cs:line 45
+   at FoodDatabase.Tests.Ui.LebensmittelListeTests.<>c__DisplayClass8_0.<Sollte_Alle_Anzeigen_Button_Funktionieren>b__2() in C:\Users\bened\source\repos\FoodDatabase\src\Tests\Ui\LebensmittelListeTests.cs:line 219
+   at Bunit.Extensions.WaitForHelpers.WaitForAssertionHelper.<>c__DisplayClass6_0.<.ctor>b__0() in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForAssertionHelper.cs:line 34
+   at Bunit.Extensions.WaitForHelpers.WaitForHelper`1.OnAfterRender(Object sender, EventArgs args) in /_/src/bunit.core/Extensions/WaitForHelpers/WaitForHelper.cs:line 155
 
-Fehler beim Testlauf.
-Gesamtzahl Tests: 269
-     Bestanden: 258
-     Nicht bestanden: 11
- Gesamtzeit: 1,4817 Sekunden
+Fehler!      : Fehler:    22, erfolgreich:   329, übersprungen:     0, gesamt:   351, Dauer: 21 s - FoodDatabase.Tests.dll (net8.0)
 
 Es sind Workloadupdates verfügbar. Um weitere Informationen zu erhalten, führen Sie `dotnet workload list` aus.
