@@ -27,20 +27,28 @@
 UI-Tests: 80 gesamt → 58 GRÜN / 22 ROT ⚠️
 ```
 
-### Gesamt Test-Status (verifiziert 2026-07-30, `dotnet test` vom Repo-Root)
+### Gesamt Test-Status (verifiziert 2026-07-31 nach Phase 1c, `dotnet test` vom Repo-Root)
 ```
-Service + Integration:  269 Unit + 2 Integration  = 271 Tests ✅  (0 rot)
-UI (bUnit):             80 Tests                   = 58 GRÜN / 22 ROT ⚠️
+Service + Integration:  271 Tests ✅  (0 rot)
+UI (bUnit):             80 Tests → 70 GRÜN / 10 ROT ⚠️
 ────────────────────────────────────────────────────
-TOTAL:                  351 Tests → 329 GRÜN / 22 ROT
+TOTAL:                  351 Tests → 341 GRÜN / 10 ROT (97%)
 ```
 
-> ⚠️ **22 rote UI-Tests (VORBESTEHEND, nicht durch UC9 verursacht — bewiesen: identisches
-> Fehler-Set mit/ohne UC9).** Betroffen: `LebensmittelListeTests` (10), `LebensmittelFormTests` (5),
-> `LebensmittelDetailTests` (4), `MainLayoutTests` (3). Ursache: falsche bUnit-API-Nutzung
-> (`MissingEventHandlerException`; MainLayout `ChildContent`), **keine** Produktionsfehler.
-> Reparatur-Plan liegt bereit: **`FIX-UI-TESTS-PLAN.md`** (Repo-Root).
-> (Frühere Angabe „352/352 GRÜN" war falsch.)
+**Reparatur-Fortschritt (FIX-UI-TESTS-PLAN.md):**
+- ✅ Phase 0 (Diagnose): 3 Cluster identifiziert
+- ✅ Phase 1 (Implementation): 12/22 Tests fixiert (54.5% Reduktion)
+  - ✅ Cluster B (MainLayout): 3/3 Tests grün — `.AddChildContent()` entfernt
+  - ✅ Cluster C (Nährwert-Fehler): 1/1 Test grün — Component Error Handling refaktoriert
+  - ✅ Cluster A (Form-Events): 8/18 Tests grün — `.Input()` → `.Change()` für `<InputText>`/`<InputNumber>`
+  - ✅ Dev-Agent Phase 1b: LebensmittelListe.razor refaktoriert (plain `<input>` → `<InputText>`)
+- ⏳ Verbleibend (Phase 2): 10 Button-Tests (LebensmittelListe `.Click()` auf `@onclick`)
+  - **Nächster Schritt: Option 1 — Button-Refaktorierung mit Blazor-Komponenten** (nicht Test-Logik-Umschreiben)
+
+**Ursachen der 22 ursprünglichen Fehler:**
+- Cluster A (18): Blazor `@bind` + `@onclick` auf plain HTML nicht bUnit-kompatibel
+- Cluster B (3): MainLayout falsche API (`.AddChildContent()` statt Body-Parameter)
+- Cluster C (1): Component async error handling nicht korrekt
 
 ### Infrastruktur
 ```
@@ -155,6 +163,8 @@ TOTAL:                  351 Tests → 329 GRÜN / 22 ROT
 
 ---
 
-**Last Updated**: 2026-07-30 (UC9 Lagerorte-UI fertig + gemergt; Test-Status korrigiert)  
-**Current Branch**: `master` (UC9 lokal gemergt, Commit `23eb5fc`; noch nicht zu origin gepusht)  
-**Ready For**: 22 rote UI-Tests fixen (`FIX-UI-TESTS-PLAN.md`) oder WP4 UC4/UC6 UI-Entwicklung
+**Last Updated**: 2026-07-31 (Phase 1 UI-Test-Reparatur: 341/351 Tests grün, 10 Button-Tests verbleibend)  
+**Current Branch**: `master` (mit Phase 1a/b/c Commits: Dev-Agent + Test-Agent Refactorings)  
+**Ready For (nächste Session)**: 
+- **Option 1 (GEWÄHLT)**: 10 verbleibende Button-Tests via Blazor Button-Komponenten-Refaktorierung
+- Oder: WP4 UC4/UC6/UC10 UI-Entwicklung (wenn Button-Reparatur ausgesetzt wird)
