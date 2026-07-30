@@ -17,11 +17,10 @@
     <div class="row mb-3">
         <div class="col-md-6">
             <div class="input-group">
-                <input type="text"
-                       class="form-control"
-                       placeholder="Lebensmittel suchen..."
-                       @bind="suchbegriff"
-                       data-testid="input-suche" />
+                <InputText @bind-Value="suchbegriff"
+                           class="form-control"
+                           placeholder="Lebensmittel suchen..."
+                           data-testid="input-suche" />
                 <button class="btn btn-outline-secondary"
                         type="button"
                         @onclick="SucheAusführen"
