@@ -220,10 +220,10 @@
     {
         lädt = true;
         fehler = "";
+        fehlerNährwert = "";
         try
         {
             lebensmittel = await LebensmittelService.GetLebensmittelByIdAsync(Id);
-            nährwert = await NährwertService.GetNährwertByLebensmittelIdAsync(Id);
         }
         catch (Exception ex)
         {
@@ -233,6 +233,19 @@
         finally
         {
             lädt = false;
+        }
+
+        // Load Nährwert separately so errors don't hide the Lebensmittel
+        if (lebensmittel is not null)
+        {
+            try
+            {
+                nährwert = await NährwertService.GetNährwertByLebensmittelIdAsync(Id);
+            }
+            catch (Exception ex)
+            {
+                fehlerNährwert = $"Fehler beim Laden des Nährwerts: {ex.Message}";
+            }
         }
     }
 
