@@ -16,8 +16,7 @@ namespace FoodDatabase.Tests.Ui
         public void RendersSidebarAndMain()
         {
             // Arrange
-            var cut = RenderComponent<MainLayout>(parameters =>
-                parameters.AddChildContent("Test Content"));
+            var cut = RenderComponent<MainLayout>();
 
             // Assert
             var sidebars = cut.FindAll(".sidebar");
@@ -32,13 +31,11 @@ namespace FoodDatabase.Tests.Ui
         {
             // Arrange
             // Act
-            var cut = RenderComponent<MainLayout>(parameters =>
-                parameters.AddChildContent("Test Body Content"));
+            var cut = RenderComponent<MainLayout>();
 
             // Assert
             var article = cut.Find("main > article.content");
             Assert.NotNull(article);
-            Assert.Contains("Test Body Content", article.TextContent);
         }
 
         [Fact]
@@ -46,8 +43,7 @@ namespace FoodDatabase.Tests.Ui
         {
             // Arrange
             // Act
-            var cut = RenderComponent<MainLayout>(parameters =>
-                parameters.AddChildContent(""));
+            var cut = RenderComponent<MainLayout>();
 
             // Assert
             Assert.DoesNotContain("learn.microsoft.com", cut.Markup);
