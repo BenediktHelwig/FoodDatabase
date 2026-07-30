@@ -1,6 +1,6 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-07-12  
+**Datum**: 2026-07-30  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
 **Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow
 
@@ -13,26 +13,34 @@
 - 269/269 Unit-Tests grün ✅
 - 2/2 Integration-Tests grün ✅
 
-### UI-Schicht (58% ✅)
+### UI-Schicht
 ```
 ✅ WP-Shell: Bootstrap 5.3.3, Off-Canvas Navigation
-✅ WP3: UI Lebensmittel (3 Komponenten + 16 Tests)
-✅ WP4 UC1: Lebensmittel-Katalog (3 Komponenten + 70 Tests) ← SOEBEN FERTIG
-✅ WP4 UC2: Lagerbestand (2 Komponenten + 12 Tests)
-⏳ WP4: UC3/UC4/UC6/UC9/UC10 (noch zu implementieren)
+✅ WP3: UI Lebensmittel
+✅ WP4 UC1: Lebensmittel-Katalog (LebensmittelListe/Form/Detail)
+✅ WP4 UC2: Lagerbestand (LagerbestandBearbeiten + ProduktInstanzForm)
+✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm, 8 Tests) ← SOEBEN FERTIG
+⏳ WP4: UC3/UC4/UC6/UC10 (noch zu implementieren)
 ⏳ WP5: UI Rezepte (UC4/UC5)
 ⏳ WP6: UI Dashboard (UC7/UC8)
 
-UI-Gesamt: 111/111 Tests GRÜN ✅
+UI-Tests: 80 gesamt → 58 GRÜN / 22 ROT ⚠️
 ```
 
-### Gesamt Test-Status
+### Gesamt Test-Status (verifiziert 2026-07-30, `dotnet test` vom Repo-Root)
 ```
-Service:     269 Unit + 2 Integration  = 271 Tests ✅
-UI:          111 bUnit Tests (WP-Shell, WP3, WP4 UC1+UC2)  = 111 Tests ✅
+Service + Integration:  269 Unit + 2 Integration  = 271 Tests ✅  (0 rot)
+UI (bUnit):             80 Tests                   = 58 GRÜN / 22 ROT ⚠️
 ────────────────────────────────────────────────────
-TOTAL:       352/352 Tests GRÜN ✅
+TOTAL:                  351 Tests → 329 GRÜN / 22 ROT
 ```
+
+> ⚠️ **22 rote UI-Tests (VORBESTEHEND, nicht durch UC9 verursacht — bewiesen: identisches
+> Fehler-Set mit/ohne UC9).** Betroffen: `LebensmittelListeTests` (10), `LebensmittelFormTests` (5),
+> `LebensmittelDetailTests` (4), `MainLayoutTests` (3). Ursache: falsche bUnit-API-Nutzung
+> (`MissingEventHandlerException`; MainLayout `ChildContent`), **keine** Produktionsfehler.
+> Reparatur-Plan liegt bereit: **`FIX-UI-TESTS-PLAN.md`** (Repo-Root).
+> (Frühere Angabe „352/352 GRÜN" war falsch.)
 
 ### Infrastruktur
 ```
@@ -90,10 +98,10 @@ TOTAL:       352/352 Tests GRÜN ✅
 - ✅ WP3 (Lebensmittel Liste) – fertig
 - ✅ WP4 UC1 (Lebensmittel-Katalog CRUD) – fertig
 - ✅ WP4 UC2 (Lagerbestand aktualisieren) – fertig
-- ⏳ **WP4 UC3** (Lagerbestand exportieren) – TODO
+- ✅ **WP4 UC9** (Lagerorte verwalten) – fertig (nur Liste + Neu; Service kann kein Update/Delete)
+- ⚠️ **WP4 UC3** (Lagerbestand exportieren) – BLOCKIERT: kein Export-Service vorhanden, laut `requirements/analysis.md` außerhalb v1.0 (CSV/PDF erst Phase 2+). Service müsste zuerst gebaut werden.
 - ⏳ **WP4 UC4** (Rezept-Nährwerte anzeigen) – TODO
 - ⏳ **WP4 UC6** (Verbrauchte Produkte ausbuchen) – TODO
-- ⏳ **WP4 UC9** (Lagerorte verwalten) – TODO
 - ⏳ **WP4 UC10** (Produktinstanzen MHD) – TODO
 
 ### Phase 2: UI Rezepte (WP5)
@@ -147,6 +155,6 @@ TOTAL:       352/352 Tests GRÜN ✅
 
 ---
 
-**Last Updated**: 2026-07-12 (Session 28 – UC1 Complete)  
-**Current Branch**: `master` (all changes merged)  
-**Ready For**: WP4 UC3 oder UC4 UI-Komponenten-Entwicklung
+**Last Updated**: 2026-07-30 (UC9 Lagerorte-UI fertig + gemergt; Test-Status korrigiert)  
+**Current Branch**: `master` (UC9 lokal gemergt, Commit `23eb5fc`; noch nicht zu origin gepusht)  
+**Ready For**: 22 rote UI-Tests fixen (`FIX-UI-TESTS-PLAN.md`) oder WP4 UC4/UC6 UI-Entwicklung
