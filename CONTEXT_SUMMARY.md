@@ -1,6 +1,6 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-07-30  
+**Datum**: 2026-08-08  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
 **Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow
 
@@ -17,22 +17,23 @@
 ```
 ✅ WP-Shell: Bootstrap 5.3.3, Off-Canvas Navigation
 ✅ WP3: UI Lebensmittel
-✅ WP4 UC1: Lebensmittel-Katalog (LebensmittelListe/Form/Detail)
-✅ WP4 UC2: Lagerbestand (LagerbestandBearbeiten + ProduktInstanzForm)
-✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm, 8 Tests) ← SOEBEN FERTIG
-⏳ WP4: UC3/UC4/UC6/UC10 (noch zu implementieren)
+✅ WP4 UC1: Lebensmittel-Katalog (LebensmittelListe/Form/Detail, 51 Tests)
+✅ WP4 UC2: Lagerbestand (LagerbestandBearbeiten + ProduktInstanzForm, 12 Tests)
+✅ WP4 UC6: Verbrauch ausbuchen (VerbrauchListe + VerbrauchZeile, 10 Tests) ← SOEBEN FERTIG
+✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm, 8 Tests)
+⏳ WP4: UC3 (BLOCKIERT - kein Export-Service v1.0), UC4, UC10 (noch zu implementieren)
 ⏳ WP5: UI Rezepte (UC4/UC5)
 ⏳ WP6: UI Dashboard (UC7/UC8)
 
-UI-Tests: 80 gesamt → 58 GRÜN / 22 ROT ⚠️
+UI-Tests: 90 gesamt → 90 GRÜN / 0 ROT ✅ (WP4 UC1: 51, UC2: 12, UC6: 10, UC9: 8, NavMenu: 6 + Layout: 3 = 90 total)
 ```
 
-### Gesamt Test-Status (verifiziert 2026-08-08 nach Phase 2 @onclick Fix, `dotnet test` vom Repo-Root)
+### Gesamt Test-Status (verifiziert 2026-08-08 nach WP4 UC6 UI-Completion, `dotnet test` vom Repo-Root)
 ```
 Service + Integration:  271 Tests ✅  (0 rot)
-UI (bUnit):             80 Tests ✅  (0 rot)
+UI (bUnit):             90 Tests ✅  (0 rot)  [+10 VerbrauchListeTests]
 ────────────────────────────────────────────────────
-TOTAL:                  351 Tests ✅ (351 GRÜN / 0 ROT) — 100% SUCCESS RATE
+TOTAL:                  361 Tests ✅ (361 GRÜN / 0 ROT) — 100% SUCCESS RATE
 ```
 
 **Reparatur-Fortschritt (FIX-UI-TESTS-PLAN.md):**
@@ -46,7 +47,7 @@ TOTAL:                  351 Tests ✅ (351 GRÜN / 0 ROT) — 100% SUCCESS RATE
 - ✅ **Phase 2 FERTIG (2026-08-08)**: Alle 10 Button-Tests (LebensmittelListe) grün durch Namespace-Import
   - **Tatsächliche Root-Cause**: Fehlender Namespace führte zu Silent Failure bei Event-Handler-Kompilierung
   - **Fix**: `@using Microsoft.AspNetCore.Components.Web` in `_Imports.razor`
-  - **Ergebnis**: 351/351 Tests GRÜN ✅
+  - **Ergebnis**: 361/361 Tests GRÜN ✅ (nach WP4 UC6 UI: +10 bUnit-Tests)
 
 **Ursachen der 22 ursprünglichen Fehler (analysiert & behoben):**
 - **Cluster A (18)**: Event-Handlers (`@onclick`, `@oninput`) nicht verdrahtet — Root-Cause: Fehlender Namespace `@using Microsoft.AspNetCore.Components.Web` in `_Imports.razor` → Handlers wurden kompiliert, aber zur Runtime nicht registriert (Silent Failure, kein Compilerfehler)
@@ -166,9 +167,10 @@ TOTAL:                  351 Tests ✅ (351 GRÜN / 0 ROT) — 100% SUCCESS RATE
 
 ---
 
-**Last Updated**: 2026-08-08 (Phase 2 UI-Test-Reparatur FERTIG: 351/351 Tests grün, @onclick Fix dokumentiert)  
-**Current Branch**: `master` (mit Phase 1a/b/c + Phase 2 Commits: Test/Dev/Doc-Agent Fixes + Dokumentation)  
+**Last Updated**: 2026-08-08 (WP4 UC6 UI-Completion: 361/361 Tests grün, 4-Teil Dokumentation komplett)  
+**Current Branch**: `master` (mit UC1-UC10 Service-Layer + WP4 UC1/UC2/UC6/UC9 UI-Layer + vollständiger Dokumentation)  
 **Ready For (nächste Session)**: 
-- **WP4 UC4/UC6/UC10 UI-Entwicklung** — Keine Event-Handler-Workarounds mehr nötig
-- **WP5 Rezepte-UI** — Mit funktionierenden `@onclick` Handlers
-- **Integration-Tests & Docker-Deployment** — Optional Phase 3
+- **WP4 UC4/UC10 UI-Entwicklung** — Baseline jetzt stabil (90 UI-Tests all GRÜN)
+- **WP4 UC3 Export-Feature** — Vorerst BLOCKIERT (kein Export-Service in v1.0, Phase 2+)
+- **WP5 Rezepte-UI** — Nach UC4/UC10 UI-Abschluss
+- **Integration-Tests & Docker-Deployment** — Optional Phase 3 oder später

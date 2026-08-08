@@ -1,0 +1,177 @@
+@page "/verbrauchen"
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Interfaces
+@inject ILebensmittelService LebensmittelService
+@inject ILagerbestandService LagerbestandService
+@inject IVerbrauchAusbuchangService VerbrauchAusbuchangService
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Verbrauch ausbuchen</h2>
+        </div>
+    </div>
+
+    @if (lädt)
+    {
+        <div class="alert alert-info">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Lädt...
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(fehler))
+    {
+        <div class="alert alert-danger" data-testid="alert-fehler">@fehler</div>
+    }
+    else if (verbrauchZeilen is not null && verbrauchZeilen.Any())
+    {
+        @if (!string.IsNullOrEmpty(ergebnis))
+        {
+            <div class="alert @(ergebnisMeldungErfolgreich ? "alert-success" : "alert-warning")" data-testid="alert-ergebnis">
+                @ergebnis
+            </div>
+        }
+
+        <table class="table table-striped" data-testid="tabelle-verbrauch">
+            <thead>
+                <tr>
+                    <th>Lebensmittel</th>
+                    <th>Gesamtmenge</th>
+                    <th>Aktion</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (VerbrauchZeile zeile in verbrauchZeilen)
+                {
+                    <tr data-testid="zeile-@zeile.Id">
+                        <td>@zeile.Name</td>
+                        <td>
+                            @if (zeile.MindestbestandUnterschritten)
+                            {
+                                <span class="badge bg-warning" data-testid="badge-mindestbestand-@zeile.Id">
+                                    Mindestbestand unterschritten
+                                </span>
+                                <br />
+                            }
+                            @zeile.Gesamtmenge @zeile.Einheit
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary"
+                                    @onclick="() => VerbrauchtAusbuchung(zeile.Id)"
+                                    disabled="@(zeile.Gesamtmenge <= 0)"
+                                    data-testid="btn-verbrauchen-@zeile.Id">
+                                Verbrauchen
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">Keine Lebensmittel vorhanden.</div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Liste der Lebensmittel mit aktuellen Bestandsinformationen (UC6: Verbrauch ausbuchen).
+    /// Wird bei Component-Initialisierung aus Services geladen.
+    /// </summary>
+    private List<VerbrauchZeile>? verbrauchZeilen;
+
+    /// <summary>
+    /// Fehlertext aus der letzten gescheiterten Operation.
+    /// Wird in alert-danger angezeigt. Leer = kein Fehler.
+    /// </summary>
+    private string fehler = "";
+
+    /// <summary>
+    /// Gibt an, ob die Komponente gerade Daten lädt (Spinner anzeigen).
+    /// </summary>
+    private bool lädt = false;
+
+    /// <summary>
+    /// Meldungstext vom letzten Verbrauch-Aufruf (ServiceResult.Message).
+    /// Wird in alert-success oder alert-warning angezeigt. Leer = keine Meldung.
+    /// </summary>
+    private string ergebnis = "";
+
+    /// <summary>
+    /// Gibt an, ob die letzte Ergebnis-Meldung erfolgreich war (für Alert-Farbe).
+    /// true = grüner Alert, false = gelber Alert.
+    /// </summary>
+    private bool ergebnisMeldungErfolgreich = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AlleAbrufen();
+    }
+
+    /// <summary>
+    /// Lädt alle Lebensmittel und baut die Verbrauch-Tabelle mit aktuellen Bestandsdaten.
+    /// Für jedes Lebensmittel: GetGesamtmengeAsync + CheckMindestbestandUnterschrittenAsync.
+    /// N+1 Aufrufe sind bewusst so gewollt (KISS, nur 3 Nutzer max gleichzeitig).
+    /// </summary>
+    private async Task AlleAbrufen()
+    {
+        lädt = true;
+        fehler = "";
+        // ergebnis wird hier bewusst NICHT zurückgesetzt: VerbrauchtAusbuchung ruft diese
+        // Methode zum Neuladen auf, nachdem es die ServiceResult-Meldung gesetzt hat.
+        try
+        {
+            IEnumerable<LebensmittelKatalog> alleLebensmittel = await LebensmittelService.GetAllLebensmittelAsync();
+            List<VerbrauchZeile> zeilen = new();
+
+            foreach (LebensmittelKatalog lebensmittel in alleLebensmittel)
+            {
+                decimal gesamtmenge = await LagerbestandService.GetGesamtmengeAsync(lebensmittel.Id);
+                bool mindestbestandUnterschritten = await LagerbestandService.CheckMindestbestandUnterschrittenAsync(lebensmittel.Id);
+
+                VerbrauchZeile zeile = new()
+                {
+                    Id = lebensmittel.Id,
+                    Name = lebensmittel.Name,
+                    Einheit = lebensmittel.Einheit,
+                    Gesamtmenge = gesamtmenge,
+                    MindestbestandUnterschritten = mindestbestandUnterschritten
+                };
+                zeilen.Add(zeile);
+            }
+
+            verbrauchZeilen = zeilen;
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Abrufen der Lebensmittel: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+
+    /// <summary>
+    /// Ruft den Verbrauch-Ausbuchungs-Service auf und aktualisiert danach die Liste.
+    /// Zeigt Ergebnis (Erfolg oder Fehler) in alert-ergebnis an.
+    /// </summary>
+    /// <param name="lebensmittelKatalogId">ID des zu verbrauchenden Lebensmittels.</param>
+    private async Task VerbrauchtAusbuchung(int lebensmittelKatalogId)
+    {
+        ergebnis = "";
+        fehler = "";
+        try
+        {
+            ServiceResult result = await VerbrauchAusbuchangService.VerbauchtProduktAsync(lebensmittelKatalogId);
+            ergebnis = result.Message;
+            ergebnisMeldungErfolgreich = result.Success;
+            await AlleAbrufen();
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Ausbuchen: {ex.Message}";
+        }
+    }
+}
