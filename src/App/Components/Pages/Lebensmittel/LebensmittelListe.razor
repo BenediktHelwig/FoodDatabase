@@ -217,6 +217,9 @@
         catch (Exception ex)
         {
             fehler = $"Fehler beim Löschen: {ex.Message}";
+        }
+        finally
+        {
             lädt = false;
         }
     }

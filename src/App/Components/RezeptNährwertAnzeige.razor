@@ -114,7 +114,7 @@
                             </button>
                             <input type="number"
                                    @bind="CurrentPortions"
-                                   @onchange="@PortionInputChanged"
+                                   @bind:after="PortionInputChanged"
                                    data-testid="portion-input"
                                    aria-label="Portionsgröße eingeben"
                                    min="1"
