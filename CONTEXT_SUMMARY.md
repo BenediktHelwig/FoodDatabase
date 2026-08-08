@@ -2,57 +2,56 @@
 
 **Datum**: 2026-08-08  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
-**Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow
+**Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow  
+**Aktueller Branch**: `feat/ui-verbrauch-uc6` (3 Commits, noch nicht nach `master` gemergt)
+
+---
+
+## ⏭️ NÄCHSTE SCHRITTE (in dieser Reihenfolge)
+
+UC6 ist funktional fertig, aber die **Definition-of-Done ist noch nicht erfüllt**. Diese drei Schritte schließen sie ab — erst danach den nächsten Use-Case starten:
+
+1. **Sequence-Diagramm vervollständigen** (Doc-Agent, Teil 4 des 4-Teil-Checks)  
+   `diagrams/sequence-uc6-verbrauchausbuchangung.drawio` hat bereits eine Lifeline „UI (Blazor)". Es fehlt nur die konkrete Benennung (`VerbrauchListe.razor` / Route `/verbrauchen`) und die Rückgabe des Ergebnis-Alerts. 146 Zeilen XML, risikoarmer Edit.
+
+2. **Review-Agent Doku-Phase** → `reviews/uc6-wp4-doku-review-1.md`  
+   Wurde bei UC6 übersprungen. Dabei gezielt prüfen: Hat der Doc-Agent den **UC9-Status** im Architecture-Overview zu Recht auf „fertig" gesetzt? Das war nicht Teil seines Auftrags und wurde nebenbei mitgeändert.
+
+3. **Merge Request** für `feat/ui-verbrauch-uc6` nach dem Template in `CLAUDE.md`
+
+**Danach: WP4 UC10 (Produktinstanzen/MHD) vor UC4.** Begründung: `IProduktInstanzService` ist die Datenbasis für das spätere Dashboard UC7, und UC10 bleibt im Lager-Kontext, dessen Muster gerade frisch sind. UC4 wechselt in die Rezept-Domäne und passt besser direkt vor WP5.
 
 ---
 
 ## 📊 GESAMT-STATUS
 
-### Service-Schicht (100% ✅)
-- 10/10 Use-Cases implementiert
-- 269/269 Unit-Tests grün ✅
-- 2/2 Integration-Tests grün ✅
+### Service-Schicht (100 % ✅)
+10/10 Use-Cases implementiert · 269 Unit-Tests + 2 Integration-Tests, alle grün
 
 ### UI-Schicht
 ```
 ✅ WP-Shell: Bootstrap 5.3.3, Off-Canvas Navigation
 ✅ WP3: UI Lebensmittel
-✅ WP4 UC1: Lebensmittel-Katalog (LebensmittelListe/Form/Detail, 51 Tests)
-✅ WP4 UC2: Lagerbestand (LagerbestandBearbeiten + ProduktInstanzForm, 12 Tests)
-✅ WP4 UC6: Verbrauch ausbuchen (VerbrauchListe + VerbrauchZeile, 10 Tests) ← SOEBEN FERTIG
-✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm, 8 Tests)
-⏳ WP4: UC3 (BLOCKIERT - kein Export-Service v1.0), UC4, UC10 (noch zu implementieren)
+✅ WP4 UC1: Lebensmittel-Katalog (LebensmittelListe/Form/Detail)
+✅ WP4 UC2: Lagerbestand (LagerbestandBearbeiten + ProduktInstanzForm)
+✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm) – nur Liste + Neu; Service kann kein Update/Delete
+✅ WP4 UC6: Verbrauch ausbuchen (VerbrauchListe + VerbrauchZeile) ← SOEBEN FERTIG
+⏳ WP4 UC10: Produktinstanzen/MHD
+⏳ WP4 UC4:  Rezept-Nährwerte anzeigen
+⚠️ WP4 UC3:  Lagerbestand exportieren – BLOCKIERT, kein Export-Service.
+             Laut requirements/analysis.md außerhalb v1.0 (CSV/PDF erst Phase 2+).
 ⏳ WP5: UI Rezepte (UC4/UC5)
-⏳ WP6: UI Dashboard (UC7/UC8)
-
-UI-Tests: 90 gesamt → 90 GRÜN / 0 ROT ✅ (WP4 UC1: 51, UC2: 12, UC6: 10, UC9: 8, NavMenu: 6 + Layout: 3 = 90 total)
+⏳ WP6: UI Dashboard (UC7/UC8) – UC8-Service noch TODO
 ```
 
-### Gesamt Test-Status (verifiziert 2026-08-08 nach WP4 UC6 UI-Completion, `dotnet test` vom Repo-Root)
+### Test-Status (verifiziert 2026-08-08, `dotnet test` vom Repo-Root)
 ```
-Service + Integration:  271 Tests ✅  (0 rot)
-UI (bUnit):             90 Tests ✅  (0 rot)  [+10 VerbrauchListeTests]
-────────────────────────────────────────────────────
-TOTAL:                  361 Tests ✅ (361 GRÜN / 0 ROT) — 100% SUCCESS RATE
+Service + Integration:  271 Tests ✅
+UI (bUnit):              90 Tests ✅
+────────────────────────────────────
+TOTAL:                  361 Tests ✅  (0 rot)
 ```
-
-**Reparatur-Fortschritt (FIX-UI-TESTS-PLAN.md):**
-- ✅ Phase 0 (Diagnose): Root-Cause identifiziert — fehlender `@using Microsoft.AspNetCore.Components.Web` in `_Imports.razor`
-- ✅ Phase 1 (Implementation): Alle 22 ursprünglichen Tests repariert (100%)
-  - ✅ Cluster B (MainLayout): 3/3 Tests grün — `.AddChildContent()` entfernt
-  - ✅ Cluster C (Nährwert-Fehler): 1/1 Test grün — Component Error Handling refaktoriert
-  - ✅ Cluster A (Form-Events + Button-Clicks): 18/18 Tests grün — Namespace-Import hinzugefügt (Root-Cause Fix)
-    - 8/8 `.Input()` / `.Change()` für `<InputText>` Komponenten
-    - 10/10 `.Click()` auf `@onclick` Buttons in LebensmittelListe
-- ✅ **Phase 2 FERTIG (2026-08-08)**: Alle 10 Button-Tests (LebensmittelListe) grün durch Namespace-Import
-  - **Tatsächliche Root-Cause**: Fehlender Namespace führte zu Silent Failure bei Event-Handler-Kompilierung
-  - **Fix**: `@using Microsoft.AspNetCore.Components.Web` in `_Imports.razor`
-  - **Ergebnis**: 361/361 Tests GRÜN ✅ (nach WP4 UC6 UI: +10 bUnit-Tests)
-
-**Ursachen der 22 ursprünglichen Fehler (analysiert & behoben):**
-- **Cluster A (18)**: Event-Handlers (`@onclick`, `@oninput`) nicht verdrahtet — Root-Cause: Fehlender Namespace `@using Microsoft.AspNetCore.Components.Web` in `_Imports.razor` → Handlers wurden kompiliert, aber zur Runtime nicht registriert (Silent Failure, kein Compilerfehler)
-- **Cluster B (3)**: MainLayout falsche bUnit-API — `.AddChildContent()` statt `Body`-Parameter setzen
-- **Cluster C (1)**: LebensmittelDetail Fehler-Element-Selektor nicht aktualisiert (behoben mit Cluster A Fix)
+UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9 8 · NavMenu 6 · MainLayout 3
 
 ### Infrastruktur
 ```
@@ -61,116 +60,71 @@ TOTAL:                  361 Tests ✅ (361 GRÜN / 0 ROT) — 100% SUCCESS RATE
 ✅ 13 Business Services implementiert + Dependency Injection
 ✅ Bootstrap 5.3.3 lokal (kein CDN)
 ✅ Responsive Layout (768px Breakpoint)
-✅ Code-Style Standards enforced (var-usage, is null/is not null)
+✅ Code-Style Standards enforced (explizite Typen, is null/is not null)
 ```
 
 ---
 
-## 🎯 AKTUELLER WORKFLOW
+## ⚠️ FALLSTRICKE (nicht wieder hineinlaufen)
 
-**Multi-Agent Orchestration** (siehe `CLAUDE.md` für Details):
-- **Orchestrator**: Koordiniert Use-Cases und Anforderungen
-- **Test-Agent**: Schreibt bUnit-Tests (TDD, Rot-Phase)
-- **Dev-Agent**: Implementiert Produktivcode (TDD, Grün-Phase)
-- **Doc-Agent**: Dokumentation (4-Teil-Check: Code + HTML + Overview + Diagramme)
-- **Review-Agent**: 3-Loop Feedback-Prozess (max 3 Iterationen, dann User-Eskalation)
-
-**Git Workflow**: Feature-Branches → Review → Merge zu master
+- **`_Imports.razor` braucht `@using Microsoft.AspNetCore.Components.Web`.** Ohne diesen Import werden `@onclick`/`@oninput`-Handler zwar kompiliert, aber zur Runtime nie registriert — ein Silent Failure ohne Compilerfehler. Das war die Ursache von 22 roten UI-Tests (behoben 2026-08-08, Commit `a991f07`). Den Import niemals entfernen.
+- **`core.ignorecase=true` im Repo.** Datei-Umbenennungen, die nur die Groß-/Kleinschreibung ändern, landen mit `git add -A` **nicht** im Index — git hängt die Datei still wieder unter dem alten Pfad ein. Solche Renames brauchen ein explizites `git mv` über einen Zwischennamen und einen eigenen Commit. Auf einem case-sensitiven Linux-/Docker-Checkout führt unbemerkte Drift sonst zu 404s (passiert bei `UC6-VerbrauchAusbuchen.html`, behoben in `96546da`).
+- **bUnit MainLayout**: `Body` als Parameter setzen, nicht `.AddChildContent()`.
 
 ---
 
-## ✅ ZULETZT FERTIGGESTELLT (Session 28)
+## 🎯 WORKFLOW
 
-**WP4 UC1 Lebensmittel-Katalog – UI-Komponenten + Tests + Dokumentation**
+**Multi-Agent Orchestration** (Details in `CLAUDE.md`): Orchestrator · Test-Agent · Dev-Agent · Doc-Agent · Review-Agent (3-Loop-Feedback, dann User-Eskalation).
 
-### Was wurde gebaut:
-- LebensmittelListe.razor (26 bUnit-Tests) – Tabelle mit Suche/Löschen
-- LebensmittelForm.razor (19 bUnit-Tests) – Neu/Bearbeiten-Formular
-- LebensmittelDetail.razor (25 bUnit-Tests) – Detail-View mit Nährwert-Integration
+**Wichtige Abweichung für UI-Arbeit**: Laut `UI-PHASE-PLAN.md:144` gilt bei WP3–WP6 **Code zuerst, dann Tests** — Dev-Agent → Verifikation → Test-Agent → Review-Agent → Doc-Agent-4-Teil-Check → MR. TDD (Tests zuerst) gilt nur für die Service-Schicht.
 
-### Dokumentation:
-- ✅ Code-Dokumentation: `reviews/uc1-wp4-documentation-validation.md`
-- ✅ Feature-HTML: `docs/features/UC1-LebensmittelKatalog.html`
-- ✅ Architecture-Overview: `docs/architecture-overview.html` (UC1 Status)
-- ✅ Diagramme: `requirements/use-cases.drawio` (UC1 Status grün)
-
-### Code-Style:
-- ✅ 70 Tests kompilieren fehlerlos
-- ✅ 100% explizite Typ-Deklarationen (kein var außer LINQ)
-- ✅ `is null` / `is not null` durchgehend
+**Git**: Feature-Branches → Review → Merge zu `master`.
 
 ---
 
-## 🚀 ROADMAP & NÄCHSTE SCHRITTE
+## ✅ ZULETZT FERTIGGESTELLT: WP4 UC6 – Verbrauch ausbuchen (UI)
+
+Neue Seite `/verbrauchen`: listet je Lebensmittel die Gesamtmenge plus Badge bei unterschrittenem Mindestbestand; der „Verbrauchen"-Button ruft `IVerbrauchAusbuchangService.VerbauchtProduktAsync` auf, das nach **FIFO** die Packung mit dem frühesten Verfallsdatum löscht. Ergebnis erscheint als grünes bzw. gelbes Alert.
+
+**Code**: `src/App/Components/Pages/Lager/VerbrauchListe.razor`, `VerbrauchZeile.cs`, NavMenu-Eintrag  
+**Tests**: `src/Tests/Ui/VerbrauchListeTests.cs` (10 bUnit-Tests), NavMenuTests 7 → 8 Links  
+**Doku**: `reviews/uc6-wp4-code-review-1.md` (freigegeben, 1/3), `reviews/uc6-wp4-documentation-validation.md`, `docs/features/UC6-VerbrauchAusbuchen.html`, `docs/architecture-overview.html`
+
+### Prozess-Anmerkungen zu dieser Session
+- **Bewusste Design-Entscheidung**: `AlleAbrufen()` darf das Feld `ergebnis` **nicht** zurücksetzen. `VerbrauchtAusbuchung()` ruft die Methode zum Neuladen auf, *nachdem* die ServiceResult-Meldung gesetzt wurde — ein Reset würde das Ergebnis-Alert verschlucken. Tests 6 und 7 sichern das ab.
+- **N+1-Service-Calls** in `AlleAbrufen()` sind eine bewusste KISS-Entscheidung für die Zielgröße (3 gleichzeitige Nutzer, lokale SQLite) — nicht „optimieren".
+- **Workflow-Abweichung**: Der `ergebnis`-Bug wurde direkt korrigiert statt über eine Feedback-Schleife an den Dev-Agent zurückgegeben. Der Review-Agent hat den Code danach begutachtet, ohne dass der Fehler je in einem Report auftauchte.
+
+---
+
+## 🚀 ROADMAP (nach Abschluss von UC6)
 
 ### Phase 1: UI-Komponenten (aktuell)
-**Status**: WP3 + WP4 UC1+UC2 fertig → **WP4 UC3/UC4/UC6 starten**
-
-- ✅ WP-Shell (Navigations-Shell) – fertig
-- ✅ WP3 (Lebensmittel Liste) – fertig
-- ✅ WP4 UC1 (Lebensmittel-Katalog CRUD) – fertig
-- ✅ WP4 UC2 (Lagerbestand aktualisieren) – fertig
-- ✅ **WP4 UC9** (Lagerorte verwalten) – fertig (nur Liste + Neu; Service kann kein Update/Delete)
-- ⚠️ **WP4 UC3** (Lagerbestand exportieren) – BLOCKIERT: kein Export-Service vorhanden, laut `requirements/analysis.md` außerhalb v1.0 (CSV/PDF erst Phase 2+). Service müsste zuerst gebaut werden.
-- ⏳ **WP4 UC4** (Rezept-Nährwerte anzeigen) – TODO
-- ⏳ **WP4 UC6** (Verbrauchte Produkte ausbuchen) – TODO
-- ⏳ **WP4 UC10** (Produktinstanzen MHD) – TODO
+Verbleibend in WP4: **UC10**, dann **UC4**. UC3 bleibt blockiert, bis ein Export-Service existiert.
 
 ### Phase 2: UI Rezepte (WP5)
-**Abhängigkeiten**: Alle WP4 UC3/UC4/UC6 müssen fertig sein
-
-- **WP5 UC4**: Rezepte CRUD UI (Liste, Form, Detail)
-- **WP5 UC5**: Rezept-Nährwerte automatisch berechnen (UI)
+Abhängigkeit: UC4 + UC10 fertig (nicht UC3 — der ist außerhalb v1.0).
+- **UC4**: Rezepte CRUD UI (Liste, Form, Detail)
+- **UC5**: Rezept-Nährwerte automatisch berechnen (UI)
 - Service-Layer bereits implementiert ✅
 
 ### Phase 3: UI Dashboard (WP6)
-**Abhängigkeiten**: WP4 + WP5 komplett
-
-- **WP6 UC7**: Verfallsdatum-Warnungen Dashboard
-- **WP6 UC8**: Einkaufslisten Generator UI
-- Service-Layer teilweise implementiert (UC8 noch TODO)
+Abhängigkeit: WP4 + WP5 komplett.
+- **UC7**: Verfallsdatum-Warnungen Dashboard
+- **UC8**: Einkaufslisten Generator UI (Service-Layer noch TODO)
 
 ### Phase 4: Infrastruktur & Deployment
-**Abhängigkeiten**: Alle UI-Komponenten komplett
-
-- **TrueNAS Docker-Integration**:
-  - Dockerfile für ASP.NET Core 8 Blazor
-  - Docker Compose (App + SQLite)
-  - TrueNAS Container Deployment
-  - Networking + SSL/TLS (optional: reverse proxy)
-  - Referenz: `diagrams/architecture-deployment.drawio` (teilweise vorhanden)
-
-- **Performance-Tuning**:
-  - Database Query Optimization (Indexing)
-  - UI Rendering Performance (Blazor SSR vs Server)
-  - Caching Strategy (Output Cache, Service Cache)
-  - Load Testing (3 concurrent users requirement)
-  - Monitoring & Logging (optional)
+Abhängigkeit: Alle UI-Komponenten komplett.
+- **TrueNAS Docker**: Dockerfile (ASP.NET Core 8), Docker Compose (App + SQLite), Container-Deployment, Networking + optional SSL/Reverse Proxy. Referenz: `diagrams/architecture-deployment.drawio` (teilweise vorhanden)
+- **Performance**: DB-Indexing, Blazor SSR vs. Server, Caching, Load Testing (3 gleichzeitige Nutzer), Monitoring/Logging (optional)
 
 ---
 
 ## 📁 WICHTIGE DATEIEN
 
-**Agent-Konfiguration**:
-- `CLAUDE.md` – Orchester-Workflow, Agenten-Definitionen, Git-Konventionen
-- `claude/agents/*.md` – Individuelle Agent-Definitionen
+**Steuerung**: `CLAUDE.md` (Orchester-Workflow) · `UI-PHASE-PLAN.md` (WP-Zuschnitt, UI-Reihenfolge) · `claude/agents/*.md`
 
-**Dokumentation**:
-- `docs/architecture-overview.html` – Projekt-Übersicht (master doc)
-- `docs/features/UC*.html` – Pro Use-Case detailliert
-- `diagrams/use-cases.drawio` – Status-Diagramm
+**Dokumentation**: `docs/architecture-overview.html` (Master) · `docs/features/UC*.html` · `requirements/use-cases.drawio` (Status-Diagramm) · `requirements/analysis.md` (v1.0-Scope)
 
-**Code**:
-- `src/App/Services/Classes/*.cs` – Business Logic (alle fertig)
-- `src/App/Components/Pages/*/*.razor` – UI-Komponenten
-- `src/Tests/` – Unit + Integration + bUnit-Tests
-
----
-
-**Last Updated**: 2026-08-08 (WP4 UC6 UI-Completion: 361/361 Tests grün, 4-Teil Dokumentation komplett)  
-**Current Branch**: `master` (mit UC1-UC10 Service-Layer + WP4 UC1/UC2/UC6/UC9 UI-Layer + vollständiger Dokumentation)  
-**Ready For (nächste Session)**: 
-- **WP4 UC4/UC10 UI-Entwicklung** — Baseline jetzt stabil (90 UI-Tests all GRÜN)
-- **WP4 UC3 Export-Feature** — Vorerst BLOCKIERT (kein Export-Service in v1.0, Phase 2+)
-- **WP5 Rezepte-UI** — Nach UC4/UC10 UI-Abschluss
-- **Integration-Tests & Docker-Deployment** — Optional Phase 3 oder später
+**Code**: `src/App/Services/Classes/*.cs` (alle fertig) · `src/App/Components/Pages/*/*.razor` · `src/Tests/` (Unit + Integration + bUnit)
