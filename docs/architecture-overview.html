@@ -159,9 +159,9 @@
 
                 <!-- UC6 -->
                 <div class="uc-card done">
-                    <h4><a href="features/UC6-Verbrauchausbuchen.html">UC6: Verbrauch ausbuchen</a></h4>
-                    <p>Älteste Packung nach Verfallsdatum löschen (FIFO).</p>
-                    <span class="status-badge done">✅ Fertig (gemergt)</span>
+                    <h4><a href="features/UC6-VerbrauchAusbuchen.html">UC6: Verbrauch ausbuchen</a></h4>
+                    <p>Service (10 Tests) + UI VerbrauchListe.razor (10 bUnit-Tests) — Älteste Packung nach Verfallsdatum löschen (FIFO).</p>
+                    <span class="status-badge done">✅ Fertig (Service + UI komplett)</span>
                 </div>
 
                 <!-- UC7 -->
@@ -332,10 +332,12 @@ cat CONTEXT_SUMMARY.md
                 <li>✅ <strong>WP4 UC2: Lagerbestand UI (12 bUnit-Tests + 2 Blazor-Komponenten + 4-Teil-Dokumentation)</strong></li>
                 <li>✅ UC3: Nährwerte (23 Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ UC4: Rezepte verwalten (67 Tests + Code + 4-Teil-Dokumentation)</li>
-                <li>✅ UC6: Verbrauch ausbuchen (10 Tests + Code + 4-Teil-Dokumentation)</li>
-                <li>✅ UC9: Lagerorte (18 Tests + Code + 4-Teil-Dokumentation)</li>
+                <li>✅ UC6: Verbrauch ausbuchen (10 Service-Tests + Code + 4-Teil-Dokumentation)</li>
+                <li>✅ <strong>WP4 UC6: Verbrauch ausbuchen UI (10 bUnit-Tests + VerbrauchListe.razor + VerbrauchZeile.cs + 4-Teil-Dokumentation)</strong></li>
+                <li>✅ UC9: Lagerorte (18 Service-Tests + Code + 4-Teil-Dokumentation)</li>
+                <li>✅ <strong>WP4 UC9: Lagerorte UI (8 bUnit-Tests + LagerortListe.razor + LagerortForm.razor + 4-Teil-Dokumentation)</strong></li>
                 <li>✅ UC10: Produktinstanzen mit MHD (32 Tests + Code + 4-Teil-Dokumentation)</li>
-                <li>✅ <strong>GESAMT: 351/351 Tests GRÜN ✅ (Service-Layer: 271 Tests | UI-Layer: 80 bUnit-Tests) — @onclick Handler Fix (2026-08-08)</strong></li>
+                <li>✅ <strong>GESAMT: 361/361 Tests GRÜN ✅ (Service-Layer: 271 Tests | UI-Layer: 90 bUnit-Tests) — @onclick Handler Fix (2026-08-08)</strong></li>
                 <li>✅ Kontext-Dokumentation + Sequence-Diagramme + 4-Teil-Dokumentation für alle UCs</li>
                 <li>✅ Validierungs-Reports (UC1/UC2/UC3/UC4/UC6/UC9/UC10 Service + WP4 UI = Alle Tests grün)</li>
                 <li>✅ <strong>UI-Fix Phase 2 FERTIG: @onclick Event-Handler Bug-Fix (fehlender Namespace) — 351/351 Tests GRÜN ✅</strong></li>
@@ -350,7 +352,10 @@ cat CONTEXT_SUMMARY.md
                 <li>✅ <strong>UI-Shell-Layout (Bootstrap 5.3.3)</strong> – FERTIG! (15/24 UI-Tests GRÜN)</li>
                 <li>✅ <strong>WP4 UC2: Lagerbestand UI</strong> – FERTIG! (12/12 bUnit-Tests GRÜN + Dokumentation komplett)</li>
                 <li>✅ <strong>WP4 UC1: Lebensmittel UI</strong> – FERTIG! (51/51 bUnit-Tests GRÜN + Dokumentation komplett)</li>
-                <li>⏳ WP4 Weitere UI-Komponenten (UC3, UC4, UC6, UC9, UC10)</li>
+                <li>✅ <strong>WP4 UC6: Verbrauch ausbuchen UI</strong> – FERTIG! (10 bUnit-Tests + VerbrauchListe.razor)</li>
+                <li>✅ <strong>WP4 UC9: Lagerorte UI</strong> – FERTIG! (8 bUnit-Tests + Liste + Form)</li>
+                <li>⚠️ <strong>WP4 UC3: Lagerbestand Export UI</strong> – BLOCKIERT (kein Export-Service in v1.0, Phase 2+)</li>
+                <li>⏳ WP4 Weitere UI-Komponenten (UC4, UC10)</li>
                 <li>⏳ Integration Test Suite</li>
                 <li>⏳ Docker Deployment auf TrueNAS</li>
             </ul>

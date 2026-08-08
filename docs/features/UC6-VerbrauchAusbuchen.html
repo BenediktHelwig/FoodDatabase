@@ -138,9 +138,143 @@ public interface IVerbrauchAusbuchangService
         </section>
 
         <section>
+            <h2>🎨 UI-Layer Implementation (WP4)</h2>
+
+            <h3>VerbrauchListe.razor Komponente</h3>
+            <p><strong>Route:</strong> <code>/verbrauchen</code> (Blazor Page)</p>
+            <p><strong>Beschreibung:</strong> Interaktive Tabelle mit allen Lebensmitteln im Bestand. Für jedes Lebensmittel zeigt die UI die Gesamtmenge an sowie einen Button zum Ausbuchen (FIFO nach Verfallsdatum). Bei unterschrittenem Mindestbestand wird ein gelbes Badge angezeigt.</p>
+
+            <h4>Service-Abhängigkeiten (Dependency Injection)</h4>
+            <ul>
+                <li><code>ILebensmittelService</code> — GetAllLebensmittelAsync() zum Laden aller Katalog-Einträge</li>
+                <li><code>ILagerbestandService</code> — GetGesamtmengeAsync() für Summe, CheckMindestbestandUnterschrittenAsync() für Badge-Trigger</li>
+                <li><code>IVerbrauchAusbuchangService</code> — VerbauchtProduktAsync(lebensmittelId) für FIFO-Ausbuchung (Service-Layer)</li>
+            </ul>
+
+            <h4>Komponenten-Struktur</h4>
+            <table>
+                <tr>
+                    <th>Element</th>
+                    <th>Typ</th>
+                    <th>Zweck</th>
+                </tr>
+                <tr>
+                    <td><strong>verbrauchZeilen</strong></td>
+                    <td>List&lt;VerbrauchZeile&gt;?</td>
+                    <td>Geladene Daten (Id, Name, Einheit, Gesamtmenge, MindestbestandUnterschritten)</td>
+                </tr>
+                <tr>
+                    <td><strong>fehler</strong></td>
+                    <td>string</td>
+                    <td>Fehlertext aus fehlgeschlagener Service-Operation</td>
+                </tr>
+                <tr>
+                    <td><strong>lädt</strong></td>
+                    <td>bool</td>
+                    <td>Loading-State (Spinner anzeigen während AlleAbrufen())</td>
+                </tr>
+                <tr>
+                    <td><strong>ergebnis</strong></td>
+                    <td>string</td>
+                    <td>Meldung vom letzten Verbrauch-Service-Call (ServiceResult.Message)</td>
+                </tr>
+                <tr>
+                    <td><strong>ergebnisMeldungErfolgreich</strong></td>
+                    <td>bool</td>
+                    <td>Flag für Alert-Farbe: true=green (alert-success), false=yellow (alert-warning)</td>
+                </tr>
+            </table>
+
+            <h4>Workflow aus Nutzersicht (Happy Path)</h4>
+            <pre>
+1. Benutzer navigiert zu /verbrauchen
+2. Component lädt → spinner angezeigt
+3. AlleAbrufen() ruft ILebensmittelService + ILagerbestandService auf
+4. Tabelle rendert mit Namen, Gesamtmengen, Badge wenn Mindestbestand unterschritten
+5. Benutzer klickt "Verbrauchen" Button (z.B. für ID 5)
+6. VerbrauchtAusbuchung(5) wird aufgerufen:
+   - Ruft IVerbrauchAusbuchangService.VerbauchtProduktAsync(5) auf
+   - Service: Findet älteste Packung nach MHD, löscht sie (FIFO), gibt ServiceResult zurück
+7. UI zeigt Ergebnis-Alert (grün bei Erfolg, gelb bei Fehler)
+8. AlleAbrufen() lädt Tabelle neu (aktualisierte Mengen)
+            </pre>
+
+            <h4>Fehlerfall: Keine Packung vorhanden</h4>
+            <pre>
+1. Benutzer klickt "Verbrauchen" für Lebensmittel ohne Packung
+2. Service-Call wirft oder gibt ServiceResult(false, "...") zurück
+3. UI zeigt gelber Alert: "Produkt nicht vorhanden" oder ähnlich
+4. Tabelle bleibt sichtbar (kein Fehler im Laden, sondern nur Geschäftslogik)
+            </pre>
+
+            <h4>Edge Cases (abgedeckt durch Tests)</h4>
+            <ul>
+                <li><strong>Leere Liste:</strong> Wenn keine Lebensmittel vorhanden → Message: "Keine Lebensmittel vorhanden."</li>
+                <li><strong>Gesamtmenge ≤ 0:</strong> Button wird disabled (kann nicht ausbuchen)</li>
+                <li><strong>Exception während Service-Call:</strong> Fehler-Alert mit Exception-Message</li>
+                <li><strong>Multiple Packungen:</strong> Service sortiert nach MHD, älteste wird gelöscht (FIFO)</li>
+            </ul>
+
+            <h3>View-Model: VerbrauchZeile.cs</h3>
+            <p>Einfaches Data-Transfer-Object (DTO) für UI-Tabelle:</p>
+            <pre>
+public class VerbrauchZeile
+{
+    public int Id { get; set; }                                    // LebensmittelKatalog-ID
+    public string Name { get; set; } = "";                         // z.B. "Milch"
+    public string Einheit { get; set; } = "";                      // z.B. "l"
+    public decimal Gesamtmenge { get; set; }                       // Summe aller ProduktInstanzen
+    public bool MindestbestandUnterschritten { get; set; }         // Für Badge-Anzeige
+}
+            </pre>
+
+            <h3>Navigation Update</h3>
+            <p><code>NavMenu.razor</code> wurde um Link aktualisiert:</p>
+            <ul>
+                <li>Neue Zeile: <code>&lt;NavLink href="/verbrauchen"&gt;Verbrauchen&lt;/NavLink&gt;</code></li>
+                <li>Total Navigation-Links: 8 (Start, Lebensmittel, Lagerbestand, Verbrauchen, Lagerorte, Rezepte, Warnungen, Einkaufsliste)</li>
+                <li>Off-Canvas Panel schließt automatisch nach Link-Click (Bootstrap data-bs-dismiss)</li>
+            </ul>
+        </section>
+
+        <section>
             <h2>✅ Tests</h2>
 
-            <h3>Test Coverage (10/10 GRÜN ✅)</h3>
+            <h3>Test Coverage (20/20 GRÜN ✅ — 10 Unit Service + 10 UI bUnit)</h3>
+
+            <h4>Service-Tests (Unit, xUnit + Moq)</h4>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox" checked> Happy Path: Verbrauch erfolgreich</li>
+                    <li><input type="checkbox" checked> Happy Path: Mehrere Packungen (nur älteste löschen)</li>
+                    <li><input type="checkbox" checked> Happy Path: Eine einzelne Packung</li>
+                    <li><input type="checkbox" checked> Fehler: Keine Packung vorhanden</li>
+                    <li><input type="checkbox" checked> Fehler: LebensmittelId = 0</li>
+                    <li><input type="checkbox" checked> Fehler: LebensmittelId < 0</li>
+                    <li><input type="checkbox" checked> FIFO: Korrekte Sortierung nach Verfallsdatum</li>
+                    <li><input type="checkbox" checked> FIFO: Ignoriert andere Lebensmittel</li>
+                    <li><input type="checkbox" checked> Edge Case: Delete schlägt fehl</li>
+                    <li><input type="checkbox" checked> Edge Case: Abgelaufenes Produkt wird trotzdem gelöscht</li>
+                </ul>
+            </div>
+            <p><strong>Service-Test-Datei:</strong> <code>src/Tests/Unit/Services/VerbrauchAusbuchangServiceTests.cs</code> — 10 Tests ✅</p>
+
+            <h4>UI-Tests (bUnit)</h4>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox" checked> UI: Tabelle mit Verbrauchzeilen rendern (2 Lebensmittel)</li>
+                    <li><input type="checkbox" checked> UI: Badge anzeigen bei Mindestbestand unterschritten</li>
+                    <li><input type="checkbox" checked> UI: Badge nicht anzeigen wenn Mindestbestand OK</li>
+                    <li><input type="checkbox" checked> UI: Meldung "Keine Lebensmittel" wenn Liste leer</li>
+                    <li><input type="checkbox" checked> UI: VerbauchtProdukt-Service bei Button-Click aufrufen</li>
+                    <li><input type="checkbox" checked> UI: Erfolgs-Alert (grün) bei erfolgreicher Ausbuchung</li>
+                    <li><input type="checkbox" checked> UI: Fehler-Alert (gelb) bei fehlgeschlagener Ausbuchung</li>
+                    <li><input type="checkbox" checked> UI: Tabelle nach erfolgreicher Ausbuchung neuladen</li>
+                    <li><input type="checkbox" checked> UI: Fehler-Alert bei Exception während Laden</li>
+                    <li><input type="checkbox" checked> UI: Button disabled wenn Gesamtmenge ≤ 0</li>
+                </ul>
+            </div>
+            <p><strong>UI-Test-Datei:</strong> <code>src/Tests/Ui/VerbrauchListeTests.cs</code> — 10 bUnit-Tests ✅</p>
             <div class="checklist">
                 <ul>
                     <li><input type="checkbox" checked> Happy Path: Verbrauch erfolgreich</li>
@@ -156,9 +290,10 @@ public interface IVerbrauchAusbuchangService
                 </ul>
             </div>
 
-            <h3>Test-Datei</h3>
-            <p>Location: <code>src/Tests/Unit/Services/VerbrauchAusbuchangServiceTests.cs</code></p>
-            <p>Tests: <strong>10 Unit Tests (xUnit + Moq) – ALLE GRÜN ✅</strong></p>
+            <h3>Test-Zusammenfassung</h3>
+            <p><strong>Gesamt:</strong> 20/20 Tests GRÜN ✅ (10 Service-Unit + 10 UI-bUnit)</p>
+            <p><strong>Service-Layer:</strong> UC6-spezifische FIFO-Ausbuchungs-Logik (älteste Packung nach MHD)</p>
+            <p><strong>UI-Layer:</strong> VerbrauchListe Komponente (Tabelle, Buttons, Alerts, Error-Handling)</p>
         </section>
 
         <section>
@@ -184,9 +319,12 @@ public interface IVerbrauchAusbuchangService
 
             <div class="checklist">
                 <ul>
-                    <li><input type="checkbox" checked> Tests geschrieben (TDD Red) – 10/10 ✅</li>
-                    <li><input type="checkbox" checked> Code implementiert (TDD Green) – ServiceResult + IVerbrauchAusbuchangService + VerbrauchAusbuchangService</li>
-                    <li><input type="checkbox" checked> Code Review bestanden – Clean Code, SOLID-Prinzipien ✅</li>
+                    <li><input type="checkbox" checked> Service-Layer: Tests geschrieben (TDD Red) – 10/10 ✅</li>
+                    <li><input type="checkbox" checked> Service-Layer: Code implementiert (TDD Green) – ServiceResult + IVerbrauchAusbuchangService + VerbrauchAusbuchangService</li>
+                    <li><input type="checkbox" checked> Service-Layer: Code Review bestanden – Clean Code, SOLID-Prinzipien ✅</li>
+                    <li><input type="checkbox" checked> UI-Layer: Tests geschrieben (bUnit) – 10/10 ✅</li>
+                    <li><input type="checkbox" checked> UI-Layer: Code implementiert (VerbrauchListe.razor + VerbrauchZeile.cs + NavMenu Update)</li>
+                    <li><input type="checkbox" checked> UI-Layer: Code Review bestanden – Clean Code, Error-Handling, KISS ✅</li>
                     <li><input type="checkbox" checked> Diagramme aktualisiert – Sequence-Diagramm (uc6-verbrauchausbuchangung.drawio)</li>
                     <li><input type="checkbox" checked> Dokumentation fertig – Diese Seite + Architecture-Overview aktualisiert</li>
                     <li><input type="checkbox"> User Review & Approval – ⏳ Pending</li>
@@ -197,7 +335,10 @@ public interface IVerbrauchAusbuchangService
             <p><strong>Commits</strong>:</p>
             <ul>
                 <li>ed62d49: test(uc6): Add VerbrauchAusbuchangService tests (10/10 green)</li>
-                <li>[Pending] docs(uc6): Add documentation and diagrams</li>
+                <li>[Service] feat(uc6): Implement VerbrauchAusbuchangService + ServiceResult (FIFO-Logik)</li>
+                <li>[UI] test(uc6-wp4): Add VerbrauchListeTests (10 bUnit-Tests)</li>
+                <li>[UI] feat(uc6-wp4): Implement VerbrauchListe.razor + VerbrauchZeile.cs + NavMenu update</li>
+                <li>[Docs] docs(uc6-wp4): Add comprehensive documentation (validation report + feature-html + architecture-overview)</li>
             </ul>
             <p><strong>Status</strong>: ✅ <strong>READY FOR USER REVIEW</strong></p>
         </section>

@@ -12,7 +12,7 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
-        public void RendersAllSevenNavLinks()
+        public void RendersAllEightNavLinks()
         {
             // Arrange
             // Act
@@ -20,12 +20,13 @@ namespace FoodDatabase.Tests.Ui
 
             // Assert
             var links = cut.FindAll("a.nav-link");
-            Assert.Equal(7, links.Count);
+            Assert.Equal(8, links.Count);
 
             var hrefs = links.Select(l => l.GetAttribute("href")).ToList();
             Assert.Contains("/", hrefs);
             Assert.Contains("/lebensmittel", hrefs);
             Assert.Contains("/lagerbestand", hrefs);
+            Assert.Contains("/verbrauchen", hrefs);
             Assert.Contains("/lagerorte", hrefs);
             Assert.Contains("/rezepte", hrefs);
             Assert.Contains("/warnungen", hrefs);
