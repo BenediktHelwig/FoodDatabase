@@ -21,7 +21,7 @@ Es gibt **22 vorbestehende rote UI-Tests** (nicht durch UC9 verursacht — bewie
 1. Die 22 roten Tests auf **grün** bringen.
 2. `CONTEXT_SUMMARY.md` auf den **realen** Test-Status korrigieren (kein Fantasie-Stand mehr).
 
-**Wichtig:** Alle 22 Fehler sind **Test-seitige Probleme** (falsche bUnit-API-Nutzung), **keine Produktionsfehler**. Beleg: Die neuen UC9-Tests (`LagerortFormTests`) nutzen `.Input()`/`.Click()` erfolgreich, und die UI-Komponenten rendern korrekt. Der Produktivcode (`.razor`) soll **möglichst nicht** geändert werden — der Fix gehört in die Testdateien. Produktivcode nur anfassen, wenn die Diagnose zweifelsfrei einen echten Komponentenfehler zeigt (dann Dev-Agent-Rolle).
+**WICHTIG (nach Analyse korrigiert):** Nicht alle 22 Fehler waren Test-seitig! Die Root-Cause war **ein Produktionsfehler**: fehlender Namespace `@using Microsoft.AspNetCore.Components.Web` in `_Imports.razor`. Das führte zu Silent Failure bei Event-Handler-Kompilierung (Handlers waren deklariert, aber zur Runtime nicht verdrahtet). Die UC9-Tests funktionierten, weil sie vor dem Namespace-Fehler erstellt wurden. Nach Hinzufügen des Namespace werden alle 22 Tests grün. Beleg: `reviews/ui-onclick-fix-validation.md` mit detaillierter Root-Cause-Analyse (7-Punkte-Beweiskette).
 
 ---
 
@@ -123,5 +123,13 @@ dotnet test  FoodDatabase.sln          # Zielzustand siehe unten
 | NUR bei bewiesenem Komponentenfehler | betroffene `.razor` unter `src/App/Components/` | — |
 
 ## Referenz-Dateien (funktionierende Muster, nicht ändern)
-- `src/Tests/Ui/LagerortFormTests.cs`, `src/Tests/Ui/LagerortListeTests.cs` — grüne Interaktions-Tests (UC9)
+- `src/Tests/Ui/LagerortFormTests.cs`, `src/Tests/Ui/LagerortListeTests.cs` — grüne Interaktions-Tests (UC9) — Diese Tests funktionierten bereits, weil sie vor dem Namespace-Bug erstellt wurden oder weil der Fehler nicht alle Event-Handler betraf
 - `src/Tests/Ui/ProduktInstanzFormTests.cs` — grünes Form-Test-Muster
+
+## Nachtrag: Tatsächliche Root-Cause & Lösung (2026-08-08)
+Siehe: `reviews/ui-onclick-fix-validation.md`
+- **Root-Cause**: Fehlender `@using Microsoft.AspNetCore.Components.Web` Namespace in `_Imports.razor`
+- **Symptom**: Event-Handler (`@onclick`, `@onchange`) wurden kompiliert, aber zur Runtime nicht verdrahtet (Silent Failure)
+- **Fix**: 1 Zeile hinzufügen: `@using Microsoft.AspNetCore.Components.Web`
+- **Ergebnis**: Alle 22 Tests (100%) grün, 0 Tests gelöscht/übersprungen
+- **Status**: ✅ PHASE 2 FERTIG (2026-08-08) — 351/351 Tests GRÜN ✅

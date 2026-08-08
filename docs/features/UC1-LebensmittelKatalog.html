@@ -189,7 +189,7 @@ public interface ILebensmittelService {
                         <li>✅ Loading-Spinner während Lade-State</li>
                     </ul>
                 </li>
-                <li><strong>Tests</strong>: 20 bUnit-Tests (Rendering, Suche, Löschen, Fehlerbehandlung, Navigation)</li>
+                <li><strong>Tests</strong>: 20/20 bUnit-Tests ✅ (Rendering, Suche, Löschen, Fehlerbehandlung, Navigation, Button-Click-Interaktionen)</li>
             </ul>
 
             <h3>2. LebensmittelForm.razor (Neu/Bearbeiten-Formular)</h3>
@@ -249,6 +249,17 @@ public interface ILebensmittelService {
                 </li>
                 <li><strong>Tests</strong>: 15 bUnit-Tests (Rendering, Datenladen, Nährwert-Speichern, Fehlerbehandlung)</li>
             </ul>
+
+            <h3>Bug-Fix: @onclick Event-Handler (2026-08-08)</h3>
+            <p>
+                <strong>Problem</strong>: 10 Tests in LebensmittelListe schlugen fehl: "The element does not have an event handler for the event 'onclick'".
+                <br/>
+                <strong>Root-Cause</strong>: Fehlender Namespace-Import `@using Microsoft.AspNetCore.Components.Web` in `_Imports.razor`.
+                <br/>
+                <strong>Lösung</strong>: Namespace-Import hinzugefügt → alle 10 Button-Click-Tests grün.
+                <br/>
+                <strong>Details</strong>: Siehe <code>reviews/ui-onclick-fix-validation.md</code>
+            </p>
 
             <h3>Test-Konstruktion (bUnit)</h3>
             <ul>
@@ -428,7 +439,7 @@ IRepository&lt;LebensmittelKatalog&gt;
 
         <!-- Footer -->
         <footer>
-            <p>Zuletzt aktualisiert: 2026-07-12 | Status: ✅ Complete & Tested (70/70 Tests Passing: 19 Service + 51 UI) | Doc Version: 3.0</p>
+            <p>Zuletzt aktualisiert: 2026-08-08 | Status: ✅ Complete & Tested (70/70 Tests Passing: 19 Service + 51 UI, @onclick Bug-Fix dokumentiert) | Doc Version: 3.1
             <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
         </footer>
     </div>
