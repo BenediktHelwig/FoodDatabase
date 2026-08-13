@@ -186,8 +186,10 @@ unten — unverändert). Danach `review-agent` im Modus `docs`.
    Installation Access Token der GitHub App, nicht über den persönlichen `gh`-Login. `GH_TOKEN`
    muss in **jedem einzelnen Tool-Aufruf** neu gesetzt werden, der pusht oder eine PR öffnet —
    Shell-Variablen überleben den Aufruf nicht. Ein Aufruf ohne Token fällt still auf das
-   persönliche Konto zurück, und die PR ist dann wieder nicht freigebbar. Ein PreToolUse-Hook
-   blockiert solche Aufrufe; siehe „Selbstprüfung" unten.
+   persönliche Konto zurück, und die PR ist dann wieder nicht freigebbar. Ein PreToolUse-Hook in
+   `.claude/settings.json` weist solche Aufrufe ab, bevor sie laufen — er lässt `git push` und
+   `gh pr create` nur durch, wenn im selben Kommando das Token-Skript steht. Siehe auch
+   „Selbstprüfung" unten.
 4. **Nie auf `master` pushen, nie force-pushen, nie selbst mergen.** Der Merge ist Sache des Users,
    nachdem er die PR gesichtet hat.
 5. **Review-Anmerkungen kommen als zusätzlicher Commit** auf demselben Branch zurück, wodurch sich
