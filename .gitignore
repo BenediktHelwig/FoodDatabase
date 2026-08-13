@@ -45,3 +45,6 @@ backup/
 
 # Properties
 Properties/
+
+# Agent-Orchester: ephemere Feature-Pläne und PR-Entwürfe (nicht versioniert)
+.agents/
