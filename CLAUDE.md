@@ -157,11 +157,21 @@ unten — unverändert). Danach `review-agent` im Modus `docs`.
 1. Du verfasst den PR-Text selbst.
 2. `plan-writer` schreibt ihn nach `.agents/pull-request.md` und aktualisiert
    `CONTEXT_SUMMARY.md` (die erledigten Punkte raus, das nächste Feature rein).
-3. Du prüfst `gh auth status` und `git remote get-url origin`. Beides erfüllt: Branch pushen,
-   `gh pr create --title "<Titel>" --body-file .agents/pull-request.md` ausführen, dem User die
-   PR-URL zur Abnahme melden. Scheitert eine der beiden Prüfungen (z. B. auf einem anderen Rechner
-   ohne `gh`-Login): Branch und Commits bleiben lokal, die Nachricht bleibt in
-   `.agents/pull-request.md` zum manuellen Einfügen — kein Abbruch wegen eines fehlenden Tools.
+3. Du holst das Token der GitHub App und öffnest damit Push und PR:
+
+   ```powershell
+   $env:GH_TOKEN = & "C:\Users\bened\.github-app\Get-GitHubAppToken.ps1"
+   git push -u origin HEAD
+   gh pr create --title "<Titel>" --body-file .agents/pull-request.md
+   ```
+
+   Danach dem User die PR-URL zur Abnahme melden. Er kann sie regulär approven und mergen — der
+   Admin-Bypass wird nicht mehr gebraucht.
+
+   Scheitert das Token-Skript (fehlender Key, App deinstalliert, kein Netz): Branch und Commits
+   bleiben lokal, die Nachricht bleibt in `.agents/pull-request.md` zum manuellen Einfügen — kein
+   Abbruch wegen eines fehlenden Tools. **Kein Rückfall auf den persönlichen `gh`-Login** — eine PR
+   unter dem Namen des Users ist genau das Problem, das diese App löst.
 4. `.agents/plans/<feature>.md` löschen.
 
 ---
@@ -172,12 +182,28 @@ unten — unverändert). Danach `review-agent` im Modus `docs`.
    Schema (`feat/[use-case-name]-[phase]`, Conventional-Commits-Stil).
 2. **Ein Commit pro Phase** — Tests, Implementierung, Dokumentation. Damit bleibt die
    TDD-Sequenz im Verlauf sichtbar: ein roter Test-Commit, dann ein grüner Implementierungs-Commit.
-3. **Am Ende eine Pull Request öffnen** — siehe Abschnitt 5 oben. `gh` ist auf diesem System
-   installiert und authentifiziert; das ist der Normalfall, nicht die Ausnahme.
+3. **Am Ende eine Pull Request öffnen** — siehe Abschnitt 5 oben. Push und PR laufen über das
+   Installation Access Token der GitHub App, nicht über den persönlichen `gh`-Login. `GH_TOKEN`
+   muss deshalb **vor** dem ersten Push gesetzt sein; der global konfigurierte Credential-Helper
+   (`gh auth git-credential`) reicht es von dort an Git weiter.
 4. **Nie auf `master` pushen, nie force-pushen, nie selbst mergen.** Der Merge ist Sache des Users,
    nachdem er die PR gesichtet hat.
 5. **Review-Anmerkungen kommen als zusätzlicher Commit** auf demselben Branch zurück, wodurch sich
    die PR selbst aktualisiert. Nie den Verlauf umschreiben, den der User schon gesehen hat.
+
+### Identität — wer commitet, wer die PR öffnet
+
+- **Commits** laufen auf `claudecodeagents[bot]`. Das ist in `FoodDatabase/.git/config` repo-lokal
+  hinterlegt und gilt automatisch — du setzt beim Commit nichts extra. Global bleibt deine
+  Identität unangetastet, andere Repos sind nicht betroffen.
+- **PR-Autor** ist die App. Nur das entscheidet über die Freigabe: GitHub blockt Self-Approval am
+  PR-Autor, die Committer-Identität ist dafür irrelevant. Weil die PR vom Bot kommt, ist der User
+  regulärer Reviewer statt Autor — genau deshalb entfällt der Bypass.
+- **Das Token** ist 60 Minuten gültig und wird nie in eine Datei, eine Remote-URL oder in
+  `.git/config` geschrieben — es lebt allein in `$env:GH_TOKEN` der laufenden Session.
+- **Den Private Key liest du nie.** Er wird ausschließlich vom Token-Skript verwendet; eine
+  `deny`-Regel in `~/.claude/settings.json` sperrt den Lesezugriff zusätzlich technisch — sie gilt
+  global, weil auch der Key global liegt.
 
 **Du führst jeden Git- und `gh`-Befehl selbst aus.** Die Fachagenten schreiben Dateien und
 berichten; du hältst das Ergebnis fest. Git bleibt bei einer Rolle, damit niemand einen Commit
@@ -289,7 +315,7 @@ Eskalation an den User (siehe oben).
 | **Dokumentation kontinuierlich** | Nicht erst am Ende der Entwicklung |
 | **Clean Code + KISS** | Keine Over-Engineering, Simplicitas vor Komplexität |
 | **Review-Eskalation** | 3 Fehlschläge → User-Beteiligung + Diskussion |
-| **Lokale Ausführung** | Keine Internet-Calls außer `gh`, alles läuft auf deinem System |
+| **Lokale Ausführung** | Keine Internet-Calls außer `gh` und dem Token-Endpoint der GitHub App, alles läuft auf deinem System |
 
 ---
 
@@ -315,6 +341,12 @@ FoodDatabase/
 │   ├── FoodDatabase.App/          ← Produktivcode (Services, Models, Components/Pages)
 │   └── FoodDatabase.Tests/        ← Unit-/Integration-/bUnit-Tests
 └── reviews/                        ← Review-Reports (review-agent), historische MR-Dokumente
+
+C:\Users\bened\.github-app\         ← außerhalb des Repos, nicht versioniert
+├── claudecodeagents.private-key.pem ← Private Key der GitHub App (nie lesen)
+├── config.json                     ← App-ID, Installation-ID, Bot-Identität
+├── Get-GitHubAppToken.ps1          ← liefert das Installation Access Token für Push + PR
+└── README.md                       ← Permissions, Key-Rollover, weitere Repos anbinden
 ```
 
 ---
