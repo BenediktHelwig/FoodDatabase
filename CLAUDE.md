@@ -184,8 +184,12 @@ unten — unverändert). Danach `review-agent` im Modus `docs`.
    TDD-Sequenz im Verlauf sichtbar: ein roter Test-Commit, dann ein grüner Implementierungs-Commit.
 3. **Am Ende eine Pull Request öffnen** — siehe Abschnitt 5 oben. Push und PR laufen über das
    Installation Access Token der GitHub App, nicht über den persönlichen `gh`-Login. `GH_TOKEN`
-   muss deshalb **vor** dem ersten Push gesetzt sein; der global konfigurierte Credential-Helper
-   (`gh auth git-credential`) reicht es von dort an Git weiter.
+   muss in **jedem einzelnen Tool-Aufruf** neu gesetzt werden, der pusht oder eine PR öffnet —
+   Shell-Variablen überleben den Aufruf nicht. Ein Aufruf ohne Token fällt still auf das
+   persönliche Konto zurück, und die PR ist dann wieder nicht freigebbar. Ein PreToolUse-Hook in
+   `.claude/settings.json` weist solche Aufrufe ab, bevor sie laufen — er lässt `git push` und
+   `gh pr create` nur durch, wenn im selben Kommando das Token-Skript steht. Siehe auch
+   „Selbstprüfung" unten.
 4. **Nie auf `master` pushen, nie force-pushen, nie selbst mergen.** Der Merge ist Sache des Users,
    nachdem er die PR gesichtet hat.
 5. **Review-Anmerkungen kommen als zusätzlicher Commit** auf demselben Branch zurück, wodurch sich
@@ -200,10 +204,28 @@ unten — unverändert). Danach `review-agent` im Modus `docs`.
   PR-Autor, die Committer-Identität ist dafür irrelevant. Weil die PR vom Bot kommt, ist der User
   regulärer Reviewer statt Autor — genau deshalb entfällt der Bypass.
 - **Das Token** ist 60 Minuten gültig und wird nie in eine Datei, eine Remote-URL oder in
-  `.git/config` geschrieben — es lebt allein in `$env:GH_TOKEN` der laufenden Session.
+  `.git/config` geschrieben. Es lebt nur in dem einen Kommando, das es setzt — nicht in der
+  Sitzung. Jeder weitere Push- oder PR-Aufruf holt es erneut.
 - **Den Private Key liest du nie.** Er wird ausschließlich vom Token-Skript verwendet; eine
   `deny`-Regel in `~/.claude/settings.json` sperrt den Lesezugriff zusätzlich technisch — sie gilt
   global, weil auch der Key global liegt.
+
+### Selbstprüfung — wenn du den Aufbau kontrollierst
+
+`git config --get credential.helper` zeigt nur `manager` (GCM aus der System-gitconfig). Das ist
+**kein** Hinweis auf ein Problem: für `github.com` gilt ein host-spezifischer Eintrag in der
+User-gitconfig, dessen erster, leerer Wert die geerbte Helper-Liste verwirft und danach `gh`
+einträgt. Wer nur den unqualifizierten Schlüssel liest, zieht hier den falschen Schluss.
+
+Prüfe deshalb die Kette, die `git push` wirklich nimmt:
+
+```powershell
+"protocol=https`nhost=github.com`n`n" | git credential fill
+```
+
+Mit gesetztem `GH_TOKEN` muss dort `username=x-access-token` und ein `ghs_`-Passwort stehen. Kommt
+`BenediktHelwig` mit einem `gho_`-Passwort, fehlt das Token im Aufruf — dann greift der Fallback auf
+das persönliche Konto.
 
 **Du führst jeden Git- und `gh`-Befehl selbst aus.** Die Fachagenten schreiben Dateien und
 berichten; du hältst das Ergebnis fest. Git bleibt bei einer Rolle, damit niemand einen Commit

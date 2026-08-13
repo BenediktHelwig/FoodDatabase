@@ -4,6 +4,20 @@
     "defaultMode": "plan"
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "PowerShell|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "timeout": 5,
+            "statusMessage": "Prüfe GitHub-App-Token...",
+            "command": "in=$(cat); case \"$in\" in *Get-GitHubAppToken*) exit 0;; esac; case \"$in\" in *\"gh pr create\"*|*\"git push\"*) printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Token fehlt in diesem Aufruf. Push und PR muessen ueber das GitHub-App-Token laufen, sonst laufen sie unter dem persoenlichen Konto und die PR ist nicht mehr freigebbar. Shell-State ueberlebt keinen Tool-Aufruf: setze im SELBEN Kommando zuerst GH_TOKEN aus Get-GitHubAppToken.ps1, danach git push / gh pr create.\"}}';; esac; exit 0"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "",
