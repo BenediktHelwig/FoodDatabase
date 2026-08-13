@@ -187,9 +187,12 @@ unten — unverändert). Danach `review-agent` im Modus `docs`.
    muss in **jedem einzelnen Tool-Aufruf** neu gesetzt werden, der pusht oder eine PR öffnet —
    Shell-Variablen überleben den Aufruf nicht. Ein Aufruf ohne Token fällt still auf das
    persönliche Konto zurück, und die PR ist dann wieder nicht freigebbar. Ein PreToolUse-Hook in
-   `.claude/settings.json` weist solche Aufrufe ab, bevor sie laufen — er lässt `git push` und
-   `gh pr create` nur durch, wenn im selben Kommando das Token-Skript steht. Siehe auch
-   „Selbstprüfung" unten.
+   `.claude/settings.json` weist solche Aufrufe ab, bevor sie laufen — er lässt sie nur durch, wenn
+   im selben Kommando das Token-Skript steht. Er prüft auf `push` zusammen mit `git` sowie auf
+   `pr create`, deckt also auch Formen wie `git -C <pfad> push` ab. Das ist bewusst grob: Ein
+   harmloses Kommando wie `git log --grep=push` wird mitblockiert. Setz dann einfach den
+   Token-Abruf davor — ein Fehlalarm kostet nichts, ein durchgerutschter Push die Freigabe.
+   Siehe auch „Selbstprüfung" unten.
 4. **Nie auf `master` pushen, nie force-pushen, nie selbst mergen.** Der Merge ist Sache des Users,
    nachdem er die PR gesichtet hat.
 5. **Review-Anmerkungen kommen als zusätzlicher Commit** auf demselben Branch zurück, wodurch sich
