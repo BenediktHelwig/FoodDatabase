@@ -298,13 +298,12 @@ All tests GRÜN — UC6 UI-Schicht bereit für Dokumentation & Deployment
 - **RESULT**: ✅ Keine Lücken in der Dokumentation
 
 ### Diagramme
-- ✅ **requirements/use-cases.drawio**: UC6 bereits korrekt (grün, ✅)
-- ⚠️ **diagrams/sequence-uc6-verbrauchausbuchangung.drawio**: 
-  - Aktuell: Nur Service-Layer dokumentiert
-  - Empfehlung: Sollte UI-Layer (VerbrauchListe.razor) hinzufügen
-  - **Status**: NICHT MODIFIZIERT (XML-Struktur zu komplex, Risiko > Nutzen per Koordinator-Richtlinie)
-  - **Dokumentation**: Limitation im Validierungsbericht vermerkt
-- **RESULT**: ⚠️ Sequence-Diagram vollständig, aber UI-Layer Extension ausstehend (dokumentiert)
+- ✅ **requirements/use-cases.drawio**: UC6 mit korrekter Legende (Commit 1758dbe: UC6 10 Service + 10 UI statt "Service only")
+- ✅ **diagrams/sequence-uc6-verbrauchausbuchangung.drawio**: 
+  - Status: VOLLSTÄNDIG mit UI-Layer (Commit 1758dbe)
+  - Enthalten: Aktor-Lifeline, s1-msg0 Klick, s1-msg7/s2-msg5 Alert-Rückwege, Legende mit Komponente + Route + Workflow
+  - Ergebnis: Klarer, quellcode-verifizierter Ablauf
+- **RESULT**: ✅ Beide Diagramme korrekt und aktuell
 
 ---
 
@@ -320,8 +319,7 @@ All tests GRÜN — UC6 UI-Schicht bereit für Dokumentation & Deployment
 - Links sind Linux-Docker kompatibel
 - Roadmap ist realistisch (UC3 blockiert, UC6/UC9 fertig, UC4/UC10 aktiv)
 
-**Offene Punkte** (dokumentiert):
-- Sequence-Diagram sollte UI-Layer erweitert werden (manuell, nicht automatisiert)
+**Offene Punkte**: keine
 
 ---
 

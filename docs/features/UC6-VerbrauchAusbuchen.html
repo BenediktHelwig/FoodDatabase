@@ -87,7 +87,7 @@ Verbrauch ausbuchen:
             <pre>
 1. Benutzer öffnet "Verbrauch ausbuchen"
 2. Wählt Lebensmittel (z.B. "Mehl" mit ID 5)
-3. Klickt "Ausbuchen"
+3. Klickt "Verbrauchen"
 4. System findet älteste Packung (nach MHD)
 5. System löscht die Packung
 6. Bestätigung: "Produkt erfolgreich verbraucht"
@@ -275,25 +275,17 @@ public class VerbrauchZeile
                 </ul>
             </div>
             <p><strong>UI-Test-Datei:</strong> <code>src/Tests/Ui/VerbrauchListeTests.cs</code> — 10 bUnit-Tests ✅</p>
-            <div class="checklist">
-                <ul>
-                    <li><input type="checkbox" checked> Happy Path: Verbrauch erfolgreich</li>
-                    <li><input type="checkbox" checked> Happy Path: Mehrere Packungen (nur älteste löschen)</li>
-                    <li><input type="checkbox" checked> Happy Path: Eine einzelne Packung</li>
-                    <li><input type="checkbox" checked> Fehler: Keine Packung vorhanden</li>
-                    <li><input type="checkbox" checked> Fehler: LebensmittelId = 0</li>
-                    <li><input type="checkbox" checked> Fehler: LebensmittelId < 0</li>
-                    <li><input type="checkbox" checked> FIFO: Korrekte Sortierung nach Verfallsdatum</li>
-                    <li><input type="checkbox" checked> FIFO: Ignoriert andere Lebensmittel</li>
-                    <li><input type="checkbox" checked> Edge Case: Delete schlägt fehl</li>
-                    <li><input type="checkbox" checked> Edge Case: Abgelaufenes Produkt wird trotzdem gelöscht</li>
-                </ul>
-            </div>
 
             <h3>Test-Zusammenfassung</h3>
             <p><strong>Gesamt:</strong> 20/20 Tests GRÜN ✅ (10 Service-Unit + 10 UI-bUnit)</p>
             <p><strong>Service-Layer:</strong> UC6-spezifische FIFO-Ausbuchungs-Logik (älteste Packung nach MHD)</p>
             <p><strong>UI-Layer:</strong> VerbrauchListe Komponente (Tabelle, Buttons, Alerts, Error-Handling)</p>
+
+            <h3>Diagramme</h3>
+            <ul>
+                <li><strong>Sequence-Diagramm:</strong> <a href="../../diagrams/sequence-uc6-verbrauchausbuchangung.drawio"><code>diagrams/sequence-uc6-verbrauchausbuchangung.drawio</code></a> — seit Commit 1758dbe mit UI-Ebene (Klick → VerbrauchtAusbuchung() → Alert)</li>
+                <li><strong>Use-Case-Diagramm:</strong> <a href="../../requirements/use-cases.drawio"><code>requirements/use-cases.drawio</code></a> (UC6 grün, Legende "10 Service + 10 UI")</li>
+            </ul>
         </section>
 
         <section>
@@ -327,8 +319,8 @@ public class VerbrauchZeile
                     <li><input type="checkbox" checked> UI-Layer: Code Review bestanden – Clean Code, Error-Handling, KISS ✅</li>
                     <li><input type="checkbox" checked> Diagramme aktualisiert – Sequence-Diagramm (uc6-verbrauchausbuchangung.drawio)</li>
                     <li><input type="checkbox" checked> Dokumentation fertig – Diese Seite + Architecture-Overview aktualisiert</li>
-                    <li><input type="checkbox"> User Review & Approval – ⏳ Pending</li>
-                    <li><input type="checkbox"> Merged zu Master – ⏳ Pending</li>
+                    <li><input type="checkbox" checked> User Review & Approval – PR #4</li>
+                    <li><input type="checkbox" checked> Merged zu Master – 2026-08-08 (cd1764e)</li>
                 </ul>
             </div>
 
@@ -340,7 +332,7 @@ public class VerbrauchZeile
                 <li>[UI] feat(uc6-wp4): Implement VerbrauchListe.razor + VerbrauchZeile.cs + NavMenu update</li>
                 <li>[Docs] docs(uc6-wp4): Add comprehensive documentation (validation report + feature-html + architecture-overview)</li>
             </ul>
-            <p><strong>Status</strong>: ✅ <strong>READY FOR USER REVIEW</strong></p>
+            <p><strong>Status</strong>: ✅ <strong>GEMERGT (PR #4, 2026-08-08)</strong></p>
         </section>
 
         <section>

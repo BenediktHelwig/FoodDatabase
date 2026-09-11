@@ -122,6 +122,14 @@
           <mxGeometry x="20" y="540" width="900" height="25" as="geometry"/>
         </mxCell>
 
+        <!-- Scenario 2: Message 0: Benutzer -> UI (Klick) -->
+        <mxCell id="s2-msg0" value="Klick &quot;Verbrauchen&quot; (btn-verbrauchen-999)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="65" y="570" as="sourcePoint"/>
+            <mxPoint x="170" y="570" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
         <!-- Scenario 2: Same Participants (no need to repeat) -->
         <mxCell id="s2-msg1" value="VerbauchtProduktAsync(lebensmittelId=999)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=9;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
