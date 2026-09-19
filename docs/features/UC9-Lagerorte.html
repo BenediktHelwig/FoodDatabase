@@ -178,9 +178,9 @@ Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
         </section>
 
         <section>
-            <h2>✅ Tests (18 Service + 8 UI = 26 GRÜN ✅)</h2>
+            <h2>✅ Tests (24 Service + 8 UI = 32 GRÜN ✅)</h2>
 
-            <h3>LagerortService Tests (18 Tests - Backend)</h3>
+            <h3>LagerortService Tests (24 Tests - Backend)</h3>
             <div class="checklist">
                 <ul>
                     <li><input type="checkbox" checked> GetAlleLagerorte: Happy Path – ✅ GRÜN</li>
@@ -232,11 +232,11 @@ Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
 
             <h3>Test Coverage Statistiken</h3>
             <ul>
-                <li><strong>Service Tests:</strong> 18 ✅ (Backend: GetAlleLagerorte, Validation, Normalization, GetOrCreate)</li>
+                <li><strong>Service Tests:</strong> 24 ✅ (Backend: GetAlleLagerorte, Validation, Normalization, GetOrCreate)</li>
                 <li><strong>UI Tests (Liste):</strong> 5 ✅ (Table rendering, columns, empty state, new-button, error handling)</li>
                 <li><strong>UI Tests (Form):</strong> 3 ✅ (Form rendering, service call, validation errors)</li>
-                <li><strong>Total Tests:</strong> 26 ✅</li>
-                <li><strong>Status:</strong> 26/26 GRÜN ✅</li>
+                <li><strong>Total Tests:</strong> 32 ✅</li>
+                <li><strong>Status:</strong> 32/32 GRÜN ✅</li>
             </ul>
 
             <h3>UI Test Scope (Intentional Simplifications)</h3>
@@ -355,14 +355,14 @@ src/App/
                 <ul>
                     <li><input type="checkbox" checked> Anforderungen spezifiziert – ✅ FERTIG (Session 2026-06-25 Part 1)</li>
                     <li><input type="checkbox" checked> Diagramme aktualisiert – ✅ FERTIG (ER, Sequence, use-cases)</li>
-                    <li><input type="checkbox" checked> Service: Tests schreiben (TDD Red) – ✅ 18 Tests geschrieben (Commit 0df33ea)</li>
+                    <li><input type="checkbox" checked> Service: Tests schreiben (TDD Red) – ✅ 24 Tests geschrieben (Commit 0df33ea)</li>
                     <li><input type="checkbox" checked> Service: Code implementieren (TDD Green) – ✅ FERTIG (Commit ea3957b, 108/108 Tests grün)</li>
                     <li><input type="checkbox" checked> Service: Code Review – ✅ APPROVED (Clean Code, SOLID, Security)</li>
                     <li><input type="checkbox" checked> UI: LagerortListe.razor + Tests – ✅ FERTIG (5 bUnit Tests grün)</li>
                     <li><input type="checkbox" checked> UI: LagerortForm.razor + Tests – ✅ FERTIG (3 bUnit Tests grün)</li>
                     <li><input type="checkbox" checked> Dokumentation fertig – ✅ FERTIG (4-Teil-Check: Code + HTML + Overview + Diagramme)</li>
-                    <li><input type="checkbox"> User Review & Approval – ⏳ Pending</li>
-                    <li><input type="checkbox"> Merged zu Master – ⏳ Pending</li>
+                    <li><input type="checkbox" checked> User Review & Approval – ✅ FERTIG</li>
+                    <li><input type="checkbox" checked> Merged zu Master – ✅ FERTIG (Commit 23eb5fc)</li>
                 </ul>
             </div>
 
@@ -383,7 +383,7 @@ src/App/
                 <tr>
                     <td><strong>Service: Test-Phase (TDD Red)</strong></td>
                     <td>Test-Agent</td>
-                    <td>0df33ea (18 Tests)</td>
+                    <td>0df33ea (24 Tests)</td>
                     <td>✅ FERTIG</td>
                 </tr>
                 <tr>
@@ -396,7 +396,7 @@ src/App/
                     <td><strong>UI: Komponenten + Tests</strong></td>
                     <td>Claude Haiku</td>
                     <td>LagerortListe.razor + LagerortForm.razor + 8 UI-Tests</td>
-                    <td>✅ FERTIG (26/26 Tests GRÜN)</td>
+                    <td>✅ FERTIG (32/32 Tests GRÜN)</td>
                 </tr>
                 <tr>
                     <td><strong>Doc-Phase (4-Teil)</strong></td>
