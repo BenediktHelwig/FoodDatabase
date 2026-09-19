@@ -16,21 +16,21 @@
     </div>
 
     <!-- Filter bar -->
-    @if (!lädt && string.IsNullOrEmpty(fehler))
+    @if (!lädt)
     {
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="statusFilter" class="form-label">Status</label>
-                <select id="statusFilter" @onchange="OnStatusFilterChanged" class="form-select" data-testid="select-status-filter">
-                    <option value="all">Alle</option>
-                    <option value="expired">Nur abgelaufene</option>
+                <select id="statusFilter" @onchange="OnStatusFilterChanged" value="@statusFilter" class="form-select" data-testid="select-status-filter">
+                    <option value="@StatusFilterAll">Alle</option>
+                    <option value="@StatusFilterExpired">Nur abgelaufene</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label for="lagerortFilter" class="form-label">Lagerort</label>
-                <select id="lagerortFilter" @onchange="OnLagerortFilterChanged" class="form-select" data-testid="select-lagerort-filter">
+                <select id="lagerortFilter" @onchange="OnLagerortFilterChanged" value="@lagerortFilter" class="form-select" data-testid="select-lagerort-filter">
                     <option value="">Alle Lagerorte</option>
-                    @foreach (var lagerort in LagerortKonstanten.AlleWerte)
+                    @foreach (string lagerort in LagerortKonstanten.AlleWerte)
                     {
                         <option value="@lagerort">@lagerort</option>
                     }
@@ -78,15 +78,15 @@
 
                     // Berechne Tage bis MHD
                     int tagesBisMhd = (instanz.Verfallsdatum - DateTime.Today).Days;
-                    string mhdText = GetMhdText(tagesBisMhd);
+                    string mhdText = MhdTextFormatter.GetMhdText(tagesBisMhd);
 
                     <tr data-testid="zeile-@instanz.Id" class="@verfallKlasse">
                         <td>@lebensmittel?.Name</td>
                         <td>@instanz.Menge @lebensmittel?.Einheit</td>
-                        <td>@instanz.Verfallsdatum:D</td>
+                        <td>@instanz.Verfallsdatum.ToString("dd.MM.yyyy")</td>
                         <td>@mhdText</td>
                         <td>@instanz.Lagerort</td>
-                        <td>@instanz.Einkaufsdatum:d</td>
+                        <td>@instanz.Einkaufsdatum.ToString("dd.MM.yyyy")</td>
                         <td>
                             <a href="/lagerbestand/@instanz.Id/bearbeiten"
                                class="btn btn-sm btn-warning"
@@ -144,13 +144,16 @@
 }
 
 @code {
+    private const string StatusFilterAll = "all";
+    private const string StatusFilterExpired = "expired";
+
     private List<ProduktInstanz>? bestaende;
     private Dictionary<int, LebensmittelKatalog> lebensmittelMap = new();
     private string fehler = "";
     private bool lädt = false;
     private bool bestätigungLöschen = false;
     private int zuLöschendeId = 0;
-    private string statusFilter = "all";
+    private string statusFilter = StatusFilterAll;
     private string lagerortFilter = "";
 
     protected override async Task OnInitializedAsync()
@@ -167,16 +170,22 @@
             // Abruf: Welcher Service-Aufruf je nach Filter
             List<ProduktInstanz> abgerufeneBestaende = new();
 
-            if (statusFilter == "expired")
+            if (statusFilter == StatusFilterExpired)
             {
                 // Abgelaufene abrufen
                 abgerufeneBestaende = await ProduktInstanzService.GetVerfallenenAsync();
+
+                // Nachfilter auf tatsächlich abgelaufene (< heute, nicht <=): Der Service filtert auf <=,
+                // die Färbung nutzt aber <. Diese Einengung sorgt für Konsistenz zwischen Anzeige und Filter.
+                abgerufeneBestaende = abgerufeneBestaende
+                    .Where(p => p.Verfallsdatum < DateTime.Today)
+                    .ToList();
 
                 // Lagerort-Nachfilter
                 if (!string.IsNullOrEmpty(lagerortFilter))
                 {
                     abgerufeneBestaende = abgerufeneBestaende
-                        .Where(p => p.Lagerort.Equals(lagerortFilter, StringComparison.OrdinalIgnoreCase))
+                        .Where(p => string.Equals(p.Lagerort, lagerortFilter, StringComparison.Ordinal))
                         .ToList();
                 }
 
@@ -222,7 +231,7 @@
 
     private async Task OnStatusFilterChanged(ChangeEventArgs e)
     {
-        statusFilter = e.Value?.ToString() ?? "all";
+        statusFilter = e.Value?.ToString() ?? StatusFilterAll;
         await AlleAbrufen();
     }
 
@@ -230,23 +239,6 @@
     {
         lagerortFilter = e.Value?.ToString() ?? "";
         await AlleAbrufen();
-    }
-
-    private string GetMhdText(int tagesBisMhd)
-    {
-        if (tagesBisMhd < 0)
-        {
-            int tagedavor = Math.Abs(tagesBisMhd);
-            return tagedavor == 1 ? "vor 1 Tag abgelaufen" : $"vor {tagedavor} Tagen abgelaufen";
-        }
-        else if (tagesBisMhd == 0)
-        {
-            return "Heute ablaufend";
-        }
-        else
-        {
-            return tagesBisMhd == 1 ? "1 Tag verbleibend" : $"{tagesBisMhd} Tage verbleibend";
-        }
     }
 
     private string GetEmptyStateMessage()

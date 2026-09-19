@@ -212,14 +212,7 @@
                 <h5>Packungen</h5>
             </div>
             <div class="card-body">
-                @if (lädt)
-                {
-                    <div class="alert alert-info">
-                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Lädt Packungen...
-                    </div>
-                }
-                else if (packungen is not null && packungen.Any())
+                @if (packungen is not null && packungen.Any())
                 {
                     <table class="table table-striped" data-testid="tabelle-packungen">
                         <thead>
@@ -232,18 +225,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var instanz in packungen)
+                            @foreach (ProduktInstanz instanz in packungen)
                             {
-                                var istAbgelaufen = instanz.Verfallsdatum < DateTime.Today;
-                                var verfallKlasse = istAbgelaufen ? "table-danger" : "";
+                                bool istAbgelaufen = instanz.Verfallsdatum < DateTime.Today;
+                                string verfallKlasse = istAbgelaufen ? "table-danger" : "";
 
                                 // Berechne Tage bis MHD
                                 int tagesBisMhd = (instanz.Verfallsdatum - DateTime.Today).Days;
-                                string mhdText = GetMhdText(tagesBisMhd);
+                                string mhdText = MhdTextFormatter.GetMhdText(tagesBisMhd);
 
                                 <tr data-testid="zeile-packung-@instanz.Id" class="@verfallKlasse">
                                     <td>@instanz.Menge @lebensmittel?.Einheit</td>
-                                    <td>@instanz.Verfallsdatum:D</td>
+                                    <td>@instanz.Verfallsdatum.ToString("dd.MM.yyyy")</td>
                                     <td>@mhdText</td>
                                     <td>@instanz.Lagerort</td>
                                     <td>
@@ -258,7 +251,7 @@
                         </tbody>
                     </table>
                 }
-                else
+                else if (string.IsNullOrEmpty(fehlerPackungen))
                 {
                     <div class="alert alert-info">
                         Keine Packungen vorhanden.
@@ -321,7 +314,7 @@
             // Load Packungen separately so errors don't hide the Lebensmittel
             try
             {
-                var abgerufenePackungen = await ProduktInstanzService.GetByLebensmittelAsync(Id);
+                List<ProduktInstanz> abgerufenePackungen = await ProduktInstanzService.GetByLebensmittelAsync(Id);
                 // Sortieren nach Verfallsdatum
                 packungen = abgerufenePackungen
                     .OrderBy(p => p.Verfallsdatum)
@@ -331,23 +324,6 @@
             {
                 fehlerPackungen = $"Fehler beim Laden der Packungen: {ex.Message}";
             }
-        }
-    }
-
-    private string GetMhdText(int tagesBisMhd)
-    {
-        if (tagesBisMhd < 0)
-        {
-            int tagedavor = Math.Abs(tagesBisMhd);
-            return tagedavor == 1 ? "vor 1 Tag abgelaufen" : $"vor {tagedavor} Tagen abgelaufen";
-        }
-        else if (tagesBisMhd == 0)
-        {
-            return "Heute ablaufend";
-        }
-        else
-        {
-            return tagesBisMhd == 1 ? "1 Tag verbleibend" : $"{tagesBisMhd} Tage verbleibend";
         }
     }
 
