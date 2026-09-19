@@ -11,7 +11,7 @@
           <mxGeometry x="30" y="30" width="30" height="60" as="geometry"/>
         </mxCell>
 
-        <mxCell id="actor-ui" value="Blazor UI&#10;(ProduktInstanzPage)" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
+        <mxCell id="actor-ui" value="Blazor UI&#10;(LagerbestandBearbeiten.razor, /lagerbestand)" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
           <mxGeometry x="150" y="40" width="120" height="50" as="geometry"/>
         </mxCell>
 
@@ -194,7 +194,7 @@
         </mxCell>
 
         <!-- 8. UI zeigt Liste mit MHD-Status -->
-        <mxCell id="msg16" value="8: Bestand anzeigen mit MHD-Status (🟢 OK, 🟡 Bald weg, 🔴 Verfallen)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-ui" target="actor-user">
+        <mxCell id="msg16" value="8: Bestand anzeigen (abgelaufene Zeilen rot markiert, Spalte &#34;Tage bis MHD&#34;)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-ui" target="actor-user">
           <mxGeometry width="1" relative="1" as="geometry">
             <mxPoint x="210" y="720" as="sourcePoint"/>
             <mxPoint x="45" y="720" as="targetPoint"/>
