@@ -761,10 +761,10 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                var rows = cut.FindAll("[data-testid^='zeile-packung-']");
+                IReadOnlyList<IElement> rows = cut.FindAll("[data-testid^='zeile-packung-']");
                 Assert.Equal(2, rows.Count);
-                Assert.True(cut.Markup.Contains("Kühlschrank"));
-                Assert.True(cut.Markup.Contains("Pantry"));
+                Assert.Contains("Kühlschrank", cut.Markup);
+                Assert.Contains("Pantry", cut.Markup);
             }, TimeSpan.FromSeconds(2));
         }
 
@@ -884,10 +884,10 @@ namespace FoodDatabase.Tests.Ui
             // Assert: Lebensmittel sollte sichtbar sein, Packungsfehler sollte separate Benachrichtigung sein
             cut.WaitForAssertion(() =>
             {
-                Assert.True(cut.Markup.Contains("Mehl")); // Lebensmittel noch sichtbar
+                Assert.Contains("Mehl", cut.Markup); // Lebensmittel noch sichtbar
                 IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler-packungen']");
                 Assert.NotEmpty(errorAlert);
-                Assert.True(cut.Markup.Contains("Fehler beim Laden der Packungen"));
+                Assert.Contains("Fehler beim Laden der Packungen", cut.Markup);
             }, TimeSpan.FromSeconds(2));
         }
 
@@ -974,7 +974,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert
             cut.WaitForAssertion(() =>
             {
-                Assert.True(cut.Markup.Contains("Keine Packungen vorhanden"));
+                Assert.Contains("Keine Packungen vorhanden", cut.Markup);
             }, TimeSpan.FromSeconds(2));
         }
     }
