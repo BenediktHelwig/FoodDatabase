@@ -33,6 +33,7 @@ backup/
 *.bak
 *.tmp
 *.temp
+*.stackdump
 
 # NuGet
 .nuget/
