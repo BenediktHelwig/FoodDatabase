@@ -38,7 +38,7 @@
                 <mxCell id="line_ui" style="line;strokeColor=#000000;strokeWidth=2;html=1;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="200" y="140" as="sourcePoint"/>
-                        <mxPoint x="200" y="1350" as="targetPoint"/>
+                        <mxPoint x="200" y="800" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="line_service" style="line;strokeColor=#000000;strokeWidth=2;html=1;" parent="1" edge="1">

@@ -101,7 +101,7 @@ CREATE TABLE Lagerorte (
 );
             </pre>
 
-            <h3>Tabelle: ProduktInstanz (UPDATED)</h3>
+            <h3>Tabelle: ProduktInstanz (⏳ geplante Erweiterung)</h3>
             <p><strong>⏳ Geplant (noch nicht umgesetzt):</strong> ProduktInstanz speichert den Lagerort aktuell als <code>string</code> (<code>ProduktInstanz.cs:45</code>); die FK-Anbindung ist in <code>FoodDatabaseContext.cs:64-65</code> als offen vermerkt.</p>
             <pre>
 ALTER TABLE ProduktInstanzen
@@ -283,7 +283,7 @@ src/App/
 │   ├── LagerortListe.razor ✅ (Route /lagerorte)
 │   └── LagerortForm.razor ✅ (Route /lagerorte/neu)
 └── Data/
-    └── FoodDatabaseContext.cs ✅ (DbSet<Lagerort>)
+    └── FoodDatabaseContext.cs ✅ (DbSet&lt;Lagerort&gt;)
 
 src/Tests/
 ├── Unit/Services/
@@ -381,7 +381,7 @@ src/Tests/
                 </tr>
                 <tr>
                     <td><code>btn-neu</code></td>
-                    <td>NavLink</td>
+                    <td>&lt;a&gt; (data-testid="btn-neu")</td>
                     <td>Button zu /lagerorte/neu</td>
                 </tr>
             </table>
@@ -435,15 +435,15 @@ src/Tests/
             <ul>
                 <li><strong>Validierung:</strong> [Required] auf formModel.Name (Laufzeit-Validierung via DataAnnotationsValidator)</li>
                 <li><strong>Happy Path:</strong> Benutzer gibt Namen ein (z.B. "kuehler") → Speichern → Service validiert/normalisiert zu "Kuehler" → NavigateTo("/lagerorte")</li>
-                <li><strong>Fehler-Zustand:</strong> alert-danger "Eingabefehler: [Message]" bei ArgumentException oder ArgumentNullException</li>
+                <li><strong>Fehler-Zustand:</strong> alert-danger "Eingabefehler: [Message]" bei ArgumentException oder ArgumentNullException; alert-danger "Fehler beim Speichern: [Message]" bei anderen Exceptions</li>
                 <li><strong>Button States:</strong> Speichern-Button wird disabled, während Service läuft</li>
                 <li><strong>Abbrechen:</strong> Link zu /lagerorte (Formular wird verworfen)</li>
             </ul>
 
             <h4>Navigation-Menu-Eintrag</h4>
             <p><strong>Datei:</strong> <code>NavMenu.razor:39</code></p>
-            <p><code>&lt;NavLink class="nav-link" href="/lagerorte"&gt;Lagerorte&lt;/NavLink&gt;</code></p>
-            <p>Der Menü-Eintrag "Lagerorte" verlinkt auf die LagerortListe (/lagerorte) und wird über <code>data-bs-dismiss="offcanvas"</code> automatisch geschlossen, wenn der Benutzer das Menü öffnet.</p>
+            <p><code>&lt;NavLink class="nav-link" href="/lagerorte" data-bs-dismiss="offcanvas"&gt;Lagerorte&lt;/NavLink&gt;</code></p>
+            <p>Der Menü-Eintrag "Lagerorte" verlinkt auf die LagerortListe (/lagerorte) und das Offcanvas-Menü schließt sich beim Klick auf den Eintrag automatisch.</p>
 
             <h3>Code-Quality Metriken</h3>
             <ul>
@@ -488,7 +488,7 @@ src/Tests/
                     <li><input type="checkbox" checked> UI: LagerortListe.razor + Tests – ✅ FERTIG (5 bUnit Tests grün)</li>
                     <li><input type="checkbox" checked> UI: LagerortForm.razor + Tests – ✅ FERTIG (3 bUnit Tests grün)</li>
                     <li><input type="checkbox" checked> Dokumentation fertig – ✅ FERTIG (4-Teil-Check: Code + HTML + Overview + Diagramme)</li>
-                    <li><input type="checkbox" checked> User Review & Approval – ✅ Code auf master seit 23eb5fc (Direkt-Commit, kein PR); Doku-Gate nachgeholt am 2026-09-19, siehe reviews/uc9-wp4-doku-review-1.md</li>
+                    <li><input type="checkbox" checked> User Review & Approval – ✅ Code auf master seit 23eb5fc (Direkt-Commit, kein PR); Doku-Gate nachgeholt am 2026-09-19, siehe reviews/uc9-wp4-doku-review-1.md und -2.md</li>
                     <li><input type="checkbox" checked> Merged zu Master – ✅ FERTIG (Commit 23eb5fc, 30.07.2026 — kein PR)</li>
                 </ul>
             </div>
