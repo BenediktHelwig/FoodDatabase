@@ -56,8 +56,8 @@
                 </tr>
                 <tr>
                     <td><strong>Normalisierung</strong></td>
-                    <td>Single-Word-Input: Capitalize (1. Buchstabe groß, Rest klein)</td>
-                    <td>"lagerA" → "LagerA", "LAGER" → "Lager"</td>
+                    <td>Single-Word-Input: Erster Buchstabe groß. Ein einzelner Lower→Upper-Übergang mit ≤2 Großbuchstaben bleibt erhalten, sonst wird der Rest klein.</td>
+                    <td>"lagerA" → "LagerA", "lAgEr" → "Lager", "LAGER" → "Lager"</td>
                 </tr>
                 <tr>
                     <td><strong>Speicherung</strong></td>
@@ -91,16 +91,18 @@
             <h2>📦 Database Schema (NEU)</h2>
 
             <h3>Neue Tabelle: Lagerorte</h3>
+            <p><em>(Illustratives Pseudo-DDL; tatsächliche Implementierung in SQLite Migrationen unter <code>src/App/Migrations/</code>)</em></p>
             <pre>
 CREATE TABLE Lagerorte (
-    Id INT PRIMARY KEY AUTO_INCREMENT,
-    Name VARCHAR(100) NOT NULL UNIQUE,
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
-    IsArchived BIT NOT NULL DEFAULT 0
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL UNIQUE,
+    CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    IsArchived BOOLEAN NOT NULL DEFAULT 0
 );
             </pre>
 
-            <h3>Tabelle: ProduktInstanz (UPDATED)</h3>
+            <h3>Tabelle: ProduktInstanz (⏳ geplante Erweiterung)</h3>
+            <p><strong>⏳ Geplant (noch nicht umgesetzt):</strong> ProduktInstanz speichert den Lagerort aktuell als <code>string</code> (<code>ProduktInstanz.cs:45</code>); die FK-Anbindung ist in <code>FoodDatabaseContext.cs:64-65</code> als offen vermerkt.</p>
             <pre>
 ALTER TABLE ProduktInstanzen
 ADD COLUMN LagerortId INT NULLABLE,
@@ -121,8 +123,6 @@ public class Lagerort
     public string Name { get; set; }
     public DateTime CreatedAt { get; set; }
     public bool IsArchived { get; set; } = false;
-    public ICollection&lt;ProduktInstanz&gt; ProduktInstanzen { get; set; }
-        = new List&lt;ProduktInstanz&gt;();
 }
             </pre>
 
@@ -153,7 +153,7 @@ public interface ILagerortService
 7. System prüft: Existiert "LagerC" bereits?
    - Ja: Return existing Lagerort(Id=3)
    - Nein: Create new Lagerort(Name="LagerC") → Id=3
-8. ProduktInstanz wird mit LagerortId=3 erstellt
+8. ProduktInstanz wird mit LagerortId=3 erstellt (⏳ geplant — aktuell string-Feld)
 9. Bestätigung: "Produkt zu Lager C hinzugefügt"
             </pre>
 
@@ -162,9 +162,27 @@ public interface ILagerortService
 1. Benutzer öffnet "Lagerbestand aktualisieren"
 2. Wählt Lebensmittel
 3. Wählt "Zu anderen Lagerort buchen"
-4. Gibt Lagerort ein: "lager2"
+4. Gibt Lagerort ein: "lagerb"
 5. System zeigt Auto-Complete
 6. Rest wie Workflow 1
+            </pre>
+
+            <h3>Workflow 3: Lagerorte verwalten (UC9-UI)</h3>
+            <pre>
+1. Benutzer klickt im Menü auf "Lagerorte" → Route /lagerorte
+2. LagerortListe.razor (OnInitializedAsync) ruft ILagerortService.GetAlleLagerorte()
+3. Erfolg: Tabelle zeigt alle Lagerorte (Spalten: Name, Erstellt am [dd.MM.yyyy])
+   Leer: Hinweis "Keine Lagerorte gefunden."
+   Exception: alert-danger "Fehler beim Abrufen der Lagerorte: [Message]"
+4. Benutzer klickt "+ Neu" → Route /lagerorte/neu
+5. LagerortForm.razor zeigt Eingabefeld "Name" mit [Required]-Validierung
+6. Benutzer gibt Namen ein (z.B. "kuehler") → Service-Validierung (nur A-Z, a-z)
+7. Speichern → GetOrCreateAsync(name):
+   - Validiert Namen
+   - Normalisiert zu "Kuehler"
+   - Sucht in DB: Existiert? → Return existing oder Create new
+8. Erfolg → NavigationManager.NavigateTo("/lagerorte") (zurück zur Liste)
+   Fehler (ArgumentException/ArgumentNullException) → alert-danger "Eingabefehler: [Message]"
             </pre>
 
             <h3>Auto-Complete Fuzzy-Matching</h3>
@@ -178,9 +196,9 @@ Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
         </section>
 
         <section>
-            <h2>✅ Tests (18 Service + 8 UI = 26 GRÜN ✅)</h2>
+            <h2>✅ Tests (24 Service + 8 UI = 32 GRÜN ✅)</h2>
 
-            <h3>LagerortService Tests (18 Tests - Backend)</h3>
+            <h3>LagerortService Tests (24 Tests - Backend)</h3>
             <div class="checklist">
                 <ul>
                     <li><input type="checkbox" checked> GetAlleLagerorte: Happy Path – ✅ GRÜN</li>
@@ -232,11 +250,11 @@ Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
 
             <h3>Test Coverage Statistiken</h3>
             <ul>
-                <li><strong>Service Tests:</strong> 18 ✅ (Backend: GetAlleLagerorte, Validation, Normalization, GetOrCreate)</li>
+                <li><strong>Service Tests:</strong> 24 ✅ (Backend: GetAlleLagerorte, Validation, Normalization, GetOrCreate)</li>
                 <li><strong>UI Tests (Liste):</strong> 5 ✅ (Table rendering, columns, empty state, new-button, error handling)</li>
                 <li><strong>UI Tests (Form):</strong> 3 ✅ (Form rendering, service call, validation errors)</li>
-                <li><strong>Total Tests:</strong> 26 ✅</li>
-                <li><strong>Status:</strong> 26/26 GRÜN ✅</li>
+                <li><strong>Total Tests:</strong> 32 ✅</li>
+                <li><strong>Status:</strong> 32/32 GRÜN ✅</li>
             </ul>
 
             <h3>UI Test Scope (Intentional Simplifications)</h3>
@@ -261,8 +279,18 @@ src/App/
 │   │   └── ILagerortService.cs ✅ (5 Methoden)
 │   └── Classes/
 │       └── LagerortService.cs ✅ (Produktivcode)
+├── Components/Pages/Lager/
+│   ├── LagerortListe.razor ✅ (Route /lagerorte)
+│   └── LagerortForm.razor ✅ (Route /lagerorte/neu)
 └── Data/
-    └── FoodDatabaseContext.cs ✅ (DbSet<Lagerort>)
+    └── FoodDatabaseContext.cs ✅ (DbSet&lt;Lagerort&gt;)
+
+src/Tests/
+├── Unit/Services/
+│   └── LagerortServiceTests.cs ✅ (24 Tests)
+└── Ui/
+    ├── LagerortListeTests.cs ✅ (5 Tests)
+    └── LagerortFormTests.cs ✅ (3 Tests)
             </pre>
 
             <h3>Service-Methoden implementiert</h3>
@@ -318,6 +346,105 @@ src/App/
                 </tr>
             </table>
 
+            <h3>UI-Komponenten im Detail</h3>
+
+            <h4>LagerortListe.razor</h4>
+            <p><strong>Route:</strong> <code>/lagerorte</code></p>
+            <p><strong>Beschreibung:</strong> Interaktive Tabelle aller Lagerorte mit Name und Erstellungsdatum. Button "+ Neu" zur Anlage.</p>
+
+            <h4>Service-Abhängigkeiten (Dependency Injection)</h4>
+            <ul>
+                <li><code>ILagerortService</code> — GetAlleLagerorte() zum Laden aller Lagerorte</li>
+            </ul>
+
+            <h4>Komponenten-Struktur</h4>
+            <table>
+                <tr>
+                    <th>Element</th>
+                    <th>Typ</th>
+                    <th>Zweck</th>
+                </tr>
+                <tr>
+                    <td><code>lagerortListe</code></td>
+                    <td>IEnumerable&lt;Lagerort&gt;</td>
+                    <td>Speichert geladene Lagerorte aus Service-Aufruf</td>
+                </tr>
+                <tr>
+                    <td><code>fehler</code></td>
+                    <td>string</td>
+                    <td>Fehlermeldung bei Service-Exception</td>
+                </tr>
+                <tr>
+                    <td><code>lädt</code></td>
+                    <td>bool</td>
+                    <td>Lade-Status (Spinner während Service-Aufruf)</td>
+                </tr>
+                <tr>
+                    <td><code>btn-neu</code></td>
+                    <td>&lt;a&gt; (data-testid="btn-neu")</td>
+                    <td>Button zu /lagerorte/neu</td>
+                </tr>
+            </table>
+
+            <h4>Verhalten</h4>
+            <ul>
+                <li><strong>Lade-Zustand:</strong> Spinner + "Lädt..." während Service-Aufruf</li>
+                <li><strong>Leer-Zustand:</strong> "Keine Lagerorte gefunden." (wenn List leer)</li>
+                <li><strong>Fehler-Zustand:</strong> alert-danger "Fehler beim Abrufen der Lagerorte: [Message]"</li>
+                <li><strong>Erfolgs-Zustand:</strong> Tabelle mit Spalten [Name | Erstellt am]</li>
+                <li><strong>Datum-Format:</strong> dd.MM.yyyy</li>
+            </ul>
+
+            <hr>
+
+            <h4>LagerortForm.razor</h4>
+            <p><strong>Route:</strong> <code>/lagerorte/neu</code></p>
+            <p><strong>Beschreibung:</strong> Formular zur Anlage neuer Lagerorte mit Validierung und Service-Aufruf.</p>
+
+            <h4>Service-Abhängigkeiten (Dependency Injection)</h4>
+            <ul>
+                <li><code>ILagerortService</code> — GetOrCreateAsync(name) zum Erstellen/Abrufen des Lagerorts</li>
+                <li><code>NavigationManager</code> — Umleitung nach erfolgreichem Speichern</li>
+            </ul>
+
+            <h4>Komponenten-Struktur</h4>
+            <table>
+                <tr>
+                    <th>Element</th>
+                    <th>Typ</th>
+                    <th>Zweck</th>
+                </tr>
+                <tr>
+                    <td><code>formModel</code></td>
+                    <td>LagerortFormModel</td>
+                    <td>Bindet Eingabefeld (Name) mit [Required]-Attribut</td>
+                </tr>
+                <tr>
+                    <td><code>fehler</code></td>
+                    <td>string</td>
+                    <td>Fehlermeldung bei Service-Exception</td>
+                </tr>
+                <tr>
+                    <td><code>lädt</code></td>
+                    <td>bool</td>
+                    <td>Disabled-Status des Speichern-Buttons während Service-Aufruf</td>
+                </tr>
+            </table>
+
+            <h4>Verhalten</h4>
+            <ul>
+                <li><strong>Validierung:</strong> [Required] auf formModel.Name (Laufzeit-Validierung via DataAnnotationsValidator)</li>
+                <li><strong>Happy Path:</strong> Benutzer gibt Namen ein (z.B. "kuehler") → Speichern → Service validiert/normalisiert zu "Kuehler" → NavigateTo("/lagerorte")</li>
+                <li><strong>Fehler-Zustand:</strong> alert-danger "Eingabefehler: [Message]" bei ArgumentException oder ArgumentNullException; alert-danger "Fehler beim Speichern: [Message]" bei anderen Exceptions</li>
+                <li><strong>Button States:</strong> Speichern-Button wird disabled, während Service läuft</li>
+                <li><strong>Abbrechen:</strong> Link zu /lagerorte (Formular wird verworfen)</li>
+            </ul>
+
+            <h4>Navigation-Menu-Eintrag</h4>
+            <p><strong>Datei:</strong> <code>NavMenu.razor:39</code></p>
+            <p><code>&lt;NavLink class="nav-link" href="/lagerorte" data-bs-dismiss="offcanvas"&gt;Lagerorte&lt;/NavLink&gt;</code></p>
+            <p>Der Menü-Eintrag "Lagerorte" verlinkt auf die LagerortListe (/lagerorte) und das Offcanvas-Menü schließt sich beim Klick auf den Eintrag automatisch.</p>
+
             <h3>Code-Quality Metriken</h3>
             <ul>
                 <li>✅ <strong>XML-Docs:</strong> 100% – Alle Public Members dokumentiert</li>
@@ -334,8 +461,8 @@ src/App/
 
             <h3>Abhängigkeiten (andere UCs)</h3>
             <ul>
-                <li>Erweitert: <strong>UC10: Produktinstanzen mit MHD</strong> (LagerortId FK)</li>
-                <li>Erweitert: <strong>UC2: Lagerbestand</strong> (AddToBestand mit Lagerort-Input)</li>
+                <li>Erweitert: <strong>UC10: Produktinstanzen mit MHD</strong> (LagerortId FK ⏳ geplant)</li>
+                <li>Erweitert: <strong>UC2: Lagerbestand</strong> (AddToBestand mit Lagerort-Input ⏳ geplant)</li>
                 <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong> (indirekt)</li>
             </ul>
 
@@ -355,14 +482,14 @@ src/App/
                 <ul>
                     <li><input type="checkbox" checked> Anforderungen spezifiziert – ✅ FERTIG (Session 2026-06-25 Part 1)</li>
                     <li><input type="checkbox" checked> Diagramme aktualisiert – ✅ FERTIG (ER, Sequence, use-cases)</li>
-                    <li><input type="checkbox" checked> Service: Tests schreiben (TDD Red) – ✅ 18 Tests geschrieben (Commit 0df33ea)</li>
+                    <li><input type="checkbox" checked> Service: Tests schreiben (TDD Red) – ✅ 24 Tests geschrieben (Commit 0df33ea)</li>
                     <li><input type="checkbox" checked> Service: Code implementieren (TDD Green) – ✅ FERTIG (Commit ea3957b, 108/108 Tests grün)</li>
                     <li><input type="checkbox" checked> Service: Code Review – ✅ APPROVED (Clean Code, SOLID, Security)</li>
                     <li><input type="checkbox" checked> UI: LagerortListe.razor + Tests – ✅ FERTIG (5 bUnit Tests grün)</li>
                     <li><input type="checkbox" checked> UI: LagerortForm.razor + Tests – ✅ FERTIG (3 bUnit Tests grün)</li>
                     <li><input type="checkbox" checked> Dokumentation fertig – ✅ FERTIG (4-Teil-Check: Code + HTML + Overview + Diagramme)</li>
-                    <li><input type="checkbox"> User Review & Approval – ⏳ Pending</li>
-                    <li><input type="checkbox"> Merged zu Master – ⏳ Pending</li>
+                    <li><input type="checkbox" checked> User Review & Approval – ✅ Code auf master seit 23eb5fc (Direkt-Commit, kein PR); Doku-Gate nachgeholt am 2026-09-19, siehe reviews/uc9-wp4-doku-review-1.md und -2.md</li>
+                    <li><input type="checkbox" checked> Merged zu Master – ✅ FERTIG (Commit 23eb5fc, 30.07.2026 — kein PR)</li>
                 </ul>
             </div>
 
@@ -383,7 +510,7 @@ src/App/
                 <tr>
                     <td><strong>Service: Test-Phase (TDD Red)</strong></td>
                     <td>Test-Agent</td>
-                    <td>0df33ea (18 Tests)</td>
+                    <td>0df33ea (24 Tests)</td>
                     <td>✅ FERTIG</td>
                 </tr>
                 <tr>
@@ -396,7 +523,7 @@ src/App/
                     <td><strong>UI: Komponenten + Tests</strong></td>
                     <td>Claude Haiku</td>
                     <td>LagerortListe.razor + LagerortForm.razor + 8 UI-Tests</td>
-                    <td>✅ FERTIG (26/26 Tests GRÜN)</td>
+                    <td>✅ FERTIG (32/32 Tests GRÜN)</td>
                 </tr>
                 <tr>
                     <td><strong>Doc-Phase (4-Teil)</strong></td>
@@ -437,7 +564,7 @@ src/App/
         </section>
 
         <footer>
-            <p><small>Dokumentation erstellt: 2026-06-25 | Status: SPEZIFIZIERT & READY FOR TEST-AGENT</small></p>
+            <p><small>Dokumentation erstellt: 2026-06-25 | Aktualisiert: 2026-09-19 | Status: FERTIG (Service + UI, auf master seit 23eb5fc)</small></p>
         </footer>
     </div>
 </body>
