@@ -15,6 +15,30 @@
         </div>
     </div>
 
+    <!-- Filter bar -->
+    @if (!lädt && string.IsNullOrEmpty(fehler))
+    {
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="statusFilter" class="form-label">Status</label>
+                <select id="statusFilter" @onchange="OnStatusFilterChanged" class="form-select" data-testid="select-status-filter">
+                    <option value="all">Alle</option>
+                    <option value="expired">Nur abgelaufene</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="lagerortFilter" class="form-label">Lagerort</label>
+                <select id="lagerortFilter" @onchange="OnLagerortFilterChanged" class="form-select" data-testid="select-lagerort-filter">
+                    <option value="">Alle Lagerorte</option>
+                    @foreach (var lagerort in LagerortKonstanten.AlleWerte)
+                    {
+                        <option value="@lagerort">@lagerort</option>
+                    }
+                </select>
+            </div>
+        </div>
+    }
+
     @if (lädt)
     {
         <div class="alert alert-info">
@@ -36,6 +60,7 @@
                     <th>Lebensmittel</th>
                     <th>Menge</th>
                     <th>Verfallsdatum</th>
+                    <th>Tage bis MHD</th>
                     <th>Lagerort</th>
                     <th>Einkauft</th>
                     <th>Aktionen</th>
@@ -51,10 +76,15 @@
                     var istAbgelaufen = instanz.Verfallsdatum < DateTime.Today;
                     var verfallKlasse = istAbgelaufen ? "table-danger" : "";
 
+                    // Berechne Tage bis MHD
+                    int tagesBisMhd = (instanz.Verfallsdatum - DateTime.Today).Days;
+                    string mhdText = GetMhdText(tagesBisMhd);
+
                     <tr data-testid="zeile-@instanz.Id" class="@verfallKlasse">
                         <td>@lebensmittel?.Name</td>
                         <td>@instanz.Menge @lebensmittel?.Einheit</td>
                         <td>@instanz.Verfallsdatum:D</td>
+                        <td>@mhdText</td>
                         <td>@instanz.Lagerort</td>
                         <td>@instanz.Einkaufsdatum:d</td>
                         <td>
@@ -77,7 +107,7 @@
     else
     {
         <div class="alert alert-info">
-            Kein Lagerbestand vorhanden.
+            @GetEmptyStateMessage()
         </div>
     }
 </div>
@@ -120,6 +150,8 @@
     private bool lädt = false;
     private bool bestätigungLöschen = false;
     private int zuLöschendeId = 0;
+    private string statusFilter = "all";
+    private string lagerortFilter = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -132,7 +164,44 @@
         fehler = "";
         try
         {
-            bestaende = await ProduktInstanzService.GetNachVerfallsdatumSortiertAsync();
+            // Abruf: Welcher Service-Aufruf je nach Filter
+            List<ProduktInstanz> abgerufeneBestaende = new();
+
+            if (statusFilter == "expired")
+            {
+                // Abgelaufene abrufen
+                abgerufeneBestaende = await ProduktInstanzService.GetVerfallenenAsync();
+
+                // Lagerort-Nachfilter
+                if (!string.IsNullOrEmpty(lagerortFilter))
+                {
+                    abgerufeneBestaende = abgerufeneBestaende
+                        .Where(p => p.Lagerort.Equals(lagerortFilter, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                }
+
+                // Sortieren nach Verfallsdatum
+                abgerufeneBestaende = abgerufeneBestaende
+                    .OrderBy(p => p.Verfallsdatum)
+                    .ToList();
+            }
+            else if (!string.IsNullOrEmpty(lagerortFilter))
+            {
+                // Alle, aber nach Lagerort filtern
+                abgerufeneBestaende = await ProduktInstanzService.GetByLagerortAsync(lagerortFilter);
+
+                // Sortieren nach Verfallsdatum
+                abgerufeneBestaende = abgerufeneBestaende
+                    .OrderBy(p => p.Verfallsdatum)
+                    .ToList();
+            }
+            else
+            {
+                // Alle ohne Filter — liefert bereits sortiert
+                abgerufeneBestaende = await ProduktInstanzService.GetNachVerfallsdatumSortiertAsync();
+            }
+
+            bestaende = abgerufeneBestaende;
 
             if (bestaende is not null && bestaende.Any())
             {
@@ -149,6 +218,44 @@
         {
             lädt = false;
         }
+    }
+
+    private async Task OnStatusFilterChanged(ChangeEventArgs e)
+    {
+        statusFilter = e.Value?.ToString() ?? "all";
+        await AlleAbrufen();
+    }
+
+    private async Task OnLagerortFilterChanged(ChangeEventArgs e)
+    {
+        lagerortFilter = e.Value?.ToString() ?? "";
+        await AlleAbrufen();
+    }
+
+    private string GetMhdText(int tagesBisMhd)
+    {
+        if (tagesBisMhd < 0)
+        {
+            int tagedavor = Math.Abs(tagesBisMhd);
+            return tagedavor == 1 ? "vor 1 Tag abgelaufen" : $"vor {tagedavor} Tagen abgelaufen";
+        }
+        else if (tagesBisMhd == 0)
+        {
+            return "Heute ablaufend";
+        }
+        else
+        {
+            return tagesBisMhd == 1 ? "1 Tag verbleibend" : $"{tagesBisMhd} Tage verbleibend";
+        }
+    }
+
+    private string GetEmptyStateMessage()
+    {
+        if (statusFilter == "expired" || !string.IsNullOrEmpty(lagerortFilter))
+        {
+            return "Keine Treffer für diesen Filter.";
+        }
+        return "Kein Lagerbestand vorhanden.";
     }
 
     private void BestätigungLöschen(int instanzId)
