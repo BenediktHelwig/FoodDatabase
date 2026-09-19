@@ -243,7 +243,7 @@
 
     private string GetEmptyStateMessage()
     {
-        if (statusFilter == "expired" || !string.IsNullOrEmpty(lagerortFilter))
+        if (statusFilter == StatusFilterExpired || !string.IsNullOrEmpty(lagerortFilter))
         {
             return "Keine Treffer für diesen Filter.";
         }
