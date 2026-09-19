@@ -11,7 +11,7 @@
           <mxGeometry x="30" y="30" width="30" height="60" as="geometry"/>
         </mxCell>
 
-        <mxCell id="actor-ui" value="Blazor UI&#10;(LagerbestandBearbeiten.razor, /lagerbestand)" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
+        <mxCell id="actor-ui" value="Blazor UI&#10;(/lagerbestand · /neu · /{id}/bearbeiten)" style="shape=box;rounded=1;whiteSpace=wrap;html=1;fontSize=10;fillColor=#fff0f5;strokeWidth=2;align=center;" vertex="1" parent="1">
           <mxGeometry x="150" y="40" width="120" height="50" as="geometry"/>
         </mxCell>
 
