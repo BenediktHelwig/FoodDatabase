@@ -1,23 +1,40 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-09-11  
+**Datum**: 2026-09-19  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
 **Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow  
-**Aktueller Branch**: `docs/uc6-definition-of-done` (PR offen zur Abnahme)
+**Aktueller Branch**: `docs/uc9-wp4-nachzug` (PR offen zur Abnahme)
 
 ---
 
 ## ⏭️ NÄCHSTE SCHRITTE (in dieser Reihenfolge)
 
-UC6 ist vollständig abgeschlossen — Definition-of-Done am 11.09.2026 nachgeholt. Als Nächstes:
+Der UC9-Doku-Nachzug ist am 19.09.2026 erledigt (PR offen). Als Nächstes:
 
-1. **WP4 UC10 (Produktinstanzen/MHD)** — der reguläre nächste Use-Case. `IProduktInstanzService`
-   ist die Datenbasis für das spätere Dashboard UC7, und UC10 bleibt im Lager-Kontext, dessen
-   Muster gerade frisch sind.
-2. **UC9-Nachzug** (klein, kann davor oder parallel laufen): `docs/features/UC9-Lagerorte.html`
-   nennt an sechs Stellen (181, 183, 239, 358, 386, 399) „18 Service / 26 gesamt" — tatsächlich
-   sind es **24 Service + 8 UI = 32**. Außerdem fehlt für die UC9-UI bis heute ein
-   `reviews/uc9-wp4-*.md`; der Status wurde seinerzeit beiläufig in einem UC6-Commit gesetzt.
+1. **WP4 UC10 (Produktinstanzen/MHD)** — mit einem wichtigen Befund aus der Vorprüfung: Das
+   UC10-**CRUD existiert bereits**, gebaut unter dem Label UC2. `LagerbestandBearbeiten.razor`
+   (`/lagerbestand`) listet alle Instanzen über `GetNachVerfallsdatumSortiertAsync()` mit Löschen
+   und Verfalls-Farbcodierung, `ProduktInstanzForm.razor` deckt Create und Update ab. Offen sind
+   nur die **MHD-Sichten** — die vier Service-Methoden, die kein UI je aufruft:
+
+   | Methode | Fehlende Sicht |
+   |---|---|
+   | `GetByLagerortAsync(string)` | Filter nach Lagerort |
+   | `GetVerfallenenAsync(DateTime?)` | Sicht „bereits abgelaufen" |
+   | `GetTagesBisVerfallAsync(int)` | Spalte „Tage bis MHD" |
+   | `GetByLebensmittelAsync(int)` | Packungsliste auf `LebensmittelDetail` |
+
+   UC10 ist damit deutlich kleiner als in der Roadmap veranschlagt.
+
+2. **Drei Code-Aufgaben, die beim UC9-Review auffielen** und in den UC10-Branch gehören:
+   - `LagerortForm.razor:27`: `placeholder="z.B. Kühlschrank"` verstößt gegen die eigene
+     Validierung `^[A-Za-z]+$` (`LagerortService.cs:75`) — die App schlägt eine Eingabe vor, die
+     sie selbst mit `ArgumentException` ablehnt.
+   - `ILagerortService.cs:40`: Das XML-Doc beschreibt die Normalisierung als „First Letter Upper,
+     Rest Lower"; für `"lagerA" → "LagerA"` stimmt das nicht.
+   - Die **UC9→UC10-Integration** (FK statt `string Lagerort`) ist weiterhin offen.
+     `FoodDatabaseContext.cs:64-65` vermerkt sie selbst als ausstehend.
+
 3. **Danach UC4** (Rezept-Nährwerte). UC3 bleibt blockiert, bis ein Export-Service existiert —
    laut `requirements/analysis.md` außerhalb v1.0.
 
@@ -34,7 +51,7 @@ UC6 ist vollständig abgeschlossen — Definition-of-Done am 11.09.2026 nachgeho
 ✅ WP3: UI Lebensmittel
 ✅ WP4 UC1: Lebensmittel-Katalog (LebensmittelListe/Form/Detail)
 ✅ WP4 UC2: Lagerbestand (LagerbestandBearbeiten + ProduktInstanzForm)
-✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm) – nur Liste + Neu; Service kann kein Update/Delete
+✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm) – nur Liste + Neu; Service kann kein Update/Delete – Doku vollständig seit 19.09.2026
 ✅ WP4 UC6: Verbrauch ausbuchen (VerbrauchListe + VerbrauchZeile) – Doku vollständig seit 11.09.2026
 ⏳ WP4 UC10: Produktinstanzen/MHD
 ⏳ WP4 UC4:  Rezept-Nährwerte anzeigen
@@ -71,6 +88,12 @@ UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9
 - **`core.ignorecase=true` im Repo.** Datei-Umbenennungen, die nur die Groß-/Kleinschreibung ändern, landen mit `git add -A` **nicht** im Index — git hängt die Datei still wieder unter dem alten Pfad ein. Solche Renames brauchen ein explizites `git mv` über einen Zwischennamen und einen eigenen Commit. Auf einem case-sensitiven Linux-/Docker-Checkout führt unbemerkte Drift sonst zu 404s (passiert bei `UC6-VerbrauchAusbuchen.html`, behoben in `96546da`).
 - **bUnit MainLayout**: `Body` als Parameter setzen, nicht `.AddChildContent()`.
 - **Agenten, die `.drawio`- oder HTML-Dateien über ein XML-Werkzeug neu schreiben, zerstören den Diff.** Passiert am 11.09.2026: Ein Durchlauf wurde mit `ElementTree` gespeichert statt gezielt editiert — Ergebnis waren 115 geänderte Zeilen, wo eine einzige zu ändern war, alle XML-Kommentare gelöscht, Zeilenenden von LF auf CRLF gekippt und ein doppelt escapetes `&amp;#10;` im Label. Der Auftrag an schreibende Agenten muss deshalb ausdrücklich sagen: gezielte String-Ersetzungen, kein Neuschreiben, XML-Werkzeuge nur zum Prüfen. Kontrolle: `git diff --stat` muss zur Größe der Aufgabe passen.
+- **Testzahlen aus Commit-Messages sind keine Quelle.** Die UC9-Doku trug über ein Jahr „18 Tests",
+  weil die Commit-Message von `0df33ea` das sagte — die Datei enthielt schon damals 24. Zahlen
+  gehören gegen die Testdateien gezählt (`grep -c "\[Fact\]"`), nicht aus der Historie abgeschrieben.
+- **Spitze Klammern in `<pre>`-Blöcken und `.drawio`-Labels escapen.** `DbSet<Lagerort>` rendert
+  im Browser als „(DbSet)", ein unescapetes `<Lagerort>` in einer `.drawio` macht die Datei zu
+  ungültigem XML, das draw.io nicht mehr öffnet. Beides lag seit Juni im Repo.
 
 ---
 
@@ -84,27 +107,33 @@ UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9
 
 ---
 
-## ✅ ZULETZT FERTIGGESTELLT: UC6 Definition-of-Done nachgeholt (11.09.2026)
+## ✅ ZULETZT FERTIGGESTELLT: UC9 Doku-Nachzug (19.09.2026)
 
-UC6 war seit dem 08.08.2026 gemergt, aber mit unvollständiger Doku: Das Sequence-Diagramm
-kannte die UI-Ebene nicht, und das Doku-Review-Gate war komplett übersprungen worden. Beides
-ist nachgeholt.
+UC9 kam am 30.07.2026 mit `23eb5fc` als Direkt-Commit auf `master` — ohne PR und ohne
+Doku-Review. Das Gate ist nachgeholt, in zwei Durchläufen
+(`reviews/uc9-wp4-doku-review-1.md` → CHANGES REQUESTED mit 2 HIGH + 7 MEDIUM, `-2.md` → PASS).
 
-**Diagramme**: Sequence-Diagramm zeigt jetzt `VerbrauchListe.razor` (`/verbrauchen`), den Klick
-als Auslöser und das Ergebnis-Alert in beiden Szenarien. Legende in `use-cases.drawio`
-korrigiert (UC6 und UC9 wurden dort noch als „Service only" geführt).
+**Der gewichtigste Befund**: Die Feature-Seite und das ER-Diagramm beschrieben seit Juni eine
+Foreign-Key-Beziehung `ProduktInstanz → Lagerort` samt `ALTER TABLE`-Migration. Die gibt es
+nicht — `grep -rn "LagerortId" src/` liefert null Treffer, und `FoodDatabaseContext.cs:64-65`
+vermerkt die Integration selbst als ausstehend. Jetzt überall als geplant gekennzeichnet.
 
-**Doku-Review**: `reviews/uc6-wp4-doku-review-1.md` und `-2.md`. Neun Befunde, alle behoben,
-Freigabe in Schleife 2 von 3. Der auffälligste: Die Feature-Seite listete unter „UI-Tests"
-zusätzlich die zehn Service-Testnamen und behauptete gleichzeitig Badge „FERTIG" und „Merged
-⏳ Pending".
+**Testzahlen**: acht Stellen sagten „18 Service + 8 UI = 26", richtig sind **24 + 8 = 32**. Die
+18 war nie korrekt: `0df33ea` enthielt schon 24 Tests, seine Commit-Message sagte „18 tests",
+und die Seite hat das übernommen.
 
-**Prozess-Befund (LOW)**: Commit `d6676de` hatte den UC9-Status beiläufig in einem UC6-Commit
-mitgesetzt. Inhaltlich richtig, aber ohne eigenes Review — so blieb eine falsche Testzahl über
-einen Monat unbemerkt. Dokumentiert, nicht zurückgerollt.
+**WP4-UI**: erstmals dokumentiert — Routen, DI, Komponentenfelder, alle vier Anzeigezustände,
+NavMenu-Eintrag, ein gegen den Code formulierter Workflow, dazu ein Sequence-Szenario mit
+`LagerortForm.razor` als eigener Lifeline (nach dem UC6-Vorbild `1758dbe`).
 
-**Zwischen 08.08. und 11.09.2026** lief ausschließlich Arbeit am Agenten-Orchester selbst
-(PRs #5–#8: Orchestrator-Zuschnitt, GitHub-App-Token für PRs, Token-Gate), kein Produktivcode.
+**Zwei Altlasten nebenbei behoben**: `sequence-uc9-lagerorte.drawio` war kein gültiges XML
+(unescapetes `<Lagerort>`, als einziges von 15 Diagrammen), und `DbSet<Lagerort>` stand
+unescaped in einem `<pre>` der Feature-Seite, was der Browser als „(DbSet)" rendert.
+
+**Prozess-Lehre aus Review 1**: Der erste Nachbesserungsauftrag war als Liste von Zeilennummern
+formuliert — korrigiert wurde genau das, was in der Liste stand, und nichts darüber hinaus. Der
+zweite war inhaltlich gefasst („die Seite behauptet keine Integration, die es nicht gibt") und
+führte zum Erfolg. Aufträge an schreibende Agenten gehören inhaltlich formuliert.
 
 ---
 
