@@ -48,16 +48,17 @@ namespace FoodDatabase.App.Services.Classes
                 return await GetAlleLagerorte();
             }
 
-            var lowerPrefix = prefix.ToLower();
+            // SQLite lower() ist ASCII-only (Ö bliebe Ö), daher Filter im Speicher.
+            string lowerPrefix = prefix.ToLowerInvariant();
+            List<Lagerort> lagerorte = (await GetAlleLagerorte()).ToList();
 
-            return await _context.Lagerorte
-                .Where(l => !l.IsArchived && l.Name.ToLower().Contains(lowerPrefix))
-                .OrderBy(l => l.Name)
-                .ToListAsync();
+            return lagerorte
+                .Where(l => l.Name.ToLowerInvariant().Contains(lowerPrefix))
+                .ToList();
         }
 
         /// <summary>
-        /// Validiert einen Lagornamen (nur Buchstaben A-Z, a-z).
+        /// Validiert einen Lagerortnamen (nur Buchstaben A-Z, a-z, Umlaute und ß).
         /// </summary>
         public void ValidateLagerort(string name)
         {
@@ -71,15 +72,15 @@ namespace FoodDatabase.App.Services.Classes
                 throw new ArgumentException("Lagerortname darf nicht nur Whitespace sein.", nameof(name));
             }
 
-            // Nur Buchstaben erlaubt (A-Z, a-z)
-            if (!Regex.IsMatch(name, @"^[A-Za-z]+$"))
+            // Nur Buchstaben erlaubt (A-Z, a-z, Umlaute, ß)
+            if (!Regex.IsMatch(name, @"^[A-Za-zÄÖÜäöüß]+$"))
             {
-                throw new ArgumentException("Nur Buchstaben (A-Z, a-z) erlaubt.", nameof(name));
+                throw new ArgumentException("Nur Buchstaben inkl. Umlaute und ß erlaubt.", nameof(name));
             }
         }
 
         /// <summary>
-        /// Normalisiert einen Lagornamen (Single-Word mit intelligenter Case-Behandlung).
+        /// Normalisiert einen Lagerortnamen (Single-Word mit intelligenter Case-Behandlung).
         /// Erkenne Lower-to-Upper Übergänge: "lagerA" → "LagerA", "LAGER" → "Lager", "LagerB" → "LagerB".
         /// Nur für Single-Word-Input. Multi-Word wird nicht unterstützt (Validierung blockiert Leerzeichen).
         /// </summary>

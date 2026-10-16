@@ -18,7 +18,7 @@ namespace FoodDatabase.App.Services.Interfaces
         Task<IEnumerable<Lagerort>> GetAlleLagerorte();
 
         /// <summary>
-        /// Sucht Lagerorte mit Fuzzy-Matching (Partial Prefix, Case-Insensitive).
+        /// Sucht Lagerorte mit Fuzzy-Matching (Partial Prefix, Case-Insensitive inkl. Umlaute).
         /// Wird für Auto-Complete-Funktionalität verwendet.
         /// </summary>
         /// <param name="prefix">Suchprefix (z.B. "lag" findet "Lager", "LagerA").</param>
@@ -26,7 +26,7 @@ namespace FoodDatabase.App.Services.Interfaces
         Task<IEnumerable<Lagerort>> GetLagerorteMitAutoComplete(string prefix);
 
         /// <summary>
-        /// Validiert einen Lagornamen (nur Buchstaben A-Z, a-z).
+        /// Validiert einen Lagerortnamen (nur Buchstaben A–Z, a–z, Umlaute ÄÖÜäöü und ß).
         /// </summary>
         /// <param name="name">Der zu validierende Name.</param>
         /// <exception cref="ArgumentNullException">Wenn Name null oder leer ist.</exception>
@@ -34,10 +34,11 @@ namespace FoodDatabase.App.Services.Interfaces
         void ValidateLagerort(string name);
 
         /// <summary>
-        /// Normalisiert einen Lagornamen (Single-Word → Capitalize: "lagerA" → "LagerA", "LAGER" → "Lager").
+        /// Normalisiert einen Lagerortnamen (Single-Word → Capitalize: "lagerA" → "LagerA", "LAGER" → "Lager").
         /// </summary>
         /// <param name="input">Der zu normalisierende Input.</param>
-        /// <returns>Der normalisierte Name (First Letter Upper, Rest Lower).</returns>
+        /// <returns>Der normalisierte Name: erster Buchstabe groß; genau ein Lower→Upper-Übergang
+        /// (höchstens zwei Großbuchstaben) bleibt erhalten, sonst Rest klein.</returns>
         string NormalisiereLagerort(string input);
 
         /// <summary>
