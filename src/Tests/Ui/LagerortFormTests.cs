@@ -71,7 +71,7 @@ namespace FoodDatabase.Tests.Ui
             // Arrange
             Mock<ILagerortService> mock = new();
             mock.Setup(s => s.GetOrCreateAsync(It.IsAny<string>()))
-                .ThrowsAsync(new ArgumentException("Nur Buchstaben (A-Z, a-z) erlaubt."));
+                .ThrowsAsync(new ArgumentException("Nur Buchstaben inkl. Umlaute und ß erlaubt."));
             Services.AddSingleton<ILagerortService>(mock.Object);
 
             IRenderedComponent<LagerortForm> cut = RenderComponent<LagerortForm>();
