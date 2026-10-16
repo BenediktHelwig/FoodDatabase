@@ -1,57 +1,39 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-09-19  
+**Datum**: 2026-10-16  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
 **Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow  
-**Aktueller Branch**: `feat/ui-produktinstanzen-uc10` (PR offen zur Abnahme)
+**Aktueller Branch**: `fix/lagerort-umlaute-aufraeumen` (PR offen, gestapelt auf PR #12 – #12 zuerst mergen)
 
 ---
 
 ## ⏭️ NÄCHSTE SCHRITTE (in dieser Reihenfolge)
 
-WP4 UC10 ist am 19.09.2026 abgeschlossen (PR offen). Als Nächstes:
+Offen zur Abnahme: **PR #12** (WP4 UC10) und darauf gestapelt die PR für `fix/lagerort-umlaute-aufraeumen`. #12 zuerst mergen.
 
-1. **WP4 UC4 (Rezept-Nährwerte-UI)** — der letzte offene Punkt in WP4 neben dem blockierten UC3.
-   Der Service ist fertig; es fehlt die UI. Danach WP5 (Rezepte) und WP6 (Dashboard).
+**Korrektur zur Roadmap-Bezeichnung**: Bis 19.09.2026 stand hier „WP4 UC4". Laut `UI-PHASE-PLAN.md:156` besteht WP4 nur aus UC2/6/9/10 – **WP4 ist damit fertig** (UC3 blockiert). UC4 gehört zu **WP5** (`UI-PHASE-PLAN.md:164`).
 
-2. **Doku-Altlasten auf `docs/features/UC10-Produktinstanzen.html`** — vorbestehend, beim
-   UC10-Doku-Review gefunden, bewusst nicht im letzten Gate-Versuch behoben:
-   - Z. 63–84: Die Domain-Model-Tabelle nennt Felder, die `ProduktInstanz.cs` **nicht** hat
-     (`MHD`, `LagerortId: int? (FK)`, `Barcode`, `KaufDatum`, `Notiz`) und lässt die vorhandenen
-     aus (`Verfallsdatum`, `Einkaufsdatum`, `Lagerort: string`, `MindestbestandMenge`, `ErstelltAm`).
-     `Lagerort` steht dort als Foreign Key — es ist ein String.
-   - Z. 146–156: zeigt ein `IProduktInstanzService`, das es nicht gibt
-     (`CreateProduktInstanzAsync`, `FindByBarcodeAsync`, `GetByLagerortAsync(int)`) und
-     widerspricht der korrekten Liste auf Z. 690–716 **derselben Seite**.
-   - Z. 613/684: „ProduktInstanzService.cs (151 Zeilen)" — die Datei hat 224.
+1. **WP5: UI Rezepte (UC4 + UC5)** — nächstes Arbeitspaket. `RezeptListe`, `RezeptForm`, `RezeptDetail` mit Zutaten-CRUD; die fertige `RezeptNährwertAnzeige` wird nur eingebettet. Services fertig. UI-Regel: Code zuerst, dann Tests. Deutlich größer als die bisherigen WP4-Schritte.
 
-3. **Drei Code-Aufgaben aus dem UC9-Review**, weiterhin offen:
-   - `LagerortForm.razor:27`: `placeholder="z.B. Kühlschrank"` verstößt gegen die eigene
-     Validierung `^[A-Za-z]+$` — die App schlägt eine Eingabe vor, die sie selbst ablehnt.
-   - `ILagerortService.cs:40`: XML-Doc beschreibt die Normalisierung falsch.
-   - Die **UC9→UC10-Integration** (FK statt `string Lagerort`). `FoodDatabaseContext.cs:64-65`
-     vermerkt sie selbst als ausstehend. Solange sie fehlt, sind die unter `/lagerorte`
-     angelegten Lagerorte funktionslos.
+2. **UC9→UC10-Integration** (FK statt `string Lagerort`). `FoodDatabaseContext.cs:64-65` vermerkt sie als ausstehend. Solange sie fehlt, sind die unter `/lagerorte` angelegten Lagerorte funktionslos. Seit 16.10.2026 akzeptiert UC9 Umlaute – die UC10-Konstanten „Kühlschrank"/„Tiefkühler" sind damit gültige UC9-Namen, eine Umbenennung ist für die Integration nicht nötig. Schema-Änderung → TDD.
+
+3. **Zwei Diagramme widersprechen dem Code** (gefunden im Doku-Review vom 16.10.2026, außerhalb des damaligen Scopes):
+   - `diagrams/database-schema.drawio`: ProduktInstanz-Tabelle zeigt die erfundenen Felder Einheit, MHD, KaufDatum, Barcode.
+   - `diagrams/architecture-class.drawio`: Lagerort-Klasse hat Beschreibung, `GetProduktInstanzen()` und `Delete()` – gibt es im Code nicht, Löschen ist laut UC9 ausdrücklich nicht erlaubt.
 
 4. **Kleinere Überträge** aus den drei UC10-Gates, jeweils beim nächsten Anfassen der Datei:
-   - Tests: ein `var` in `LebensmittelDetailTests.cs:841`; zwei `WaitForAssertion`-Wrapper um
-     reine Interaktionen; zwei Deckungslücken (eine Packungszeile vollständig prüfen, das
-     Dropdown an `LagerortKonstanten.AlleWerte` binden).
-   - Code: Filterleiste flackert beim Laden (`@if (!lädt)`); `GetMhdText(int)` statt
-     `Formatiere(DateTime)` lässt die Tagesrechnung in beiden Views stehen.
-   - Doku: Etikett „Service-Layer: 271 Tests" enthält 2 Integrationstests; UC3 bezeichnet im
-     Repo zwei verschiedene Dinge („Nährwerte" fertig vs. „Lagerbestand Export" blockiert);
-     einzelne Begründungen in der Filter-Sektion sind schwächer als die Aussage, die sie tragen.
+   - Tests: ein `var` in `LebensmittelDetailTests.cs:841`; zwei `WaitForAssertion`-Wrapper um reine Interaktionen; zwei Deckungslücken (eine Packungszeile vollständig prüfen, das Dropdown an `LagerortKonstanten.AlleWerte` binden).
+   - Code: Filterleiste flackert beim Laden (`@if (!lädt)`); `GetMhdText(int)` statt `Formatiere(DateTime)` lässt die Tagesrechnung in beiden Views stehen.
+   - Doku: UC3 bezeichnet im Repo zwei verschiedene Dinge („Nährwerte" fertig vs. „Lagerbestand Export" blockiert); einzelne Begründungen in der UC10-Filter-Sektion sind schwächer als die Aussage, die sie tragen.
 
-5. **UC3 bleibt blockiert**, bis ein Export-Service existiert — laut `requirements/analysis.md`
-   außerhalb v1.0.
+5. **UC3 bleibt blockiert**, bis ein Export-Service existiert — laut `requirements/analysis.md` außerhalb v1.0.
 
 ---
 
 ## 📊 GESAMT-STATUS
 
 ### Service-Schicht (100 % ✅)
-10/10 Use-Cases implementiert · 269 Unit-Tests + 2 Integration-Tests, alle grün
+10/10 Use-Cases implementiert · alle Service-, Integrations- und UI-Tests grün (Zählung siehe Test-Status)
 
 ### UI-Schicht
 ```
@@ -59,25 +41,24 @@ WP4 UC10 ist am 19.09.2026 abgeschlossen (PR offen). Als Nächstes:
 ✅ WP3: UI Lebensmittel
 ✅ WP4 UC1: Lebensmittel-Katalog (LebensmittelListe/Form/Detail)
 ✅ WP4 UC2: Lagerbestand (LagerbestandBearbeiten + ProduktInstanzForm)
-✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm) – nur Liste + Neu; Service kann kein Update/Delete – Doku vollständig seit 19.09.2026
+✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm) – nur Liste + Neu; Service kann kein Update/Delete – Doku vollständig seit 19.09.2026 · Umlaute + ß erlaubt seit 16.10.2026
 ✅ WP4 UC6: Verbrauch ausbuchen (VerbrauchListe + VerbrauchZeile) – Doku vollständig seit 11.09.2026
 ✅ WP4 UC10: MHD-Sichten (Filterleiste + Packungsliste) – Doku vollständig seit 19.09.2026
-⏳ WP4 UC4:  Rezept-Nährwerte anzeigen
 ⚠️ WP4 UC3:  Lagerbestand exportieren – BLOCKIERT, kein Export-Service.
              Laut requirements/analysis.md außerhalb v1.0 (CSV/PDF erst Phase 2+).
-⏳ WP5: UI Rezepte (UC4/UC5)
+⏳ WP5: UI Rezepte (UC4/UC5) ← als Nächstes
 ⏳ WP6: UI Dashboard (UC7/UC8) – UC8-Service noch TODO
 ```
 
-### Test-Status (verifiziert 2026-09-19, `dotnet test` vom Repo-Root)
+### Test-Status (verifiziert 2026-10-16, `dotnet test --list-tests` vom Repo-Root, gezählt in Testfällen)
 ```
-Service + Integration:  271 Tests ✅
-UI (bUnit):             107 Tests ✅
-Unit (Formatter):         5 Tests ✅
+Unit:          284 Testfälle ✅  (Services + Formatter)
+Integration:     3 Testfälle ✅  (2 EfRepository + 1 LagerortService/SQLite)
+UI (bUnit):    107 Testfälle ✅
 ────────────────────────────────────
-TOTAL:                  383 Tests ✅  (0 rot)
+TOTAL:         394 Testfälle ✅  (0 rot)
 ```
-UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6 · MainLayout 3
+UI-Aufschlüsselung (unverändert seit 19.09.2026): UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6 · MainLayout 3
 
 ### Infrastruktur
 ```
@@ -112,6 +93,7 @@ UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9
   UC10 lief ein Test namens „IsCaseSensitive" durch einen Codezweig ohne Stringvergleich. Wo
   ein Test eine Designentscheidung absichern soll, lohnt die Gegenprobe: Entscheidung im Code
   umdrehen, prüfen, dass **genau** dieser Test fällt, Änderung zurücknehmen.
+- **Der EF-InMemory-Provider verdeckt Übersetzungsfehler nach SQLite.** Er wertet LINQ in C# aus; SQLite übersetzt `ToLower()` in `lower()`, das nur ASCII faltet. `l.Name.ToLower().Contains("öl")` fand „Ölkeller" in den Unit-Tests, in der echten App nicht (behoben 16.10.2026, `5608ee6`). Alles, was von DB-seitigem String-Verhalten abhängt (Case, Collation, Umlaute), braucht einen Test gegen SQLite `:memory:` — Muster: `src/Tests/Integration/LagerortServiceSqliteTests.cs`.
 
 ---
 
@@ -125,7 +107,19 @@ UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9
 
 ---
 
-## ✅ ZULETZT FERTIGGESTELLT: WP4 UC10 — MHD-Sichten (19.09.2026)
+## ✅ ZULETZT FERTIGGESTELLT: Lagerort-Umlaute + UC10-Doku-Aufräumen (16.10.2026)
+
+Anlass: Das UC9-Formular schlug „z.B. Kühlschrank" vor, die Validierung `^[A-Za-z]+$` lehnte es ab. **User-Entscheidung**: Umlaute und ß sind gültig und werden unverändert gespeichert (keine Umschreibung auf ae/oe/ue/ss — eine Rückumwandlung beim Lesen hätte ein Wörterbuch gebraucht: „Mauer" → „Maür"). Neue Regex `^[A-Za-zÄÖÜäöüß]+$`.
+
+**Nebenbefund mit echtem Fehler**: Autocomplete filterte per SQLite-`lower()` (ASCII-only) — „öl" fand „Ölkeller" nicht. Jetzt In-Memory-Filter, abgesichert durch den ersten Lagerort-Test gegen echtes SQLite (siehe Fallstricke).
+
+Außerdem: drei falsche Ist-Aussagen auf `UC10-Produktinstanzen.html` korrigiert (Domain-Tabelle, erfundenes Interface, Zeilenzahl). **383 → 394 Tests.**
+
+**Gates**: Tests und Code im 1. Versuch, Doku im 3. Versuch. Lehre: Die Mängelliste eines Reviews deckt nicht automatisch alle Stellen ab, die dieselbe Aussage tragen — eine korrigierte Datumsangabe erzeugte einen Widerspruch zur zweiten Datumsangabe derselben Seite, die nicht auf der Liste stand. Bei Datum/Stand-Korrekturen im Auftrag alle Vorkommen per grep mitnennen.
+
+---
+
+## ✅ VORLETZT FERTIGGESTELLT: WP4 UC10 — MHD-Sichten (19.09.2026)
 
 UC10 stand als voller Use-Case in der Roadmap. Tatsächlich existierte das CRUD schon, gebaut
 unter dem UC2-Label — offen waren nur die MHD-Sichten. Das Feature wurde dadurch deutlich
@@ -161,10 +155,10 @@ nur die Zahl.
 ## 🚀 ROADMAP (nach Abschluss von UC6)
 
 ### Phase 1: UI-Komponenten (aktuell)
-Verbleibend in WP4: **UC4**, dann UC3 (blockiert). UC10 fertig.
+WP4 fertig (UC2/6/9/10). UC3 blockiert (außerhalb v1.0). Nächstes Paket: WP5.
 
 ### Phase 2: UI Rezepte (WP5)
-Abhängigkeit: UC4 + UC10 fertig (nicht UC3 — der ist außerhalb v1.0).
+Abhängigkeit: WP4 fertig ✅ (UC3 nicht nötig — außerhalb v1.0).
 - **UC4**: Rezepte CRUD UI (Liste, Form, Detail)
 - **UC5**: Rezept-Nährwerte automatisch berechnen (UI)
 - Service-Layer bereits implementiert ✅
