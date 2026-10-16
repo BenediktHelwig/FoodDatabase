@@ -61,8 +61,8 @@
                 </tr>
                 <tr>
                     <td>Lagerort</td>
-                    <td>Speicherort</td>
-                    <td>Foreign Key (0..1)</td>
+                    <td>Speicherort (Konstante, kein eigenes Entity)</td>
+                    <td>Kein FK: Wert als string in ProduktInstanz.Lagerort</td>
                 </tr>
             </table>
 
@@ -72,12 +72,12 @@ ProduktInstanz
 ├── Id: int (PK)
 ├── LebensmittelKatalogId: int (FK) ← WELCHES Produkt?
 ├── Menge: decimal ← WIE VIEL?
-├── Einheit: string (g, ml, Stück, etc.)
-├── MHD: DateTime ← WANN VERFÄLLT DIESES?
-├── LagerortId: int? (FK, nullable) ← WO LAGERT ES?
-├── Barcode: string (optional)
-├── KaufDatum: DateTime
-└── Notiz: string (optional)
+├── MindestbestandMenge: decimal ← Schwellenwert für Einkaufslisten
+├── Verfallsdatum: DateTime ← WANN VERFÄLLT DIESES?
+├── Einkaufsdatum: DateTime ← WANN GEKAUFT?
+├── Lagerort: string ← WO LAGERT ES? (Konstante, kein FK)
+├── ErstelltAm: DateTime (Standard: UTC-Jetzt)
+└── LebensmittelKatalog: Navigation ← Referenz auf das Produkt-Template
 
 BEACHTE: Kein globales "MHD pro LebensmittelKatalog"
          Jede INSTANZ hat ihr eigenes MHD!
@@ -88,7 +88,7 @@ BEACHTE: Kein globales "MHD pro LebensmittelKatalog"
 LebensmittelKatalog: Joghurt (generisch)
 ├── ProduktInstanz #1: 500g, MHD 2026-06-20, Kühlschrank
 ├── ProduktInstanz #2: 500g, MHD 2026-06-25, Kühlschrank (2. gekauft)
-└── ProduktInstanz #3: 250g, MHD 2026-07-10, Gefrierschrank
+└── ProduktInstanz #3: 250g, MHD 2026-07-10, Tiefkühler
 
 → Drei VERSCHIEDENE Einheiten mit UNTERSCHIEDLICHEN MHDs!
             </pre>
@@ -97,16 +97,14 @@ LebensmittelKatalog: Joghurt (generisch)
         <section>
             <h2>🔄 User Workflows</h2>
 
-            <h3>Hauptworkflow: Produktinstanz hinzufügen (Einkauf)</h3>
+            <h3>Hauptworkflow: Produktinstanz hinzufügen (Einkauf) — ⏳ geplant, keine Eingabe-UI in UC10; Service-Einstieg: CreateAsync</h3>
             <pre>
 1. Benutzer klickt "Neuen Einkauf hinzufügen"
 2. Wählt Lebensmittel aus Katalog
 3. Gibt ein:
    - Menge (z.B. 500)
-   - Einheit (z.B. "g")
    - MHD (z.B. 2026-06-20)
    - Lagerort (z.B. "Kühlschrank")
-   - Optional: Barcode, Notiz
 4. Speichert
 5. ProduktInstanz wird angelegt
 6. Wird in Liste/Dashboard angezeigt
@@ -145,14 +143,15 @@ Zielbilder für UC7 (Verfallsdatum-Warnungen) und nicht Teil von UC10.
             <pre>
 public interface IProduktInstanzService
 {
-    Task&lt;ProduktInstanz&gt; CreateProduktInstanzAsync(ProduktInstanz instanz);
-    Task&lt;ProduktInstanz&gt; GetProduktInstanzByIdAsync(int id);
-    Task&lt;IEnumerable&lt;ProduktInstanz&gt;&gt; GetAllProduktInstanzenAsync();
-    Task&lt;IEnumerable&lt;ProduktInstanz&gt;&gt; GetByLebensmittelAsync(int lebensmittelId);
-    Task&lt;IEnumerable&lt;ProduktInstanz&gt;&gt; GetByLagerortAsync(int lagerortId);
-    Task&lt;ProduktInstanz&gt; UpdateProduktInstanzAsync(ProduktInstanz instanz);
-    Task&lt;bool&gt; DeleteProduktInstanzAsync(int id);
-    Task&lt;ProduktInstanz&gt; FindByBarcodeAsync(string barcode);
+    Task&lt;ProduktInstanz&gt; CreateAsync(int lebensmittelKatalogId, decimal menge, DateTime verfallsdatum, string lagerort);
+    Task&lt;ProduktInstanz&gt; GetByIdAsync(int id);
+    Task&lt;List&lt;ProduktInstanz&gt;&gt; GetByLebensmittelAsync(int lebensmittelKatalogId);
+    Task&lt;List&lt;ProduktInstanz&gt;&gt; GetByLagerortAsync(string lagerort);
+    Task&lt;List&lt;ProduktInstanz&gt;&gt; GetNachVerfallsdatumSortiertAsync();
+    Task&lt;List&lt;ProduktInstanz&gt;&gt; GetVerfallenenAsync(DateTime? standdatum = null);
+    Task UpdateAsync(int id, decimal menge, DateTime verfallsdatum, string lagerort);
+    Task DeleteAsync(int id);
+    Task&lt;int&gt; GetTagesBisVerfallAsync(int id);
 }
             </pre>
 
@@ -450,11 +449,11 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
                 <tr>
                     <td><code>Lagerort</code>-Entity (UC9)</td>
                     <td>Freie Eingabe, Seite <code>/lagerorte</code></td>
-                    <td>Benutzerdefiniert; alphanumerisch nur (<code>^[A-Za-z]+$</code>), keine Umlaute</td>
+                    <td>Benutzerdefiniert; nur Buchstaben inkl. Umlaute und ß (<code>^[A-Za-zÄÖÜäöüß]+$</code>)</td>
                     <td>ILagerortService, wird nicht von ProduktInstanz verwendet</td>
                 </tr>
             </table>
-            <p><strong>Folge für UC10:</strong> Der Filter zeigt nur die vier Konstanten-Werte. Ein Benutzer, der unter <code>/lagerorte</code> ein neues Lagerort anlegt, kann es nicht im UC10-Filter verwenden — Grund 1: es kommt nicht in das Dropdown-Menü (das aus <code>LagerortKonstanten.AlleWerte</code> gespeist wird). Grund 2: selbst wenn der Wert irgendwie gewählt wird, lehnt <code>ProduktInstanzService.CreateAsync</code> ihn ab (wird validiert). Umgekehrte Disjunktion: Die beiden Konstanten-Werte mit Umlauten (Tiefkühler, Kühlschrank) lassen sich unter <code>/lagerorte</code> gar nicht erst anlegen, weil UC9 nur <code>^[A-Za-z]+$</code> zulässt und Umlaute ablehnt. Damit können sich die beiden Systeme nicht einmal auf einen gemeinsamen Namen einigen. Diese Inkonsistenz ist bekannt und wird als eigenes, nicht terminiertes Vorhaben in einer Weiterentwicklung adressiert.</p>
+            <p><strong>Folge für UC10:</strong> Der Filter zeigt nur die vier Konstanten-Werte. Ein Benutzer, der unter <code>/lagerorte</code> ein neues Lagerort anlegt, kann es nicht im UC10-Filter verwenden — Grund 1: es kommt nicht in das Dropdown-Menü (das aus <code>LagerortKonstanten.AlleWerte</code> gespeist wird). Grund 2: selbst wenn der Wert irgendwie gewählt wird, lehnt <code>ProduktInstanzService.CreateAsync</code> ihn ab (wird validiert). Die Umlaut-Lücke ist geschlossen: Seit UC9 Umlaute und ß zulässt, lassen sich „Tiefkühler“ und „Kühlschrank“ unter <code>/lagerorte</code> anlegen. Die Trennung zwischen den beiden Systemen bleibt aber: Ein dort angelegter Lagerort (z.B. „Keller“) steht nicht im UC10-Dropdown, weil die Liste fest aus <code>LagerortKonstanten</code> kommt. Diese Trennung ist bekannt und wird als eigenes, nicht terminiertes Vorhaben in einer Weiterentwicklung adressiert.</p>
             <p><strong>Case-Sensitivität:</strong> Der Lagerort-Vergleich ist in beiden Komponenten case-sensitiv (StringComparison.Ordinal in der UI-Filterung; <code>==</code>-Operator im Service). Ein Datensatz mit Lagerort „kühlschrank" (Kleinbuchstaben) fällt aus einem Filter für „Kühlschrank" (Großbuchstaben) heraus.</p>
 
             <h3>Test-Coverage (WP4)</h3>
@@ -611,7 +610,7 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
                 </tr>
                 <tr>
                     <td><strong>Service</strong></td>
-                    <td>✅ ProduktInstanzService.cs (151 Zeilen, 9 Public Methods)</td>
+                    <td>✅ ProduktInstanzService.cs (224 Zeilen, 9 Public Methods)</td>
                 </tr>
                 <tr>
                     <td><strong>Interface</strong></td>
@@ -631,7 +630,7 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
                 </tr>
                 <tr>
                     <td><strong>Dokumentation</strong></td>
-                    <td>✅ docs/features/UC10-Produktinstanzen.html (aktualisiert 2026-09-19)</td>
+                    <td>✅ docs/features/UC10-Produktinstanzen.html (aktualisiert 2026-10-16)</td>
                 </tr>
                 <tr>
                     <td><strong>Blazor UI (WP4)</strong></td>
@@ -653,7 +652,7 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
             <ul>
                 <li>ProduktInstanz als zentrale Entity (⭐)</li>
                 <li>Beziehungen zu LebensmittelKatalog (1:N)</li>
-                <li>Beziehungen zu Lagerort (1:N)</li>
+                <li>Beziehung zu Lagerort (⏳ geplant; aktuell string-Feld ProduktInstanz.Lagerort, kein FK)</li>
                 <li>Beziehungen zu VerfallsdatumWarnung (1:1)</li>
                 <li>Service-Layer: LagerbestandService (UC2)</li>
             </ul>
@@ -674,7 +673,7 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
             <ul>
                 <li>ProduktInstanzen (zentral)</li>
                 <li>LebensmittelKatalog (FK zu ProduktInstanzen)</li>
-                <li>Lagerorte (FK zu ProduktInstanzen)</li>
+                <li>Lagerorte (⏳ geplant: FK LagerortId; aktuell kein FK, Lagerort als string)</li>
                 <li>VerfallsdatumWarnungen (FK zu ProduktInstanzen)</li>
             </ul>
         </section>
@@ -682,7 +681,7 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
         <section>
             <h2>⚙️ Implementierungs-Details</h2>
 
-            <h3>ProduktInstanzService.cs (151 Zeilen)</h3>
+            <h3>ProduktInstanzService.cs (224 Zeilen)</h3>
             <p><strong>Konstruktor:</strong> Dependency Injection von IRepository&lt;ProduktInstanz&gt;</p>
             <p><strong>Konfiguration:</strong> Lagerort-Validierung über LagerortKonstanten</p>
 
@@ -850,7 +849,7 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
 
         <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
             <p>FoodDatabase | UC10 | Produktinstanzen mit MHD (ZENTRAL!)</p>
-            <p>Status: ✅ COMPLETE (54/54 Tests Passing) | Doc Version: 2.1 | Updated: 2026-09-19</p>
+            <p>Status: ✅ COMPLETE (54/54 Tests Passing) | Doc Version: 2.1 | Updated: 2026-10-16</p>
             <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
         </footer>
     </div>
