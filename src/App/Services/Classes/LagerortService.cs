@@ -38,7 +38,7 @@ namespace FoodDatabase.App.Services.Classes
         }
 
         /// <summary>
-        /// Sucht Lagerorte mit Fuzzy-Matching (Partial Prefix, Case-Insensitive).
+        /// Sucht Lagerorte per Teilstring-Suche (Contains, Case-Insensitive inkl. Umlaute).
         /// Wird für Auto-Complete-Funktionalität verwendet.
         /// </summary>
         public async Task<IEnumerable<Lagerort>> GetLagerorteMitAutoComplete(string prefix)
@@ -58,7 +58,7 @@ namespace FoodDatabase.App.Services.Classes
         }
 
         /// <summary>
-        /// Validiert einen Lagerortnamen (nur Buchstaben A-Z, a-z, Umlaute und ß).
+        /// Validiert einen Lagerortnamen (nur Buchstaben A-Z, a-z sowie Ä, Ö, Ü, ä, ö, ü und ß).
         /// </summary>
         public void ValidateLagerort(string name)
         {
@@ -72,7 +72,7 @@ namespace FoodDatabase.App.Services.Classes
                 throw new ArgumentException("Lagerortname darf nicht nur Whitespace sein.", nameof(name));
             }
 
-            // Nur Buchstaben erlaubt (A-Z, a-z, Umlaute, ß)
+            // Nur Buchstaben erlaubt (A-Z, a-z, Ä, Ö, Ü, ä, ö, ü, ß)
             if (!Regex.IsMatch(name, @"^[A-Za-zÄÖÜäöüß]+$"))
             {
                 throw new ArgumentException("Nur Buchstaben inkl. Umlaute und ß erlaubt.", nameof(name));

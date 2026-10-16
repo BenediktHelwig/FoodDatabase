@@ -18,7 +18,7 @@ namespace FoodDatabase.App.Services.Interfaces
         Task<IEnumerable<Lagerort>> GetAlleLagerorte();
 
         /// <summary>
-        /// Sucht Lagerorte mit Fuzzy-Matching (Partial Prefix, Case-Insensitive inkl. Umlaute).
+        /// Sucht Lagerorte per Teilstring-Suche (Contains, Case-Insensitive inkl. Umlaute).
         /// Wird für Auto-Complete-Funktionalität verwendet.
         /// </summary>
         /// <param name="prefix">Suchprefix (z.B. "lag" findet "Lager", "LagerA").</param>
@@ -26,7 +26,7 @@ namespace FoodDatabase.App.Services.Interfaces
         Task<IEnumerable<Lagerort>> GetLagerorteMitAutoComplete(string prefix);
 
         /// <summary>
-        /// Validiert einen Lagerortnamen (nur Buchstaben A–Z, a–z, Umlaute ÄÖÜäöü und ß).
+        /// Validiert einen Lagerortnamen (nur Buchstaben A-Z, a-z sowie Ä, Ö, Ü, ä, ö, ü und ß).
         /// </summary>
         /// <param name="name">Der zu validierende Name.</param>
         /// <exception cref="ArgumentNullException">Wenn Name null oder leer ist.</exception>

@@ -51,8 +51,8 @@
                 </tr>
                 <tr>
                     <td><strong>Validierung</strong></td>
-                    <td>Nur Buchstaben (A-Z, a-z). Keine Zahlen/Sonderzeichen</td>
-                    <td>"LagerA" ✅, "Lager1" ❌</td>
+                    <td>Nur Buchstaben (A-Z, a-z sowie Ä, Ö, Ü, ä, ö, ü, ß). Keine Zahlen, Leerzeichen oder Sonderzeichen</td>
+                    <td>"LagerA" ✅, "Kühlschrank" ✅, "Lager1" ❌, "Café" ❌</td>
                 </tr>
                 <tr>
                     <td><strong>Normalisierung</strong></td>
@@ -62,11 +62,11 @@
                 <tr>
                     <td><strong>Speicherung</strong></td>
                     <td>Case-Sensitive (wird unterschieden)</td>
-                    <td>"Lager" ≠ "lager" (verschiedene Einträge)</td>
+                    <td>"Lager" ≠ "lager" (verschiedene Einträge). Umlaute bleiben erhalten, ohne Umschreibung: "Kühlschrank" ≠ "Kuehlschrank"</td>
                 </tr>
                 <tr>
                     <td><strong>Auto-Complete</strong></td>
-                    <td>Partial Prefix Matching (Case-Insensitive Input)</td>
+                    <td>Teilstring-Suche (Contains), Case-Insensitive inkl. Umlaute. Der Filter läuft im Speicher statt in SQL, weil SQLites lower() nur ASCII faltet: ohne diesen Schritt würde "öl" den Eintrag "Ölkeller" nicht finden</td>
                     <td>Input "lag" findet "Lager", "LagerA", "LagerB"</td>
                 </tr>
                 <tr>
@@ -176,7 +176,7 @@ public interface ILagerortService
    Exception: alert-danger "Fehler beim Abrufen der Lagerorte: [Message]"
 4. Benutzer klickt "+ Neu" → Route /lagerorte/neu
 5. LagerortForm.razor zeigt Eingabefeld "Name" mit [Required]-Validierung
-6. Benutzer gibt Namen ein (z.B. "kuehler") → Service-Validierung (nur A-Z, a-z)
+6. Benutzer gibt Namen ein (z.B. "kuehler") → Service-Validierung (nur A-Z, a-z sowie Umlaute und ß)
 7. Speichern → GetOrCreateAsync(name):
    - Validiert Namen
    - Normalisiert zu "Kuehler"
@@ -196,9 +196,9 @@ Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
         </section>
 
         <section>
-            <h2>✅ Tests (24 Service + 8 UI = 32 GRÜN ✅)</h2>
+            <h2>✅ Tests (34 Service-Testfälle + 1 SQLite-Integration + 8 UI = 43 GRÜN ✅)</h2>
 
-            <h3>LagerortService Tests (24 Tests - Backend)</h3>
+            <h3>LagerortService Tests (29 Testmethoden / 34 Testfälle - Backend)</h3>
             <div class="checklist">
                 <ul>
                     <li><input type="checkbox" checked> GetAlleLagerorte: Happy Path – ✅ GRÜN</li>
@@ -225,6 +225,11 @@ Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
                     <li><input type="checkbox" checked> GetOrCreateAsync: Reject Invalid Input – ✅ GRÜN</li>
                     <li><input type="checkbox" checked> SQL Injection Prevention (GetAutoComplete) – ✅ GRÜN</li>
                     <li><input type="checkbox" checked> SQL Injection Prevention (ValidateLagerort) – ✅ GRÜN</li>
+                    <li><input type="checkbox" checked> ValidateLagerort: Umlaute und ß (Theory, 4 Fälle: Kühlschrank, Tiefkühler, Fußraum, Ölkeller) – ✅ GRÜN</li>
+                    <li><input type="checkbox" checked> ValidateLagerort: Andere Diakritika ("Café") abgelehnt – ✅ GRÜN</li>
+                    <li><input type="checkbox" checked> ValidateLagerort: Leerzeichen im Namen abgelehnt – ✅ GRÜN</li>
+                    <li><input type="checkbox" checked> NormalisiereLagerort: Umlaute (Theory, 3 Fälle: "kühlschrank", "TIEFKÜHLER", "öLKELLER") – ✅ GRÜN</li>
+                    <li><input type="checkbox" checked> GetOrCreateAsync: Umlaut wird gespeichert ("kühlschrank" → "Kühlschrank") – ✅ GRÜN</li>
                 </ul>
             </div>
 
@@ -248,13 +253,21 @@ Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
                 </ul>
             </div>
 
+            <h3>LagerortService SQLite-Integration (1 Testfall)</h3>
+            <div class="checklist">
+                <ul>
+                    <li><input type="checkbox" checked> GetAutoComplete: Umlaut-Präfix "öl" findet "Ölkeller" gegen echte SQLite-DB – ✅ GRÜN (LagerortServiceSqliteTests.cs)</li>
+                </ul>
+            </div>
+
             <h3>Test Coverage Statistiken</h3>
             <ul>
-                <li><strong>Service Tests:</strong> 24 ✅ (Backend: GetAlleLagerorte, Validation, Normalization, GetOrCreate)</li>
+                <li><strong>Service Tests:</strong> 34 Testfälle aus 29 Testmethoden (27 Fact + 2 Theory mit 7 InlineData-Fällen) ✅ (Backend: GetAlleLagerorte, Validation, Normalization, GetOrCreate, Autocomplete)</li>
+                <li><strong>SQLite-Integration:</strong> 1 Testfall ✅ (LagerortServiceSqliteTests.cs, Autocomplete gegen SQLite)</li>
                 <li><strong>UI Tests (Liste):</strong> 5 ✅ (Table rendering, columns, empty state, new-button, error handling)</li>
                 <li><strong>UI Tests (Form):</strong> 3 ✅ (Form rendering, service call, validation errors)</li>
-                <li><strong>Total Tests:</strong> 32 ✅</li>
-                <li><strong>Status:</strong> 32/32 GRÜN ✅</li>
+                <li><strong>Total Tests:</strong> 43 Testfälle (Service 34 + SQLite-Integration 1 + UI 8) ✅</li>
+                <li><strong>Status:</strong> 43/43 GRÜN ✅ (Gesamtlauf: 394/394)</li>
             </ul>
 
             <h3>UI Test Scope (Intentional Simplifications)</h3>
@@ -286,8 +299,10 @@ src/App/
     └── FoodDatabaseContext.cs ✅ (DbSet&lt;Lagerort&gt;)
 
 src/Tests/
+├── Integration/
+│   └── LagerortServiceSqliteTests.cs ✅ (1 Test)
 ├── Unit/Services/
-│   └── LagerortServiceTests.cs ✅ (24 Tests)
+│   └── LagerortServiceTests.cs ✅ (29 Testmethoden, 34 Testfälle)
 └── Ui/
     ├── LagerortListeTests.cs ✅ (5 Tests)
     └── LagerortFormTests.cs ✅ (3 Tests)
@@ -307,12 +322,12 @@ src/Tests/
                 </tr>
                 <tr>
                     <td><strong>GetLagerorteMitAutoComplete(prefix)</strong></td>
-                    <td>Case-Insensitive Partial Prefix Match, Exclude Archived</td>
+                    <td>Case-Insensitive Teilstring-Suche (Contains) im Speicher, Exclude Archived</td>
                     <td>✅ FERTIG</td>
                 </tr>
                 <tr>
                     <td><strong>ValidateLagerort(name)</strong></td>
-                    <td>Regex ^[A-Za-z]+$, Throw ArgumentException/ArgumentNullException</td>
+                    <td>Regex ^[A-Za-zÄÖÜäöüß]+$, Throw ArgumentException/ArgumentNullException</td>
                     <td>✅ FERTIG</td>
                 </tr>
                 <tr>
@@ -564,7 +579,7 @@ src/Tests/
         </section>
 
         <footer>
-            <p><small>Dokumentation erstellt: 2026-06-25 | Aktualisiert: 2026-09-19 | Status: FERTIG (Service + UI, auf master seit 23eb5fc)</small></p>
+            <p><small>Dokumentation erstellt: 2026-06-25 | Aktualisiert: 2026-10-16 | Status: FERTIG (Service + UI, auf master seit 23eb5fc)</small></p>
         </footer>
     </div>
 </body>
