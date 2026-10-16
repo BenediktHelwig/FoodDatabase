@@ -50,6 +50,12 @@ namespace FoodDatabase.Tests.Ui
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
 
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -88,6 +94,12 @@ namespace FoodDatabase.Tests.Ui
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
 
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -123,6 +135,12 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
 
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
@@ -162,6 +180,12 @@ namespace FoodDatabase.Tests.Ui
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
 
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -200,6 +224,12 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
 
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
@@ -243,6 +273,12 @@ namespace FoodDatabase.Tests.Ui
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
 
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -281,6 +317,12 @@ namespace FoodDatabase.Tests.Ui
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
 
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -317,6 +359,12 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
 
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
@@ -357,6 +405,12 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
 
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -412,6 +466,12 @@ namespace FoodDatabase.Tests.Ui
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
 
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -435,6 +495,12 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
 
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
@@ -467,6 +533,12 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
 
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
@@ -505,6 +577,12 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
 
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -550,6 +628,12 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
 
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -597,6 +681,12 @@ namespace FoodDatabase.Tests.Ui
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
             Services.AddSingleton<INährwertService>(nährwertMock.Object);
 
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(It.IsAny<int>()))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
             // Act
             IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
                 parameters => parameters.Add(p => p.Id, 1));
@@ -608,6 +698,283 @@ namespace FoodDatabase.Tests.Ui
                 Assert.True(cut.Markup.Contains("Einheit"));
                 Assert.True(cut.Markup.Contains("Kategorie"));
                 Assert.True(cut.Markup.Contains("Erstellt"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Packungsliste_Mit_Produktinstanzen_Rendern()
+        {
+            // Arrange
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+                .WithId(1)
+                .WithName("Mehl")
+                .WithEinheit("g")
+                .Build();
+
+            Nährwert nährwert = new NährwertTestDataBuilder()
+                .WithId(1)
+                .WithLebensmittelId(1)
+                .Build();
+
+            List<ProduktInstanz> packungen = new List<ProduktInstanz>
+            {
+                new ProduktInstanz
+                {
+                    Id = 1,
+                    LebensmittelKatalogId = 1,
+                    Menge = 500,
+                    Verfallsdatum = DateTime.Today.AddDays(7),
+                    Einkaufsdatum = DateTime.Today,
+                    Lagerort = "Kühlschrank"
+                },
+                new ProduktInstanz
+                {
+                    Id = 2,
+                    LebensmittelKatalogId = 1,
+                    Menge = 1000,
+                    Verfallsdatum = DateTime.Today.AddDays(30),
+                    Einkaufsdatum = DateTime.Today,
+                    Lagerort = "Pantry"
+                }
+            };
+
+            Mock<ILebensmittelService> lebensmittelMock = new();
+            lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
+                .ReturnsAsync(lebensmittel);
+
+            Mock<INährwertService> nährwertMock = new();
+            nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
+                .ReturnsAsync(nährwert);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(1))
+                .ReturnsAsync(packungen);
+
+            Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<INährwertService>(nährwertMock.Object);
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
+                parameters => parameters.Add(p => p.Id, 1));
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                IReadOnlyList<IElement> rows = cut.FindAll("[data-testid^='zeile-packung-']");
+                Assert.Equal(2, rows.Count);
+                Assert.Contains("Kühlschrank", cut.Markup);
+                Assert.Contains("Pantry", cut.Markup);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Packungsliste_Nach_Verfallsdatum_Sortieren()
+        {
+            // Arrange: unsortierte Liste zurückgeben, um zu sichern, dass UI sortiert
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+                .WithId(1)
+                .WithName("Mehl")
+                .WithEinheit("g")
+                .Build();
+
+            Nährwert nährwert = new NährwertTestDataBuilder()
+                .WithId(1)
+                .WithLebensmittelId(1)
+                .Build();
+
+            // Unsortiert: Id 3 (30 Tage), Id 1 (10 Tage), Id 2 (20 Tage)
+            List<ProduktInstanz> unsortiertPackungen = new List<ProduktInstanz>
+            {
+                new ProduktInstanz
+                {
+                    Id = 3,
+                    LebensmittelKatalogId = 1,
+                    Menge = 300,
+                    Verfallsdatum = DateTime.Today.AddDays(30),
+                    Einkaufsdatum = DateTime.Today,
+                    Lagerort = "Pantry"
+                },
+                new ProduktInstanz
+                {
+                    Id = 1,
+                    LebensmittelKatalogId = 1,
+                    Menge = 500,
+                    Verfallsdatum = DateTime.Today.AddDays(10),
+                    Einkaufsdatum = DateTime.Today,
+                    Lagerort = "Kühlschrank"
+                },
+                new ProduktInstanz
+                {
+                    Id = 2,
+                    LebensmittelKatalogId = 1,
+                    Menge = 1000,
+                    Verfallsdatum = DateTime.Today.AddDays(20),
+                    Einkaufsdatum = DateTime.Today,
+                    Lagerort = "Pantry"
+                }
+            };
+
+            Mock<ILebensmittelService> lebensmittelMock = new();
+            lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
+                .ReturnsAsync(lebensmittel);
+
+            Mock<INährwertService> nährwertMock = new();
+            nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
+                .ReturnsAsync(nährwert);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(1))
+                .ReturnsAsync(unsortiertPackungen);
+
+            Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<INährwertService>(nährwertMock.Object);
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
+                parameters => parameters.Add(p => p.Id, 1));
+
+            // Assert: Reihenfolge sollte nach Verfallsdatum sortiert sein (1, 2, 3)
+            cut.WaitForAssertion(() =>
+            {
+                var rows = cut.FindAll("[data-testid^='zeile-packung-']");
+                Assert.Equal(3, rows.Count);
+                Assert.Contains("data-testid=\"zeile-packung-1\"", rows[0].OuterHtml);
+                Assert.Contains("data-testid=\"zeile-packung-2\"", rows[1].OuterHtml);
+                Assert.Contains("data-testid=\"zeile-packung-3\"", rows[2].OuterHtml);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Packungsfehler_Nicht_Lebensmittel_Verdecken()
+        {
+            // Arrange
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+                .WithId(1)
+                .WithName("Mehl")
+                .WithEinheit("g")
+                .Build();
+
+            Nährwert nährwert = new NährwertTestDataBuilder()
+                .WithId(1)
+                .WithLebensmittelId(1)
+                .Build();
+
+            Mock<ILebensmittelService> lebensmittelMock = new();
+            lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
+                .ReturnsAsync(lebensmittel);
+
+            Mock<INährwertService> nährwertMock = new();
+            nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
+                .ReturnsAsync(nährwert);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(1))
+                .ThrowsAsync(new Exception("Fehler beim Laden der Packungen"));
+
+            Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<INährwertService>(nährwertMock.Object);
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
+                parameters => parameters.Add(p => p.Id, 1));
+
+            // Assert: Lebensmittel sollte sichtbar sein, Packungsfehler sollte separate Benachrichtigung sein
+            cut.WaitForAssertion(() =>
+            {
+                Assert.Contains("Mehl", cut.Markup); // Lebensmittel noch sichtbar
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler-packungen']");
+                Assert.NotEmpty(errorAlert);
+                Assert.Contains("Fehler beim Laden der Packungen", cut.Markup);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Packungsfehler_Nicht_Nährwert_Verdecken()
+        {
+            // Arrange
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+                .WithId(1)
+                .WithName("Mehl")
+                .WithEinheit("g")
+                .Build();
+
+            Nährwert nährwert = new NährwertTestDataBuilder()
+                .WithId(1)
+                .WithLebensmittelId(1)
+                .WithStandardMehlValues()
+                .Build();
+
+            Mock<ILebensmittelService> lebensmittelMock = new();
+            lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
+                .ReturnsAsync(lebensmittel);
+
+            Mock<INährwertService> nährwertMock = new();
+            nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
+                .ReturnsAsync(nährwert);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(1))
+                .ThrowsAsync(new Exception("Fehler beim Laden der Packungen"));
+
+            Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<INährwertService>(nährwertMock.Object);
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
+                parameters => parameters.Add(p => p.Id, 1));
+
+            // Assert: Nährwert sollte sichtbar sein, trotz Packungsfehler
+            cut.WaitForAssertion(() =>
+            {
+                Assert.NotNull(cut.Find("[data-testid='input-kalorien']")); // Nährwert noch sichtbar
+                IReadOnlyList<IElement> errorAlert = cut.FindAll("[data-testid='alert-fehler-packungen']");
+                Assert.NotEmpty(errorAlert);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Leerzustand_Wenn_Keine_Packungen_Vorhanden()
+        {
+            // Arrange
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+                .WithId(1)
+                .WithName("Mehl")
+                .WithEinheit("g")
+                .Build();
+
+            Nährwert nährwert = new NährwertTestDataBuilder()
+                .WithId(1)
+                .WithLebensmittelId(1)
+                .Build();
+
+            Mock<ILebensmittelService> lebensmittelMock = new();
+            lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
+                .ReturnsAsync(lebensmittel);
+
+            Mock<INährwertService> nährwertMock = new();
+            nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
+                .ReturnsAsync(nährwert);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(1))
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<INährwertService>(nährwertMock.Object);
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
+                parameters => parameters.Add(p => p.Id, 1));
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                Assert.Contains("Keine Packungen vorhanden", cut.Markup);
             }, TimeSpan.FromSeconds(2));
         }
     }

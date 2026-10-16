@@ -3,40 +3,48 @@
 **Datum**: 2026-09-19  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
 **Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow  
-**Aktueller Branch**: `docs/uc9-wp4-nachzug` (PR offen zur Abnahme)
+**Aktueller Branch**: `feat/ui-produktinstanzen-uc10` (PR offen zur Abnahme)
 
 ---
 
 ## ⏭️ NÄCHSTE SCHRITTE (in dieser Reihenfolge)
 
-Der UC9-Doku-Nachzug ist am 19.09.2026 erledigt (PR offen). Als Nächstes:
+WP4 UC10 ist am 19.09.2026 abgeschlossen (PR offen). Als Nächstes:
 
-1. **WP4 UC10 (Produktinstanzen/MHD)** — mit einem wichtigen Befund aus der Vorprüfung: Das
-   UC10-**CRUD existiert bereits**, gebaut unter dem Label UC2. `LagerbestandBearbeiten.razor`
-   (`/lagerbestand`) listet alle Instanzen über `GetNachVerfallsdatumSortiertAsync()` mit Löschen
-   und Verfalls-Farbcodierung, `ProduktInstanzForm.razor` deckt Create und Update ab. Offen sind
-   nur die **MHD-Sichten** — die vier Service-Methoden, die kein UI je aufruft:
+1. **WP4 UC4 (Rezept-Nährwerte-UI)** — der letzte offene Punkt in WP4 neben dem blockierten UC3.
+   Der Service ist fertig; es fehlt die UI. Danach WP5 (Rezepte) und WP6 (Dashboard).
 
-   | Methode | Fehlende Sicht |
-   |---|---|
-   | `GetByLagerortAsync(string)` | Filter nach Lagerort |
-   | `GetVerfallenenAsync(DateTime?)` | Sicht „bereits abgelaufen" |
-   | `GetTagesBisVerfallAsync(int)` | Spalte „Tage bis MHD" |
-   | `GetByLebensmittelAsync(int)` | Packungsliste auf `LebensmittelDetail` |
+2. **Doku-Altlasten auf `docs/features/UC10-Produktinstanzen.html`** — vorbestehend, beim
+   UC10-Doku-Review gefunden, bewusst nicht im letzten Gate-Versuch behoben:
+   - Z. 63–84: Die Domain-Model-Tabelle nennt Felder, die `ProduktInstanz.cs` **nicht** hat
+     (`MHD`, `LagerortId: int? (FK)`, `Barcode`, `KaufDatum`, `Notiz`) und lässt die vorhandenen
+     aus (`Verfallsdatum`, `Einkaufsdatum`, `Lagerort: string`, `MindestbestandMenge`, `ErstelltAm`).
+     `Lagerort` steht dort als Foreign Key — es ist ein String.
+   - Z. 146–156: zeigt ein `IProduktInstanzService`, das es nicht gibt
+     (`CreateProduktInstanzAsync`, `FindByBarcodeAsync`, `GetByLagerortAsync(int)`) und
+     widerspricht der korrekten Liste auf Z. 690–716 **derselben Seite**.
+   - Z. 613/684: „ProduktInstanzService.cs (151 Zeilen)" — die Datei hat 224.
 
-   UC10 ist damit deutlich kleiner als in der Roadmap veranschlagt.
-
-2. **Drei Code-Aufgaben, die beim UC9-Review auffielen** und in den UC10-Branch gehören:
+3. **Drei Code-Aufgaben aus dem UC9-Review**, weiterhin offen:
    - `LagerortForm.razor:27`: `placeholder="z.B. Kühlschrank"` verstößt gegen die eigene
-     Validierung `^[A-Za-z]+$` (`LagerortService.cs:75`) — die App schlägt eine Eingabe vor, die
-     sie selbst mit `ArgumentException` ablehnt.
-   - `ILagerortService.cs:40`: Das XML-Doc beschreibt die Normalisierung als „First Letter Upper,
-     Rest Lower"; für `"lagerA" → "LagerA"` stimmt das nicht.
-   - Die **UC9→UC10-Integration** (FK statt `string Lagerort`) ist weiterhin offen.
-     `FoodDatabaseContext.cs:64-65` vermerkt sie selbst als ausstehend.
+     Validierung `^[A-Za-z]+$` — die App schlägt eine Eingabe vor, die sie selbst ablehnt.
+   - `ILagerortService.cs:40`: XML-Doc beschreibt die Normalisierung falsch.
+   - Die **UC9→UC10-Integration** (FK statt `string Lagerort`). `FoodDatabaseContext.cs:64-65`
+     vermerkt sie selbst als ausstehend. Solange sie fehlt, sind die unter `/lagerorte`
+     angelegten Lagerorte funktionslos.
 
-3. **Danach UC4** (Rezept-Nährwerte). UC3 bleibt blockiert, bis ein Export-Service existiert —
-   laut `requirements/analysis.md` außerhalb v1.0.
+4. **Kleinere Überträge** aus den drei UC10-Gates, jeweils beim nächsten Anfassen der Datei:
+   - Tests: ein `var` in `LebensmittelDetailTests.cs:841`; zwei `WaitForAssertion`-Wrapper um
+     reine Interaktionen; zwei Deckungslücken (eine Packungszeile vollständig prüfen, das
+     Dropdown an `LagerortKonstanten.AlleWerte` binden).
+   - Code: Filterleiste flackert beim Laden (`@if (!lädt)`); `GetMhdText(int)` statt
+     `Formatiere(DateTime)` lässt die Tagesrechnung in beiden Views stehen.
+   - Doku: Etikett „Service-Layer: 271 Tests" enthält 2 Integrationstests; UC3 bezeichnet im
+     Repo zwei verschiedene Dinge („Nährwerte" fertig vs. „Lagerbestand Export" blockiert);
+     einzelne Begründungen in der Filter-Sektion sind schwächer als die Aussage, die sie tragen.
+
+5. **UC3 bleibt blockiert**, bis ein Export-Service existiert — laut `requirements/analysis.md`
+   außerhalb v1.0.
 
 ---
 
@@ -53,7 +61,7 @@ Der UC9-Doku-Nachzug ist am 19.09.2026 erledigt (PR offen). Als Nächstes:
 ✅ WP4 UC2: Lagerbestand (LagerbestandBearbeiten + ProduktInstanzForm)
 ✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm) – nur Liste + Neu; Service kann kein Update/Delete – Doku vollständig seit 19.09.2026
 ✅ WP4 UC6: Verbrauch ausbuchen (VerbrauchListe + VerbrauchZeile) – Doku vollständig seit 11.09.2026
-⏳ WP4 UC10: Produktinstanzen/MHD
+✅ WP4 UC10: MHD-Sichten (Filterleiste + Packungsliste) – Doku vollständig seit 19.09.2026
 ⏳ WP4 UC4:  Rezept-Nährwerte anzeigen
 ⚠️ WP4 UC3:  Lagerbestand exportieren – BLOCKIERT, kein Export-Service.
              Laut requirements/analysis.md außerhalb v1.0 (CSV/PDF erst Phase 2+).
@@ -61,14 +69,15 @@ Der UC9-Doku-Nachzug ist am 19.09.2026 erledigt (PR offen). Als Nächstes:
 ⏳ WP6: UI Dashboard (UC7/UC8) – UC8-Service noch TODO
 ```
 
-### Test-Status (verifiziert 2026-09-11, `dotnet test` vom Repo-Root)
+### Test-Status (verifiziert 2026-09-19, `dotnet test` vom Repo-Root)
 ```
 Service + Integration:  271 Tests ✅
-UI (bUnit):              90 Tests ✅
+UI (bUnit):             107 Tests ✅
+Unit (Formatter):         5 Tests ✅
 ────────────────────────────────────
-TOTAL:                  361 Tests ✅  (0 rot)
+TOTAL:                  383 Tests ✅  (0 rot)
 ```
-UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9 8 · NavMenu 6 · MainLayout 3
+UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6 · MainLayout 3
 
 ### Infrastruktur
 ```
@@ -94,6 +103,15 @@ UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9
 - **Spitze Klammern in `<pre>`-Blöcken und `.drawio`-Labels escapen.** `DbSet<Lagerort>` rendert
   im Browser als „(DbSet)", ein unescapetes `<Lagerort>` in einer `.drawio` macht die Datei zu
   ungültigem XML, das draw.io nicht mehr öffnet. Beides lag seit Juni im Repo.
+- **`@wert:Format` ist in Razor kein Format-Specifier.** Implizite Razor-Ausdrücke enden am
+  Doppelpunkt; `@datum:D` gibt das Datum samt Uhrzeit aus und hängt ein literales „:D" an.
+  Richtig ist `@datum.ToString("dd.MM.yyyy")`. Das Projekt hat keine Culture konfiguriert —
+  `"D"` oder `"d"` zögen die OS-Culture des Servers und lieferten auf einem englischen Host
+  englische Datumsnamen in einer deutschen Oberfläche.
+- **Ein grüner Test beweist nichts, solange nicht geprüft ist, ob er rot werden kann.** Bei
+  UC10 lief ein Test namens „IsCaseSensitive" durch einen Codezweig ohne Stringvergleich. Wo
+  ein Test eine Designentscheidung absichern soll, lohnt die Gegenprobe: Entscheidung im Code
+  umdrehen, prüfen, dass **genau** dieser Test fällt, Änderung zurücknehmen.
 
 ---
 
@@ -107,40 +125,43 @@ UI-Aufschlüsselung (nachgerechnet, geht auf): UC1 51 · UC2 12 · UC6 10 · UC9
 
 ---
 
-## ✅ ZULETZT FERTIGGESTELLT: UC9 Doku-Nachzug (19.09.2026)
+## ✅ ZULETZT FERTIGGESTELLT: WP4 UC10 — MHD-Sichten (19.09.2026)
 
-UC9 kam am 30.07.2026 mit `23eb5fc` als Direkt-Commit auf `master` — ohne PR und ohne
-Doku-Review. Das Gate ist nachgeholt, in zwei Durchläufen
-(`reviews/uc9-wp4-doku-review-1.md` → CHANGES REQUESTED mit 2 HIGH + 7 MEDIUM, `-2.md` → PASS).
+UC10 stand als voller Use-Case in der Roadmap. Tatsächlich existierte das CRUD schon, gebaut
+unter dem UC2-Label — offen waren nur die MHD-Sichten. Das Feature wurde dadurch deutlich
+kleiner: **kein Service, kein Schema, nur UI**.
 
-**Der gewichtigste Befund**: Die Feature-Seite und das ER-Diagramm beschrieben seit Juni eine
-Foreign-Key-Beziehung `ProduktInstanz → Lagerort` samt `ALTER TABLE`-Migration. Die gibt es
-nicht — `grep -rn "LagerortId" src/` liefert null Treffer, und `FoodDatabaseContext.cs:64-65`
-vermerkt die Integration selbst als ausstehend. Jetzt überall als geplant gekennzeichnet.
+**Geliefert**: Filterleiste auf `/lagerbestand` (Status + Lagerort, ein Service-Aufruf je
+Kombination), Spalte „Tage bis MHD", Packungsliste auf `/lebensmittel/{id}`, dazu
+`MhdTextFormatter` als gemeinsame Textquelle. **361 → 383 Tests**.
 
-**Testzahlen**: acht Stellen sagten „18 Service + 8 UI = 26", richtig sind **24 + 8 = 32**. Die
-18 war nie korrekt: `0df33ea` enthielt schon 24 Tests, seine Commit-Message sagte „18 tests",
-und die Seite hat das übernommen.
+**Zwei Entscheidungen im Code**: Eine heute ablaufende Packung gilt **nicht** als abgelaufen
+(„mindestens haltbar bis"), und die UI sortiert nach jedem Filter nach, weil zwei der drei
+Abfragemethoden reine `Where`-Filter sind. Beide sind von je einem Test bewacht, dessen
+Wirksamkeit durch Umschalten des Produktivcodes belegt wurde: Jeder Eingriff ließ **genau**
+den vorhergesagten Test fallen.
 
-**WP4-UI**: erstmals dokumentiert — Routen, DI, Komponentenfelder, alle vier Anzeigezustände,
-NavMenu-Eintrag, ein gegen den Code formulierter Workflow, dazu ein Sequence-Szenario mit
-`LagerortForm.razor` als eigener Lifeline (nach dem UC6-Vorbild `1758dbe`).
+**Sieben Review-Durchläufe über drei Gates.** Die wertvollsten Befunde waren Aussagen, die
+plausibel aussahen und falsch waren:
+- `@instanz.Verfallsdatum:D` ist in Razor **kein** Format-Specifier — `:D` landete als Literal
+  in der Ausgabe. Zwei der drei Stellen waren Altbestand.
+- Ein Test namens `LagerortFilter_IsCaseSensitive` prüfte **keine** Case-Sensitivität: Er lief
+  durch den Zweig, in dem die Seite gar nicht vergleicht.
+- Die Sequence-Lifeline `Blazor UI (ProduktInstanzPage)` zeigte auf eine Komponente, die **nie
+  existiert hat** — und die erste Korrektur darauf war ebenfalls falsch.
 
-**Zwei Altlasten nebenbei behoben**: `sequence-uc9-lagerorte.drawio` war kein gültiges XML
-(unescapetes `<Lagerort>`, als einziges von 15 Diagrammen), und `DbSet<Lagerort>` stand
-unescaped in einem `<pre>` der Feature-Seite, was der Browser als „(DbSet)" rendert.
-
-**Prozess-Lehre aus Review 1**: Der erste Nachbesserungsauftrag war als Liste von Zeilennummern
-formuliert — korrigiert wurde genau das, was in der Liste stand, und nichts darüber hinaus. Der
-zweite war inhaltlich gefasst („die Seite behauptet keine Integration, die es nicht gibt") und
-führte zum Erfolg. Aufträge an schreibende Agenten gehören inhaltlich formuliert.
+**Prozess-Lehre**: Zwei Befunde des zweiten Doku-Gates waren Folgeschäden von Korrektionen, die
+das erste Gate verlangt hatte. Bei einer Testzahl wurde dreimal nachgebessert, weil der Auftrag
+nie sagte, **welche Menge** die Überschrift benennen soll — erst die wörtliche Vorgabe saß.
+Wenn ein Review eine Ersatzformulierung verlangt, muss diese die Bezugsmenge mitnennen, nicht
+nur die Zahl.
 
 ---
 
 ## 🚀 ROADMAP (nach Abschluss von UC6)
 
 ### Phase 1: UI-Komponenten (aktuell)
-Verbleibend in WP4: **UC10**, dann **UC4**. UC3 bleibt blockiert, bis ein Export-Service existiert.
+Verbleibend in WP4: **UC4**, dann UC3 (blockiert). UC10 fertig.
 
 ### Phase 2: UI Rezepte (WP5)
 Abhängigkeit: UC4 + UC10 fertig (nicht UC3 — der ist außerhalb v1.0).

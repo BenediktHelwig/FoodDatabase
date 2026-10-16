@@ -3,6 +3,7 @@
 @using FoodDatabase.App.Services.Interfaces
 @inject ILebensmittelService LebensmittelService
 @inject INährwertService NährwertService
+@inject IProduktInstanzService ProduktInstanzService
 @inject NavigationManager NavigationManager
 
 <div class="container mt-4">
@@ -198,6 +199,66 @@
                 }
             </div>
         </div>
+
+        @if (!string.IsNullOrEmpty(fehlerPackungen))
+        {
+            <div class="alert alert-danger mt-4" data-testid="alert-fehler-packungen">
+                @fehlerPackungen
+            </div>
+        }
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>Packungen</h5>
+            </div>
+            <div class="card-body">
+                @if (packungen is not null && packungen.Any())
+                {
+                    <table class="table table-striped" data-testid="tabelle-packungen">
+                        <thead>
+                            <tr>
+                                <th>Menge</th>
+                                <th>Verfallsdatum</th>
+                                <th>Tage bis MHD</th>
+                                <th>Lagerort</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (ProduktInstanz instanz in packungen)
+                            {
+                                bool istAbgelaufen = instanz.Verfallsdatum < DateTime.Today;
+                                string verfallKlasse = istAbgelaufen ? "table-danger" : "";
+
+                                // Berechne Tage bis MHD
+                                int tagesBisMhd = (instanz.Verfallsdatum - DateTime.Today).Days;
+                                string mhdText = MhdTextFormatter.GetMhdText(tagesBisMhd);
+
+                                <tr data-testid="zeile-packung-@instanz.Id" class="@verfallKlasse">
+                                    <td>@instanz.Menge @lebensmittel?.Einheit</td>
+                                    <td>@instanz.Verfallsdatum.ToString("dd.MM.yyyy")</td>
+                                    <td>@mhdText</td>
+                                    <td>@instanz.Lagerort</td>
+                                    <td>
+                                        <a href="/lagerbestand/@instanz.Id/bearbeiten"
+                                           class="btn btn-sm btn-warning"
+                                           data-testid="btn-bearbeiten-packung-@instanz.Id">
+                                            Bearbeiten
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else if (string.IsNullOrEmpty(fehlerPackungen))
+                {
+                    <div class="alert alert-info">
+                        Keine Packungen vorhanden.
+                    </div>
+                }
+            </div>
+        </div>
     }
 </div>
 
@@ -207,9 +268,11 @@
 
     private LebensmittelKatalog? lebensmittel;
     private Nährwert? nährwert;
+    private List<ProduktInstanz>? packungen;
     private bool lädt = false;
     private string fehler = "";
     private string fehlerNährwert = "";
+    private string fehlerPackungen = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -221,6 +284,7 @@
         lädt = true;
         fehler = "";
         fehlerNährwert = "";
+        fehlerPackungen = "";
         try
         {
             lebensmittel = await LebensmittelService.GetLebensmittelByIdAsync(Id);
@@ -245,6 +309,20 @@
             catch (Exception ex)
             {
                 fehlerNährwert = $"Fehler beim Laden des Nährwerts: {ex.Message}";
+            }
+
+            // Load Packungen separately so errors don't hide the Lebensmittel
+            try
+            {
+                List<ProduktInstanz> abgerufenePackungen = await ProduktInstanzService.GetByLebensmittelAsync(Id);
+                // Sortieren nach Verfallsdatum
+                packungen = abgerufenePackungen
+                    .OrderBy(p => p.Verfallsdatum)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                fehlerPackungen = $"Fehler beim Laden der Packungen: {ex.Message}";
             }
         }
     }

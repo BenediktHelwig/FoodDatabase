@@ -17,8 +17,8 @@
             <h1>UC10: Produktinstanzen mit MHD</h1>
             <div class="meta">
                 Use-Case <strong>10</strong> |
-                Status: <span class="status-badge complete">✅ COMPLETE</span> |
-                Tests: <strong>32/32 PASSING</strong> |
+                Status: <span class="status-badge complete">✅ COMPLETE (Service + WP4 UI)</span> |
+                Tests: <strong>32 Service + 17 neue UI (bUnit) + 5 Unit Tests PASSING</strong> |
                 Code: <strong>Production Ready</strong>
             </div>
         </header>
@@ -112,16 +112,20 @@ LebensmittelKatalog: Joghurt (generisch)
 6. Wird in Liste/Dashboard angezeigt
             </pre>
 
-            <h3>Workflow 2: Bestand überblicken</h3>
+            <h3>Workflow 2: Bestand überblicken (aktuell in UC10)</h3>
             <pre>
-1. Benutzer öffnet Lager-Übersicht
-2. Sieht ALLE ProduktInstanzen gruppiert:
-   - Nach LebensmittelKatalog
-   - Mit MHD-Status (🟢 OK, 🟡 Bald verfallen, 🔴 Verfallen)
+1. Benutzer öffnet <code>/lagerbestand</code>
+2. Sieht Tabelle aller ProduktInstanzen (ungefiltert):
+   - Sortiert nach Verfallsdatum (FIFO)
+   - Mit Spalten: Lebensmittel-Name, Menge, Verfallsdatum, Tage bis MHD, Lagerort
 3. Kann filtern nach:
-   - Lagerort
-   - MHD-Status
-   - Produkt-Kategorie
+   - Status: „Alle" (Standard) oder „Nur abgelaufene"
+   - Lagerort: Dropdown mit vier Werten (Kühlschrank, Tiefkühler, Pantry, Anderes)
+4. Verfallene Packungen werden rot hinterlegt
+5. Text „Tage bis MHD" zeigt: „N Tage verbleibend", „Heute ablaufend", oder „vor N Tagen abgelaufen"
+
+⚠️ HINWEIS: Gruppierung nach Lebensmittel, mehrfarbige Ampel (🟢🟡🔴), und Kategorie-Filter sind
+Zielbilder für UC7 (Verfallsdatum-Warnungen) und nicht Teil von UC10.
             </pre>
 
             <h3>Workflow 3: Verbrauch tracken</h3>
@@ -198,7 +202,307 @@ public interface IProduktInstanzService
         </section>
 
         <section>
-            <h2>✅ Tests (32 Unit Tests - 100% PASSING ✅)</h2>
+            <h2>🎨 UI-Layer Implementation (WP4) — MHD-Sichten</h2>
+
+            <h3>Komponenten Übersicht</h3>
+            <p>Zwei Razor-Seiten stellen die vier ungenutzten Service-Methoden bereit:</p>
+            <ul>
+                <li><strong>LagerbestandBearbeiten.razor</strong> (<code>/lagerbestand</code>): Filterleiste + MHD-Spalte</li>
+                <li><strong>LebensmittelDetail.razor</strong> (<code>/lebensmittel/{Id:int}</code>): Packungsliste</li>
+                <li><strong>MhdTextFormatter.cs</strong> (<code>src/App/Models/</code>): Gemeinsame Formatierung</li>
+            </ul>
+
+            <h3>1. LagerbestandBearbeiten.razor Komponente</h3>
+            <p><strong>Route:</strong> <code>/lagerbestand</code> (Blazor Page)</p>
+            <p><strong>Beschreibung:</strong> Bestehendes CRUD wird um zwei Filter erweitert. Filterleiste mit Status („Alle" / „Nur abgelaufene") und Lagerort (aus <code>LagerortKonstanten.AlleWerte</code>). Neue Spalte „Tage bis MHD".</p>
+
+            <h4>Service-Abhängigkeiten</h4>
+            <ul>
+                <li><code>IProduktInstanzService</code> — Drei Methoden je nach Filter</li>
+                <li><code>ILebensmittelService</code> — Namen der ProduktInstanzen laden</li>
+            </ul>
+
+            <h4>Komponenten-Feld</h4>
+            <table>
+                <tr>
+                    <th>Feld</th>
+                    <th>Typ</th>
+                    <th>Zweck</th>
+                </tr>
+                <tr>
+                    <td><code>bestaende</code></td>
+                    <td>List&lt;ProduktInstanz&gt;?</td>
+                    <td>Gefilterte Tabellenzeilen</td>
+                </tr>
+                <tr>
+                    <td><code>lebensmittelMap</code></td>
+                    <td>Dictionary&lt;int, LebensmittelKatalog&gt;</td>
+                    <td>Nachschlag-Map (ID → Lebensmittel) für die Tabelle</td>
+                </tr>
+                <tr>
+                    <td><code>statusFilter</code></td>
+                    <td>string</td>
+                    <td>Aktueller Status-Filter: „all" oder „expired"</td>
+                </tr>
+                <tr>
+                    <td><code>lagerortFilter</code></td>
+                    <td>string</td>
+                    <td>Gewählter Lagerort oder empty</td>
+                </tr>
+                <tr>
+                    <td><code>fehler</code></td>
+                    <td>string</td>
+                    <td>Fehlermeldung (separate Fehlerleiste)</td>
+                </tr>
+                <tr>
+                    <td><code>lädt</code></td>
+                    <td>bool</td>
+                    <td>Lade-Spinner zeigen</td>
+                </tr>
+                <tr>
+                    <td><code>bestätigungLöschen</code></td>
+                    <td>bool</td>
+                    <td>Löschen-Modal-Sichtbarkeit</td>
+                </tr>
+                <tr>
+                    <td><code>zuLöschendeId</code></td>
+                    <td>int</td>
+                    <td>ID der zu löschenden ProduktInstanz</td>
+                </tr>
+            </table>
+
+            <h4>Filter-Logik</h4>
+            <pre>
+Filter-Ablauf im UI — Drei verschiedene Zweige nach Status und Lagerort:
+
+1. Status = „Nur abgelaufene" (ohne Lagerort):
+   → GetVerfallenenAsync() (Service liefert Verfallsdatum ≤ heute)
+   → UI-Nachfilter: Where(p => p.Verfallsdatum &lt; DateTime.Today) — In-Memory, weil nur dieser Pfad in-memory nachfiltert
+   → Lagerort-Nachfilter (wenn gewählt): Where(p => string.Equals(p.Lagerort, lagerortFilter, StringComparison.Ordinal))
+   → OrderBy(p => p.Verfallsdatum) — Nachfilter erfordert Sortierung
+
+2. Status = „Alle" mit Lagerort gewählt:
+   → GetByLagerortAsync(lagerort) — Direkter Service-Aufruf, kein In-Memory Filter
+   → OrderBy(p => p.Verfallsdatum) — Sortierung (Service gibt unsortiert zurück)
+
+3. Status = „Alle" (ohne Lagerort, Vorgabe):
+   → GetNachVerfallsdatumSortiertAsync() — bereits sortiert, keine Nachbearbeitung nötig
+
+⚠️ WICHTIG: Die Datumsgrenze ist zwischen Service und UI unterschiedlich:
+   - Service (GetVerfallenenAsync): Verfallsdatum ≤ heute
+   - UI: Filtertabbelle nutzt &lt; heute (beide Komponenten)
+   - Grund: „Mindestens haltbar bis" bedeutet, dass die Packung am MHD-Tag noch gut ist.
+            </pre>
+
+            <h4>Nutzer-Workflow: Lagerbestand filtern</h4>
+            <ol>
+                <li>Benutzer öffnet <code>/lagerbestand</code></li>
+                <li>Standard: Alle Packungen, sortiert nach MHD (via <code>GetNachVerfallsdatumSortiertAsync()</code>)</li>
+                <li>Filter 1 — Status:
+                    <ul>
+                        <li>„Alle" (Standard): keine Änderung</li>
+                        <li>„Nur abgelaufene": ruft <code>GetVerfallenenAsync()</code> auf, UI filtert &lt; heute in-memory, sortiert danach</li>
+                    </ul>
+                </li>
+                <li>Filter 2 — Lagerort (optional, kombinierbar mit Status):
+                    <ul>
+                        <li>Ist Status = „Nur abgelaufene": in-memory-Nachfilter (string.Equals Ordinal) auf die aus GetVerfallenenAsync</li>
+                        <li>Ist Status = „Alle": ruft <code>GetByLagerortAsync(lagerort)</code> auf (direkter Service-Aufruf), sortiert danach</li>
+                    </ul>
+                </li>
+                <li>Tabelle rendert mit: Lebensmittel-Name, Menge, Verfallsdatum, Tage bis MHD, Lagerort, Bearbeiten/Löschen-Buttons</li>
+                <li>Verfallene Packungen werden mit <code>table-danger</code>-Klasse rot hinterlegt</li>
+            </ol>
+
+            <h4>Edge Cases &amp; Leerzustände</h4>
+            <ul>
+                <li>Kein Lagerbestand vorhanden (Tabelle leer, keine Filter): „Kein Lagerbestand vorhanden."</li>
+                <li>Filter mit 0 Treffern (z.B. Status=abgelaufen+Lagerort=Kühlschrank, aber nur frische im Kühlschrank): „Keine Treffer für diesen Filter."</li>
+                <li>Fehlerfall beim Laden (z.B. Service Exception): Fehlerleiste oben angezeigt, Filterleiste bleibt sichtbar (Nutzer kann Filter zurücksetzen)</li>
+                <li>Heute ablaufende Packung (Verfallsdatum = heute):
+                    <ul>
+                        <li>Text: „Heute ablaufend" (kein red background)</li>
+                        <li>Ist nicht im Expired-Filter enthalten (UI filtert auf &lt;, nicht ≤)</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>MHD-Spalte Berechnung</h4>
+            <p><strong>NICHT im Service:</strong> Die Spalte „Tage bis MHD" wird im UI berechnet: <code>(instanz.Verfallsdatum - DateTime.Today).Days</code>. Pro Tabellenzeile einen Service-Aufruf wäre N+1-Abfrage.</p>
+            <p><strong>Formatierung:</strong> Verwendet <code>MhdTextFormatter.GetMhdText(tagesBisMhd)</code>:</p>
+            <ul>
+                <li>Positive Werte: „N Tage verbleibend" (oder „1 Tag verbleibend" im Singular)</li>
+                <li>Null (tagesBisMhd == 0): „Heute ablaufend"</li>
+                <li>Negative Werte: „vor N Tagen abgelaufen" (oder „vor 1 Tag abgelaufen" im Singular)</li>
+            </ul>
+
+            <h3>2. LebensmittelDetail.razor Komponente</h3>
+            <p><strong>Route:</strong> <code>/lebensmittel/{Id:int}</code> (Blazor Page, bestehend)</p>
+            <p><strong>Neue Sektion:</strong> Packungsliste unterhalb des Nährwert-Blocks (WP4)</p>
+
+            <h4>Service-Abhängigkeiten (WP4-neu)</h4>
+            <ul>
+                <li><code>IProduktInstanzService.GetByLebensmittelAsync(lebensmittelKatalogId)</code> — Alle Packungen des Lebensmittels laden</li>
+            </ul>
+
+            <h4>Komponenten-Felder (WP4-relevant)</h4>
+            <table>
+                <tr>
+                    <th>Feld</th>
+                    <th>Typ</th>
+                    <th>Zweck</th>
+                </tr>
+                <tr>
+                    <td><code>lebensmittel</code></td>
+                    <td>LebensmittelKatalog?</td>
+                    <td>Das angezeigte Lebensmittel</td>
+                </tr>
+                <tr>
+                    <td><code>nährwert</code></td>
+                    <td>Nährwert?</td>
+                    <td>Nährwert-Block (UC3)</td>
+                </tr>
+                <tr>
+                    <td><code>packungen</code></td>
+                    <td>List&lt;ProduktInstanz&gt;?</td>
+                    <td>Alle ProduktInstanzen dieses Lebensmittels (WP4)</td>
+                </tr>
+                <tr>
+                    <td><code>lädt</code></td>
+                    <td>bool</td>
+                    <td>Lade-Spinner für alle Sektionen</td>
+                </tr>
+                <tr>
+                    <td><code>fehler</code></td>
+                    <td>string</td>
+                    <td>Fehler beim Laden des Lebensmittels (blockt die ganze Seite)</td>
+                </tr>
+                <tr>
+                    <td><code>fehlerNährwert</code></td>
+                    <td>string</td>
+                    <td>Fehler beim Laden/Speichern des Nährwerts (separat)</td>
+                </tr>
+                <tr>
+                    <td><code>fehlerPackungen</code></td>
+                    <td>string</td>
+                    <td>Fehler beim Laden der Packungen (separat, WP4)</td>
+                </tr>
+            </table>
+
+            <h4>Fehlerbehandlung</h4>
+            <p>Drei unabhängige Lade-Vorgänge mit getrennten Fehlern:</p>
+            <ul>
+                <li><strong>Lebensmittel:</strong> Fehler zeigt Alert, Seite wird nicht gerendert</li>
+                <li><strong>Nährwert:</strong> Fehler wird separat in der Nährwert-Sektion gezeigt, blockiert nicht die Seite</li>
+                <li><strong>Packungen:</strong> Fehler wird separat in der Packungs-Sektion gezeigt, blockiert nicht die Seite</li>
+            </ul>
+
+            <h4>Nutzer-Workflow: Packungen anzeigen</h4>
+            <ol>
+                <li>Benutzer öffnet <code>/lebensmittel/{Id}</code></li>
+                <li>Lebensmittel-Info + Nährwert werden geladen</li>
+                <li>Packungsliste wird <strong>separat</strong> geladen via <code>GetByLebensmittelAsync(lebensmittelKatalogId)</code></li>
+                <li>Packungen werden nach Verfallsdatum sortiert (FIFO: älteste zuerst)</li>
+                <li>Tabelle rendert: Menge, Verfallsdatum, Tage bis MHD, Lagerort, „Bearbeiten"-Link</li>
+                <li>Verfallene Packungen werden rot hinterlegt</li>
+            </ol>
+
+            <h4>Packungsliste — Spalten &amp; Formatierung</h4>
+            <pre>
+Tabelle mit Spalten:
+- Menge (mit Einheit aus Lebensmittel)
+- Verfallsdatum (Format: dd.MM.yyyy)
+- Tage bis MHD (via MhdTextFormatter)
+- Lagerort
+- Link „Bearbeiten" → /lagerbestand/{ProduktInstanzId}/bearbeiten
+
+Sortierung: Nach Verfallsdatum aufsteigend (älteste/früheste zuerst, FIFO)
+Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today)
+            </pre>
+
+            <h4>Edge Cases &amp; Leerzustände (Packungen)</h4>
+            <ul>
+                <li>Keine Packungen vorhanden (leere Liste): „Keine Packungen vorhanden."</li>
+                <li>Fehler beim Laden der Packungen: Fehlermeldung angezeigt, Lebensmittel + Nährwert bleiben sichtbar</li>
+            </ul>
+
+            <h3>3. MhdTextFormatter.cs Hilfklasse</h3>
+            <p><strong>Namespace:</strong> <code>FoodDatabase.App.Models</code></p>
+            <p><strong>Public Method:</strong> <code>static string GetMhdText(int tagesBisMhd)</code></p>
+            <p>Zentralisiert die Textformatierung für beide Komponenten, verhindert DRY-Verstöße.</p>
+
+            <h3>⚠️ Wichtige Einschränkung: Lagerort-Doppelung</h3>
+            <p><strong>Der Lagerort-Filter speist sich aus <code>LagerortKonstanten</code>, nicht aus UC9-Lagerorte!</strong></p>
+            <p>Das System hat zwei unverbundene Lagerort-Konzepte:</p>
+            <table>
+                <tr>
+                    <th>Konzept</th>
+                    <th>Herkunft</th>
+                    <th>Werte</th>
+                    <th>Integration</th>
+                </tr>
+                <tr>
+                    <td><code>LagerortKonstanten</code></td>
+                    <td>Fest in Quellcode</td>
+                    <td>Kühlschrank, Tiefkühler, Pantry, Anderes</td>
+                    <td>ProduktInstanzService validiert dagegen</td>
+                </tr>
+                <tr>
+                    <td><code>Lagerort</code>-Entity (UC9)</td>
+                    <td>Freie Eingabe, Seite <code>/lagerorte</code></td>
+                    <td>Benutzerdefiniert; alphanumerisch nur (<code>^[A-Za-z]+$</code>), keine Umlaute</td>
+                    <td>ILagerortService, wird nicht von ProduktInstanz verwendet</td>
+                </tr>
+            </table>
+            <p><strong>Folge für UC10:</strong> Der Filter zeigt nur die vier Konstanten-Werte. Ein Benutzer, der unter <code>/lagerorte</code> ein neues Lagerort anlegt, kann es nicht im UC10-Filter verwenden — Grund 1: es kommt nicht in das Dropdown-Menü (das aus <code>LagerortKonstanten.AlleWerte</code> gespeist wird). Grund 2: selbst wenn der Wert irgendwie gewählt wird, lehnt <code>ProduktInstanzService.CreateAsync</code> ihn ab (wird validiert). Umgekehrte Disjunktion: Die beiden Konstanten-Werte mit Umlauten (Tiefkühler, Kühlschrank) lassen sich unter <code>/lagerorte</code> gar nicht erst anlegen, weil UC9 nur <code>^[A-Za-z]+$</code> zulässt und Umlaute ablehnt. Damit können sich die beiden Systeme nicht einmal auf einen gemeinsamen Namen einigen. Diese Inkonsistenz ist bekannt und wird als eigenes, nicht terminiertes Vorhaben in einer Weiterentwicklung adressiert.</p>
+            <p><strong>Case-Sensitivität:</strong> Der Lagerort-Vergleich ist in beiden Komponenten case-sensitiv (StringComparison.Ordinal in der UI-Filterung; <code>==</code>-Operator im Service). Ein Datensatz mit Lagerort „kühlschrank" (Kleinbuchstaben) fällt aus einem Filter für „Kühlschrank" (Großbuchstaben) heraus.</p>
+
+            <h3>Test-Coverage (WP4)</h3>
+
+            <h4>UI-Tests (bUnit) — 22 gelistet: 17 in LagerbestandBearbeitenTests (12 neu in WP4 + 5 bestehend aus UC2), 5 neu in LebensmittelDetailTests</h4>
+            <p><strong>Datei:</strong> <code>src/Tests/Ui/LagerbestandBearbeitenTests.cs</code> — 12 neue WP4-Filter/MHD-Tests + 5 bestehende UC2-Rendering-Tests</p>
+            <p style="font-size: 0.9em; color: #666;"><strong>Die 5 UC2-Tests:</strong> (bestehend, nicht neu in WP4)</p>
+            <ul style="font-size: 0.9em; color: #666;">
+                <li>RendersTable_WithAllProduktInstanzen — Tabelle mit Daten rendern</li>
+                <li>ShowsNoItems_WhenListIsEmpty — Leerzustand ohne Lagerbestand</li>
+                <li>HighlightsExpiredItems_WithRedBackground — Verfallene Packungen farblich hervorheben</li>
+                <li>DeleteButton_Renders — Löschen-Button vorhanden</li>
+                <li>HasNewButton — Neue-Packung-Button vorhanden</li>
+            </ul>
+            <p style="font-size: 0.9em; color: #666;"><strong>Die 12 neuen WP4-Tests:</strong> (Filter-Logik + MHD-Spalte)</p>
+            <ul>
+                <li>StatusFilter_Ruft_GetVerfallenenAsync_Auf — Status-Filter wählt korrekte Service-Methode</li>
+                <li>LagerortFilter_Ruft_GetByLagerortAsync_Mit_Wert_Auf — Lagerort-Filter verwendet GetByLagerortAsync</li>
+                <li>TodayExpiredItem_DoesNotAppear_InExpiredFilter — Heute ablaufende Packungen werden nicht gefiltert</li>
+                <li>FilteredList_IsSortedByVerfallsdatum — Lagerort-Filter bewirkt Sortierung nach MHD</li>
+                <li>WithoutFilter_CallsGetNachVerfallsdatumSortiertAsync — Standard: bereits sortierte Liste</li>
+                <li>MhdColumn_ShowsFutureDays — Text für zukünftige MHDs (z.B. „5 Tage verbleibend")</li>
+                <li>MhdColumn_ShowsPastDays — Text für abgelaufene MHDs (z.B. „vor 3 Tagen abgelaufen")</li>
+                <li>MhdColumn_ShowsTodayExpiring — Text für Heute-ablaufend</li>
+                <li>CombinedFilters_WorksCorrectly — Status + Lagerort gemeinsam</li>
+                <li>EmptyState_WithFilter_ShowsDifferentMessage — Unterschiedliche Leerzustände</li>
+                <li>ExpiredFilter_IsCaseSensitiveForLagerort — Case-Sensitivität der Lagerort-Filterung</li>
+                <li>ExpiredFilter_IsSortedByVerfallsdatum — Abgelaufene Packungen werden sortiert</li>
+            </ul>
+
+            <p><strong>Datei:</strong> <code>src/Tests/Ui/LebensmittelDetailTests.cs</code> — 5 Tests für die Packungsliste (WP4-neu)</p>
+            <ul>
+                <li>Sollte_Packungsliste_Mit_Produktinstanzen_Rendern — Packungen aus Service laden und anzeigen</li>
+                <li>Sollte_Packungsliste_Nach_Verfallsdatum_Sortieren — FIFO-Sortierung</li>
+                <li>Sollte_Packungsfehler_Nicht_Lebensmittel_Verdecken — Fehler getrennt von Lebensmittel</li>
+                <li>Sollte_Packungsfehler_Nicht_Nährwert_Verdecken — Fehler getrennt von Nährwert</li>
+                <li>Sollte_Leerzustand_Wenn_Keine_Packungen_Vorhanden — Leermeldung wenn keine Packungen</li>
+            </ul>
+
+            <h4>Unit-Tests (5 Fälle)</h4>
+            <p><strong>Datei:</strong> <code>src/Tests/Unit/MhdTextFormatterTests.cs</code> — 1 parametrized Test mit 5 Fällen</p>
+            <ul>
+                <li>GetMhdText_ReturnsCorrectLocalizedText — mit 5 Fällen: Singular/Plural für -1/-5, heute (0), +1/+5 Tage</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>✅ Tests (32 Service Unit + 17 bUnit + 5 Unit = 54 PASSING ✅)</h2>
 
             <h3>CREATE Tests (6)</h3>
             <div class="checklist">
@@ -258,13 +562,11 @@ public interface IProduktInstanzService
             <h3>VALIDATION Tests (Edge Cases - 7)</h3>
             <div class="checklist">
                 <ul>
-                    <li>✅ T26: CreateAsync_WithAllValidLagerorte_ShouldSucceed (Theory: Kühlschrank, Tiefkühler, Pantry, Anderes)</li>
+                    <li>✅ T26: CreateAsync_WithAllValidLagerorte_ShouldSucceed (Theory mit 4 InlineData: Kühlschrank, Tiefkühler, Pantry, Anderes)</li>
                     <li>✅ T27: CreateAsync_WithVerfallsdatumToday_ShouldSucceed</li>
                     <li>✅ T28: GetByLagerortAsync_WithEmptyLagerort_ShouldThrowArgumentNullException</li>
                     <li>✅ T29: GetTagesBisVerfallAsync_WithNonExistentId_ShouldThrowKeyNotFoundException</li>
-                    <li>✅ T30: (Additional parameterized test)</li>
-                    <li>✅ T31: (Additional edge case)</li>
-                    <li>✅ T32: (Additional edge case)</li>
+                    <li>✅ (T26 zählt als 4 Tests wegen Theory-Parameter)</li>
                 </ul>
             </div>
 
@@ -305,7 +607,7 @@ public interface IProduktInstanzService
                 </tr>
                 <tr>
                     <td><strong>Tests</strong></td>
-                    <td>✅ 32/32 PASSING (100%)</td>
+                    <td>✅ 54/54 PASSING (100%) — 32 Service Unit + 17 bUnit + 5 Unit</td>
                 </tr>
                 <tr>
                     <td><strong>Service</strong></td>
@@ -329,11 +631,11 @@ public interface IProduktInstanzService
                 </tr>
                 <tr>
                     <td><strong>Dokumentation</strong></td>
-                    <td>✅ docs/features/UC10-Produktinstanzen.html (aktualisiert 2026-06-19)</td>
+                    <td>✅ docs/features/UC10-Produktinstanzen.html (aktualisiert 2026-09-19)</td>
                 </tr>
                 <tr>
-                    <td><strong>Blazor UI</strong></td>
-                    <td>⏳ TODO</td>
+                    <td><strong>Blazor UI (WP4)</strong></td>
+                    <td>✅ MHD-Sichten: LagerbestandBearbeiten.razor mit Filterleiste + LebensmittelDetail.razor mit Packungsliste</td>
                 </tr>
                 <tr>
                     <td><strong>REST API</strong></td>
@@ -356,14 +658,15 @@ public interface IProduktInstanzService
                 <li>Service-Layer: LagerbestandService (UC2)</li>
             </ul>
 
-            <h3>2. Sequenzdiagramm (Workflows)</h3>
+            <h3>2. Sequenzdiagramm (Service-Layer Workflows)</h3>
             <p><strong>Datei:</strong> <code>diagrams/sequence-uc10-produktinstanzen.drawio</code></p>
+            <p><strong>Ebene:</strong> Zeigt Service-Layer-Interaktionen (ProduktInstanzService ↔ Repository ↔ DB). Die UI-Abläufe für /lagerbestand und /lebensmittel/{Id} sind in dieser Seite unter „Filter-Logik" und „Nutzer-Workflow" dokumentiert.</p>
             <p><strong>Scenario 1:</strong> ProduktInstanz erstellen (Einkauf)</p>
-            <pre>Benutzer → UI → Service (Validierung) → Repository → SQLite DB</pre>
+            <pre>Service.CreateAsync() → Validierung → Repository.AddAsync() → DB INSERT</pre>
             <p><strong>Scenario 2:</strong> Nach Lagerort filtern</p>
-            <pre>GetByLagerortAsync() → GetAllAsync() → Filter → Liste zurückgeben</pre>
+            <pre>Service.GetByLagerortAsync(lagerort) → Repository.GetAllAsync() → Filter → Liste</pre>
             <p><strong>Scenario 3:</strong> Verbrauch tracken (Update Menge)</p>
-            <pre>UpdateAsync() → Validierung → GetByIdAsync() → Aktualisierung → DB</pre>
+            <pre>Service.UpdateAsync() → Validierung → Repository.UpdateAsync() → DB UPDATE</pre>
 
             <h3>3. ER-Diagramm (Database Schema)</h3>
             <p><strong>Datei:</strong> <code>diagrams/database-schema.drawio</code></p>
@@ -547,7 +850,7 @@ public interface IProduktInstanzService
 
         <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
             <p>FoodDatabase | UC10 | Produktinstanzen mit MHD (ZENTRAL!)</p>
-            <p>Status: ✅ COMPLETE (32/32 Tests Passing) | Doc Version: 2.0 | Updated: 2026-06-19</p>
+            <p>Status: ✅ COMPLETE (54/54 Tests Passing) | Doc Version: 2.1 | Updated: 2026-09-19</p>
             <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
         </footer>
     </div>
