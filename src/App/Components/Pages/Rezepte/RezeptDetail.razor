@@ -1,0 +1,165 @@
+@page "/rezepte/{Id:int}"
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Interfaces
+@inject IRezeptService RezeptService
+@inject IRezeptZutatService RezeptZutatService
+
+<div class="container mt-4">
+    @if (lädt)
+    {
+        <div class="alert alert-info">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Lädt...
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(fehler))
+    {
+        <div class="alert alert-danger" data-testid="alert-fehler">
+            @fehler
+        </div>
+    }
+    else if (rezept is null)
+    {
+        <div class="alert alert-danger" data-testid="nicht-gefunden">
+            Rezept nicht gefunden.
+        </div>
+        <a href="/rezepte" class="btn btn-secondary" data-testid="btn-zurück">Zurück</a>
+    }
+    else
+    {
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2 data-testid="titel">@rezept.Name</h2>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="/rezepte/@Id/bearbeiten" class="btn btn-warning" data-testid="btn-bearbeiten">
+                    Bearbeiten
+                </a>
+                <a href="/rezepte" class="btn btn-secondary" data-testid="btn-zurück">
+                    Zurück
+                </a>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Rezept-Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Portionen:</strong> <span data-testid="wert-portionen">@rezept.Portionen</span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Zubereitungszeit:</strong> <span data-testid="wert-zeit">@rezept.ZubereitungszeitMinuten min</span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Schwierigkeit:</strong> <span data-testid="wert-schwierigkeit">@SchwierigkeitsgradAnzeige.ZuDeutsch(rezept.Schwierigkeitsgrad)</span>
+                    </div>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(rezept.Beschreibung))
+                {
+                    <p class="mt-3 mb-0" data-testid="wert-beschreibung">
+                        <strong>Beschreibung:</strong> @rezept.Beschreibung
+                    </p>
+                }
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(rezept.Zubereitung))
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Zubereitung</h5>
+                </div>
+                <div class="card-body">
+                    <div style="white-space: pre-line" data-testid="wert-zubereitung">@rezept.Zubereitung</div>
+                </div>
+            </div>
+        }
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Zutaten</h5>
+            </div>
+            <div class="card-body">
+                @if (zutaten.Count > 0)
+                {
+                    <table class="table table-striped" data-testid="tabelle-zutaten">
+                        <thead>
+                            <tr>
+                                <th>Lebensmittel</th>
+                                <th>Menge</th>
+                                <th>Einheit</th>
+                                <th>Notizen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (RezeptZutat zutat in zutaten)
+                            {
+                                <tr data-testid="zeile-zutat-@zutat.Id">
+                                    <td>@(zutat.Lebensmittel?.Name ?? "Unbekanntes Lebensmittel")</td>
+                                    <td>@zutat.Menge</td>
+                                    <td>@zutat.Einheit</td>
+                                    <td>@zutat.Notizen</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Keine Zutaten erfasst.</p>
+                }
+            </div>
+        </div>
+
+        @if (zutaten.Count > 0)
+        {
+            <RezeptNährwertAnzeige RezeptId="@Id" />
+        }
+        else
+        {
+            <div class="alert alert-info" data-testid="hinweis-keine-zutaten">
+                Noch keine Zutaten – Nährwerte werden berechnet, sobald Zutaten erfasst sind.
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Rezept? rezept;
+    private List<RezeptZutat> zutaten = new();
+    private bool lädt = false;
+    private string fehler = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        lädt = true;
+        fehler = "";
+        rezept = null;
+        zutaten = new();
+
+        try
+        {
+            rezept = await RezeptService.GetRezeptByIdAsync(Id);
+            if (rezept is not null)
+            {
+                // Zutaten inkl. Lebensmittel-Navigation (AutoInclude in FoodDatabaseContext).
+                zutaten = (await RezeptZutatService.GetZutatenAsync(Id)).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Laden des Rezepts: {ex.Message}";
+            rezept = null;
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+}
