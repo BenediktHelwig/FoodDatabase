@@ -52,7 +52,7 @@
         </mxCell>
 
         <!-- Message 1: Load RezeptNährwerte -->
-        <mxCell id="s1-msg1" value="OnInitializedAsync() [RezeptId]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#0066cc;startArrow=none;endArrow=block;" edge="1" parent="1">
+        <mxCell id="s1-msg1" value="OnInitializedAsync() [RezeptId]; CurrentPortions = Portionen" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#0066cc;startArrow=none;endArrow=block;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="170" y="190" as="sourcePoint"/>
             <mxPoint x="355" y="190" as="targetPoint"/>
@@ -202,7 +202,7 @@
         </mxCell>
 
         <!-- Message 1: User Input -->
-        <mxCell id="s2-msg1" value="OnPortionenChanged(newPortionen)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#0066cc;startArrow=none;endArrow=block;" edge="1" parent="1">
+        <mxCell id="s2-msg1" value="ReducePortions() / IncreasePortions() → PortionInputChanged()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor:#0066cc;startArrow=none;endArrow=block;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="170" y="680" as="sourcePoint"/>
             <mxPoint x="355" y="680" as="targetPoint"/>
@@ -210,7 +210,7 @@
         </mxCell>
 
         <!-- Message 2: Recalculate -->
-        <mxCell id="s2-msg2" value="GetRezeptNährwerteAsync(rezeptId) [cached with new portions]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
+        <mxCell id="s2-msg2" value="AdjustNährwerteForPortionAsync(rezeptId, CurrentPortions)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=9;strokeColor:#d81b60;startArrow=none;endArrow=block;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="355" y="700" as="sourcePoint"/>
             <mxPoint x="555" y="700" as="targetPoint"/>
@@ -247,7 +247,7 @@
         </mxCell>
 
         <!-- Note -->
-        <mxCell id="note" value="NOTES:&#10;&#10;1. RezeptNährwertService ruft NährwertCalculator auf (bereits in UC4)&#10;2. Nährwertberechnung: Pro Zutat (Menge, Einheit) -> Gramm -> Skalierung -> Summation&#10;3. Pro-Portion = Gesamt / rezept.Portionen&#10;4. UI cacht die Daten und aktualisiert nur bei OnInitializedAsync oder Parameter-Änderung&#10;5. Error Handling: NotFoundException bei Rezept nicht gefunden, SkipZutaten ohne Nährwert-Info&#10;6. Performance: Loop ist O(N) wo N = Anzahl Zutaten (typisch &lt;20)&#10;&#10;DEPENDENCIES (UC5 -> UC4/UC3):&#10;  RezeptNährwertService -&gt; NährwertCalculator (UC4)&#10;  RezeptNährwertService -&gt; IRezeptService (UC4)&#10;  RezeptNährwertService -&gt; IRezeptZutatService (UC4)&#10;  RezeptNährwertService -&gt; INährwertService (UC3)&#10;  RezeptNährwertService -&gt; IEinheitConverter (UC4)&#10;&#10;TEST COVERAGE (TDD Red-Phase):&#10;  - 4 Unit Tests für RezeptNährwertService&#10;  - 3 Unit Tests für RezeptNährwertAnzeigeComponent" style="text;html=1;align=left;verticalAlign=top;fontSize=9;fontFamily=Courier New;fontColor=#000000;backgroundColor=#f5f5f5;strokeWidth=1;strokeColor=#cccccc;" vertex="1" parent="1">
+        <mxCell id="note" value="NOTES:&#10;&#10;1. RezeptNährwertService ruft NährwertCalculator auf (bereits in UC4)&#10;2. Nährwertberechnung: Pro Zutat (Menge, Einheit) -> Gramm -> Skalierung -> Summation&#10;3. Pro-Portion = Gesamt / rezept.Portionen&#10;4. UI lädt die Daten in OnInitializedAsync (bzw. RefreshNährwerte); Portionen-Anpassung über AdjustNährwerteForPortionAsync&#10;5. Error Handling: NotFoundException bei Rezept nicht gefunden, SkipZutaten ohne Nährwert-Info&#10;6. Performance: Loop ist O(N) wo N = Anzahl Zutaten (typisch &lt;20)&#10;7. Einbettung: RezeptDetail.razor (/rezepte/{id}) lädt Rezept + Zutaten und bettet RezeptNährwertAnzeige nur bei Zutaten &gt; 0 ein (RezeptId, Portionen = rezept.Portionen); ohne Zutaten erscheint ein Hinweistext.&#10;&#10;DEPENDENCIES (UC5 -> UC4/UC3):&#10;  RezeptNährwertService -&gt; NährwertCalculator (UC4)&#10;  RezeptNährwertService -&gt; IRezeptService (UC4)&#10;  RezeptNährwertService -&gt; IRezeptZutatService (UC4)&#10;  RezeptNährwertService -&gt; INährwertService (UC3)&#10;  RezeptNährwertService -&gt; IEinheitConverter (UC4)&#10;&#10;TEST COVERAGE (TDD Red-Phase):&#10;  - 4 Unit Tests für RezeptNährwertService&#10;  - 15 bUnit-Tests für RezeptNährwertAnzeige (src/Tests/Ui/RezeptNährwertAnzeigeTests.cs)" style="text;html=1;align=left;verticalAlign=top;fontSize=9;fontFamily=Courier New;fontColor=#000000;backgroundColor=#f5f5f5;strokeWidth=1;strokeColor=#cccccc;" vertex="1" parent="1">
           <mxGeometry x="20" y="1000" width="900" height="280" as="geometry"/>
         </mxCell>
       </root>

@@ -13,7 +13,7 @@ namespace FoodDatabase.Tests.Ui
     /// bUnit Tests für RezeptNährwertAnzeige.razor (UC5: Nährwert-Anzeige eingebettet in die Rezept-Detailseite).
     /// Testet: Ladezustand, Werte nach dem Laden, Fehlerpfad, Startwert der Portionsanpassung (Parameter Portionen),
     /// Portion-Anpassung über Buttons und Eingabefeld.
-    /// Die Komponente selbst ist bestehender Code und wird in dieser Datei nur getestet, nicht geändert.
+    /// Die Komponente wird hier nur getestet. Der Portionen-Fix ist abgedeckt: Der Startwert kommt aus dem Parameter Portionen, nicht aus einer festen 4.
     /// </summary>
     public class RezeptNährwertAnzeigeTests : TestContext
     {

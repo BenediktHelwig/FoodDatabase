@@ -162,6 +162,7 @@
         }
     }
 
+    // Leerer Suchbegriff lädt die vollständige Liste, statt den Service mit leerem Text abzufragen.
     private async Task SucheAusführen()
     {
         if (string.IsNullOrWhiteSpace(suchbegriff))
@@ -198,6 +199,7 @@
         bestätigungLöschen = true;
     }
 
+    // Soft-Delete: der Service blendet gelöschte Rezepte in Listen aus, daher genügt ein Neuladen.
     private async Task LöschenBestätigt()
     {
         bestätigungLöschen = false;

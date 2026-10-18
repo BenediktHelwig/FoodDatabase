@@ -17,7 +17,8 @@
             <h1>UC5: Nährwerte berechnen</h1>
             <div class="meta">
                 Use-Case <strong>5</strong> |
-                Status: <span class="status-badge done">✅ FERTIG (18/21 Tests GRÜN)</span>
+                Service: <span class="status-badge done">✅ FERTIG (18/21 Tests GRÜN)</span> |
+                UI: <span class="status-badge done">✅ in Rezept-Detail eingebettet</span>
             </div>
         </header>
 
@@ -78,14 +79,51 @@ Gesamtnährwerte = SUMME über alle Zutaten:
 
             <h3>Hauptworkflow: Nährwerte ansehen</h3>
             <pre>
-1. Benutzer öffnet Rezept-Detail
+1. Benutzer öffnet Rezept-Detail (/rezepte/{id})
 2. System berechnet automatisch Nährwerte
 3. Nährwerte werden angezeigt (Kcal, Eiweiß, Fett, KH)
 4. Benutzer sieht auch Werte pro Portion (falls definiert)
+5. Benutzer ändert die Portionen (+/- oder Eingabefeld); die Werte werden über AdjustNährwerteForPortionAsync neu berechnet
             </pre>
 
             <h3>Fehlerfall</h3>
             <p><strong>Fehlende Nährwertinformation</strong>: Wenn Zutat keine Nährwerte hat, wird Warnung angezeigt</p>
+        </section>
+
+        <section>
+            <h2>🖥️ UI-Anzeige (eingebettet in Rezept-Detail)</h2>
+
+            <div class="test-result">
+                <h4>Status: ✅ live unter /rezepte/{id} (WP5 Teil 1)</h4>
+                <p>Die Anzeige ist eingebettet und durch bUnit-Tests abgedeckt.</p>
+            </div>
+
+            <h3>Komponente und Parameter</h3>
+            <p><code>RezeptNährwertAnzeige.razor</code> (src/App/Components/) wird in <code>RezeptDetail.razor</code> eingebettet:</p>
+            <ul>
+                <li><code>RezeptId</code> (int): Rezept, dessen Nährwerte geladen werden</li>
+                <li><code>Portionen</code> (int, neu): Rezept-Portionen; Startwert der Portionsanpassung (mindestens 1)</li>
+            </ul>
+            <p>Ohne Zutaten wird die Komponente nicht eingebettet. Die Detailseite zeigt stattdessen den Hinweis „Noch keine Zutaten – Nährwerte werden berechnet, sobald Zutaten erfasst sind.“, damit keine falschen Nullwerte erscheinen.</p>
+            <p>Fehler beim Laden erscheinen in einem Alert mit <code>role="alert"</code>.</p>
+
+            <h3>Portionen-Fix</h3>
+            <p>Bisher stand die Portionsanpassung fest auf 4, unabhängig vom Rezept. Der Service rechnet aber mit <code>rezept.Portionen</code>. Bei einem Rezept mit 2 Portionen zeigte das Eingabefeld deshalb 4, und der erste Klick auf „+“ berechnete für 5 Portionen statt für 3. Jetzt startet die Anzeige mit dem Parameter <code>Portionen</code>. Am Service hat sich nichts geändert.</p>
+
+            <h3>Anzeige-Tests</h3>
+            <table>
+                <tr>
+                    <th>Testklasse</th>
+                    <th>Testfälle</th>
+                    <th>Schwerpunkt</th>
+                </tr>
+                <tr>
+                    <td>src/Tests/Ui/RezeptNährwertAnzeigeTests.cs</td>
+                    <td>15 (14 Methoden, davon 1 Theory mit 2 Fällen)</td>
+                    <td>Ladezustand, Werte und Dezimalstellen, Fehler (Alert), Verringern und Erhöhen mit Service-Aufruf, Grenzen 1 und 100, Eingabe 0, Startwert aus Parameter Portionen (auch unter 1), Werte nach Änderung, Fehler bei der Anpassung</td>
+                </tr>
+            </table>
+            <p>Zahlen aus <code>dotnet test</code> (Filter <code>FoodDatabase.Tests.Ui.Rezept</code>).</p>
         </section>
 
         <section>
@@ -155,18 +193,18 @@ public class RezeptNährwertErgebnis
 
             <div class="checklist">
                 <ul>
-                    <li><input type="checkbox"> Tests geschrieben (TDD Red)</li>
-                    <li><input type="checkbox"> Code implementiert (TDD Green)</li>
-                    <li><input type="checkbox"> Code Review bestanden</li>
-                    <li><input type="checkbox"> Diagramme aktualisiert</li>
-                    <li><input type="checkbox"> Dokumentation fertig</li>
-                    <li><input type="checkbox"> User Review & Approval</li>
-                    <li><input type="checkbox"> Merged zu Master</li>
+                    <li><input type="checkbox" checked> Tests geschrieben (TDD Red)</li>
+                    <li><input type="checkbox" checked> Code implementiert (TDD Green)</li>
+                    <li><input type="checkbox" checked> Code Review bestanden</li>
+                    <li><input type="checkbox" checked> Diagramme aktualisiert</li>
+                    <li><input type="checkbox" checked> Dokumentation fertig</li>
+                    <li><input type="checkbox" checked> User Review & Approval</li>
+                    <li><input type="checkbox" checked> Merged zu Master</li>
                 </ul>
             </div>
 
-            <p><strong>Commit</strong>: [Awaiting implementation]</p>
-            <p><strong>MR Link</strong>: [Awaiting pull request]</p>
+            <p><strong>Commit</strong>: Service bfffc94 / fed485f (gemergt); Anzeige-Portionen-Fix 27dc466 (WP5 Teil 1)</p>
+            <p><strong>MR Link</strong>: Service gemergt; Anzeige mit der PR zu WP5 Teil 1</p>
         </section>
 
         <section>
@@ -174,7 +212,7 @@ public class RezeptNährwertErgebnis
 
             <div class="diagram-placeholder">
                 📊 Sequenz-Diagramm: Nährwertberechnung<br>
-                <small>(siehe: diagrams/sequence-nährwert.drawio)</small>
+                <small>(siehe: diagrams/sequence-uc5-nährwerte.drawio)</small>
             </div>
         </section>
 

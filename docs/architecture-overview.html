@@ -144,17 +144,17 @@
                 </div>
 
                 <!-- UC4 -->
-                <div class="uc-card done">
+                <div class="uc-card in-progress">
                     <h4><a href="features/UC4-Rezepte.html">UC4: Rezepte</a></h4>
-                    <p>CRUD für Rezepte + Zutaten-Liste (67 Tests + Code + 4-Teil-Dokumentation).</p>
-                    <span class="status-badge done">✅ Fertig (gemergt)</span>
+                    <p>Service (67 Tests) ✅ + UI Teil 1 ✅ (Liste, Formular, Detail, Nährwertanzeige). Zutaten-Verwaltung in der UI ist offen (WP5 Teil 2).</p>
+                    <span class="status-badge in-progress">🟡 Service ✅ · UI Teil 1 ✅ · Zutaten-UI offen</span>
                 </div>
 
                 <!-- UC5 -->
                 <div class="uc-card done">
                     <h4><a href="features/UC5-Nährwertberechnung.html">UC5: Rezept-Nährwerte</a></h4>
-                    <p>Automatische Berechnung der Gesamtnährwerte.</p>
-                    <span class="status-badge done">✅ Fertig (gemergt)</span>
+                    <p>Automatische Berechnung der Gesamtnährwerte. Die Anzeige ist in der Rezept-Detailseite eingebettet (WP5 Teil 1).</p>
+                    <span class="status-badge done">✅ Fertig (Service + Anzeige in Rezept-Detail)</span>
                 </div>
 
                 <!-- UC6 -->
@@ -220,12 +220,12 @@
                 <tr>
                     <td><strong>Rezept</strong></td>
                     <td>Rezept-Definition + Zutaten (Aggregate Root, Soft-Delete)</td>
-                    <td>✅ UC4</td>
+                    <td>🟡 UC4 (Service ✅, UI Teil 1 ✅, Zutaten-UI offen)</td>
                 </tr>
                 <tr>
                     <td><strong>RezeptZutat</strong></td>
                     <td>Zutaten-Management mit Position-Ordering</td>
-                    <td>✅ UC4</td>
+                    <td>🟡 UC4 (Service ✅, UI-Zutaten offen)</td>
                 </tr>
                 <tr>
                     <td><strong>EinkaufslistenEintragDto</strong></td>
@@ -331,14 +331,15 @@ cat CONTEXT_SUMMARY.md
                 <li>✅ UC2: Lagerbestand (29 Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ <strong>WP4 UC2: Lagerbestand UI (12 bUnit-Tests + 2 Blazor-Komponenten + 4-Teil-Dokumentation)</strong></li>
                 <li>✅ UC3: Nährwerte (23 Tests + Code + 4-Teil-Dokumentation)</li>
-                <li>✅ UC4: Rezepte verwalten (67 Tests + Code + 4-Teil-Dokumentation)</li>
+                <li>✅ UC4 Service: Rezepte verwalten (67 Tests + Code + 4-Teil-Dokumentation)</li>
+                <li>✅ <strong>WP5 Teil 1: Rezepte-UI (Liste, Formular, Detail + UC5-Anzeige eingebettet; 73 bUnit-Tests + 7 Unit-Tests)</strong></li>
                 <li>✅ UC6: Verbrauch ausbuchen (10 Service-Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ <strong>WP4 UC6: Verbrauch ausbuchen UI (10 bUnit-Tests + VerbrauchListe.razor + VerbrauchZeile.cs + 4-Teil-Dokumentation)</strong></li>
                 <li>✅ UC9: Lagerorte (34 Service-Testfälle + 1 SQLite-Integrationstest + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ <strong>WP4 UC9: Lagerorte UI (8 bUnit-Tests + LagerortListe.razor + LagerortForm.razor + 4-Teil-Dokumentation)</strong></li>
                 <li>✅ UC10: Produktinstanzen mit MHD (32 Service-Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ WP4 UC10: MHD-Sichten UI (17 bUnit + 5 Unit Tests + Filterleiste + Packungsliste + 4-Teil-Dokumentation)</li>
-                <li>✅ <strong>GESAMT: 394/394 Testfälle GRÜN ✅ (Unit: 284 | Integration: 3 | UI-Layer: 107 bUnit; gezählt per dotnet test --list-tests) — Stand 2026-10-16 (Lagerort-Umlaute)</strong></li>
+                <li>✅ <strong>GESAMT: 474/474 Testfälle GRÜN ✅ (Unit: 291 | Integration: 3 | UI-Layer: 180 bUnit; gezählt per dotnet test) — Stand 2026-10-18 (WP5 Teil 1)</strong></li>
                 <li>✅ Kontext-Dokumentation + Sequence-Diagramme + 4-Teil-Dokumentation für alle UCs</li>
                 <li>✅ Validierungs-Reports (UC1/UC2/UC3/UC4/UC6/UC9/UC10 Service + WP4 UI = Alle Tests grün)</li>
                 <li>✅ <strong>UI-Fix Phase 2 FERTIG: @onclick Event-Handler Bug-Fix (fehlender Namespace) — 351/351 Tests GRÜN (Stand vor WP4 UC6) ✅</strong></li>
@@ -346,8 +347,8 @@ cat CONTEXT_SUMMARY.md
 
             <h3>Nächste Schritte</h3>
             <ul style="margin-left: 20px; margin-top: 10px;">
-                <li>✅ UC4: Rezepte verwalten – FERTIG!</li>
-                <li>✅ UC5: Rezept-Nährwerte berechnen – FERTIG! (18/21 Tests GRÜN)</li>
+                <li>🟡 UC4: Rezepte verwalten – Service FERTIG, UI Teil 1 FERTIG, Zutaten-UI offen (WP5 Teil 2)</li>
+                <li>✅ UC5: Rezept-Nährwerte berechnen – FERTIG! (18/21 Service-Tests GRÜN, Anzeige in Rezept-Detail eingebettet)</li>
                 <li>✅ UC7: Verfallsdatum-Warnungen – FERTIG! (19/19 Tests GRÜN)</li>
                 <li>✅ UC8: Einkaufslisten generieren – FERTIG! (17/17 Tests GRÜN)</li>
                 <li>✅ <strong>UI-Shell-Layout (Bootstrap 5.3.3)</strong> – FERTIG! (15/24 UI-Tests GRÜN)</li>
@@ -357,7 +358,8 @@ cat CONTEXT_SUMMARY.md
                 <li>✅ <strong>WP4 UC9: Lagerorte UI</strong> – FERTIG! (8 bUnit-Tests + Liste + Form)</li>
                 <li>✅ <strong>WP4 UC10: MHD-Sichten UI</strong> – FERTIG! (Filterleiste + Packungsliste)</li>
                 <li>⚠️ <strong>WP4 UC3: Lagerbestand Export UI</strong> – BLOCKIERT (kein Export-Service in v1.0, Phase 2+)</li>
-                <li>⏳ WP4 Weitere UI-Komponenten (UC4, UC5, UC7, UC8)</li>
+                <li>⏳ <strong>WP5 Teil 2: Zutaten-CRUD in der Rezept-UI (UC4, PR 2)</strong></li>
+                <li>⏳ WP6: UI-Komponenten UC7 und UC8</li>
                 <li>⏳ Integration Test Suite</li>
                 <li>⏳ Docker Deployment auf TrueNAS</li>
             </ul>
