@@ -116,7 +116,7 @@
 
         @if (zutaten.Count > 0)
         {
-            <RezeptNährwertAnzeige RezeptId="@Id" />
+            <RezeptNährwertAnzeige RezeptId="@Id" Portionen="@rezept.Portionen" />
         }
         else
         {
