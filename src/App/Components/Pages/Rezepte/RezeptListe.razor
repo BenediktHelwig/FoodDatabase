@@ -1,0 +1,222 @@
+@page "/rezepte"
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Interfaces
+@inject IRezeptService RezeptService
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Rezepte</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="/rezepte/neu" class="btn btn-primary" data-testid="btn-neu">+ Neu</a>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="input-group">
+                <InputText @bind-Value="suchbegriff"
+                           class="form-control"
+                           placeholder="Rezept suchen..."
+                           data-testid="input-suche" />
+                <button class="btn btn-outline-secondary"
+                        type="button"
+                        @onclick="SucheAusführen"
+                        data-testid="btn-suche">
+                    Suche
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <button class="btn btn-secondary"
+                    @onclick="AlleAnzeigen"
+                    data-testid="btn-alle">
+                Alle anzeigen
+            </button>
+        </div>
+    </div>
+
+    @if (lädt)
+    {
+        <div class="alert alert-info">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Lädt...
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(fehler))
+    {
+        <div class="alert alert-danger" data-testid="alert-fehler">
+            @fehler
+        </div>
+    }
+    else if (rezeptListe is not null && rezeptListe.Any())
+    {
+        <table class="table table-striped" data-testid="tabelle-rezepte">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Portionen</th>
+                    <th>Zeit (min)</th>
+                    <th>Schwierigkeit</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Rezept rezept in rezeptListe)
+                {
+                    <tr data-testid="zeile-@rezept.Id">
+                        <td>@rezept.Name</td>
+                        <td>@rezept.Portionen</td>
+                        <td>@rezept.ZubereitungszeitMinuten</td>
+                        <td>@SchwierigkeitsgradAnzeige.ZuDeutsch(rezept.Schwierigkeitsgrad)</td>
+                        <td>
+                            <a href="/rezepte/@rezept.Id"
+                               class="btn btn-sm btn-info"
+                               data-testid="btn-detail-@rezept.Id">
+                                Detail
+                            </a>
+                            <a href="/rezepte/@rezept.Id/bearbeiten"
+                               class="btn btn-sm btn-warning"
+                               data-testid="btn-bearbeiten-@rezept.Id">
+                                Bearbeiten
+                            </a>
+                            <button class="btn btn-sm btn-danger"
+                                    @onclick="() => BestätigungLöschen(rezept.Id)"
+                                    data-testid="btn-löschen-@rezept.Id">
+                                Löschen
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info" data-testid="hinweis-leer">
+            Keine Rezepte gefunden.
+        </div>
+    }
+</div>
+
+@if (bestätigungLöschen)
+{
+    <div class="modal fade show" id="bestätigungsmodal" style="display: block;" data-testid="modal-bestätigung">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bestätigung erforderlich</h5>
+                </div>
+                <div class="modal-body">
+                    Möchten Sie dieses Rezept wirklich löschen?
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            @onclick="() => bestätigungLöschen = false"
+                            data-testid="btn-abbrechen">
+                        Abbrechen
+                    </button>
+                    <button type="button"
+                            class="btn btn-danger"
+                            @onclick="LöschenBestätigt"
+                            data-testid="btn-löschen-bestätigt">
+                        Löschen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    private IEnumerable<Rezept>? rezeptListe;
+    private string suchbegriff = "";
+    private string fehler = "";
+    private bool lädt = false;
+    private bool bestätigungLöschen = false;
+    private int zuLöschendeId = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AlleAbrufen();
+    }
+
+    private async Task AlleAbrufen()
+    {
+        lädt = true;
+        fehler = "";
+        try
+        {
+            rezeptListe = await RezeptService.GetAllRezepteAsync();
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Abrufen der Rezepte: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+
+    // Leerer Suchbegriff lädt die vollständige Liste, statt den Service mit leerem Text abzufragen.
+    private async Task SucheAusführen()
+    {
+        if (string.IsNullOrWhiteSpace(suchbegriff))
+        {
+            await AlleAbrufen();
+            return;
+        }
+
+        lädt = true;
+        fehler = "";
+        try
+        {
+            rezeptListe = await RezeptService.SearchRezepteAsync(suchbegriff);
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler bei der Suche: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+
+    private async Task AlleAnzeigen()
+    {
+        suchbegriff = "";
+        await AlleAbrufen();
+    }
+
+    private void BestätigungLöschen(int rezeptId)
+    {
+        zuLöschendeId = rezeptId;
+        bestätigungLöschen = true;
+    }
+
+    // Soft-Delete: der Service blendet gelöschte Rezepte in Listen aus, daher genügt ein Neuladen.
+    private async Task LöschenBestätigt()
+    {
+        bestätigungLöschen = false;
+        lädt = true;
+        fehler = "";
+        try
+        {
+            await RezeptService.DeleteRezeptAsync(zuLöschendeId);
+            await AlleAbrufen();
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Löschen: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+}

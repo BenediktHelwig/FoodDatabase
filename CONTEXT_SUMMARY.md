@@ -1,19 +1,19 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-10-16  
+**Datum**: 2026-10-18  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
 **Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow  
-**Aktueller Branch**: `fix/lagerort-umlaute-aufraeumen` (PR offen, gestapelt auf PR #12 – #12 zuerst mergen)
+**Aktueller Branch**: `feat/ui-rezepte-wp5-teil1` (PR offen zur Abnahme)
 
 ---
 
 ## ⏭️ NÄCHSTE SCHRITTE (in dieser Reihenfolge)
 
-Offen zur Abnahme: **PR #12** (WP4 UC10) und darauf gestapelt die PR für `fix/lagerort-umlaute-aufraeumen`. #12 zuerst mergen.
+Offen zur Abnahme: die PR zu **WP5 Teil 1** (`feat/ui-rezepte-wp5-teil1`).
 
 **Korrektur zur Roadmap-Bezeichnung**: Bis 19.09.2026 stand hier „WP4 UC4". Laut `UI-PHASE-PLAN.md:156` besteht WP4 nur aus UC2/6/9/10 – **WP4 ist damit fertig** (UC3 blockiert). UC4 gehört zu **WP5** (`UI-PHASE-PLAN.md:164`).
 
-1. **WP5: UI Rezepte (UC4 + UC5)** — nächstes Arbeitspaket. `RezeptListe`, `RezeptForm`, `RezeptDetail` mit Zutaten-CRUD; die fertige `RezeptNährwertAnzeige` wird nur eingebettet. Services fertig. UI-Regel: Code zuerst, dann Tests. Deutlich größer als die bisherigen WP4-Schritte.
+1. **WP5 Teil 2: Zutaten-CRUD auf `/rezepte/{id}`** — Hinzufügen/Bearbeiten/Löschen über `IRezeptZutatService` (`AddZutatAsync`/`UpdateZutatAsync`/`DeleteZutatAsync`), Lebensmittel-Dropdown, Einheiten `g, ml, Stück, TL, EL, Tasse, Prise`. Der Service verbietet das Löschen der letzten Zutat (`ValidationException`) — die UI muss das anzeigen. Dabei mitnehmen: `@key="Id"` an `<RezeptNährwertAnzeige>` in `RezeptDetail.razor:119`, damit nach Zutatenänderungen bzw. Rezeptwechsel neu geladen wird (die Komponente lädt nur in `OnInitializedAsync`); nach Zutatenänderung müssen die Nährwerte neu berechnet werden. Danach UC4 in der Doku auf fertig setzen. UI-Regel: Code zuerst, dann Tests.
 
 2. **UC9→UC10-Integration** (FK statt `string Lagerort`). `FoodDatabaseContext.cs:64-65` vermerkt sie als ausstehend. Solange sie fehlt, sind die unter `/lagerorte` angelegten Lagerorte funktionslos. Seit 16.10.2026 akzeptiert UC9 Umlaute – die UC10-Konstanten „Kühlschrank"/„Tiefkühler" sind damit gültige UC9-Namen, eine Umbenennung ist für die Integration nicht nötig. Schema-Änderung → TDD.
 
@@ -26,7 +26,9 @@ Offen zur Abnahme: **PR #12** (WP4 UC10) und darauf gestapelt die PR für `fix/l
    - Code: Filterleiste flackert beim Laden (`@if (!lädt)`); `GetMhdText(int)` statt `Formatiere(DateTime)` lässt die Tagesrechnung in beiden Views stehen.
    - Doku: UC3 bezeichnet im Repo zwei verschiedene Dinge („Nährwerte" fertig vs. „Lagerbestand Export" blockiert); einzelne Begründungen in der UC10-Filter-Sektion sind schwächer als die Aussage, die sie tragen.
 
-5. **UC3 bleibt blockiert**, bis ein Export-Service existiert — laut `requirements/analysis.md` außerhalb v1.0.
+5. **Aus WP5 Teil 1 vorgemerkt**: `LebensmittelForm.razor:99` bindet an die getrackte EF-Entity (gleicher Fehler wie im Rezept-Formular vor `4893dc8`: Duplikat-Prüfung greift nicht, abgebrochene Eingaben leaken ins nächste SaveChanges), und `:133` fängt wegen `_Imports.razor` vermutlich `System.ComponentModel.DataAnnotations.ValidationException` statt der Service-Exception · `RezeptService.cs:136/138/177` nutzt `== null`/`!= null` · `RezeptForm`: Ladefehler im Bearbeiten-Modus zeigt Fehler über leerem, klickbarem Formular · `diagrams/sequence-uc4-rezepte.drawio` ist seit `8d144bb` kein wohlgeformtes XML (unmaskiertes `&` Z. 129) und enthält keine mxCells · `requirements/use-cases.drawio`: UC7 grün, obwohl WP6-UI offen; Legende hat zwei weiße Kategorien · `sequence-uc5-nährwerte.drawio`: Überschrift „TEST COVERAGE (TDD Red-Phase)“ und Szenario 3 veraltet · UC5-Seite „Offene Fragen“ veraltet.
+
+6. **UC3 bleibt blockiert**, bis ein Export-Service existiert — laut `requirements/analysis.md` außerhalb v1.0.
 
 ---
 
@@ -46,19 +48,20 @@ Offen zur Abnahme: **PR #12** (WP4 UC10) und darauf gestapelt die PR für `fix/l
 ✅ WP4 UC10: MHD-Sichten (Filterleiste + Packungsliste) – Doku vollständig seit 19.09.2026
 ⚠️ WP4 UC3:  Lagerbestand exportieren – BLOCKIERT, kein Export-Service.
              Laut requirements/analysis.md außerhalb v1.0 (CSV/PDF erst Phase 2+).
-⏳ WP5: UI Rezepte (UC4/UC5) ← als Nächstes
+✅ WP5 Teil 1: Rezepte-UI (RezeptListe/Form/Detail + RezeptNährwertAnzeige eingebettet, Portionen-Fix) – 18.10.2026
+⏳ WP5 Teil 2: Zutaten-CRUD (UC4)
 ⏳ WP6: UI Dashboard (UC7/UC8) – UC8-Service noch TODO
 ```
 
-### Test-Status (verifiziert 2026-10-16, `dotnet test --list-tests` vom Repo-Root, gezählt in Testfällen)
+### Test-Status (verifiziert 2026-10-18, `dotnet test` vom Repo-Root, gezählt in Testfällen)
 ```
-Unit:          284 Testfälle ✅  (Services + Formatter)
+Unit:          291 Testfälle ✅  (Services + Formatter)
 Integration:     3 Testfälle ✅  (2 EfRepository + 1 LagerortService/SQLite)
-UI (bUnit):    107 Testfälle ✅
+UI (bUnit):    180 Testfälle ✅  (davon Rezept-UI 73)
 ────────────────────────────────────
-TOTAL:         394 Testfälle ✅  (0 rot)
+TOTAL:         474 Testfälle ✅  (0 rot)
 ```
-UI-Aufschlüsselung (unverändert seit 19.09.2026): UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6 · MainLayout 3
+UI-Aufschlüsselung: UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6 · MainLayout 3 · Rezept-UI 73
 
 ### Infrastruktur
 ```
@@ -94,6 +97,7 @@ UI-Aufschlüsselung (unverändert seit 19.09.2026): UC1 51 · UC2 12 · UC6 10 �
   ein Test eine Designentscheidung absichern soll, lohnt die Gegenprobe: Entscheidung im Code
   umdrehen, prüfen, dass **genau** dieser Test fällt, Änderung zurücknehmen.
 - **Der EF-InMemory-Provider verdeckt Übersetzungsfehler nach SQLite.** Er wertet LINQ in C# aus; SQLite übersetzt `ToLower()` in `lower()`, das nur ASCII faltet. `l.Name.ToLower().Contains("öl")` fand „Ölkeller" in den Unit-Tests, in der echten App nicht (behoben 16.10.2026, `5608ee6`). Alles, was von DB-seitigem String-Verhalten abhängt (Case, Collation, Umlaute), braucht einen Test gegen SQLite `:memory:` — Muster: `src/Tests/Integration/LagerortServiceSqliteTests.cs`.
+- **Blazor-Formulare nie direkt an geladene Entities binden.** Der `FoodDatabaseContext` lebt pro Circuit; was das Formular in die Entity schreibt, ist für EF bereits eine Änderung — der Service sieht beim Update den neuen Wert als „alten“ (Duplikat-Prüfung wirkungslos), und nach Abbrechen landet die Eingabe mit dem nächsten `SaveChanges` irgendeines Services in der DB. Formular auf eine Kopie binden (Muster: `RezeptForm.razor`).
 
 ---
 
@@ -107,48 +111,23 @@ UI-Aufschlüsselung (unverändert seit 19.09.2026): UC1 51 · UC2 12 · UC6 10 �
 
 ---
 
-## ✅ ZULETZT FERTIGGESTELLT: Lagerort-Umlaute + UC10-Doku-Aufräumen (16.10.2026)
+## ✅ ZULETZT FERTIGGESTELLT: WP5 Teil 1 — Rezepte-UI (18.10.2026)
+
+**Geliefert**: `/rezepte` (Liste, Suche, Soft-Delete-Modal), `/rezepte/neu` + `/{id}/bearbeiten` (Defaults Portionen 1/Medium, nach Speichern zum Detail), `/rezepte/{id}` (Stammdaten, Zutaten lesend, `RezeptNährwertAnzeige` eingebettet; ohne Zutaten Hinweis statt Nullwerten). Schwierigkeitsgrad deutsch angezeigt via `SchwierigkeitsgradAnzeige`, englisch gespeichert. **394 → 474 Tests.**
+
+**Zwei echte Fehler gefunden**: (1) Das Formular band an die EF-getrackte Entity — DbContext lebt pro Circuit, `UpdateRezeptAsync` bekommt per Identity Resolution dieselbe Instanz, die Eingaben stehen also schon drin, bevor der Service prüft. Lösung: Formular auf einer Kopie. `LebensmittelForm` hat denselben Fehler (vorgemerkt). (2) `RezeptNährwertAnzeige` startete fest bei 4 Portionen, der Service skaliert aber mit `rezept.Portionen` — fiel erst beim Einbetten auf, Fix `27dc466` per User-Entscheidung im selben PR.
+
+**Prozess-Lehre**: Eine Annahme im Plan war falsch („`EfRepository` lädt `RezeptZutat.Lebensmittel` nicht“) — `FoodDatabaseContext.cs:110` hat `AutoInclude()`. Behauptungen über Ladeverhalten im Plan gegen den DbContext prüfen, nicht gegen das Repository. Außerdem: Grenztests hinter einer zweiten Schutzstufe können nicht rot werden — angezeigten Zustand prüfen, nicht nur ausbleibende Service-Aufrufe.
+
+---
+
+## ✅ VORLETZT FERTIGGESTELLT: Lagerort-Umlaute + UC10-Doku-Aufräumen (16.10.2026)
 
 Anlass: Das UC9-Formular schlug „z.B. Kühlschrank" vor, die Validierung `^[A-Za-z]+$` lehnte es ab. **User-Entscheidung**: Umlaute und ß sind gültig und werden unverändert gespeichert (keine Umschreibung auf ae/oe/ue/ss — eine Rückumwandlung beim Lesen hätte ein Wörterbuch gebraucht: „Mauer" → „Maür"). Neue Regex `^[A-Za-zÄÖÜäöüß]+$`.
 
 **Nebenbefund mit echtem Fehler**: Autocomplete filterte per SQLite-`lower()` (ASCII-only) — „öl" fand „Ölkeller" nicht. Jetzt In-Memory-Filter, abgesichert durch den ersten Lagerort-Test gegen echtes SQLite (siehe Fallstricke).
-
 Außerdem: drei falsche Ist-Aussagen auf `UC10-Produktinstanzen.html` korrigiert (Domain-Tabelle, erfundenes Interface, Zeilenzahl). **383 → 394 Tests.**
-
 **Gates**: Tests und Code im 1. Versuch, Doku im 3. Versuch. Lehre: Die Mängelliste eines Reviews deckt nicht automatisch alle Stellen ab, die dieselbe Aussage tragen — eine korrigierte Datumsangabe erzeugte einen Widerspruch zur zweiten Datumsangabe derselben Seite, die nicht auf der Liste stand. Bei Datum/Stand-Korrekturen im Auftrag alle Vorkommen per grep mitnennen.
-
----
-
-## ✅ VORLETZT FERTIGGESTELLT: WP4 UC10 — MHD-Sichten (19.09.2026)
-
-UC10 stand als voller Use-Case in der Roadmap. Tatsächlich existierte das CRUD schon, gebaut
-unter dem UC2-Label — offen waren nur die MHD-Sichten. Das Feature wurde dadurch deutlich
-kleiner: **kein Service, kein Schema, nur UI**.
-
-**Geliefert**: Filterleiste auf `/lagerbestand` (Status + Lagerort, ein Service-Aufruf je
-Kombination), Spalte „Tage bis MHD", Packungsliste auf `/lebensmittel/{id}`, dazu
-`MhdTextFormatter` als gemeinsame Textquelle. **361 → 383 Tests**.
-
-**Zwei Entscheidungen im Code**: Eine heute ablaufende Packung gilt **nicht** als abgelaufen
-(„mindestens haltbar bis"), und die UI sortiert nach jedem Filter nach, weil zwei der drei
-Abfragemethoden reine `Where`-Filter sind. Beide sind von je einem Test bewacht, dessen
-Wirksamkeit durch Umschalten des Produktivcodes belegt wurde: Jeder Eingriff ließ **genau**
-den vorhergesagten Test fallen.
-
-**Sieben Review-Durchläufe über drei Gates.** Die wertvollsten Befunde waren Aussagen, die
-plausibel aussahen und falsch waren:
-- `@instanz.Verfallsdatum:D` ist in Razor **kein** Format-Specifier — `:D` landete als Literal
-  in der Ausgabe. Zwei der drei Stellen waren Altbestand.
-- Ein Test namens `LagerortFilter_IsCaseSensitive` prüfte **keine** Case-Sensitivität: Er lief
-  durch den Zweig, in dem die Seite gar nicht vergleicht.
-- Die Sequence-Lifeline `Blazor UI (ProduktInstanzPage)` zeigte auf eine Komponente, die **nie
-  existiert hat** — und die erste Korrektur darauf war ebenfalls falsch.
-
-**Prozess-Lehre**: Zwei Befunde des zweiten Doku-Gates waren Folgeschäden von Korrektionen, die
-das erste Gate verlangt hatte. Bei einer Testzahl wurde dreimal nachgebessert, weil der Auftrag
-nie sagte, **welche Menge** die Überschrift benennen soll — erst die wörtliche Vorgabe saß.
-Wenn ein Review eine Ersatzformulierung verlangt, muss diese die Bezugsmenge mitnennen, nicht
-nur die Zahl.
 
 ---
 
@@ -158,6 +137,7 @@ nur die Zahl.
 WP4 fertig (UC2/6/9/10). UC3 blockiert (außerhalb v1.0). Nächstes Paket: WP5.
 
 ### Phase 2: UI Rezepte (WP5)
+Teil 1 ✅ (18.10.2026), Teil 2 Zutaten-CRUD offen.
 Abhängigkeit: WP4 fertig ✅ (UC3 nicht nötig — außerhalb v1.0).
 - **UC4**: Rezepte CRUD UI (Liste, Form, Detail)
 - **UC5**: Rezept-Nährwerte automatisch berechnen (UI)
