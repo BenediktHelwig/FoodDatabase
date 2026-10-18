@@ -215,6 +215,42 @@ namespace FoodDatabase.Tests.Unit.Services
             Assert.NotNull(exception);
         }
 
+        [Theory]
+        [InlineData("Kühlschrank")]
+        [InlineData("Tiefkühler")]
+        [InlineData("Fußraum")]
+        [InlineData("Ölkeller")]
+        public void ValidateLagerort_WithUmlautsAndSharpS_ShouldNotThrow(string name)
+        {
+            // Act
+            Exception? exception = Record.Exception(() => _service.ValidateLagerort(name));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void ValidateLagerort_WithOtherDiacritics_ShouldThrowException()
+        {
+            // Arrange
+            string invalidName = "Café";
+
+            // Act & Assert
+            ArgumentException exception = Assert.Throws<ArgumentException>(() => _service.ValidateLagerort(invalidName));
+            Assert.Contains("Nur Buchstaben", exception.Message);
+        }
+
+        [Fact]
+        public void ValidateLagerort_WithSpaceInside_ShouldThrowException()
+        {
+            // Arrange
+            string invalidName = "Kühl Schrank";
+
+            // Act & Assert
+            ArgumentException exception = Assert.Throws<ArgumentException>(() => _service.ValidateLagerort(invalidName));
+            Assert.Contains("Nur Buchstaben", exception.Message);
+        }
+
         // === NormalisiereLagerort Tests ===
 
         [Fact]
@@ -255,6 +291,19 @@ namespace FoodDatabase.Tests.Unit.Services
 
             // Assert
             Assert.Equal("Lager", result);
+        }
+
+        [Theory]
+        [InlineData("kühlschrank", "Kühlschrank")]
+        [InlineData("TIEFKÜHLER", "Tiefkühler")]
+        [InlineData("öLKELLER", "Ölkeller")]
+        public void NormalisiereLagerort_WithUmlauts_ShouldCapitalize(string input, string expected)
+        {
+            // Act
+            string result = _service.NormalisiereLagerort(input);
+
+            // Assert
+            Assert.Equal(expected, result);
         }
 
         // === GetOrCreateAsync Tests ===
@@ -324,6 +373,24 @@ namespace FoodDatabase.Tests.Unit.Services
         {
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() => _service.GetOrCreateAsync("Lager1"));
+        }
+
+        [Fact]
+        public async Task GetOrCreateAsync_WithUmlaut_ShouldStoreUmlaut()
+        {
+            // Act
+            Lagerort first = await _service.GetOrCreateAsync("kühlschrank");
+            Lagerort second = await _service.GetOrCreateAsync("kühlschrank");
+
+            // Assert
+            Assert.Equal("Kühlschrank", first.Name);
+
+            Lagerort? dbEntry = await _context.Lagerorte.FirstOrDefaultAsync(l => l.Name == "Kühlschrank");
+            Assert.NotNull(dbEntry);
+
+            Assert.Equal(first.Id, second.Id);
+            int count = await _context.Lagerorte.CountAsync();
+            Assert.Equal(1, count);
         }
 
         // === SQL Injection Prevention Tests ===

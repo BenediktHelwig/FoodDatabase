@@ -15,7 +15,7 @@ namespace FoodDatabase.App.Models
         /// <summary>
         /// Name des Lagerorts (UNIQUE, Case-Sensitive).
         /// Wird normalisiert: Single-Word-Input → Capitalize (z.B. "lagerA" → "LagerA", "LAGER" → "Lager").
-        /// Nur Buchstaben (A-Z, a-z) erlaubt nach Validierung.
+        /// Nur Buchstaben inkl. Umlaute und ß erlaubt nach Validierung.
         /// </summary>
         public string Name { get; set; }
 
