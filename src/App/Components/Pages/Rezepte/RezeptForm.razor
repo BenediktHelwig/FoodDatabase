@@ -1,0 +1,228 @@
+@page "/rezepte/neu"
+@page "/rezepte/{Id:int}/bearbeiten"
+@using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Dtos
+@using FoodDatabase.App.Services.Interfaces
+@inject IRezeptService RezeptService
+@inject NavigationManager NavigationManager
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>@(Id == 0 ? "Neues Rezept" : "Rezept bearbeiten")</h2>
+
+            @if (lädt)
+            {
+                <div class="alert alert-info">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Lädt...
+                </div>
+            }
+            else
+            {
+                @if (!string.IsNullOrEmpty(fehler))
+                {
+                    <div class="alert alert-danger" data-testid="alert-fehler">
+                        @fehler
+                    </div>
+                }
+
+                @if (!nichtGefunden)
+                {
+                    <EditForm Model="rezept" OnValidSubmit="SpeichernAsync">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="alert alert-warning" />
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name *</label>
+                            <InputText id="name"
+                                       @bind-Value="rezept.Name"
+                                       class="form-control"
+                                       placeholder="z.B. Spaghetti Carbonara"
+                                       data-testid="input-name" />
+                            <ValidationMessage For="() => rezept.Name" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="beschreibung" class="form-label">Beschreibung</label>
+                            <InputTextArea id="beschreibung"
+                                           @bind-Value="rezept.Beschreibung"
+                                           class="form-control"
+                                           rows="3"
+                                           data-testid="input-beschreibung" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="zubereitung" class="form-label">Zubereitung</label>
+                            <InputTextArea id="zubereitung"
+                                           @bind-Value="rezept.Zubereitung"
+                                           class="form-control"
+                                           rows="6"
+                                           data-testid="input-zubereitung" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="portionen" class="form-label">Portionen *</label>
+                                <InputNumber id="portionen"
+                                             @bind-Value="rezept.Portionen"
+                                             class="form-control"
+                                             data-testid="input-portionen" />
+                                <ValidationMessage For="() => rezept.Portionen" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="zeit" class="form-label">Zubereitungszeit (min)</label>
+                                <InputNumber id="zeit"
+                                             @bind-Value="rezept.ZubereitungszeitMinuten"
+                                             class="form-control"
+                                             data-testid="input-zubereitungszeit" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="schwierigkeitsgrad" class="form-label">Schwierigkeitsgrad</label>
+                                <InputSelect id="schwierigkeitsgrad"
+                                             @bind-Value="rezept.Schwierigkeitsgrad"
+                                             class="form-select"
+                                             data-testid="select-schwierigkeitsgrad">
+                                    @foreach (string wert in SchwierigkeitsgradAnzeige.AlleWerte)
+                                    {
+                                        <option value="@wert">@SchwierigkeitsgradAnzeige.ZuDeutsch(wert)</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit"
+                                    class="btn btn-primary"
+                                    data-testid="btn-speichern"
+                                    disabled="@(lädt)">
+                                Speichern
+                            </button>
+                            <a href="@AbbrechenZiel" class="btn btn-secondary" data-testid="btn-abbrechen">
+                                Abbrechen
+                            </a>
+                        </div>
+                    </EditForm>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Rezept rezept = new();
+    private bool lädt = false;
+    private bool nichtGefunden = false;
+    private string fehler = "";
+
+    /// <summary>Neu: zurück zur Liste. Bearbeiten: zurück zum Detail.</summary>
+    private string AbbrechenZiel => Id == 0 ? "/rezepte" : $"/rezepte/{Id}";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        fehler = "";
+        nichtGefunden = false;
+
+        if (Id == 0)
+        {
+            // Neu: Portionen 1 und Medium vorbelegt – der Service lehnt Portionen < 1 ab, Medium ist sein Default.
+            rezept = new Rezept { Schwierigkeitsgrad = SchwierigkeitsgradAnzeige.Medium, Portionen = 1 };
+            return;
+        }
+
+        lädt = true;
+        try
+        {
+            Rezept? geladen = await RezeptService.GetRezeptByIdAsync(Id);
+            if (geladen is null)
+            {
+                nichtGefunden = true;
+                fehler = "Rezept nicht gefunden.";
+            }
+            else
+            {
+                // Eigene Kopie: die getrackte EF-Entity darf nie an Eingabefelder gebunden werden.
+                rezept = new Rezept
+                {
+                    Name = geladen.Name,
+                    Beschreibung = geladen.Beschreibung,
+                    Zubereitung = geladen.Zubereitung,
+                    Portionen = geladen.Portionen,
+                    ZubereitungszeitMinuten = geladen.ZubereitungszeitMinuten,
+                    Schwierigkeitsgrad = geladen.Schwierigkeitsgrad
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Laden des Rezepts: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+
+    private async Task SpeichernAsync()
+    {
+        lädt = true;
+        fehler = "";
+        try
+        {
+            await (Id == 0 ? ErstellenAsync() : AktualisierenAsync());
+        }
+        // Die Exception-Typen sind vollqualifiziert: _Imports.razor importiert
+        // System.ComponentModel.DataAnnotations, dessen ValidationException sonst den Service-Typ verdeckt.
+        catch (FoodDatabase.App.Services.Exceptions.ValidationException ex)
+        {
+            fehler = $"Validierungsfehler: {ex.Message}";
+        }
+        catch (Exception ex) when (ex is FoodDatabase.App.Services.Exceptions.DuplicateRezeptException
+                                     or FoodDatabase.App.Services.Exceptions.NotFoundException
+                                     or InvalidOperationException)
+        {
+            fehler = $"Fehler: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Speichern: {ex.Message}";
+        }
+        finally
+        {
+            lädt = false;
+        }
+    }
+
+    private async Task ErstellenAsync()
+    {
+        CreateRezeptRequest request = new()
+        {
+            Name = rezept.Name,
+            Beschreibung = rezept.Beschreibung,
+            Zubereitung = rezept.Zubereitung,
+            Portionen = rezept.Portionen,
+            ZubereitungszeitMinuten = rezept.ZubereitungszeitMinuten,
+            Schwierigkeitsgrad = rezept.Schwierigkeitsgrad
+        };
+        Rezept gespeichert = await RezeptService.CreateRezeptAsync(request);
+        NavigationManager.NavigateTo($"/rezepte/{gespeichert.Id}");
+    }
+
+    private async Task AktualisierenAsync()
+    {
+        UpdateRezeptRequest request = new()
+        {
+            Name = rezept.Name,
+            Beschreibung = rezept.Beschreibung,
+            Zubereitung = rezept.Zubereitung,
+            Portionen = rezept.Portionen,
+            ZubereitungszeitMinuten = rezept.ZubereitungszeitMinuten,
+            Schwierigkeitsgrad = rezept.Schwierigkeitsgrad
+        };
+        await RezeptService.UpdateRezeptAsync(Id, request);
+        NavigationManager.NavigateTo($"/rezepte/{Id}");
+    }
+}

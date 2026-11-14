@@ -475,3 +475,25 @@ User → NährwertCalculator.CalculateRezeptNährwerteAsync(rezeptId)
 **Gültig für**: UC4 Rezepte verwalten – Dokumentations-Phase Complete  
 **Status**: ✅ READY FOR REVIEW-AGENT
 
+---
+
+## Nachtrag 2026-10-18: WP5 Teil 1 (UI Rezepte)
+
+**Geltungsbereich**: UC4 UI Teil 1 (Liste `/rezepte`, Formular `/rezepte/neu` und `/rezepte/{Id}/bearbeiten`, Detail `/rezepte/{Id}`) und die eingebettete UC5-Anzeige (`RezeptNährwertAnzeige` in `/rezepte/{Id}`).
+
+**Status**: Service unverändert ✅. UI Teil 1 ✅. **Zutaten-CRUD in der UI ist offen (WP5 Teil 2)**. Die Zutaten werden im Detail nur lesend angezeigt.
+
+| Teil | Prüfung | Ergebnis |
+|------|---------|----------|
+| 1 Code-Doku | `RezeptListe.razor`, `RezeptForm.razor` (Kommentare zu Soft-Delete, Leersuche, vollqualifizierten Exceptions, Neu-Defaults), Testkopf `RezeptNährwertAnzeigeTests.cs` (Portionen-Fix), `Models/SchwierigkeitsgradAnzeige.cs` | ✅ |
+| 2 Feature-HTML | `docs/features/UC4-Rezepte.html` (UI-Abschnitt, Badge „UI Teil 1“), `docs/features/UC5-Nährwertberechnung.html` (eingebettete Anzeige, Parameter `Portionen`, Portionen-Fix) | ✅ |
+| 3 Architecture-Overview | UC4-Karte „in-progress“, UC5-Karte ✅, Projekt-Status und Nächste Schritte, WP5 Teil 1 ✅ / WP5 Teil 2 ⏳, WP6 für UC7/UC8 | ✅ |
+| 4 Diagramme | `requirements/use-cases.drawio` (UC4 gelb, UC5 grün, Legende), `diagrams/sequence-uc5-nährwerte.drawio` (Lifeline `RezeptNährwertAnzeige.razor`, Portionen-Nachrichten korrigiert). `diagrams/sequence-uc4-rezepte.drawio` ohne Änderung, weil es keine UI-Komponente benennt. ER-Diagramm unverändert, da am Schema nichts geändert wurde | ✅ (siehe Hinweis) |
+
+**Testzahlen (gezählt per `dotnet test`)**:
+- Gesamtsuite: 474 (Unit 291 | Integration 3 | UI-Layer 180)
+- UI-Layer (`FoodDatabase.Tests.Ui`): 180, davon Rezept-UI 73 Testfälle (70 Testmethoden): `RezeptListeTests` 23, `RezeptFormTests` 19, `RezeptDetailTests` 16, `RezeptNährwertAnzeigeTests` 15
+- Schwierigkeitsgrad-Zuordnung (`SchwierigkeitsgradAnzeigeTests`): 7 Testfälle
+
+**Hinweis**: `diagrams/sequence-uc4-rezepte.drawio` ist kein gültiges XML (ein `&` ohne Maskierung in der Textbeschreibung, Zeile 129). Die Datei enthält ASCII-Ablaufbeschreibungen im `<description>`-Element, keine `mxGraphModel`-Zelle. Dieser Mangel besteht seit 8d144bb und ist nicht Teil von WP5 Teil 1.
+

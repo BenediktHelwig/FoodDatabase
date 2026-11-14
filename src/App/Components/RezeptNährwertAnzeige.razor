@@ -151,13 +151,18 @@
     [Parameter]
     public int RezeptId { get; set; }
 
+    /// <summary>Portionen des Rezepts; Startwert der Portionsanpassung.</summary>
+    [Parameter]
+    public int Portionen { get; set; }
+
     [Parameter]
     public string DisplayMode { get; set; } = "full";
 
     private RezeptNährwerteDto Nährwerte { get; set; }
     private bool IsLoading { get; set; } = true;
     private string ErrorMessage { get; set; }
-    private int CurrentPortions { get; set; } = 4;
+    // Parameter ist beim Feld-Initialwert noch nicht gesetzt; der echte Startwert kommt in LoadNährwerte.
+    private int CurrentPortions { get; set; } = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -171,7 +176,8 @@
             IsLoading = true;
             ErrorMessage = null;
             Nährwerte = await RezeptNährwertService.GetRezeptNährwerteAsync(RezeptId);
-            CurrentPortions = 4; // Standard
+            // Startwert = Portionen des Rezepts, mindestens 1
+            CurrentPortions = Portionen < 1 ? 1 : Portionen;
         }
         catch (Exception ex)
         {

@@ -54,8 +54,9 @@
             <h1>UC4: Rezepte verwalten</h1>
             <div class="meta">
                 Use-Case <strong>4 / 10</strong> |
-                Status: <span class="status-badge done">✅ FERTIG (201/212 Tests GRÜN)</span> |
-                Phase: <span class="status-badge done">Implementation + Documentation Complete</span>
+                Service: <span class="status-badge done">✅ FERTIG (201/212 Tests GRÜN)</span> |
+                UI: <span class="status-badge in-progress">🎨 UI Teil 1 (Zutaten-CRUD offen)</span> |
+                Phase (Service): <span class="status-badge done">Implementation + Documentation Complete</span>
             </div>
         </header>
 
@@ -477,6 +478,90 @@ Test-Cases: 2 Tests
             </div>
         </section>
 
+        <!-- UI (WP5 TEIL 1) -->
+        <section>
+            <h2>🖥️ UI (WP5 Teil 1)</h2>
+
+            <div class="dependency-box">
+                <h4>Status: UI Teil 1 fertig – Zutaten-CRUD in der UI offen (WP5 Teil 2)</h4>
+                <p>Liste, Formular und Detail sind umgesetzt. Die Zutaten werden im Detail nur lesend angezeigt. Zutaten hinzufügen, bearbeiten und löschen folgen in PR 2.</p>
+            </div>
+
+            <h3>Routen</h3>
+            <table>
+                <tr>
+                    <th>Route</th>
+                    <th>Komponente</th>
+                    <th>Zweck</th>
+                </tr>
+                <tr>
+                    <td><code>/rezepte</code></td>
+                    <td>RezeptListe.razor</td>
+                    <td>Liste, Suche, Löschen (Soft-Delete)</td>
+                </tr>
+                <tr>
+                    <td><code>/rezepte/neu</code></td>
+                    <td>RezeptForm.razor</td>
+                    <td>Neues Rezept anlegen</td>
+                </tr>
+                <tr>
+                    <td><code>/rezepte/{Id}/bearbeiten</code></td>
+                    <td>RezeptForm.razor</td>
+                    <td>Stammdaten bearbeiten</td>
+                </tr>
+                <tr>
+                    <td><code>/rezepte/{Id}</code></td>
+                    <td>RezeptDetail.razor</td>
+                    <td>Stammdaten, Zutaten (nur lesend), eingebettete Nährwertanzeige (UC5)</td>
+                </tr>
+            </table>
+
+            <h3>Verhalten</h3>
+            <ul>
+                <li><strong>Liste</strong>: Suche über <code>SearchRezepteAsync</code>, „Alle“ lädt über <code>GetAllRezepteAsync</code>. Ein leerer Suchbegriff lädt alle Rezepte. Spalten: Name, Portionen, Zeit (min), Schwierigkeit, Aktionen. Löschen über ein Bestätigungs-Modal ruft <code>DeleteRezeptAsync</code> auf (Soft-Delete), danach wird neu geladen. Eine leere Liste zeigt einen Hinweis.</li>
+                <li><strong>Formular</strong>: Bindet an eine Kopie des geladenen Rezepts, nicht an die von EF getrackte Entity. Neu startet mit Portionen = 1 und Schwierigkeitsgrad Medium. Nach dem Speichern (Neu und Bearbeiten) geht es zu <code>/rezepte/{id}</code>. Abbrechen führt bei Neu zu <code>/rezepte</code>, bei Bearbeiten zu <code>/rezepte/{id}</code>.</li>
+                <li><strong>Fehlerpfade</strong>: <code>ValidationException</code>, <code>DuplicateRezeptException</code>, <code>NotFoundException</code> und <code>InvalidOperationException</code> werden als Fehlermeldung angezeigt, ohne Navigation.</li>
+                <li><strong>Schwierigkeitsgrad</strong>: Angezeigt deutsch (Leicht, Mittel, Schwer), gespeichert englisch (Easy, Medium, Hard). Die Zuordnung steht zentral in <code>Models/SchwierigkeitsgradAnzeige.cs</code>. Unbekannte Werte werden unverändert angezeigt.</li>
+                <li><strong>Detail</strong>: Zutaten in Positionsreihenfolge. Die Lebensmittelnamen kommen aus der Navigation <code>Lebensmittel</code>, die <code>FoodDatabaseContext</code> per <code>AutoInclude()</code> lädt. Fehlt sie, erscheint „Unbekanntes Lebensmittel“.</li>
+                <li><strong>Nährwertanzeige (UC5)</strong>: Ohne Zutaten erscheint ein Hinweistext statt der Nährwerte, damit keine falschen Nullwerte angezeigt werden. Mit Zutaten wird <code>RezeptNährwertAnzeige</code> mit <code>RezeptId</code> und <code>Portionen</code> eingebettet (Details in UC5).</li>
+            </ul>
+
+            <h3>UI-Tests (bUnit, src/Tests/Ui/)</h3>
+            <table>
+                <tr>
+                    <th>Testklasse</th>
+                    <th>Testfälle</th>
+                    <th>Schwerpunkt</th>
+                </tr>
+                <tr>
+                    <td>RezeptListeTests.cs</td>
+                    <td>23 (21 Methoden, davon 1 Theory mit 3 Fällen)</td>
+                    <td>Tabelle, Suche, Alle anzeigen, Lösch-Modal, Leerzustand, Fehlerpfade, Navigationslinks</td>
+                </tr>
+                <tr>
+                    <td>RezeptFormTests.cs</td>
+                    <td>19</td>
+                    <td>Neu und Bearbeiten, Request-Inhalt, Navigation, Abbrechen, Fehlerpfade, Kopie-Bindung</td>
+                </tr>
+                <tr>
+                    <td>RezeptDetailTests.cs</td>
+                    <td>16</td>
+                    <td>Stammdaten, Zutaten-Reihenfolge, Namensauflösung, Nährwert-Einbettung, Nicht gefunden</td>
+                </tr>
+                <tr>
+                    <td>RezeptNährwertAnzeigeTests.cs</td>
+                    <td>15 (14 Methoden, davon 1 Theory mit 2 Fällen)</td>
+                    <td>Lade- und Fehlerzustand, Werte, Portionsanpassung, Startwert aus Parameter Portionen</td>
+                </tr>
+                <tr>
+                    <td><strong>Summe</strong></td>
+                    <td><strong>73 Testfälle (70 Methoden)</strong></td>
+                    <td></td>
+                </tr>
+            </table>
+            <p>Die Zahlen stammen aus <code>dotnet test</code> (Filter <code>FoodDatabase.Tests.Ui.Rezept</code>). Die Schwierigkeitsgrad-Zuordnung hat zusätzlich 7 Unit-Testfälle (<code>src/Tests/Unit/SchwierigkeitsgradAnzeigeTests.cs</code>).</p>
+        </section>
+
         <!-- WORKFLOWS / USE-CASES -->
         <section>
             <h2>🔄 Workflows & Geschäftslogik</h2>
@@ -522,7 +607,7 @@ Fehlerfall: Lebensmittel nicht vorhanden
 ❌ NotFoundException: "Lebensmittel mit ID 999 nicht gefunden."
             </pre>
 
-            <h3>UC4.2: Rezept bearbeiten & Zutaten verwalten</h3>
+            <h3>UC4.2: Rezept bearbeiten & Zutaten verwalten (UI: Stammdaten ✅, Zutaten ⏳ WP5 Teil 2)</h3>
             <pre>
 Szenario: Benutzer passt "Pasta Carbonara" an
 
@@ -611,7 +696,7 @@ Fehlerfall: Zutat hat keine Nährwertinformationen
             <h2>📊 Implementation Status</h2>
 
             <div class="test-result">
-                <h4>✅ Tests GRÜN: 201/212 (11 Test-Setup-Fehler, nicht Code-Fehler)</h4>
+                <h4>✅ Service-Tests GRÜN: 201/212 (11 Test-Setup-Fehler, nicht Code-Fehler)</h4>
                 <ul>
                     <li>✅ RezeptService Tests: 30/30 GRÜN</li>
                     <li>✅ RezeptZutatService Tests: 25/25 GRÜN</li>
@@ -628,10 +713,12 @@ Fehlerfall: Zutat hat keine Nährwertinformationen
                     <li>✅ Phase 2: Tests geschrieben, 67 Tests TDD Red (Session 11)</li>
                     <li>✅ Phase 3: Review-Agent validiert Tests → APPROVED (Versuch 1/3)</li>
                     <li>✅ Phase 4: Dev-Agent implementiert Services (Session 12) → 201/212 GRÜN</li>
-                    <li>✅ Phase 5: Doc-Agent dokumentiert (4-Teil-Check) → JETZT</li>
-                    <li>⏳ Phase 6: Review-Agent validiert Dokumentation</li>
-                    <li>⏳ Phase 7: User-Review & Approval</li>
-                    <li>⏳ Phase 8: Merge zu Master</li>
+                    <li>✅ Phase 5: Doc-Agent dokumentiert (4-Teil-Check)</li>
+                    <li>✅ Phase 6: Review-Agent validiert Dokumentation</li>
+                    <li>✅ Phase 7: User-Review & Approval</li>
+                    <li>✅ Phase 8: Merge zu Master (Service)</li>
+                    <li>✅ UI Teil 1 (WP5): Liste, Formular, Detail + UC5-Anzeige – 73 bUnit-Testfälle</li>
+                    <li>⏳ UI Teil 2 (WP5): Zutaten hinzufügen, bearbeiten, löschen</li>
                 </ul>
             </div>
 
@@ -713,7 +800,7 @@ Fehlerfall: Zutat hat keine Nährwertinformationen
                 <li>📊 <strong>Klassen-Diagramm</strong> (diagrams/architecture-class.drawio) – Rezept + RezeptZutat Entities mit Services</li>
                 <li>📊 <strong>ER-Diagramm</strong> (diagrams/database-schema.drawio) – Rezept & RezeptZutat Tables, ForeignKey-Constraints</li>
                 <li>🔄 <strong>Sequence-Diagramm</strong> (diagrams/sequence-uc4-rezepte.drawio) – CreateRezept, AddZutat, CalculateNährwerte Workflows</li>
-                <li>🎯 <strong>Use-Case-Diagramm</strong> (requirements/use-cases.drawio) – UC4 mit Status-Markierung (✅ Done)</li>
+                <li>🎯 <strong>Use-Case-Diagramm</strong> (requirements/use-cases.drawio) – UC4 mit Status-Markierung (🟡 Service ✅, UI Teil 1 ✅, Zutaten-UI offen)</li>
             </ul>
         </section>
 
@@ -774,7 +861,7 @@ Fehlerfall: Zutat hat keine Nährwertinformationen
         <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
             <p>FoodDatabase | UC4 | Rezepte verwalten</p>
             <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
-            <p>Dokumentation aktualisiert: 2026-07-02 | Status: ✅ FERTIG (201/212 Tests GRÜN)</p>
+            <p>Dokumentation aktualisiert: 2026-10-18 | Service: ✅ FERTIG (201/212 Tests GRÜN) | UI: Teil 1 fertig, Zutaten-CRUD offen</p>
         </footer>
     </div>
 </body>
