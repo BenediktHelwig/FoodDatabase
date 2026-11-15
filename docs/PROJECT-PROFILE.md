@@ -48,7 +48,9 @@ Angabe, gilt TDD.
 
 Weiter, aus dem bestehenden Code:
 - Domänenbegriffe deutsch, auch mit Umlauten (`NährwertService`, `RezeptNährwertAnzeige`).
-- Services hinter Interfaces (`I<Name>Service`), per DI registriert.
+- Services hinter Interfaces (`I<Name>Service`), per DI registriert. Interfaces und
+  Implementierungen in getrennten Ordnern: `src/App/Services/Interfaces/IRepository.cs`,
+  `src/App/Services/Classes/Repository.cs` (daneben `Dtos/`, `Exceptions/`).
 - UI-Seiten mit Lade- und Fehlerzustand nach Vorbild `src/App/Components/RezeptNährwertAnzeige.razor`;
   vor dem Aufruf eines Service dessen Interface-Datei lesen.
 - XML-Doc-Kommentare auf Deutsch.
@@ -71,6 +73,12 @@ Inkonsistenz und sind ein Mangel.
    Relationen.
 
 Konsistenz-Check: Sagt der Code „fertig“ und irgendeine dieser Stellen „todo“, ist das ein Mangel.
+
+Gestaltung:
+- **CSS nie inline.** Gemeinsames in `docs/css/shared.css`, je Seite ein eigenes Stylesheet
+  (`docs/features/UC2-Lagerbestand.html` → `docs/css/uc2-lagerbestand.css`,
+  Overview → `docs/css/overview.css`).
+- **draw.io neutral:** schwarzer Text, weiße bzw. helle Elemente, Diagramm beginnt oben links.
 
 ## Git
 
