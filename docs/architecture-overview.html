@@ -285,14 +285,14 @@ TrueNAS Server (192.168.x.100)
             <h2>💻 Entwicklungs-Workflow</h2>
 
             <h3>Agenten-Orchestrierung</h3>
-            <p>Jeder Use-Case folgt diesem Workflow:</p>
+            <p>Jeder Use-Case folgt diesem Workflow (Details: <code>CLAUDE.md</code>, <code>docs/PROJECT-PROFILE.md</code>):</p>
             <ol style="margin-left: 20px; margin-top: 10px;">
-                <li><strong>Test-Agent</strong>: Schreibt 20+ Unit Tests (TDD Red)</li>
-                <li><strong>Dev-Agent</strong>: Implementiert Code (TDD Green)</li>
-                <li><strong>Review-Agent</strong>: Überprüft Code-Qualität</li>
-                <li><strong>Doc-Agent</strong>: Dokumentiert & aktualisiert Diagramme</li>
-                <li><strong>User</strong>: Reviewed lokal und gibt Approval</li>
-                <li>✅ <strong>Merge</strong> zu <code>master</code></li>
+                <li><strong>Hauptsession</strong> (Opus, Plan Mode): Klärt das Feature und schreibt den Plan</li>
+                <li><strong>implementer</strong> (Sonnet): Tests (TDD Red) → Code (TDD Green) → Dokumentation (4-Teil-Check); bei UI-Arbeit Code vor Tests</li>
+                <li><strong>reviewer</strong> (Opus, nur lesend): Ein Review über Tests, Code, Doku und TDD-Reihenfolge (max. 3 Versuche)</li>
+                <li><strong>Hauptsession</strong>: Gibt frei und öffnet die Pull Request</li>
+                <li><strong>User</strong>: Prüft die Pull Request und gibt Approval</li>
+                <li>✅ <strong>Merge</strong> zu <code>master</code> durch den User</li>
             </ol>
 
             <h3>Git-Workflow</h3>

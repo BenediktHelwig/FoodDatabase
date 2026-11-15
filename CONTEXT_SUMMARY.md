@@ -2,7 +2,7 @@
 
 **Datum**: 2026-10-18  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
-**Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow  
+**Status**: Agent-Orchester (feature-crew: Hauptsession · implementer · reviewer) mit Git-basiertem Workflow  
 **Aktueller Branch**: `feat/ui-rezepte-wp5-teil1` (PR offen zur Abnahme)
 
 ---
@@ -103,9 +103,9 @@ UI-Aufschlüsselung: UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6
 
 ## 🎯 WORKFLOW
 
-**Multi-Agent Orchestration** (Details in `CLAUDE.md`): Orchestrator · Test-Agent · Dev-Agent · Doc-Agent · Review-Agent (3-Loop-Feedback, dann User-Eskalation).
+**Agent-Orchester feature-crew** (Details in `CLAUDE.md`, Konventionen in `docs/PROJECT-PROFILE.md`): Hauptsession (opus, plant und gibt frei) · `implementer` (sonnet, Tests → Code → Doku) · `reviewer` (opus, ein Review über den ganzen Diff; bis zu 3 Versuche, dann User-Eskalation).
 
-**Wichtige Abweichung für UI-Arbeit**: Laut `UI-PHASE-PLAN.md:144` gilt bei WP3–WP6 **Code zuerst, dann Tests** — Dev-Agent → Verifikation → Test-Agent → Review-Agent → Doc-Agent-4-Teil-Check → MR. TDD (Tests zuerst) gilt nur für die Service-Schicht.
+**Wichtige Abweichung für UI-Arbeit**: Laut `UI-PHASE-PLAN.md:144` gilt bei WP3–WP6 **Code zuerst, dann Tests** — `implementer`: Code-Commit → grüner Test-Commit → 4-Teil-Doku-Commit, danach `reviewer` → PR. TDD (Tests zuerst) gilt nur für die Service-Schicht. Der Plan nennt die geltende Schicht-Regel.
 
 **Git**: Feature-Branches → Review → Merge zu `master`.
 
@@ -157,7 +157,7 @@ Abhängigkeit: Alle UI-Komponenten komplett.
 
 ## 📁 WICHTIGE DATEIEN
 
-**Steuerung**: `CLAUDE.md` (Orchester-Workflow) · `UI-PHASE-PLAN.md` (WP-Zuschnitt, UI-Reihenfolge) · `claude/agents/*.md`
+**Steuerung**: `CLAUDE.md` (Orchester-Workflow) · `UI-PHASE-PLAN.md` (WP-Zuschnitt, UI-Reihenfolge) · `.claude/agents/*.md` (implementer, reviewer) · `docs/PROJECT-PROFILE.md` · `docs/QUALITY-BAR.md` · `docs/PLAN-FORMAT.md`
 
 **Dokumentation**: `docs/architecture-overview.html` (Master) · `docs/features/UC*.html` · `requirements/use-cases.drawio` (Status-Diagramm) · `requirements/analysis.md` (v1.0-Scope)
 
