@@ -67,7 +67,7 @@ FoodDatabase/
 ├── requirements/                     # Use-Case Analyse
 ├── reviews/                          # Merge Request Dokumentationen
 ├── CONTEXT_SUMMARY.md               # Status & Kontext für nächste Session
-├── CLAUDE.md                        # Agent-Orchestration
+├── CLAUDE.md                        # Agent-Orchester (Hauptsession)
 └── .gitignore
 ```
 
@@ -99,28 +99,85 @@ Coverage Target: >80%
 
 ---
 
-## 🔄 Development Workflow
+## 🎼 Agent-Orchester (feature-crew)
 
-### Pro Use-Case:
-1. **Branch erstellen**: `git checkout -b feat/ucN-feature-name`
-2. **Tests schreiben** (TDD Red): 20+ Unit Tests
-3. **Code implementieren** (TDD Green): Service + Model
-4. **Review**: Code-Quality überprüfen
-5. **MR dokumentieren**: Reviews/UCN-*.md
-6. **Merge**: `git merge feat/ucN-feature-name` → `master`
-7. **Context updaten**: CONTEXT_SUMMARY.md
+Features entstehen über ein testgetriebenes Orchester aus Claude-Code-Agents. Die Methode ist fest:
+Tests zuerst (bei UI-Arbeit Code zuerst), dann die Implementierung, am Ende ein unabhängiges Review.
+Die Projektkonventionen stehen in [`docs/PROJECT-PROFILE.md`](docs/PROJECT-PROFILE.md).
+
+### Agents
+
+| Agent | Modell | Aufgabe |
+| --- | --- | --- |
+| Hauptsession ([`CLAUDE.md`](CLAUDE.md)) | opus | Spricht mit dir, plant, delegiert, gibt frei, öffnet die Pull Request |
+| `implementer` | sonnet | Tests → Code → Dokumentation, ein Commit pro Phase |
+| `reviewer` | opus | Ein Review der ganzen Änderung, nur lesend |
+
+Warum das Orchester so geschnitten ist — und welche Rollen bewusst wegfielen —, steht in
+[`docs/ORCHESTRATION-DESIGN.md`](docs/ORCHESTRATION-DESIGN.md). Der gemeinsame Maßstab ist
+[`docs/QUALITY-BAR.md`](docs/QUALITY-BAR.md), der Plan-Aufbau
+[`docs/PLAN-FORMAT.md`](docs/PLAN-FORMAT.md).
+
+### Starten
+
+```bash
+cd FoodDatabase
+claude
+```
+
+Dann sagen, was gebaut werden soll:
+
+- *„Setze folgendes Feature um: …“*
+- *„Mach den offenen Plan weiter.“*
+
+### Ablauf
+
+| Modus | Was passiert | Modell |
+| --- | --- | --- |
+| **Plan Mode** (Start) | Resume-Check, Profil gelesen, Feature mit dir geklärt, Plan vorgelegt — alles durch die Hauptsession | opus |
+| → | Du gibst den Plan frei: **Shift+Tab**, dann „los“ — ein Schritt, einmal pro Sitzung | — |
+| **Auto Mode** | Branch und Plan geschrieben, `implementer` baut, `reviewer` prüft (bis zu drei Runden, dann entscheidest du), Pull Request | sonnet (Bau), opus (Review) |
+| Nächstes Feature | **Neue Sitzung** starten — sie beginnt wieder im Plan Mode mit leerem Kontext | — |
+
+### Was es ins Projekt schreibt
+
+| Artefakt | Ort | Lebensdauer |
+| --- | --- | --- |
+| Projekt-Profil | `docs/PROJECT-PROFILE.md` | committet, dauerhaft |
+| Projekt-Status | `CONTEXT_SUMMARY.md` | committet, nach jedem Feature aktualisiert |
+| Feature-Plan | `.agents/plans/<feature>.md` | nicht committet, gelöscht, wenn das Feature fertig ist |
+| PR-Text | `.agents/pull-request.md` | nicht committet |
+
+Darüber hinaus schreibt es genau das, worum du gebeten hast: Tests, Implementierung und
+Dokumentation (4-Teil-Check, siehe Profil).
+
+### Git
+
+Ein Branch vor der ersten Änderung, ein Commit pro Phase, damit die roten und grünen Schritte
+sichtbar bleiben, und am Ende eine Pull Request — geöffnet über die GitHub App
+`claudecodeagents[bot]`, damit du sie regulär freigeben kannst. Ohne Token bleiben Branch und
+Commits lokal, und der Text wartet in `.agents/pull-request.md`. Du prüfst die ganze Änderung als
+einen Diff und mergst sie; Anmerkungen kommen als zusätzlicher Commit zurück.
+**Das Orchester mergt nie, force-pusht nie und pusht nie auf `master`.**
+
+### Abhängigkeiten
+
+| Skill | Herkunft | Zweck |
+| --- | --- | --- |
+| `grill-me` | `.claude/skills/grill-me/` | Feature-Klärung durch die Hauptsession |
 
 ### Naming Conventions
-- Branches: `feat/ucN-feature-name`
-- Commits: `feat(uc-name): description` oder `test(uc-name): description`
-- MR-Docs: `reviews/UCN-FeatureName-MR.md`
+- Branches: `feat/…`, `fix/…`, `docs/…`, `refactor/…`, `chore/…`
+- Commits: Conventional Commits auf Englisch, z. B. `feat(uc4): Add the recipe list`
+- Details: [`docs/PROJECT-PROFILE.md`](docs/PROJECT-PROFILE.md)
 
 ---
 
 ## 📚 Dokumentation
 
 - **CONTEXT_SUMMARY.md** – Status & Kontext (für Session-Start lesen!)
-- **CLAUDE.md** – Agent-Orchestration & Workflow
+- **CLAUDE.md** – Agent-Orchester (Hauptsession), siehe Abschnitt „Agent-Orchester“
+- **docs/PROJECT-PROFILE.md** – Projektkonventionen für das Orchester
 - **docs/architecture-overview.html** – Architecture Overview
 - **reviews/*.md** – Merge Request Dokumentationen
 - **diagrams/*.drawio** – UML & ER-Diagramme

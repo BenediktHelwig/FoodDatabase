@@ -1,15 +1,15 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-10-18  
+**Datum**: 2026-11-15  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
-**Status**: Multi-Agent Orchestrated Development mit Git-basiertem Workflow  
-**Aktueller Branch**: `feat/ui-rezepte-wp5-teil1` (PR offen zur Abnahme)
+**Status**: Agent-Orchester (feature-crew: Hauptsession · implementer · reviewer) mit Git-basiertem Workflow  
+**Aktueller Branch**: `refactor/agent-orchestration-feature-crew` (PR #16 offen zur Abnahme) · WP5 Teil 1 ist über PR #15 gemergt
 
 ---
 
 ## ⏭️ NÄCHSTE SCHRITTE (in dieser Reihenfolge)
 
-Offen zur Abnahme: die PR zu **WP5 Teil 1** (`feat/ui-rezepte-wp5-teil1`).
+Offen zur Abnahme: **PR #16, Orchester-Umbau** (`refactor/agent-orchestration-feature-crew`). Nach dem Merge ist WP5 Teil 2 das erste Feature mit der neuen feature-crew. Das ist gleichzeitig der erste Praxistest für `implementer` und `reviewer`: Auf Reibung achten (Profil vollständig? UI-Regel greift? Review-Format brauchbar?) und Korrekturen ins Profil übernehmen.
 
 **Korrektur zur Roadmap-Bezeichnung**: Bis 19.09.2026 stand hier „WP4 UC4". Laut `UI-PHASE-PLAN.md:156` besteht WP4 nur aus UC2/6/9/10 – **WP4 ist damit fertig** (UC3 blockiert). UC4 gehört zu **WP5** (`UI-PHASE-PLAN.md:164`).
 
@@ -97,37 +97,38 @@ UI-Aufschlüsselung: UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6
   ein Test eine Designentscheidung absichern soll, lohnt die Gegenprobe: Entscheidung im Code
   umdrehen, prüfen, dass **genau** dieser Test fällt, Änderung zurücknehmen.
 - **Der EF-InMemory-Provider verdeckt Übersetzungsfehler nach SQLite.** Er wertet LINQ in C# aus; SQLite übersetzt `ToLower()` in `lower()`, das nur ASCII faltet. `l.Name.ToLower().Contains("öl")` fand „Ölkeller" in den Unit-Tests, in der echten App nicht (behoben 16.10.2026, `5608ee6`). Alles, was von DB-seitigem String-Verhalten abhängt (Case, Collation, Umlaute), braucht einen Test gegen SQLite `:memory:` — Muster: `src/Tests/Integration/LagerortServiceSqliteTests.cs`.
+- **Eine Mängelliste deckt nicht alle Stellen ab, die dieselbe Aussage tragen.** Bei UC9/UC10 (16.10.2026) erzeugte eine korrigierte Datumsangabe einen Widerspruch zur zweiten Angabe derselben Seite, die nicht auf der Liste stand. Bei Datum-/Stand-Korrekturen im Auftrag alle Vorkommen per grep mitnennen.
 - **Blazor-Formulare nie direkt an geladene Entities binden.** Der `FoodDatabaseContext` lebt pro Circuit; was das Formular in die Entity schreibt, ist für EF bereits eine Änderung — der Service sieht beim Update den neuen Wert als „alten“ (Duplikat-Prüfung wirkungslos), und nach Abbrechen landet die Eingabe mit dem nächsten `SaveChanges` irgendeines Services in der DB. Formular auf eine Kopie binden (Muster: `RezeptForm.razor`).
 
 ---
 
 ## 🎯 WORKFLOW
 
-**Multi-Agent Orchestration** (Details in `CLAUDE.md`): Orchestrator · Test-Agent · Dev-Agent · Doc-Agent · Review-Agent (3-Loop-Feedback, dann User-Eskalation).
+**Agent-Orchester feature-crew** (Details in `CLAUDE.md`, Konventionen in `docs/PROJECT-PROFILE.md`): Hauptsession (opus, plant und gibt frei) · `implementer` (sonnet, Tests → Code → Doku) · `reviewer` (opus, ein Review über den ganzen Diff; bis zu 3 Versuche, dann User-Eskalation).
 
-**Wichtige Abweichung für UI-Arbeit**: Laut `UI-PHASE-PLAN.md:144` gilt bei WP3–WP6 **Code zuerst, dann Tests** — Dev-Agent → Verifikation → Test-Agent → Review-Agent → Doc-Agent-4-Teil-Check → MR. TDD (Tests zuerst) gilt nur für die Service-Schicht.
+**Wichtige Abweichung für UI-Arbeit**: Laut Schicht-Regel in `docs/PROJECT-PROFILE.md` gilt bei WP3–WP6 **Code zuerst, dann Tests** — `implementer`: Code-Commit → grüner Test-Commit → 4-Teil-Doku-Commit, danach `reviewer` → PR. TDD (Tests zuerst) gilt nur für die Service-Schicht. Der Plan nennt die geltende Schicht-Regel.
 
-**Git**: Feature-Branches → Review → Merge zu `master`.
+**Git**: Feature-Branch → Pull Request über die GitHub App `claudecodeagents[bot]` → Review und Merge durch den User. Nie direkt auf `master`.
 
 ---
 
-## ✅ ZULETZT FERTIGGESTELLT: WP5 Teil 1 — Rezepte-UI (18.10.2026)
+## ✅ ZULETZT FERTIGGESTELLT: Orchester-Umbau auf feature-crew (15.11.2026, PR #16)
+
+**Geliefert**: Die fünf Agents (plan-writer, test-agent, dev-agent, review-agent, doc-agent) sind durch zwei ersetzt: `implementer` (sonnet: Tests → Code → Doku, ein Commit pro Phase) und `reviewer` (opus, nur lesend, ein Review über den ganzen Diff). Die Hauptsession plant auf Opus im Plan Mode und schreibt Plan, PR-Text und diese Datei jetzt selbst. Neu: `docs/PROJECT-PROFILE.md` (alle Projektkonventionen inkl. 4-Teil-Doku-Check und UI-Regel), `docs/QUALITY-BAR.md`, `docs/PLAN-FORMAT.md`, `docs/ORCHESTRATION-DESIGN.md`, alles auf Deutsch. GitHub-App-Token-Flow unverändert. Kein Produktivcode geändert.
+
+**Grund**: Ein Feature kostete acht Kaltstarts und drei Opus-Reviews; `haiku` erzeugte zu viele Korrekturrunden. Jetzt zwei Kaltstarts plus einer pro Korrekturrunde.
+
+**Offen**: Commit-Nachrichten bleiben laut Profil englisch (Annahme, in PR #16 zur Bestätigung). Historische Pläne und Berichte (`UI-PHASE-PLAN.md`, `reviews/*`, Phasen-Protokolle in den Feature-HTMLs) nennen noch die alten Agents — bewusst als Historie belassen.
+
+---
+
+## ✅ VORLETZT FERTIGGESTELLT: WP5 Teil 1 — Rezepte-UI (18.10.2026)
 
 **Geliefert**: `/rezepte` (Liste, Suche, Soft-Delete-Modal), `/rezepte/neu` + `/{id}/bearbeiten` (Defaults Portionen 1/Medium, nach Speichern zum Detail), `/rezepte/{id}` (Stammdaten, Zutaten lesend, `RezeptNährwertAnzeige` eingebettet; ohne Zutaten Hinweis statt Nullwerten). Schwierigkeitsgrad deutsch angezeigt via `SchwierigkeitsgradAnzeige`, englisch gespeichert. **394 → 474 Tests.**
 
 **Zwei echte Fehler gefunden**: (1) Das Formular band an die EF-getrackte Entity — DbContext lebt pro Circuit, `UpdateRezeptAsync` bekommt per Identity Resolution dieselbe Instanz, die Eingaben stehen also schon drin, bevor der Service prüft. Lösung: Formular auf einer Kopie. `LebensmittelForm` hat denselben Fehler (vorgemerkt). (2) `RezeptNährwertAnzeige` startete fest bei 4 Portionen, der Service skaliert aber mit `rezept.Portionen` — fiel erst beim Einbetten auf, Fix `27dc466` per User-Entscheidung im selben PR.
 
 **Prozess-Lehre**: Eine Annahme im Plan war falsch („`EfRepository` lädt `RezeptZutat.Lebensmittel` nicht“) — `FoodDatabaseContext.cs:110` hat `AutoInclude()`. Behauptungen über Ladeverhalten im Plan gegen den DbContext prüfen, nicht gegen das Repository. Außerdem: Grenztests hinter einer zweiten Schutzstufe können nicht rot werden — angezeigten Zustand prüfen, nicht nur ausbleibende Service-Aufrufe.
-
----
-
-## ✅ VORLETZT FERTIGGESTELLT: Lagerort-Umlaute + UC10-Doku-Aufräumen (16.10.2026)
-
-Anlass: Das UC9-Formular schlug „z.B. Kühlschrank" vor, die Validierung `^[A-Za-z]+$` lehnte es ab. **User-Entscheidung**: Umlaute und ß sind gültig und werden unverändert gespeichert (keine Umschreibung auf ae/oe/ue/ss — eine Rückumwandlung beim Lesen hätte ein Wörterbuch gebraucht: „Mauer" → „Maür"). Neue Regex `^[A-Za-zÄÖÜäöüß]+$`.
-
-**Nebenbefund mit echtem Fehler**: Autocomplete filterte per SQLite-`lower()` (ASCII-only) — „öl" fand „Ölkeller" nicht. Jetzt In-Memory-Filter, abgesichert durch den ersten Lagerort-Test gegen echtes SQLite (siehe Fallstricke).
-Außerdem: drei falsche Ist-Aussagen auf `UC10-Produktinstanzen.html` korrigiert (Domain-Tabelle, erfundenes Interface, Zeilenzahl). **383 → 394 Tests.**
-**Gates**: Tests und Code im 1. Versuch, Doku im 3. Versuch. Lehre: Die Mängelliste eines Reviews deckt nicht automatisch alle Stellen ab, die dieselbe Aussage tragen — eine korrigierte Datumsangabe erzeugte einen Widerspruch zur zweiten Datumsangabe derselben Seite, die nicht auf der Liste stand. Bei Datum/Stand-Korrekturen im Auftrag alle Vorkommen per grep mitnennen.
 
 ---
 
@@ -157,7 +158,7 @@ Abhängigkeit: Alle UI-Komponenten komplett.
 
 ## 📁 WICHTIGE DATEIEN
 
-**Steuerung**: `CLAUDE.md` (Orchester-Workflow) · `UI-PHASE-PLAN.md` (WP-Zuschnitt, UI-Reihenfolge) · `claude/agents/*.md`
+**Steuerung**: `CLAUDE.md` (Orchester-Workflow) · `UI-PHASE-PLAN.md` (WP-Zuschnitt, UI-Reihenfolge) · `.claude/agents/*.md` (implementer, reviewer) · `docs/PROJECT-PROFILE.md` · `docs/QUALITY-BAR.md` · `docs/PLAN-FORMAT.md`
 
 **Dokumentation**: `docs/architecture-overview.html` (Master) · `docs/features/UC*.html` · `requirements/use-cases.drawio` (Status-Diagramm) · `requirements/analysis.md` (v1.0-Scope)
 
