@@ -1,146 +1,197 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="claude-code-diagrams" modified="2026-07-02" version="1.0" type="document">
+<mxfile host="app.diagrams.net" modified="2026-11-27" agent="5.0" version="21.5.0" type="device">
   <diagram name="UC4 - Rezepte verwalten" id="sequence-uc4">
-    <description>
-Sequence Diagramm für UC4 mit 3 Szenarien:
-
-SZENARIO 1: CreateRezeptAsync
-- Benutzer erstellt neues Rezept
-- Validierung: Name (length, null), Duplikat-Check, Portionen, Zeit, Schwierigkeitsgrad
-- Repository.CreateAsync speichert Rezept
-
-SZENARIO 2: AddZutatAsync
-- Benutzer fügt Zutat zu Rezept hinzu
-- Validierung: Rezept existiert, Lebensmittel existiert, Menge, Einheit
-- Position wird automatisch berechnet (MAX+1)
-- Repository.CreateAsync speichert Zutat
-
-SZENARIO 3: CalculateRezeptNährwerteAsync
-- System berechnet Nährwerte
-- Für jede Zutat: Unit-Konvertierung, Skalierungsfaktor, Summation
-- Pro-Portion-Division
-- Rounding auf 1 Dezimalstelle
-
-FLOW CHARTS:
-
-═══════════════════════════════════════════════════════════════════════════════
-
-SZENARIO 1: CreateRezeptAsync (Rezept erstellen)
-
-┌─────────┐     CreateRezeptRequest (Name, Portionen, Zeit, Schwierigkeitsgrad)
-│ Benutzer├────────────────────────────────────────────────────────→ RezeptService
-└─────────┘                                                              │
-                                                                         ├─ Name validieren (Länge, null)
-                                                                         │
-                                                                         ├─ Duplikat-Prüfung
-                                                                         │  Repository.GetAllAsync()
-                                                                         │  ↓
-                                                                         │  Check: existiert bereits? NEIN
-                                                                         │
-                                                                         ├─ Portionen validieren (1-100) ✓
-                                                                         │
-                                                                         ├─ ZubereitungszeitMinuten validieren (0-1440) ✓
-                                                                         │
-                                                                         ├─ Schwierigkeitsgrad validieren (Easy|Medium|Hard) ✓
-                                                                         │
-                                                                         └─ Repository.CreateAsync(rezept)
-                                                                            ↓
-                                                                        SQLite DB
-                                                                            │
-            Rezept mit IsArchived=false ← ← ← ← ← ← ← ← ← ← ← ← ← ←───────┘
-
-═══════════════════════════════════════════════════════════════════════════════
-
-SZENARIO 2: AddZutatAsync (Zutat hinzufügen)
-
-┌─────────┐     AddZutatRequest (RezeptId, LebensmittelId, Menge, Einheit)
-│ Benutzer├───────────────────────────────────────→ RezeptZutatService
-└─────────┘                                            │
-                                                       ├─ RezeptService.RezeptExistsAsync(rezeptId)
-                                                       │  ├─ Repository.GetAllAsync()
-                                                       │  └─ Check: Rezept existiert + !IsArchived? JA
-                                                       │
-                                                       ├─ LebensmittelService.LebensmittelExistsAsync(lebensmittelId)
-                                                       │  └─ Check: Lebensmittel existiert? JA
-                                                       │
-                                                       ├─ Menge validieren (0.01-10000) ✓
-                                                       │
-                                                       ├─ Einheit validieren (g|ml|Stück|TL|EL|Tasse|Prise) ✓
-                                                       │
-                                                       ├─ Position automatisch berechnen
-                                                       │  ├─ Repository.GetAllAsync()
-                                                       │  └─ newPosition = MAX(Position) + 1 oder 0
-                                                       │
-                                                       └─ Repository.CreateAsync(zutat)
-                                                          ↓
-                                                       SQLite DB
-                                                          │
-            RezeptZutat mit Position ← ← ← ← ← ← ← ← ← ←┘
-
-═══════════════════════════════════════════════════════════════════════════════
-
-SZENARIO 3: CalculateRezeptNährwerteAsync (Nährwerte berechnen)
-
-┌─────────┐     rezeptId
-│ Benutzer├──────────────────────→ NährwertCalculator
-└─────────┘                            │
-                                       ├─ RezeptService.GetRezeptByIdAsync(rezeptId)
-                                       │  └─ rezept = { Id, Name, Portionen, ... }
-                                       │
-                                       ├─ RezeptZutatService.GetZutatenAsync(rezeptId)
-                                       │  └─ zutaten = [ { Menge, Einheit, LebensmittelId }, ... ]
-                                       │
-                                       ├─ FOR EACH zutat:
-                                       │  │
-                                       │  ├─ NährwertService.GetNährwertByLebensmittelId(lebensmittelId)
-                                       │  │  └─ nährwert = { Kalorien, Fett, KH, Protein, ... }
-                                       │  │
-                                       │  ├─ EinheitConverter.ConvertToGramm(menge, einheit)
-                                       │  │  ├─ Wenn "g" → 500g = 500g
-                                       │  │  ├─ Wenn "ml" → 250ml = 250g (Wasser-Äquivalent)
-                                       │  │  ├─ Wenn "Stück" → 4 Stück = 200g (für Eier)
-                                       │  │  └─ mengeInGramm = konvertierte Menge
-                                       │  │
-                                       │  ├─ Skalierungsfaktor berechnen
-                                       │  │  └─ skalierungsfaktor = mengeInGramm / 100.0
-                                       │  │
-                                       │  └─ Nährwerte skalieren und addieren
-                                       │     ├─ gesamt.Kalorien += nährwert.Kalorien * skalierungsfaktor
-                                       │     ├─ gesamt.Fett += nährwert.Fett * skalierungsfaktor
-                                       │     ├─ gesamt.KH += nährwert.KH * skalierungsfaktor
-                                       │     └─ ... (alle 8 Nährwerte)
-                                       │
-                                       ├─ Pro-Portion-Nährwerte berechnen
-                                       │  └─ proPortion = gesamt / rezept.Portionen
-                                       │
-                                       ├─ Dezimalstellen-Rounding
-                                       │  ├─ Kalorien: Integer (z.B. 362)
-                                       │  └─ Alle anderen: 1 Dezimalstelle (z.B. 12.3g)
-                                       │
-            RezeptNährwerteDto ← ← ← ← ← ← ← ← ← ← ← ← ←┘
-            {
-              RezeptId: 1,
-              GesamtnährwerteDto: { Kalorien: 1450, Fett: 52.3, ... },
-              ProPortionNährwerteDto: { Kalorien: 362, Fett: 13.1, ... }
-            }
-
-═══════════════════════════════════════════════════════════════════════════════
-
-EXCEPTIONS & ERROR HANDLING:
-
-CreateRezeptAsync:
-  ❌ ValidationException: Leerer Name, zu lang, ungültige Portionen/Zeit/Schwierigkeitsgrad
-  ❌ DuplicateRezeptException: Name existiert bereits
-
-AddZutatAsync:
-  ❌ NotFoundException: Rezept nicht gefunden, Lebensmittel nicht gefunden
-  ❌ ValidationException: Ungültige Menge, ungültige Einheit
-
-CalculateRezeptNährwerteAsync:
-  ❌ NotFoundException: Rezept nicht gefunden
-  ✅ Zutaten ohne Nährwertinformationen werden ignoriert (continue)
-
-═══════════════════════════════════════════════════════════════════════════════
-    </description>
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1200" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="t1" value="UC4: Sequence Diagramme - Zutaten im Bearbeitungsmodus der Rezept-Detailseite" style="text;html=1;align=left;verticalAlign=top;fontSize=14;fontColor=#000000;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1200" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2" value="Szenario 1: Zutaten speichern (Add -&gt; Update -&gt; Delete -&gt; Reload)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontColor=#000000;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="1200" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="b3" value="Benutzer" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="10" y="100" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l4" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="136" width="1" height="440" as="geometry"/>
+        </mxCell>
+        <mxCell id="b5" value="RezeptDetail.razor" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="230" y="100" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l6" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="136" width="1" height="440" as="geometry"/>
+        </mxCell>
+        <mxCell id="b7" value="IRezeptZutatService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="490" y="100" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l8" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="136" width="1" height="440" as="geometry"/>
+        </mxCell>
+        <mxCell id="b9" value="IRezeptService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="750" y="100" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l10" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="136" width="1" height="440" as="geometry"/>
+        </mxCell>
+        <mxCell id="b11" value="RezeptNährwertAnzeige" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="100" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l12" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="136" width="1" height="440" as="geometry"/>
+        </mxCell>
+        <mxCell id="m13" value="Zutaten bearbeiten (Modus an, Arbeitskopien ZutatZeile)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="170" as="sourcePoint"/>
+            <mxPoint x="300" y="170" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14" value="Hinzufügen / Ändern / Entfernen (nur lokal)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="200" as="sourcePoint"/>
+            <mxPoint x="300" y="200" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m15" value="Speichern (alle Zeilen lokal validiert)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="230" as="sourcePoint"/>
+            <mxPoint x="300" y="230" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f16" value="feste Reihenfolge" style="shape=rectangle;html=1;rounded=0;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;fontSize=10;strokeWidth=1;strokeColor=#000000;fontColor=#000000;dashed=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="280" y="250" width="300" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="m17" value="AddZutatAsync(rezeptId, request) je neue Zeile" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="260" as="sourcePoint"/>
+            <mxPoint x="560" y="260" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m18" value='UpdateZutatAsync(...) nur geänderte Zeilen, Notiz als ""' style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="290" as="sourcePoint"/>
+            <mxPoint x="560" y="290" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m19" value="DeleteZutatAsync(rezeptId, zutatId) je entfernte Zeile" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="320" as="sourcePoint"/>
+            <mxPoint x="560" y="320" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m20" value="fertig" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="350" as="sourcePoint"/>
+            <mxPoint x="300" y="350" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m21" value="GetZutatenAsync(rezeptId) [Reload]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="390" as="sourcePoint"/>
+            <mxPoint x="560" y="390" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m22" value="zutaten[]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="420" as="sourcePoint"/>
+            <mxPoint x="300" y="420" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m23" value="neuer @key (Versionszähler) -&gt; Nährwerte laden neu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="450" as="sourcePoint"/>
+            <mxPoint x="1080" y="450" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m24" value="Modus aus, Tabelle zeigt DB-Stand" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="480" as="sourcePoint"/>
+            <mxPoint x="80" y="480" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t25" value="Fehlerfall: NotFoundException / ValidationException beim Speichern -&gt; Schleife bricht ab, alert-fehler mit Meldung, DB-Stand wird neu geladen, Modus aus. Abbrechen verwirft alle lokalen Änderungen ohne Service-Schreibaufruf." style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="20" y="520" width="1200" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="t26" value="Szenario 2: Leere Liste speichern (Modal -&gt; Rezept löschen)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontColor=#000000;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="700" width="1200" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="b27" value="Benutzer" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="10" y="740" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l28" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="776" width="1" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="b29" value="RezeptDetail.razor" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="230" y="740" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l30" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="776" width="1" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="b31" value="IRezeptZutatService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="490" y="740" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l32" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="776" width="1" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="b33" value="IRezeptService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="750" y="740" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l34" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="776" width="1" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="b35" value="RezeptNährwertAnzeige" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="740" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l36" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="776" width="1" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="m37" value="Entfernen (letzte Zeile, ohne Meldung)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="810" as="sourcePoint"/>
+            <mxPoint x="300" y="810" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m38" value="Speichern bei 0 Zeilen" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="840" as="sourcePoint"/>
+            <mxPoint x="300" y="840" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m39" value="Modal: Das Rezept hat keine Zutaten mehr ..." style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="870" as="sourcePoint"/>
+            <mxPoint x="80" y="870" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f40" value="alt" style="shape=rectangle;html=1;rounded=0;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;fontSize=10;strokeWidth=1;strokeColor=#000000;fontColor=#000000;dashed=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="890" width="780" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="m41" value="Rezept löschen" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="900" as="sourcePoint"/>
+            <mxPoint x="300" y="900" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m42" value="DeleteRezeptAsync(rezeptId) [Soft-Delete]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="930" as="sourcePoint"/>
+            <mxPoint x="820" y="930" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m43" value="Navigation nach /rezepte (kein DeleteZutatAsync)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="960" as="sourcePoint"/>
+            <mxPoint x="80" y="960" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m44" value="Zurück: Modal zu, Modus und lokale Änderungen bleiben" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1000" as="sourcePoint"/>
+            <mxPoint x="300" y="1000" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
   </diagram>
 </mxfile>
