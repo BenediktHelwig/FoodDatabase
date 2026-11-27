@@ -552,8 +552,8 @@ Test-Cases: 2 Tests
                 </tr>
                 <tr>
                     <td>RezeptDetailTests.cs</td>
-                    <td>48 (44 Methoden, davon 3 Theories mit 7 Fällen)</td>
-                    <td>Stammdaten, Zutaten-Reihenfolge, Namensauflösung, Nährwert-Einbettung, Nicht gefunden; Zutaten-CRUD: Bearbeitungsmodus, Eingabezeile, Entfernen, lokale Validierung samt Grenzwerten, Speicher-Reihenfolge Add → Update → Delete, Notiz als Leerstring, Abbrechen, Lösch-Modal, Service-Fehler, Nährwert-Reload, leerer Katalog</td>
+                    <td>51 (47 Methoden, davon 3 Theories mit 7 Fällen)</td>
+                    <td>Stammdaten, Zutaten-Reihenfolge, Namensauflösung, Nährwert-Einbettung, Nicht gefunden; Zutaten-CRUD: Bearbeitungsmodus, Eingabezeile, Entfernen, lokale Validierung samt Grenzwerten, Speicher-Reihenfolge Add → Update → Delete, Notiz als Leerstring, Abbrechen, Lösch-Modal, Service-Fehler, Fehlerpfade (Katalog laden, Neuladen nach dem Speichern, Rezept löschen), Nährwert-Reload, leerer Katalog</td>
                 </tr>
                 <tr>
                     <td>RezeptNährwertAnzeigeTests.cs</td>
@@ -562,7 +562,7 @@ Test-Cases: 2 Tests
                 </tr>
                 <tr>
                     <td><strong>Summe</strong></td>
-                    <td><strong>105 Testfälle (98 Methoden)</strong></td>
+                    <td><strong>108 Testfälle (101 Methoden)</strong></td>
                     <td></td>
                 </tr>
             </table>
@@ -752,7 +752,7 @@ Fehlerfall: Zutat hat keine Nährwertinformationen
                     <li>✅ Phase 7: User-Review & Approval</li>
                     <li>✅ Phase 8: Merge zu Master (Service)</li>
                     <li>✅ UI Teil 1 (WP5): Liste, Formular, Detail + UC5-Anzeige – 73 bUnit-Testfälle</li>
-                    <li>✅ UI Teil 2 (WP5): Zutaten hinzufügen, bearbeiten, löschen – RezeptDetailTests auf 48 Testfälle erweitert</li>
+                    <li>✅ UI Teil 2 (WP5): Zutaten hinzufügen, bearbeiten, löschen – RezeptDetailTests auf 51 Testfälle erweitert</li>
                 </ul>
             </div>
 
@@ -833,7 +833,7 @@ Fehlerfall: Zutat hat keine Nährwertinformationen
             <ul>
                 <li>📊 <strong>Klassen-Diagramm</strong> (diagrams/architecture-class.drawio) – Rezept + RezeptZutat Entities mit Services</li>
                 <li>📊 <strong>ER-Diagramm</strong> (diagrams/database-schema.drawio) – Rezept & RezeptZutat Tables, ForeignKey-Constraints</li>
-                <li>🔄 <strong>Sequence-Diagramm</strong> (diagrams/sequence-uc4-rezepte.drawio) – CreateRezept, Zutaten speichern (Add → Update → Delete → Reload), Leer-Pfad (Modal → DeleteRezept), CalculateNährwerte</li>
+                <li>🔄 <strong>Sequence-Diagramm</strong> (diagrams/sequence-uc4-rezepte.drawio) – vier Szenarien: Zutaten speichern (Add → Update → Delete → Reload), Leer-Pfad (Modal → DeleteRezeptAsync), CreateRezeptAsync, CalculateRezeptNährwerteAsync</li>
                 <li>🎯 <strong>Use-Case-Diagramm</strong> (requirements/use-cases.drawio) – UC4 mit Status-Markierung (✅ Service, ✅ UI inkl. Zutaten-CRUD)</li>
             </ul>
         </section>

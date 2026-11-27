@@ -511,9 +511,9 @@ User → NährwertCalculator.CalculateRezeptNährwerteAsync(rezeptId)
 | 1 Code-Doku | `RezeptDetail.razor`: Kommentare zu Speicher-Reihenfolge (Mindestens-1-Regel), `""` statt `null` bei Notizen, Arbeitskopien statt getrackter Entities, `@key`-Versionszähler | ✅ |
 | 2 Feature-HTML | `docs/features/UC4-Rezepte.html` (Badge UI fertig, Verhalten, Workflow UC4.2a, Testtabelle, Phasen-Fortschritt, Diagramm-Liste, Fußzeile) | ✅ |
 | 3 Architecture-Overview | UC4-Karte `done`, Entity-Status Rezept und RezeptZutat ✅, Abgeschlossen (WP5 Teil 2), Nächste Schritte (UC4 ✅, WP5-Teil-2-Zeile entfernt), Gesamtzahl | ✅ |
-| 4 Diagramme | `requirements/use-cases.drawio` (UC4 grün, Legende), `diagrams/sequence-uc4-rezepte.drawio` neu aufgebaut (wohlgeformtes XML mit mxCells: Speichern Add → Update → Delete → Reload, Leer-Pfad Modal → DeleteRezeptAsync). Der Mangel aus dem Nachtrag WP5 Teil 1 ist damit behoben. ER-Diagramm unverändert, am Schema ist nichts geändert | ✅ |
+| 4 Diagramme | `requirements/use-cases.drawio` (UC4 grün, Legende), `diagrams/sequence-uc4-rezepte.drawio` neu aufgebaut (wohlgeformtes XML mit mxCells, vier Szenarien: Speichern Add → Update → Delete → Reload, Leer-Pfad Modal → DeleteRezeptAsync, CreateRezeptAsync, CalculateRezeptNährwerteAsync; das frühere Szenario AddZutatAsync-Validierung ist kein eigenes Szenario mehr, der Add-Aufruf steht im Speichern-Szenario). Der Mangel aus dem Nachtrag WP5 Teil 1 ist damit behoben. ER-Diagramm unverändert, am Schema ist nichts geändert | ✅ |
 
 **Testzahlen (gezählt gegen die Testdateien, `[Fact]` und `[InlineData]`)**:
-- Gesamtsuite: 506 (Unit 291 | Integration 3 | UI-Layer 212)
-- Rezept-UI: 105 Testfälle (98 Testmethoden): `RezeptListeTests` 23, `RezeptFormTests` 19, `RezeptDetailTests` 48 (44 Methoden, davon 3 Theories mit 7 Fällen), `RezeptNährwertAnzeigeTests` 15
+- Gesamtsuite: 509 (Unit 291 | Integration 3 | UI-Layer 215)
+- Rezept-UI: 108 Testfälle (101 Testmethoden): `RezeptListeTests` 23, `RezeptFormTests` 19, `RezeptDetailTests` 51 (47 Methoden, davon 3 Theories mit 7 Fällen), `RezeptNährwertAnzeigeTests` 15
 - Schwierigkeitsgrad-Zuordnung (`SchwierigkeitsgradAnzeigeTests`): 7 Testfälle

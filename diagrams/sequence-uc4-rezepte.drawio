@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-11-27" agent="5.0" version="21.5.0" type="device">
   <diagram name="UC4 - Rezepte verwalten" id="sequence-uc4">
-    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1200" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="2300" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -190,6 +190,171 @@
             <mxPoint x="80" y="1000" as="sourcePoint"/>
             <mxPoint x="300" y="1000" as="targetPoint"/>
           </mxGeometry>
+        </mxCell>
+        <mxCell id="t45" value="Szenario 3: CreateRezeptAsync (Rezept erstellen)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontColor=#000000;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1150" width="1200" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="b46" value="Benutzer" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="10" y="1190" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l47" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1226" width="1" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="b48" value="RezeptService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="330" y="1190" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l49" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1226" width="1" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="b50" value="IRepository" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="650" y="1190" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l51" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="1226" width="1" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="b52" value="SQLite DB" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="970" y="1190" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l53" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="1226" width="1" height="330" as="geometry"/>
+        </mxCell>
+        <mxCell id="m54" value="CreateRezeptAsync(Name, Portionen, Zeit, Schwierigkeitsgrad)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1260" as="sourcePoint"/>
+            <mxPoint x="400" y="1260" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m55" value="Name, Portionen (1-100), Zeit (0-1440), Schwierigkeitsgrad validieren" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1290" as="sourcePoint"/>
+            <mxPoint x="401" y="1290" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m56" value="GetAllAsync() [Duplikat-Prüfung]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1320" as="sourcePoint"/>
+            <mxPoint x="720" y="1320" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m57" value="Name existiert nicht" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="1350" as="sourcePoint"/>
+            <mxPoint x="400" y="1350" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m58" value="CreateAsync(rezept)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1380" as="sourcePoint"/>
+            <mxPoint x="720" y="1380" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m59" value="INSERT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="1410" as="sourcePoint"/>
+            <mxPoint x="1040" y="1410" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m60" value="Rezept mit IsArchived = false" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1440" as="sourcePoint"/>
+            <mxPoint x="80" y="1440" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t61" value="Fehlerfall: ValidationException (Name, Portionen, Zeit, Schwierigkeitsgrad), DuplicateRezeptException (Name existiert bereits)" style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1480" width="1200" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="t62" value="Szenario 4: CalculateRezeptNährwerteAsync (Nährwerte berechnen)" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontColor=#000000;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1650" width="1200" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="b63" value="Benutzer" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="10" y="1690" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l64" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1726" width="1" height="400" as="geometry"/>
+        </mxCell>
+        <mxCell id="b65" value="NährwertCalculator" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="330" y="1690" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l66" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1726" width="1" height="400" as="geometry"/>
+        </mxCell>
+        <mxCell id="b67" value="RezeptService / RezeptZutatService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="650" y="1690" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l68" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="1726" width="1" height="400" as="geometry"/>
+        </mxCell>
+        <mxCell id="b69" value="NährwertService" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="970" y="1690" width="140" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="l70" value="" style="line;strokeWidth=1;direction=south;html=1;strokeColor=#000000;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="1726" width="1" height="400" as="geometry"/>
+        </mxCell>
+        <mxCell id="m71" value="CalculateRezeptNährwerteAsync(rezeptId)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1760" as="sourcePoint"/>
+            <mxPoint x="400" y="1760" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m72" value="GetRezeptByIdAsync(rezeptId)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1790" as="sourcePoint"/>
+            <mxPoint x="720" y="1790" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m73" value="rezept { Id, Name, Portionen }" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="1820" as="sourcePoint"/>
+            <mxPoint x="400" y="1820" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m74" value="GetZutatenAsync(rezeptId)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1850" as="sourcePoint"/>
+            <mxPoint x="720" y="1850" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m75" value="zutaten[]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="1880" as="sourcePoint"/>
+            <mxPoint x="400" y="1880" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f76" value="loop [für jede Zutat]" style="shape=rectangle;html=1;rounded=0;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;fontSize=10;strokeWidth=1;strokeColor=#000000;fontColor=#000000;dashed=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="380" y="1900" width="680" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="m77" value="GetNährwertByLebensmittelId(lebensmittelId)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1910" as="sourcePoint"/>
+            <mxPoint x="1040" y="1910" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m78" value="nährwert (pro 100g)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1040" y="1940" as="sourcePoint"/>
+            <mxPoint x="400" y="1940" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m79" value="ConvertToGramm, Skalierungsfaktor, aufsummieren" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1970" as="sourcePoint"/>
+            <mxPoint x="401" y="1970" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m80" value="Pro Portion teilen, runden (Kalorien ganzzahlig, sonst 1 Nachkommastelle)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;endArrow=block;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="2020" as="sourcePoint"/>
+            <mxPoint x="401" y="2020" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m81" value="RezeptNährwerteDto (Gesamt, ProPortion)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=10;strokeColor=#000000;fontColor=#000000;startArrow=none;dashed=1;endArrow=open;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="2050" as="sourcePoint"/>
+            <mxPoint x="80" y="2050" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="t82" value="Fehlerfall: NotFoundException (Rezept nicht gefunden). Zutaten ohne Nährwertinformationen werden ignoriert." style="text;html=1;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="20" y="2090" width="1200" height="40" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>
