@@ -913,6 +913,79 @@ namespace FoodDatabase.Tests.Ui
             Assert.Equal("/lebensmittel/neu", cut.Find("[data-testid='link-lebensmittel-neu']").GetAttribute("href"));
         }
 
+        [Fact]
+        public void Sollte_Fehler_Zeigen_Und_Modus_Nicht_Oeffnen_Wenn_Katalog_Laden_Fehlschlaegt()
+        {
+            // Arrange
+            Umgebung umgebung = ErstelleUmgebung(new List<RezeptZutat> { CreateZutat(1, 0, "Mehl") });
+            umgebung.Lebensmittel.Setup(s => s.GetAllLebensmittelAsync())
+                .ThrowsAsync(new InvalidOperationException("Katalog nicht lesbar"));
+            IRenderedComponent<RezeptDetail> cut = RenderComponent<RezeptDetail>(parameters => parameters.Add(p => p.Id, 1));
+            IElement bearbeiten = cut.WaitForElement("[data-testid='btn-zutaten-bearbeiten']", TimeSpan.FromSeconds(2));
+
+            // Act
+            bearbeiten.Click();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                IElement alert = cut.Find("[data-testid='alert-fehler']");
+                Assert.Contains("Katalog nicht lesbar", alert.TextContent);
+                Assert.Empty(cut.FindAll("[data-testid='tabelle-zutaten-bearbeiten']"));
+                Assert.Empty(cut.FindAll("[data-testid='btn-zutaten-speichern']"));
+                Assert.Single(cut.FindAll("[data-testid='tabelle-zutaten']"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Meldung_Anhaengen_Und_Modus_Verlassen_Wenn_Neuladen_Nach_Speichern_Fehlschlaegt()
+        {
+            // Arrange: Das erste Laden gelingt, das Neuladen nach dem Speichern wirft.
+            Umgebung umgebung = ErstelleUmgebung(new List<RezeptZutat> { CreateZutat(1, 0, "Mehl") });
+            umgebung.Zutat.SetupSequence(s => s.GetZutatenAsync(1))
+                .ReturnsAsync(new List<RezeptZutat> { CreateZutat(1, 0, "Mehl") })
+                .ThrowsAsync(new InvalidOperationException("Neuladen kaputt"));
+            IRenderedComponent<RezeptDetail> cut = ÖffneBearbeitungsmodus();
+            cut.Find("[data-testid='input-menge-0']").Change("300");
+
+            // Act
+            cut.Find("[data-testid='btn-zutaten-speichern']").Click();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                IElement alert = cut.Find("[data-testid='alert-fehler']");
+                Assert.Contains("Fehler beim Neuladen der Zutaten", alert.TextContent);
+                Assert.Contains("Neuladen kaputt", alert.TextContent);
+                Assert.Empty(cut.FindAll("[data-testid='tabelle-zutaten-bearbeiten']"));
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Sollte_Modal_Schliessen_Fehler_Zeigen_Und_Nicht_Navigieren_Wenn_Rezept_Loeschen_Fehlschlaegt()
+        {
+            // Arrange
+            Umgebung umgebung = ErstelleUmgebung(new List<RezeptZutat> { CreateZutat(1, 0, "Mehl") });
+            umgebung.Rezept.Setup(s => s.DeleteRezeptAsync(1))
+                .ThrowsAsync(new InvalidOperationException("Löschen nicht möglich"));
+            IRenderedComponent<RezeptDetail> cut = ÖffneBearbeitungsmodus();
+            cut.Find("[data-testid='btn-entfernen-0']").Click();
+            cut.Find("[data-testid='btn-zutaten-speichern']").Click();
+
+            // Act
+            cut.Find("[data-testid='btn-rezept-löschen']").Click();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                Assert.Empty(cut.FindAll("[data-testid='modal-rezept-löschen']"));
+                IElement alert = cut.Find("[data-testid='alert-fehler']");
+                Assert.Contains("Löschen nicht möglich", alert.TextContent);
+            }, TimeSpan.FromSeconds(2));
+            FakeNavigationManager nav = Services.GetRequiredService<FakeNavigationManager>();
+            Assert.False(nav.Uri.EndsWith("/rezepte"));
+        }
+
         // ============ Hilfen für den Bearbeitungsmodus ============
 
         /// <summary>Alle Mocks einer Testumgebung, damit Tests Aufrufe prüfen und Verhalten nachrüsten können.</summary>
