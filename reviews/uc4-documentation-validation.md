@@ -497,3 +497,23 @@ User → NährwertCalculator.CalculateRezeptNährwerteAsync(rezeptId)
 
 **Hinweis**: `diagrams/sequence-uc4-rezepte.drawio` ist kein gültiges XML (ein `&` ohne Maskierung in der Textbeschreibung, Zeile 129). Die Datei enthält ASCII-Ablaufbeschreibungen im `<description>`-Element, keine `mxGraphModel`-Zelle. Dieser Mangel besteht seit 8d144bb und ist nicht Teil von WP5 Teil 1.
 
+
+---
+
+## Nachtrag 2026-11-27: WP5 Teil 2 (Zutaten-CRUD, UC4 fertig)
+
+**Geltungsbereich**: Bearbeitungsmodus für Zutaten auf `/rezepte/{Id}` (`RezeptDetail.razor`): Hinzufügen, Ändern, Entfernen, lokale Validierung, Speichern in der Reihenfolge Add → Update → Delete, Lösch-Modal bei leerer Liste, Fehlerpfad, Nährwert-Reload.
+
+**Status**: Service unverändert ✅. UI vollständig ✅. **UC4 ist fertig.**
+
+| Teil | Prüfung | Ergebnis |
+|------|---------|----------|
+| 1 Code-Doku | `RezeptDetail.razor`: Kommentare zu Speicher-Reihenfolge (Mindestens-1-Regel), `""` statt `null` bei Notizen, Arbeitskopien statt getrackter Entities, `@key`-Versionszähler | ✅ |
+| 2 Feature-HTML | `docs/features/UC4-Rezepte.html` (Badge UI fertig, Verhalten, Workflow UC4.2a, Testtabelle, Phasen-Fortschritt, Diagramm-Liste, Fußzeile) | ✅ |
+| 3 Architecture-Overview | UC4-Karte `done`, Entity-Status Rezept und RezeptZutat ✅, Abgeschlossen (WP5 Teil 2), Nächste Schritte (UC4 ✅, WP5-Teil-2-Zeile entfernt), Gesamtzahl | ✅ |
+| 4 Diagramme | `requirements/use-cases.drawio` (UC4 grün, Legende), `diagrams/sequence-uc4-rezepte.drawio` neu aufgebaut (wohlgeformtes XML mit mxCells, vier Szenarien: Speichern Add → Update → Delete → Reload, Leer-Pfad Modal → DeleteRezeptAsync, CreateRezeptAsync, CalculateRezeptNährwerteAsync; das frühere Szenario AddZutatAsync-Validierung ist kein eigenes Szenario mehr, der Add-Aufruf steht im Speichern-Szenario). Der Mangel aus dem Nachtrag WP5 Teil 1 ist damit behoben. ER-Diagramm unverändert, am Schema ist nichts geändert | ✅ |
+
+**Testzahlen (gezählt gegen die Testdateien, `[Fact]` und `[InlineData]`)**:
+- Gesamtsuite: 509 (Unit 291 | Integration 3 | UI-Layer 215)
+- Rezept-UI: 108 Testfälle (101 Testmethoden): `RezeptListeTests` 23, `RezeptFormTests` 19, `RezeptDetailTests` 51 (47 Methoden, davon 3 Theories mit 7 Fällen), `RezeptNährwertAnzeigeTests` 15
+- Schwierigkeitsgrad-Zuordnung (`SchwierigkeitsgradAnzeigeTests`): 7 Testfälle

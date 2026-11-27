@@ -55,7 +55,7 @@
             <div class="meta">
                 Use-Case <strong>4 / 10</strong> |
                 Service: <span class="status-badge done">✅ FERTIG (201/212 Tests GRÜN)</span> |
-                UI: <span class="status-badge in-progress">🎨 UI Teil 1 (Zutaten-CRUD offen)</span> |
+                UI: <span class="status-badge done">✅ FERTIG (Teil 1 + Zutaten-CRUD)</span> |
                 Phase (Service): <span class="status-badge done">Implementation + Documentation Complete</span>
             </div>
         </header>
@@ -478,13 +478,13 @@ Test-Cases: 2 Tests
             </div>
         </section>
 
-        <!-- UI (WP5 TEIL 1) -->
+        <!-- UI (WP5 TEIL 1 + 2) -->
         <section>
-            <h2>🖥️ UI (WP5 Teil 1)</h2>
+            <h2>🖥️ UI (WP5 Teil 1 + 2)</h2>
 
             <div class="dependency-box">
-                <h4>Status: UI Teil 1 fertig – Zutaten-CRUD in der UI offen (WP5 Teil 2)</h4>
-                <p>Liste, Formular und Detail sind umgesetzt. Die Zutaten werden im Detail nur lesend angezeigt. Zutaten hinzufügen, bearbeiten und löschen folgen in PR 2.</p>
+                <h4>Status: UI fertig – Teil 1 (Liste, Formular, Detail) und Teil 2 (Zutaten-CRUD im Detail)</h4>
+                <p>Auf der Detailseite lassen sich Zutaten über einen Bearbeitungsmodus hinzufügen, ändern und entfernen. Nicht enthalten: Reihenfolge ändern (<code>ReorderZutatenAsync</code> bleibt ungenutzt), das Lebensmittel einer bestehenden Zutat tauschen (entfernen und neu hinzufügen) und eine Warnung beim Verlassen der Seite mit ungespeicherten Änderungen.</p>
             </div>
 
             <h3>Routen</h3>
@@ -512,7 +512,7 @@ Test-Cases: 2 Tests
                 <tr>
                     <td><code>/rezepte/{Id}</code></td>
                     <td>RezeptDetail.razor</td>
-                    <td>Stammdaten, Zutaten (nur lesend), eingebettete Nährwertanzeige (UC5)</td>
+                    <td>Stammdaten, Zutaten (Ansicht und Bearbeitungsmodus), eingebettete Nährwertanzeige (UC5)</td>
                 </tr>
             </table>
 
@@ -523,7 +523,14 @@ Test-Cases: 2 Tests
                 <li><strong>Fehlerpfade</strong>: <code>ValidationException</code>, <code>DuplicateRezeptException</code>, <code>NotFoundException</code> und <code>InvalidOperationException</code> werden als Fehlermeldung angezeigt, ohne Navigation.</li>
                 <li><strong>Schwierigkeitsgrad</strong>: Angezeigt deutsch (Leicht, Mittel, Schwer), gespeichert englisch (Easy, Medium, Hard). Die Zuordnung steht zentral in <code>Models/SchwierigkeitsgradAnzeige.cs</code>. Unbekannte Werte werden unverändert angezeigt.</li>
                 <li><strong>Detail</strong>: Zutaten in Positionsreihenfolge. Die Lebensmittelnamen kommen aus der Navigation <code>Lebensmittel</code>, die <code>FoodDatabaseContext</code> per <code>AutoInclude()</code> lädt. Fehlt sie, erscheint „Unbekanntes Lebensmittel“.</li>
-                <li><strong>Nährwertanzeige (UC5)</strong>: Ohne Zutaten erscheint ein Hinweistext statt der Nährwerte, damit keine falschen Nullwerte angezeigt werden. Mit Zutaten wird <code>RezeptNährwertAnzeige</code> mit <code>RezeptId</code> und <code>Portionen</code> eingebettet (Details in UC5).</li>
+                <li><strong>Zutaten bearbeiten</strong>: Der Button <code>btn-zutaten-bearbeiten</code> schaltet die Tabelle in einen Bearbeitungsmodus, auch bei 0 Zutaten. Dort sind Menge, Einheit und Notizen jeder bestehenden Zeile editierbar; das Lebensmittel steht als Text da. Eine Eingabezeile (Lebensmittel-Dropdown nach Name sortiert, Menge, Einheit <code>g, ml, Stück, TL, EL, Tasse, Prise</code> mit Default <code>g</code>, Notiz) hängt per „+“ eine Zeile lokal ans Ende; dasselbe Lebensmittel darf mehrfach vorkommen. „Entfernen“ nimmt eine Zeile lokal heraus, auch die letzte. Alle Änderungen bleiben lokal, bis „Speichern“ sie schreibt; „Abbrechen“ verwirft sie ohne Service-Schreibaufruf.</li>
+                <li><strong>Arbeitsmodell</strong>: Der Modus arbeitet auf einer privaten Zeilenklasse (<code>ZutatZeile</code>) mit Originalwerten, nie auf den von EF getrackten <code>RezeptZutat</code>-Entities, weil <code>UpdateZutatAsync</code> die getrackte Instanz verändert.</li>
+                <li><strong>Lokale Validierung</strong>: „+“ und „Speichern“ prüfen, ob ein Lebensmittel gewählt ist und die Menge zwischen 0,01 und 10000 liegt. „+“ ohne gültige Eingabe zeigt eine Meldung an der Eingabezeile; „Speichern“ prüft alle Zeilen (auch bestehende), zeigt die Meldung an der betroffenen Zeile und ruft keinen Service auf.</li>
+                <li><strong>Speichern</strong>: Feste Reihenfolge <code>AddZutatAsync</code> (neue Zeilen), dann <code>UpdateZutatAsync</code> (nur tatsächlich geänderte Zeilen), dann <code>DeleteZutatAsync</code> (entfernte Zeilen). So greift die Mindestens-1-Regel des Service nie. Eine geleerte Notiz geht als <code>""</code> an den Service, weil <code>null</code> dort „unverändert“ heißt. Danach lädt die Seite die Zutaten neu und verlässt den Modus.</li>
+                <li><strong>Leere Liste</strong>: „Speichern“ bei 0 Zeilen öffnet das Modal <code>modal-rezept-löschen</code>. „Rezept löschen“ ruft <code>DeleteRezeptAsync</code> (Soft-Delete) auf und navigiert zu <code>/rezepte</code>; es läuft kein <code>DeleteZutatAsync</code>. „Zurück“ schließt das Modal, der Modus mit seinen lokalen Änderungen bleibt offen.</li>
+                <li><strong>Service-Fehler beim Speichern</strong> (<code>NotFoundException</code>, <code>ValidationException</code>, sonstige): Die Schleife bricht ab, ein <code>alert-fehler</code> zeigt die Meldung, die Seite lädt den DB-Stand neu und verlässt den Modus. Bereits geschriebene Schritte bleiben bestehen.</li>
+                <li><strong>Leerer Lebensmittel-Katalog</strong>: Statt des Dropdowns erscheint ein Hinweis mit Link auf <code>/lebensmittel/neu</code>.</li>
+                <li><strong>Nährwertanzeige (UC5)</strong>: Ohne Zutaten erscheint ein Hinweistext statt der Nährwerte, damit keine falschen Nullwerte angezeigt werden. Mit Zutaten wird <code>RezeptNährwertAnzeige</code> mit <code>RezeptId</code> und <code>Portionen</code> eingebettet (Details in UC5). Ein <code>@key</code> mit Versionszähler lädt sie nach jedem Speichern der Zutaten und beim Rezeptwechsel neu; ein <code>@key</code> auf die Id allein würde nicht reichen, weil sich die Id beim Speichern nicht ändert.</li>
             </ul>
 
             <h3>UI-Tests (bUnit, src/Tests/Ui/)</h3>
@@ -545,8 +552,8 @@ Test-Cases: 2 Tests
                 </tr>
                 <tr>
                     <td>RezeptDetailTests.cs</td>
-                    <td>16</td>
-                    <td>Stammdaten, Zutaten-Reihenfolge, Namensauflösung, Nährwert-Einbettung, Nicht gefunden</td>
+                    <td>51 (47 Methoden, davon 3 Theories mit 7 Fällen)</td>
+                    <td>Stammdaten, Zutaten-Reihenfolge, Namensauflösung, Nährwert-Einbettung, Nicht gefunden; Zutaten-CRUD: Bearbeitungsmodus, Eingabezeile, Entfernen, lokale Validierung samt Grenzwerten, Speicher-Reihenfolge Add → Update → Delete, Notiz als Leerstring, Abbrechen, Lösch-Modal, Service-Fehler, Fehlerpfade (Katalog laden, Neuladen nach dem Speichern, Rezept löschen), Nährwert-Reload, leerer Katalog</td>
                 </tr>
                 <tr>
                     <td>RezeptNährwertAnzeigeTests.cs</td>
@@ -555,11 +562,11 @@ Test-Cases: 2 Tests
                 </tr>
                 <tr>
                     <td><strong>Summe</strong></td>
-                    <td><strong>73 Testfälle (70 Methoden)</strong></td>
+                    <td><strong>108 Testfälle (101 Methoden)</strong></td>
                     <td></td>
                 </tr>
             </table>
-            <p>Die Zahlen stammen aus <code>dotnet test</code> (Filter <code>FoodDatabase.Tests.Ui.Rezept</code>). Die Schwierigkeitsgrad-Zuordnung hat zusätzlich 7 Unit-Testfälle (<code>src/Tests/Unit/SchwierigkeitsgradAnzeigeTests.cs</code>).</p>
+            <p>Die Zahlen sind gegen die Testdateien gezählt (<code>[Fact]</code> und <code>[InlineData]</code>). Die Schwierigkeitsgrad-Zuordnung hat zusätzlich 7 Unit-Testfälle (<code>src/Tests/Unit/SchwierigkeitsgradAnzeigeTests.cs</code>).</p>
         </section>
 
         <!-- WORKFLOWS / USE-CASES -->
@@ -607,7 +614,7 @@ Fehlerfall: Lebensmittel nicht vorhanden
 ❌ NotFoundException: "Lebensmittel mit ID 999 nicht gefunden."
             </pre>
 
-            <h3>UC4.2: Rezept bearbeiten & Zutaten verwalten (UI: Stammdaten ✅, Zutaten ⏳ WP5 Teil 2)</h3>
+            <h3>UC4.2: Rezept bearbeiten & Zutaten verwalten (UI: Stammdaten ✅, Zutaten ✅)</h3>
             <pre>
 Szenario: Benutzer passt "Pasta Carbonara" an
 
@@ -630,6 +637,33 @@ Szenario: Benutzer passt "Pasta Carbonara" an
 
 Fehlerfall: Rezept existiert nicht (archiviert/gelöscht)
 ❌ InvalidOperationException
+            </pre>
+
+            <h3>UC4.2a: Zutaten im Bearbeitungsmodus der Detailseite (UI)</h3>
+            <pre>
+Szenario: Benutzer ergänzt, ändert und entfernt Zutaten eines Rezepts
+
+1. „Zutaten bearbeiten“ klicken
+   - ILebensmittelService.GetAllLebensmittelAsync füllt das Dropdown (nach Name sortiert)
+   - Die bestehenden Zutaten werden in Arbeitskopien (ZutatZeile) übernommen
+
+2. Lokal arbeiten: „+“ fügt hinzu, „Entfernen“ nimmt heraus, Felder ändern
+   - Ungültige Zeilen (kein Lebensmittel, Menge außerhalb 0,01–10000) werden lokal gemeldet
+
+3. „Speichern“ in fester Reihenfolge
+   - AddZutatAsync für neue Zeilen
+   - UpdateZutatAsync nur für geänderte Zeilen (geleerte Notiz als "")
+   - DeleteZutatAsync für entfernte Zeilen
+   - Danach: Zutaten und Nährwerte neu laden, Modus verlassen
+
+Leere Liste: „Speichern“ bei 0 Zeilen
+→ Modal „Rezept löschen“ → IRezeptService.DeleteRezeptAsync (Soft-Delete) → Navigation nach /rezepte
+→ „Zurück“ schließt das Modal, der Modus bleibt offen
+
+Fehlerfall: Service wirft NotFoundException / ValidationException
+❌ Schleife bricht ab, alert-fehler mit Meldung, DB-Stand wird neu geladen, Modus verlassen
+
+„Abbrechen“ verwirft alle lokalen Änderungen ohne Service-Schreibaufruf
             </pre>
 
             <h3>UC4.3: Rezept löschen (Soft-Delete)</h3>
@@ -718,7 +752,7 @@ Fehlerfall: Zutat hat keine Nährwertinformationen
                     <li>✅ Phase 7: User-Review & Approval</li>
                     <li>✅ Phase 8: Merge zu Master (Service)</li>
                     <li>✅ UI Teil 1 (WP5): Liste, Formular, Detail + UC5-Anzeige – 73 bUnit-Testfälle</li>
-                    <li>⏳ UI Teil 2 (WP5): Zutaten hinzufügen, bearbeiten, löschen</li>
+                    <li>✅ UI Teil 2 (WP5): Zutaten hinzufügen, bearbeiten, löschen – RezeptDetailTests auf 51 Testfälle erweitert</li>
                 </ul>
             </div>
 
@@ -799,8 +833,8 @@ Fehlerfall: Zutat hat keine Nährwertinformationen
             <ul>
                 <li>📊 <strong>Klassen-Diagramm</strong> (diagrams/architecture-class.drawio) – Rezept + RezeptZutat Entities mit Services</li>
                 <li>📊 <strong>ER-Diagramm</strong> (diagrams/database-schema.drawio) – Rezept & RezeptZutat Tables, ForeignKey-Constraints</li>
-                <li>🔄 <strong>Sequence-Diagramm</strong> (diagrams/sequence-uc4-rezepte.drawio) – CreateRezept, AddZutat, CalculateNährwerte Workflows</li>
-                <li>🎯 <strong>Use-Case-Diagramm</strong> (requirements/use-cases.drawio) – UC4 mit Status-Markierung (🟡 Service ✅, UI Teil 1 ✅, Zutaten-UI offen)</li>
+                <li>🔄 <strong>Sequence-Diagramm</strong> (diagrams/sequence-uc4-rezepte.drawio) – vier Szenarien: Zutaten speichern (Add → Update → Delete → Reload), Leer-Pfad (Modal → DeleteRezeptAsync), CreateRezeptAsync, CalculateRezeptNährwerteAsync</li>
+                <li>🎯 <strong>Use-Case-Diagramm</strong> (requirements/use-cases.drawio) – UC4 mit Status-Markierung (✅ Service, ✅ UI inkl. Zutaten-CRUD)</li>
             </ul>
         </section>
 
@@ -861,7 +895,7 @@ Fehlerfall: Zutat hat keine Nährwertinformationen
         <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
             <p>FoodDatabase | UC4 | Rezepte verwalten</p>
             <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
-            <p>Dokumentation aktualisiert: 2026-10-18 | Service: ✅ FERTIG (201/212 Tests GRÜN) | UI: Teil 1 fertig, Zutaten-CRUD offen</p>
+            <p>Dokumentation aktualisiert: 2026-11-27 | Service: ✅ FERTIG (201/212 Tests GRÜN) | UI: ✅ FERTIG (Teil 1 + Zutaten-CRUD)</p>
         </footer>
     </div>
 </body>

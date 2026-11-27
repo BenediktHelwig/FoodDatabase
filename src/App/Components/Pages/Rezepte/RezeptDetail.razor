@@ -1,8 +1,11 @@
 @page "/rezepte/{Id:int}"
 @using FoodDatabase.App.Models
+@using FoodDatabase.App.Services.Dtos
 @using FoodDatabase.App.Services.Interfaces
 @inject IRezeptService RezeptService
 @inject IRezeptZutatService RezeptZutatService
+@inject ILebensmittelService LebensmittelService
+@inject NavigationManager Navigation
 
 <div class="container mt-4">
     @if (lädt)
@@ -79,11 +82,150 @@
         }
 
         <div class="card mb-4">
-            <div class="card-header">
-                <h5>Zutaten</h5>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Zutaten</h5>
+                @if (!bearbeitungsmodus)
+                {
+                    <button type="button"
+                            class="btn btn-sm btn-primary"
+                            @onclick="ModusStartenAsync"
+                            data-testid="btn-zutaten-bearbeiten">
+                        Zutaten bearbeiten
+                    </button>
+                }
             </div>
             <div class="card-body">
-                @if (zutaten.Count > 0)
+                @if (!string.IsNullOrEmpty(speicherFehler))
+                {
+                    <div class="alert alert-danger" data-testid="alert-fehler">
+                        @speicherFehler
+                    </div>
+                }
+
+                @if (bearbeitungsmodus)
+                {
+                    @if (zeilen.Count > 0)
+                    {
+                        <table class="table table-striped" data-testid="tabelle-zutaten-bearbeiten">
+                            <thead>
+                                <tr>
+                                    <th>Lebensmittel</th>
+                                    <th>Menge</th>
+                                    <th>Einheit</th>
+                                    <th>Notizen</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < zeilen.Count; i++)
+                                {
+                                    int index = i;
+                                    ZutatZeile zeile = zeilen[i];
+                                    <tr data-testid="edit-zeile-@index">
+                                        <td data-testid="text-lebensmittel-@index">@zeile.LebensmittelName</td>
+                                        <td>
+                                            <input type="number" step="0.01" class="form-control"
+                                                   @bind="zeile.Menge"
+                                                   data-testid="input-menge-@index" />
+                                            @if (!string.IsNullOrEmpty(zeile.Fehler))
+                                            {
+                                                <div class="text-danger small" data-testid="fehler-zeile-@index">@zeile.Fehler</div>
+                                            }
+                                        </td>
+                                        <td>
+                                            <select class="form-select" @bind="zeile.Einheit" data-testid="select-einheit-@index">
+                                                @foreach (string einheit in Einheiten)
+                                                {
+                                                    <option value="@einheit">@einheit</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control"
+                                                   @bind="zeile.Notizen"
+                                                   data-testid="input-notizen-@index" />
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    @onclick="() => Entfernen(zeile)"
+                                                    data-testid="btn-entfernen-@index">
+                                                Entfernen
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted" data-testid="hinweis-keine-zeilen">Keine Zutaten erfasst.</p>
+                    }
+
+                    @if (alleLebensmittel.Count == 0)
+                    {
+                        <div class="alert alert-warning" data-testid="hinweis-katalog-leer">
+                            Der Lebensmittel-Katalog ist leer.
+                            <a href="/lebensmittel/neu" data-testid="link-lebensmittel-neu">Lebensmittel anlegen</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row g-2 align-items-start mb-3" data-testid="eingabezeile">
+                            <div class="col-md-4">
+                                <select class="form-select" @bind="eingabe.LebensmittelId" data-testid="select-lebensmittel-neu">
+                                    <option value="0">-- Lebensmittel wählen --</option>
+                                    @foreach (LebensmittelKatalog lebensmittel in alleLebensmittel)
+                                    {
+                                        <option value="@lebensmittel.Id">@lebensmittel.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" step="0.01" class="form-control" placeholder="Menge"
+                                       @bind="eingabe.Menge"
+                                       data-testid="input-menge-neu" />
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select" @bind="eingabe.Einheit" data-testid="select-einheit-neu">
+                                    @foreach (string einheit in Einheiten)
+                                    {
+                                        <option value="@einheit">@einheit</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" placeholder="Notiz"
+                                       @bind="eingabe.Notizen"
+                                       data-testid="input-notizen-neu" />
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-success" @onclick="Hinzufügen" data-testid="btn-hinzufügen">+</button>
+                            </div>
+                            @if (!string.IsNullOrEmpty(eingabe.Fehler))
+                            {
+                                <div class="col-12 text-danger small" data-testid="fehler-eingabezeile">@eingabe.Fehler</div>
+                            }
+                        </div>
+                    }
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            disabled="@speichert"
+                            @onclick="SpeichernAsync"
+                            data-testid="btn-zutaten-speichern">
+                        Speichern
+                    </button>
+                    <button type="button"
+                            class="btn btn-secondary"
+                            disabled="@speichert"
+                            @onclick="Abbrechen"
+                            data-testid="btn-zutaten-abbrechen">
+                        Abbrechen
+                    </button>
+                }
+                else if (zutaten.Count > 0)
                 {
                     <table class="table table-striped" data-testid="tabelle-zutaten">
                         <thead>
@@ -116,7 +258,7 @@
 
         @if (zutaten.Count > 0)
         {
-            <RezeptNährwertAnzeige RezeptId="@Id" Portionen="@rezept.Portionen" />
+            <RezeptNährwertAnzeige @key="nährwertVersion" RezeptId="@Id" Portionen="@rezept.Portionen" />
         }
         else
         {
@@ -127,14 +269,64 @@
     }
 </div>
 
+@if (zeigeLöschModal)
+{
+    <div class="modal fade show" id="modal-rezept-löschen" style="display: block;" data-testid="modal-rezept-löschen">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Rezept löschen?</h5>
+                </div>
+                <div class="modal-body">
+                    Das Rezept hat keine Zutaten mehr. Wenn du das Speichern bestätigst, wird das Rezept gelöscht.
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            @onclick="() => zeigeLöschModal = false"
+                            data-testid="btn-modal-zurück">
+                        Zurück
+                    </button>
+                    <button type="button"
+                            class="btn btn-danger"
+                            @onclick="RezeptLöschenAsync"
+                            data-testid="btn-rezept-löschen">
+                        Rezept löschen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
 @code {
     [Parameter]
     public int Id { get; set; }
+
+    /// <summary>Erlaubte Einheiten; der Service hält seine Liste privat und validiert sie beim Speichern.</summary>
+    private static readonly string[] Einheiten = { "g", "ml", "Stück", "TL", "EL", "Tasse", "Prise" };
+
+    private const double MengeMin = 0.01;
+    private const double MengeMax = 10000;
 
     private Rezept? rezept;
     private List<RezeptZutat> zutaten = new();
     private bool lädt = false;
     private string fehler = "";
+
+    // Bearbeitungsmodus: gearbeitet wird nur auf ZutatZeile-Kopien, nie auf den getrackten RezeptZutat-Entities.
+    private bool bearbeitungsmodus = false;
+    private bool speichert = false;
+    private bool zeigeLöschModal = false;
+    private string speicherFehler = "";
+    private List<ZutatZeile> zeilen = new();
+    private List<int> entfernteZutatIds = new();
+    private List<LebensmittelKatalog> alleLebensmittel = new();
+    private ZutatZeile eingabe = new();
+
+    // Erzwingt ein Neuladen von RezeptNährwertAnzeige: Die Id bleibt beim Speichern gleich, ein @key="Id" würde nichts auslösen.
+    private int nährwertVersion = 0;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -142,6 +334,9 @@
         fehler = "";
         rezept = null;
         zutaten = new();
+        VerlasseModus();
+        speicherFehler = "";
+        nährwertVersion++;
 
         try
         {
@@ -161,5 +356,214 @@
         {
             lädt = false;
         }
+    }
+
+    private async Task ModusStartenAsync()
+    {
+        speicherFehler = "";
+        try
+        {
+            IEnumerable<LebensmittelKatalog> katalog = await LebensmittelService.GetAllLebensmittelAsync();
+            alleLebensmittel = katalog.OrderBy(l => l.Name).ToList();
+        }
+        catch (Exception ex)
+        {
+            speicherFehler = $"Fehler beim Laden der Lebensmittel: {ex.Message}";
+            return;
+        }
+
+        zeilen = zutaten.Select(z => new ZutatZeile
+        {
+            ZutatId = z.Id,
+            LebensmittelId = z.LebensmittelId,
+            LebensmittelName = z.Lebensmittel?.Name ?? "Unbekanntes Lebensmittel",
+            Menge = z.Menge,
+            Einheit = z.Einheit,
+            Notizen = z.Notizen ?? "",
+            OriginalMenge = z.Menge,
+            OriginalEinheit = z.Einheit,
+            OriginalNotizen = z.Notizen ?? ""
+        }).ToList();
+        entfernteZutatIds = new();
+        eingabe = new ZutatZeile();
+        bearbeitungsmodus = true;
+    }
+
+    private void VerlasseModus()
+    {
+        bearbeitungsmodus = false;
+        zeigeLöschModal = false;
+        speichert = false;
+        zeilen = new();
+        entfernteZutatIds = new();
+        eingabe = new ZutatZeile();
+    }
+
+    private void Abbrechen()
+    {
+        speicherFehler = "";
+        VerlasseModus();
+    }
+
+    private void Hinzufügen()
+    {
+        string? meldung = Prüfe(eingabe);
+        if (meldung is not null)
+        {
+            eingabe.Fehler = meldung;
+            return;
+        }
+
+        zeilen.Add(new ZutatZeile
+        {
+            LebensmittelId = eingabe.LebensmittelId,
+            LebensmittelName = alleLebensmittel.First(l => l.Id == eingabe.LebensmittelId).Name,
+            Menge = eingabe.Menge,
+            Einheit = eingabe.Einheit,
+            Notizen = eingabe.Notizen
+        });
+        eingabe = new ZutatZeile();
+    }
+
+    private void Entfernen(ZutatZeile zeile)
+    {
+        zeilen.Remove(zeile);
+        if (zeile.ZutatId is int zutatId)
+        {
+            entfernteZutatIds.Add(zutatId);
+        }
+    }
+
+    private static string? Prüfe(ZutatZeile zeile)
+    {
+        if (zeile.LebensmittelId <= 0)
+        {
+            return "Bitte ein Lebensmittel wählen.";
+        }
+        if (zeile.Menge is null || zeile.Menge < MengeMin || zeile.Menge > MengeMax)
+        {
+            return "Die Menge muss zwischen 0,01 und 10000 liegen.";
+        }
+        return null;
+    }
+
+    private async Task SpeichernAsync()
+    {
+        bool alleGültig = true;
+        foreach (ZutatZeile zeile in zeilen)
+        {
+            zeile.Fehler = Prüfe(zeile) ?? "";
+            if (zeile.Fehler.Length > 0)
+            {
+                alleGültig = false;
+            }
+        }
+        if (!alleGültig)
+        {
+            return;
+        }
+
+        // Ein leeres Rezept ist kein Rezept: Statt die letzten Zutaten zu löschen (der Service verbietet das),
+        // fragt das Modal, ob das ganze Rezept gelöscht werden soll.
+        if (zeilen.Count == 0)
+        {
+            zeigeLöschModal = true;
+            return;
+        }
+
+        speichert = true;
+        speicherFehler = "";
+        try
+        {
+            // Reihenfolge fest: erst Add, dann Update, dann Delete. So ist beim Löschen immer
+            // mindestens eine Zutat da, und die Mindestens-1-Regel des Service greift nie.
+            foreach (ZutatZeile neu in zeilen.Where(z => z.ZutatId is null))
+            {
+                await RezeptZutatService.AddZutatAsync(Id, new AddZutatRequest
+                {
+                    LebensmittelId = neu.LebensmittelId,
+                    Menge = neu.Menge!.Value,
+                    Einheit = neu.Einheit,
+                    Notizen = neu.Notizen ?? ""
+                });
+            }
+            foreach (ZutatZeile geändert in zeilen.Where(z => z.ZutatId is not null && z.IstGeändert))
+            {
+                // Notizen "" statt null: null heißt im Service "unverändert", eine geleerte Notiz muss also als "" ankommen.
+                await RezeptZutatService.UpdateZutatAsync(Id, geändert.ZutatId!.Value, new UpdateZutatRequest
+                {
+                    Menge = geändert.Menge,
+                    Einheit = geändert.Einheit,
+                    Notizen = geändert.Notizen ?? ""
+                });
+            }
+            foreach (int zutatId in entfernteZutatIds)
+            {
+                await RezeptZutatService.DeleteZutatAsync(Id, zutatId);
+            }
+        }
+        catch (FoodDatabase.App.Services.Exceptions.NotFoundException ex)
+        {
+            speicherFehler = $"Fehler beim Speichern: {ex.Message}";
+        }
+        catch (FoodDatabase.App.Services.Exceptions.ValidationException ex)
+        {
+            speicherFehler = $"Fehler beim Speichern: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            speicherFehler = $"Fehler beim Speichern: {ex.Message}";
+        }
+
+        // Bei Erfolg wie bei Fehler: DB-Stand neu laden und den Modus verlassen; bereits geschriebene Schritte bleiben bestehen.
+        await NachSpeichernNeuLadenAsync();
+    }
+
+    private async Task NachSpeichernNeuLadenAsync()
+    {
+        try
+        {
+            zutaten = (await RezeptZutatService.GetZutatenAsync(Id)).ToList();
+        }
+        catch (Exception ex)
+        {
+            speicherFehler = $"{speicherFehler} Fehler beim Neuladen der Zutaten: {ex.Message}".Trim();
+        }
+        nährwertVersion++;
+        VerlasseModus();
+    }
+
+    private async Task RezeptLöschenAsync()
+    {
+        try
+        {
+            await RezeptService.DeleteRezeptAsync(Id);
+            Navigation.NavigateTo("/rezepte");
+        }
+        catch (Exception ex)
+        {
+            zeigeLöschModal = false;
+            speicherFehler = $"Fehler beim Löschen des Rezepts: {ex.Message}";
+        }
+    }
+
+    /// <summary>Arbeitskopie einer Zutat im Bearbeitungsmodus (ZutatId null = noch nicht gespeichert).</summary>
+    private class ZutatZeile
+    {
+        public int? ZutatId { get; set; }
+        public int LebensmittelId { get; set; }
+        public string LebensmittelName { get; set; } = "";
+        public double? Menge { get; set; }
+        public string Einheit { get; set; } = "g";
+        public string? Notizen { get; set; } = "";
+        public double? OriginalMenge { get; set; }
+        public string OriginalEinheit { get; set; } = "g";
+        public string OriginalNotizen { get; set; } = "";
+        public string Fehler { get; set; } = "";
+
+        public bool IstGeändert =>
+            Menge != OriginalMenge
+            || Einheit != OriginalEinheit
+            || (Notizen ?? "") != OriginalNotizen;
     }
 }
