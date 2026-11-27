@@ -1,32 +1,32 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-11-15  
+**Datum**: 2026-11-27  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
 **Status**: Agent-Orchester (feature-crew: Hauptsession · implementer · reviewer) mit Git-basiertem Workflow  
-**Aktueller Branch**: `refactor/agent-orchestration-feature-crew` (PR #16 offen zur Abnahme) · WP5 Teil 1 ist über PR #15 gemergt
+**Aktueller Branch**: `feat/ui-rezepte-wp5-teil2` (PR offen zur Abnahme) · PR #16 (Orchester-Umbau) ist gemergt
 
 ---
 
 ## ⏭️ NÄCHSTE SCHRITTE (in dieser Reihenfolge)
 
-Offen zur Abnahme: **PR #16, Orchester-Umbau** (`refactor/agent-orchestration-feature-crew`). Nach dem Merge ist WP5 Teil 2 das erste Feature mit der neuen feature-crew. Das ist gleichzeitig der erste Praxistest für `implementer` und `reviewer`: Auf Reibung achten (Profil vollständig? UI-Regel greift? Review-Format brauchbar?) und Korrekturen ins Profil übernehmen.
+Offen zur Abnahme: **PR WP5 Teil 2, Zutaten-CRUD** (`feat/ui-rezepte-wp5-teil2`). Damit ist WP5 (UC4/UC5) fertig. Nächstes Paket laut Roadmap wäre WP6 (Dashboard). UC8 braucht dafür aber zuerst einen Service, und WP6 setzt WP4 + WP5 komplett voraus. Die Punkte unten sind kleiner und entlasten vorher die Altlasten.
 
 **Korrektur zur Roadmap-Bezeichnung**: Bis 19.09.2026 stand hier „WP4 UC4". Laut `UI-PHASE-PLAN.md:156` besteht WP4 nur aus UC2/6/9/10 – **WP4 ist damit fertig** (UC3 blockiert). UC4 gehört zu **WP5** (`UI-PHASE-PLAN.md:164`).
 
-1. **WP5 Teil 2: Zutaten-CRUD auf `/rezepte/{id}`** — Hinzufügen/Bearbeiten/Löschen über `IRezeptZutatService` (`AddZutatAsync`/`UpdateZutatAsync`/`DeleteZutatAsync`), Lebensmittel-Dropdown, Einheiten `g, ml, Stück, TL, EL, Tasse, Prise`. Der Service verbietet das Löschen der letzten Zutat (`ValidationException`) — die UI muss das anzeigen. Dabei mitnehmen: `@key="Id"` an `<RezeptNährwertAnzeige>` in `RezeptDetail.razor:119`, damit nach Zutatenänderungen bzw. Rezeptwechsel neu geladen wird (die Komponente lädt nur in `OnInitializedAsync`); nach Zutatenänderung müssen die Nährwerte neu berechnet werden. Danach UC4 in der Doku auf fertig setzen. UI-Regel: Code zuerst, dann Tests.
+1. **UC9→UC10-Integration** (FK statt `string Lagerort`). `FoodDatabaseContext.cs:64-65` vermerkt sie als ausstehend. Solange sie fehlt, sind die unter `/lagerorte` angelegten Lagerorte funktionslos. Seit 16.10.2026 akzeptiert UC9 Umlaute – die UC10-Konstanten „Kühlschrank"/„Tiefkühler" sind damit gültige UC9-Namen, eine Umbenennung ist für die Integration nicht nötig. Schema-Änderung → TDD.
 
-2. **UC9→UC10-Integration** (FK statt `string Lagerort`). `FoodDatabaseContext.cs:64-65` vermerkt sie als ausstehend. Solange sie fehlt, sind die unter `/lagerorte` angelegten Lagerorte funktionslos. Seit 16.10.2026 akzeptiert UC9 Umlaute – die UC10-Konstanten „Kühlschrank"/„Tiefkühler" sind damit gültige UC9-Namen, eine Umbenennung ist für die Integration nicht nötig. Schema-Änderung → TDD.
-
-3. **Zwei Diagramme widersprechen dem Code** (gefunden im Doku-Review vom 16.10.2026, außerhalb des damaligen Scopes):
+2. **Zwei Diagramme widersprechen dem Code** (gefunden im Doku-Review vom 16.10.2026, außerhalb des damaligen Scopes):
    - `diagrams/database-schema.drawio`: ProduktInstanz-Tabelle zeigt die erfundenen Felder Einheit, MHD, KaufDatum, Barcode.
    - `diagrams/architecture-class.drawio`: Lagerort-Klasse hat Beschreibung, `GetProduktInstanzen()` und `Delete()` – gibt es im Code nicht, Löschen ist laut UC9 ausdrücklich nicht erlaubt.
 
-4. **Kleinere Überträge** aus den drei UC10-Gates, jeweils beim nächsten Anfassen der Datei:
+3. **Kleinere Überträge** aus den drei UC10-Gates, jeweils beim nächsten Anfassen der Datei:
    - Tests: ein `var` in `LebensmittelDetailTests.cs:841`; zwei `WaitForAssertion`-Wrapper um reine Interaktionen; zwei Deckungslücken (eine Packungszeile vollständig prüfen, das Dropdown an `LagerortKonstanten.AlleWerte` binden).
    - Code: Filterleiste flackert beim Laden (`@if (!lädt)`); `GetMhdText(int)` statt `Formatiere(DateTime)` lässt die Tagesrechnung in beiden Views stehen.
    - Doku: UC3 bezeichnet im Repo zwei verschiedene Dinge („Nährwerte" fertig vs. „Lagerbestand Export" blockiert); einzelne Begründungen in der UC10-Filter-Sektion sind schwächer als die Aussage, die sie tragen.
 
-5. **Aus WP5 Teil 1 vorgemerkt**: `LebensmittelForm.razor:99` bindet an die getrackte EF-Entity (gleicher Fehler wie im Rezept-Formular vor `4893dc8`: Duplikat-Prüfung greift nicht, abgebrochene Eingaben leaken ins nächste SaveChanges), und `:133` fängt wegen `_Imports.razor` vermutlich `System.ComponentModel.DataAnnotations.ValidationException` statt der Service-Exception · `RezeptService.cs:136/138/177` nutzt `== null`/`!= null` · `RezeptForm`: Ladefehler im Bearbeiten-Modus zeigt Fehler über leerem, klickbarem Formular · `diagrams/sequence-uc4-rezepte.drawio` ist seit `8d144bb` kein wohlgeformtes XML (unmaskiertes `&` Z. 129) und enthält keine mxCells · `requirements/use-cases.drawio`: UC7 grün, obwohl WP6-UI offen; Legende hat zwei weiße Kategorien · `sequence-uc5-nährwerte.drawio`: Überschrift „TEST COVERAGE (TDD Red-Phase)“ und Szenario 3 veraltet · UC5-Seite „Offene Fragen“ veraltet.
+4. **Aus WP5 Teil 1 vorgemerkt**: `LebensmittelForm.razor:99` bindet an die getrackte EF-Entity (gleicher Fehler wie im Rezept-Formular vor `4893dc8`: Duplikat-Prüfung greift nicht, abgebrochene Eingaben leaken ins nächste SaveChanges), und `:133` fängt wegen `_Imports.razor` vermutlich `System.ComponentModel.DataAnnotations.ValidationException` statt der Service-Exception · `RezeptService.cs:136/138/177` nutzt `== null`/`!= null` · `RezeptForm`: Ladefehler im Bearbeiten-Modus zeigt Fehler über leerem, klickbarem Formular · `diagrams/sequence-uc4-rezepte.drawio` ist seit `8d144bb` kein wohlgeformtes XML (unmaskiertes `&` Z. 129) und enthält keine mxCells · `requirements/use-cases.drawio`: UC7 grün, obwohl WP6-UI offen; Legende hat zwei weiße Kategorien · `sequence-uc5-nährwerte.drawio`: Überschrift „TEST COVERAGE (TDD Red-Phase)“ und Szenario 3 veraltet · UC5-Seite „Offene Fragen“ veraltet.
+
+5. **Aus WP5 Teil 2 vorgemerkt**: `docs/features/UC4-Rezepte.html:8` hat einen vorbestehenden Inline-`<style>`-Block, obwohl `docs/css/uc4-rezepte.css` existiert (nicht verlinkt) — Profilregel „CSS nie inline“ · Titel in `diagrams/sequence-uc4-rezepte.drawio` (Zelle 1) nennt nur den Bearbeitungsmodus, das Diagramm enthält inzwischen auch CreateRezept und CalculateNährwerte · `RezeptDetail.razor`: die beiden voll qualifizierten catches im Speichern haben denselben Rumpf wie der generische `catch (Exception)` — zusammenfassbar.
 
 6. **UC3 bleibt blockiert**, bis ein Export-Service existiert — laut `requirements/analysis.md` außerhalb v1.0.
 
@@ -49,19 +49,19 @@ Offen zur Abnahme: **PR #16, Orchester-Umbau** (`refactor/agent-orchestration-fe
 ⚠️ WP4 UC3:  Lagerbestand exportieren – BLOCKIERT, kein Export-Service.
              Laut requirements/analysis.md außerhalb v1.0 (CSV/PDF erst Phase 2+).
 ✅ WP5 Teil 1: Rezepte-UI (RezeptListe/Form/Detail + RezeptNährwertAnzeige eingebettet, Portionen-Fix) – 18.10.2026
-⏳ WP5 Teil 2: Zutaten-CRUD (UC4)
+✅ WP5 Teil 2: Zutaten-CRUD (UC4) – Bearbeitungsmodus auf /rezepte/{id}, leeres Rezept → Löschen-Modal – 27.11.2026
 ⏳ WP6: UI Dashboard (UC7/UC8) – UC8-Service noch TODO
 ```
 
-### Test-Status (verifiziert 2026-10-18, `dotnet test` vom Repo-Root, gezählt in Testfällen)
+### Test-Status (verifiziert 2026-11-27, `dotnet test` vom Repo-Root, gezählt in Testfällen)
 ```
 Unit:          291 Testfälle ✅  (Services + Formatter)
 Integration:     3 Testfälle ✅  (2 EfRepository + 1 LagerortService/SQLite)
-UI (bUnit):    180 Testfälle ✅  (davon Rezept-UI 73)
+UI (bUnit):    215 Testfälle ✅  (davon Rezept-UI 108)
 ────────────────────────────────────
-TOTAL:         474 Testfälle ✅  (0 rot)
+TOTAL:         509 Testfälle ✅  (0 rot)
 ```
-UI-Aufschlüsselung: UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6 · MainLayout 3 · Rezept-UI 73
+UI-Aufschlüsselung: UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6 · MainLayout 3 · Rezept-UI 108
 
 ### Infrastruktur
 ```
@@ -98,6 +98,7 @@ UI-Aufschlüsselung: UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6
   umdrehen, prüfen, dass **genau** dieser Test fällt, Änderung zurücknehmen.
 - **Der EF-InMemory-Provider verdeckt Übersetzungsfehler nach SQLite.** Er wertet LINQ in C# aus; SQLite übersetzt `ToLower()` in `lower()`, das nur ASCII faltet. `l.Name.ToLower().Contains("öl")` fand „Ölkeller" in den Unit-Tests, in der echten App nicht (behoben 16.10.2026, `5608ee6`). Alles, was von DB-seitigem String-Verhalten abhängt (Case, Collation, Umlaute), braucht einen Test gegen SQLite `:memory:` — Muster: `src/Tests/Integration/LagerortServiceSqliteTests.cs`.
 - **Eine Mängelliste deckt nicht alle Stellen ab, die dieselbe Aussage tragen.** Bei UC9/UC10 (16.10.2026) erzeugte eine korrigierte Datumsangabe einen Widerspruch zur zweiten Angabe derselben Seite, die nicht auf der Liste stand. Bei Datum-/Stand-Korrekturen im Auftrag alle Vorkommen per grep mitnennen.
+- **Ladeverhalten steht im DbContext, nicht im Repository.** `FoodDatabaseContext.cs:110` hat `AutoInclude()` für `RezeptZutat.Lebensmittel` — eine Plan-Annahme in WP5 Teil 1 war daran falsch.
 - **Blazor-Formulare nie direkt an geladene Entities binden.** Der `FoodDatabaseContext` lebt pro Circuit; was das Formular in die Entity schreibt, ist für EF bereits eine Änderung — der Service sieht beim Update den neuen Wert als „alten“ (Duplikat-Prüfung wirkungslos), und nach Abbrechen landet die Eingabe mit dem nächsten `SaveChanges` irgendeines Services in der DB. Formular auf eine Kopie binden (Muster: `RezeptForm.razor`).
 
 ---
@@ -112,33 +113,29 @@ UI-Aufschlüsselung: UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6
 
 ---
 
-## ✅ ZULETZT FERTIGGESTELLT: Orchester-Umbau auf feature-crew (15.11.2026, PR #16)
+## ✅ ZULETZT FERTIGGESTELLT: WP5 Teil 2 — Zutaten-CRUD (27.11.2026)
 
-**Geliefert**: Die fünf Agents (plan-writer, test-agent, dev-agent, review-agent, doc-agent) sind durch zwei ersetzt: `implementer` (sonnet: Tests → Code → Doku, ein Commit pro Phase) und `reviewer` (opus, nur lesend, ein Review über den ganzen Diff). Die Hauptsession plant auf Opus im Plan Mode und schreibt Plan, PR-Text und diese Datei jetzt selbst. Neu: `docs/PROJECT-PROFILE.md` (alle Projektkonventionen inkl. 4-Teil-Doku-Check und UI-Regel), `docs/QUALITY-BAR.md`, `docs/PLAN-FORMAT.md`, `docs/ORCHESTRATION-DESIGN.md`, alles auf Deutsch. GitHub-App-Token-Flow unverändert. Kein Produktivcode geändert.
+**Geliefert**: `/rezepte/{id}` hat einen Bearbeitungsmodus für Zutaten. Man fügt hinzu (Lebensmittel-Dropdown, Einheiten `g, ml, Stück, TL, EL, Tasse, Prise`), ändert Menge/Einheit/Notiz und entfernt Zeilen, alles lokal. „Speichern“ schreibt gesammelt in der festen Reihenfolge Add → Update (nur geänderte) → Delete, deshalb greift die Mindestens-1-Regel des Service nie. „Abbrechen“ verwirft alles. Wird mit leerer Liste gespeichert, fragt ein Modal nach und archiviert dann das Rezept (`DeleteRezeptAsync`), denn ein leeres Rezept ist kein Rezept (User-Entscheidung). Die Prüfung von Lebensmittel und Menge 0,01–10000 läuft lokal vor jedem Service-Aufruf. Die Nährwerte laden nach dem Speichern neu (`@key` mit Versionszähler, `@key="Id"` hätte nicht gereicht). `sequence-uc4-rezepte.drawio` ist neu aufgebaut und wieder gültiges XML. UC4 ist in allen vier Doku-Teilen fertig. **474 → 509 Tests.**
 
-**Grund**: Ein Feature kostete acht Kaltstarts und drei Opus-Reviews; `haiku` erzeugte zu viele Korrekturrunden. Jetzt zwei Kaltstarts plus einer pro Korrekturrunde.
+**Erster Lauf der feature-crew**: zwei Kaltstarts plus eine Korrekturrunde. Der reviewer fand im Versuch 1 zwei echte Lücken: Beim Neuaufbau des Sequenzdiagramms gingen zwei bestehende Szenarien verloren, während die Doku sie noch beschrieb, und drei Fehlerzweige hatten keinen Test. Versuch 2 war `PASS`. Reibung, die das Profil nicht abdeckt, gab es keine.
 
-**Offen**: Commit-Nachrichten bleiben laut Profil englisch (Annahme, in PR #16 zur Bestätigung). Historische Pläne und Berichte (`UI-PHASE-PLAN.md`, `reviews/*`, Phasen-Protokolle in den Feature-HTMLs) nennen noch die alten Agents — bewusst als Historie belassen.
+**Prozess-Lehre**: Wer ein Diagramm „neu aufbaut“, muss im Auftrag ausdrücklich gesagt bekommen, dass bestehende Inhalte erhalten bleiben. Außerdem: Testzahlen im Plan gegen die Datei zählen. Der Plan nannte 28 bestehende Tests in `RezeptDetailTests.cs`, es waren 16.
 
 ---
 
-## ✅ VORLETZT FERTIGGESTELLT: WP5 Teil 1 — Rezepte-UI (18.10.2026)
+## ✅ VORLETZT FERTIGGESTELLT: Orchester-Umbau auf feature-crew (15.11.2026, PR #16)
 
-**Geliefert**: `/rezepte` (Liste, Suche, Soft-Delete-Modal), `/rezepte/neu` + `/{id}/bearbeiten` (Defaults Portionen 1/Medium, nach Speichern zum Detail), `/rezepte/{id}` (Stammdaten, Zutaten lesend, `RezeptNährwertAnzeige` eingebettet; ohne Zutaten Hinweis statt Nullwerten). Schwierigkeitsgrad deutsch angezeigt via `SchwierigkeitsgradAnzeige`, englisch gespeichert. **394 → 474 Tests.**
-
-**Zwei echte Fehler gefunden**: (1) Das Formular band an die EF-getrackte Entity — DbContext lebt pro Circuit, `UpdateRezeptAsync` bekommt per Identity Resolution dieselbe Instanz, die Eingaben stehen also schon drin, bevor der Service prüft. Lösung: Formular auf einer Kopie. `LebensmittelForm` hat denselben Fehler (vorgemerkt). (2) `RezeptNährwertAnzeige` startete fest bei 4 Portionen, der Service skaliert aber mit `rezept.Portionen` — fiel erst beim Einbetten auf, Fix `27dc466` per User-Entscheidung im selben PR.
-
-**Prozess-Lehre**: Eine Annahme im Plan war falsch („`EfRepository` lädt `RezeptZutat.Lebensmittel` nicht“) — `FoodDatabaseContext.cs:110` hat `AutoInclude()`. Behauptungen über Ladeverhalten im Plan gegen den DbContext prüfen, nicht gegen das Repository. Außerdem: Grenztests hinter einer zweiten Schutzstufe können nicht rot werden — angezeigten Zustand prüfen, nicht nur ausbleibende Service-Aufrufe.
+Die fünf Agents sind durch zwei ersetzt: `implementer` (sonnet) und `reviewer` (opus, nur lesend). Die Hauptsession plant auf Opus und schreibt Plan, PR-Text und diese Datei selbst. Neu sind `docs/PROJECT-PROFILE.md`, `docs/QUALITY-BAR.md`, `docs/PLAN-FORMAT.md` und `docs/ORCHESTRATION-DESIGN.md`. Commit-Nachrichten bleiben englisch, mit dem Merge von PR #16 bestätigt. Historische Pläne und Berichte nennen noch die alten Agents, bewusst als Historie belassen.
 
 ---
 
 ## 🚀 ROADMAP (nach Abschluss von UC6)
 
 ### Phase 1: UI-Komponenten (aktuell)
-WP4 fertig (UC2/6/9/10). UC3 blockiert (außerhalb v1.0). Nächstes Paket: WP5.
+WP4 fertig (UC2/6/9/10). UC3 blockiert (außerhalb v1.0). WP5 fertig. Nächstes Paket: WP6.
 
 ### Phase 2: UI Rezepte (WP5)
-Teil 1 ✅ (18.10.2026), Teil 2 Zutaten-CRUD offen.
+Teil 1 ✅ (18.10.2026), Teil 2 Zutaten-CRUD ✅ (27.11.2026) — WP5 fertig.
 Abhängigkeit: WP4 fertig ✅ (UC3 nicht nötig — außerhalb v1.0).
 - **UC4**: Rezepte CRUD UI (Liste, Form, Detail)
 - **UC5**: Rezept-Nährwerte automatisch berechnen (UI)
