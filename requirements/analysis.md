@@ -96,7 +96,7 @@
 ### **UC9: Lagerorte verwalten**
 - **CRUD-Operationen**: Erstellen, Lesen, Aktualisieren, Löschen
 - **Verwendung**: In UC2 zum Klassifizieren von Produktinstanzen
-- **Beispiele**: Kühlschrank, Tiefkühler, Pantry, Keller, Balkon, etc.
+- **Entstehung**: Lagerorte sind keine feste Liste, sondern entstehen beim Anlegen einer Packung: bestehenden Lagerort wählen oder „Neuer Lagerort…“ eintragen (z.B. Kühlschrank, Keller, Balkon). Jede Packung verweist per FK auf genau einen Lagerort.
 
 ### **UC10: Produktinstanzen mit MHD verwalten (zentral)**
 - **Zentrale Datenentität**: Jede gekaufte Produktinstanz bekommt eigenes MHD
@@ -212,7 +212,7 @@ EinkaufsListenEintrag
 2. Klick: "Neues Lebensmittel" oder "Produkt hinzufügen"
 3. Eingabe:
    - Produkt aus Katalog auswählen (oder neues Produkt + Nährwerte)
-   - Lagerort auswählen
+   - Lagerort auswählen oder neu eintragen (wird dabei angelegt)
    - Aktuelle Menge
    - Mindestbestand
    - **Verfallsdatum (für diese Instanz!)**

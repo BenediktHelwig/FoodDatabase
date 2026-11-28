@@ -13,7 +13,7 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 
 **Documentation Status:** ✅ COMPLETE  
 **Code Status:** ✅ COMPLETE  
-**Test Status:** ✅ 32/32 PASSING (100%)  
+**Test Status:** ✅ 40/40 PASSING (100%)  
 **Alignment:** ✅ Code ↔ Docs = 100% ALIGNED  
 
 ---
@@ -41,20 +41,20 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 
 ### 3. Test Suite
 - ✅ **File:** `src/Tests/Unit/Services/ProduktInstanzServiceTests.cs`
-- ✅ **Total Tests:** 32 Unit Tests
+- ✅ **Total Tests:** 40 Unit Tests
 - ✅ **Test Status:** ALL PASSING ✅
 - ✅ **Coverage:** 100%
 
 #### Test Breakdown:
 | Category | Count | Status |
 |----------|-------|--------|
-| CREATE | 6 | ✅ |
+| CREATE | 8 | ✅ |
 | READ | 6 | ✅ |
-| UPDATE | 4 | ✅ |
+| UPDATE | 8 | ✅ |
 | DELETE | 3 | ✅ |
 | BUSINESS LOGIC | 6 | ✅ |
-| VALIDATION / EDGE CASES | 7 | ✅ |
-| **TOTAL** | **32** | **✅ ALL PASSING** |
+| VALIDATION / EDGE CASES | 9 | ✅ |
+| **TOTAL** | **40** | **✅ ALL PASSING** |
 
 ### 4. Documentation
 - ✅ **File:** `docs/features/UC10-Produktinstanzen.html`
@@ -121,19 +121,19 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 | LebensmittelKatalogId > 0 | ✅ | ✅ (T2) | ✅ | ✅ |
 | Menge ≥ 0 | ✅ | ✅ (T3, T23) | ✅ | ✅ |
 | Verfallsdatum ≥ Today | ✅ | ✅ (T4, T27) | ✅ | ✅ |
-| Valid Lagerort | ✅ | ✅ (T5, T26) | ✅ | ✅ |
-| Lagerort not null | ✅ | ✅ (T6, T28) | ✅ | ✅ |
+| Gültige LagerortId (existiert, nicht archiviert) | ✅ | ✅ (T5, T6, T26) | ✅ | ✅ |
+| LagerortId > 0 | ✅ | ✅ (T5, T28) | ✅ | ✅ |
 | FIFO Ordering | ✅ | ✅ (T22) | ✅ | ✅ |
 
 ### 7. Test Details Documented
 
-#### CREATE Tests (6)
+#### CREATE Tests (8)
 - ✅ T1: Valid data creation
 - ✅ T2: LebensmittelKatalogId zero rejection
 - ✅ T3: Negative menge rejection
 - ✅ T4: Past verfallsdatum rejection
-- ✅ T5: Invalid lagerort rejection
-- ✅ T6: Null lagerort rejection
+- ✅ T5: Invalid LagerortId rejection (0, -1, 999; Theory, 3 Fälle)
+- ✅ T6: Archived Lagerort rejection
 
 #### READ Tests (6)
 - ✅ T7: Get by valid ID
@@ -143,10 +143,10 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 - ✅ T11: Get expired products
 - ✅ T12: Get sorted by expiry (FIFO)
 
-#### UPDATE Tests (4)
+#### UPDATE Tests (8)
 - ✅ T13: Valid update
 - ✅ T14: Reject negative menge on update
-- ✅ T15: Reject invalid lagerort on update
+- ✅ T15: Reject invalid LagerortId on update (Theory, 3 Fälle); T15a: archived Lagerort; T15b: sets new LagerortId
 - ✅ T16: Handle non-existent ID on update
 
 #### DELETE Tests (3)
@@ -162,12 +162,12 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 - ✅ T24: Get multiple instances per Lebensmittel
 - ✅ T25: Include today's expiry in expired list
 
-#### VALIDATION Tests (7)
-- ✅ T26: All valid Lagerorte (parametrized: Kühlschrank, Tiefkühler, Pantry, Anderes)
+#### VALIDATION Tests (9)
+- ✅ T26: All existing Lagerorte (parametrized: LagerortId 1, 2, 3)
 - ✅ T27: Today's expiry date allowed
-- ✅ T28: Reject empty lagerort
+- ✅ T28: Reject invalid LagerortId (0, -1, 999) and archived Lagerort in GetByLagerortAsync
 - ✅ T29: Handle non-existent ID in days calculation
-- ✅ T30-32: Additional edge cases
+- ✅ Weitere Grenzfälle: Archivierter Lagerort bei GetByLagerortAsync, LagerortId-Parametrisierung
 
 ### 8. Implementation Details Documented
 
@@ -177,7 +177,7 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 - ✅ Validation strategy (Service-level)
 - ✅ Error handling (ArgumentException, KeyNotFoundException)
 - ✅ KISS principle application
-- ✅ Lagerort-Konstanten configuration
+- ✅ Lagerort-Validierung gegen UC9-Tabelle (LagerortId, FK; Konstanten entfallen)
 
 ### 9. Domain Model Documented
 
@@ -186,7 +186,7 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
   - LebensmittelKatalogId (FK)
   - Menge (decimal)
   - Verfallsdatum (DateTime - **CENTRAL**)
-  - Lagerort (string)
+  - LagerortId (int, FK auf Lagerort)
   - KaufDatum
   - ErstelltAm
   - MindestbestandMenge (UC2 integration)
@@ -199,7 +199,7 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 - ✅ **Example documented:** 3 different Joghurt purchases with different expiry dates
 - ✅ **FIFO ordering:** Oldest expiry first (ascending order)
 - ✅ **Atomic updates:** Menge + Lagerort + MHD in ONE operation
-- ✅ **Performance:** Requires indizes on LebensmittelKatalogId, Lagerort, Verfallsdatum
+- ✅ **Performance:** Requires indizes on LebensmittelKatalogId, LagerortId, Verfallsdatum
 
 ---
 
@@ -209,7 +209,7 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 |--------|----------|--------|
 | Service Methods | 100% (9/9) | ✅ |
 | Public Methods | 100% (9/9) | ✅ |
-| Test Cases | 100% (32/32) | ✅ |
+| Test Cases | 100% (40/40) | ✅ |
 | Validations | 100% (6/6) | ✅ |
 | Diagrams | 100% (3/3) | ✅ |
 | Code Examples | 100% | ✅ |
@@ -231,7 +231,7 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 
 ### Inter-UC Dependencies
 - ✅ UC10 ← UC1 (LebensmittelKatalog required)
-- ✅ UC10 ← UC9 (Lagerorte optional)
+- ✅ UC10 ← UC9 (Lagerorte: Pflicht, FK ProduktInstanz.LagerortId)
 - ✅ UC10 → UC2 (LagerbestandService uses it)
 - ✅ UC10 → UC6 (Verbrauch ausbuchen)
 - ✅ UC10 → UC7 (Verfallswarnungen)
@@ -273,7 +273,7 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 ### Test Documentation
 - ✅ **Detailed:** Each test documented
 - ✅ **Categorized:** Grouped by functionality
-- ✅ **Complete:** All 32 tests listed
+- ✅ **Complete:** All 40 tests listed
 - ✅ **Accurate:** 100% match with code
 
 ---
@@ -281,7 +281,7 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 ## 🎯 Findings
 
 ### Strengths
-1. ✅ Excellent test coverage (32 tests, 100% passing)
+1. ✅ Excellent test coverage (40 tests, 100% passing)
 2. ✅ Central entity clearly designed (NOT global MHD)
 3. ✅ Multiple filtering options (by Lebensmittel, by Lagerort, by expiry)
 4. ✅ FIFO ordering implemented (oldest first)
@@ -334,13 +334,13 @@ UC10 (Produktinstanzen mit MHD) documentation has been **fully updated and valid
 
 ```
 ProduktInstanzServiceTests.cs
-├── CreateAsync Tests (6)
+├── CreateAsync Tests (8)
 │   ├── ✅ T1: Valid data creation
 │   ├── ✅ T2: Invalid LebensmittelKatalogId
 │   ├── ✅ T3: Negative menge
 │   ├── ✅ T4: Past verfallsdatum
-│   ├── ✅ T5: Invalid lagerort
-│   └── ✅ T6: Null lagerort
+│   ├── ✅ T5: Invalid LagerortId (0, -1, 999)
+│   └── ✅ T6: Archived Lagerort
 ├── GetAsync Tests (6)
 │   ├── ✅ T7: Get by ID
 │   ├── ✅ T8: Non-existent ID
@@ -348,10 +348,10 @@ ProduktInstanzServiceTests.cs
 │   ├── ✅ T10: Get by Lagerort
 │   ├── ✅ T11: Get expired
 │   └── ✅ T12: Sorted by expiry
-├── UpdateAsync Tests (4)
+├── UpdateAsync Tests (8)
 │   ├── ✅ T13: Valid update
 │   ├── ✅ T14: Negative menge
-│   ├── ✅ T15: Invalid lagerort
+│   ├── ✅ T15: Invalid LagerortId, archived Lagerort, new LagerortId set
 │   └── ✅ T16: Non-existent ID
 ├── DeleteAsync Tests (3)
 │   ├── ✅ T17: Valid delete
@@ -364,12 +364,12 @@ ProduktInstanzServiceTests.cs
 │   ├── ✅ T23: Zero menge allowed
 │   ├── ✅ T24: Multiple instances
 │   └── ✅ T25: Today's expiry included
-└── Validation/Edge Case Tests (7)
-    ├── ✅ T26: All Lagerorte (parametrized)
+└── Validation/Edge Case Tests (9)
+    ├── ✅ T26: All existing Lagerorte (parametrized, 3 Fälle)
     ├── ✅ T27: Today's date allowed
-    ├── ✅ T28: Empty lagerort rejected
+    ├── ✅ T28: Invalid LagerortId rejected
     ├── ✅ T29: Non-existent ID
-    ├── ✅ T30-32: Additional edge cases
+    ├── ✅ T28a: Archived Lagerort rejected
 
-TOTAL: 32/32 PASSING ✅
+TOTAL: 40/40 PASSING ✅
 ```

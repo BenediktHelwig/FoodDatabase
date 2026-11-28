@@ -64,12 +64,12 @@
         </mxCell>
 
         <!-- SCENARIO 1: CREATE ProduktInstanz (Einkauf) -->
-        <mxCell id="label-create" value="SCENARIO 1: Produktinstanz erstellen (Einkauf, 500g Joghurt, MHD 2026-06-20)" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontStyle=1;fontColor=#000000;backgroundColor=#ffffcc;" vertex="1" parent="1">
-          <mxGeometry x="30" y="120" width="600" height="30" as="geometry"/>
+        <mxCell id="label-create" value="SCENARIO 1: Produktinstanz erstellen (Einkauf, 500g Joghurt, MHD 2026-06-20). LagerortId: Dropdown oder UC9 GetOrCreateAsync(Name) bei „Neuer Lagerort…“" style="text;html=1;align=left;verticalAlign=top;fontSize=11;fontStyle=1;fontColor=#000000;backgroundColor=#ffffcc;" vertex="1" parent="1">
+          <mxGeometry x="30" y="120" width="780" height="30" as="geometry"/>
         </mxCell>
 
         <!-- 1. User klickt Neuer Einkauf -->
-        <mxCell id="msg1" value="1: CreateAsync(LebensmittelId=1, Menge=500, MHD=2026-06-20, Lagerort=Kühlschrank)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
+        <mxCell id="msg1" value="1: CreateAsync(LebensmittelId=1, Menge=500, MHD=2026-06-20, LagerortId=3)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="210" y="180" as="sourcePoint"/>
             <mxPoint x="420" y="180" as="targetPoint"/>
@@ -77,7 +77,7 @@
         </mxCell>
 
         <!-- 2. Service validiert Eingaben -->
-        <mxCell id="msg2" value="2: Validiere LebensmittelId, Menge ≥ 0, MHD ≥ heute, Lagerort valid" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+        <mxCell id="msg2" value="2: Validiere LebensmittelId, Menge ≥ 0, MHD ≥ heute, LagerortId &gt; 0 und Lagerort aktiv (nicht archiviert)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="420" y="210" as="sourcePoint"/>
             <mxPoint x="520" y="210" as="targetPoint"/>
@@ -138,7 +138,7 @@
         </mxCell>
 
         <!-- 1. User klickt auf Lagerort -->
-        <mxCell id="msg9" value="1: GetByLagerortAsync(&quot;Kühlschrank&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
+        <mxCell id="msg9" value="1: GetByLagerortAsync(LagerortId=3)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="210" y="500" as="sourcePoint"/>
             <mxPoint x="420" y="500" as="targetPoint"/>
@@ -146,7 +146,7 @@
         </mxCell>
 
         <!-- 2. Service validiert Lagerort -->
-        <mxCell id="msg10" value="2: Validiere Lagerort ∈ [Kühlschrank, Tiefkühler, Pantry, Anderes]" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+        <mxCell id="msg10" value="2: Validiere LagerortId &gt; 0, Lagerort existiert und ist nicht archiviert" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="420" y="530" as="sourcePoint"/>
             <mxPoint x="520" y="530" as="targetPoint"/>
@@ -162,7 +162,7 @@
         </mxCell>
 
         <!-- 4. Repository holt von DB -->
-        <mxCell id="msg12" value="4: SELECT * FROM ProduktInstanzen WHERE Lagerort = &quot;Kühlschrank&quot;" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=8;strokeWidth=2;" edge="1" parent="1" source="actor-repo" target="actor-db">
+        <mxCell id="msg12" value="4: SELECT * FROM ProduktInstanzen WHERE LagerortId = 3" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=8;strokeWidth=2;" edge="1" parent="1" source="actor-repo" target="actor-db">
           <mxGeometry width="1" relative="1" as="geometry">
             <mxPoint x="640" y="590" as="sourcePoint"/>
             <mxPoint x="840" y="590" as="targetPoint"/>
@@ -178,7 +178,7 @@
         </mxCell>
 
         <!-- 6. Service filtert (bereits gefiltert von DB) -->
-        <mxCell id="msg14" value="6: Filter by Lagerort = &quot;Kühlschrank&quot; ✓ (3 Treffer)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+        <mxCell id="msg14" value="6: Filter by LagerortId = 3 ✓ (3 Treffer)" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=8;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
           <mxGeometry width="1" relative="1" as="geometry">
             <mxPoint x="420" y="660" as="sourcePoint"/>
             <mxPoint x="520" y="660" as="targetPoint"/>
@@ -207,7 +207,7 @@
         </mxCell>
 
         <!-- 1. User klickt auf Instanz zum Bearbeiten -->
-        <mxCell id="msg17" value="1: UpdateAsync(Id=42, Menge=300, MHD=2026-06-20, Lagerort=Kühlschrank)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
+        <mxCell id="msg17" value="1: UpdateAsync(Id=42, Menge=300, MHD=2026-06-20, LagerortId=3)" style="html=1;verticalAlign=bottom;endArrow=block;endFill=1;dashed=0;rounded=0;fontSize=9;strokeWidth=2;" edge="1" parent="1" source="actor-ui" target="actor-service">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="210" y="840" as="sourcePoint"/>
             <mxPoint x="420" y="840" as="targetPoint"/>
@@ -215,7 +215,7 @@
         </mxCell>
 
         <!-- 2. Service validiert Eingaben -->
-        <mxCell id="msg18" value="2: Validiere ID, Menge ≥ 0, MHD, Lagerort" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
+        <mxCell id="msg18" value="2: Validiere ID, Menge ≥ 0, MHD, LagerortId" style="html=1;verticalAlign=bottom;endArrow=open;endFill=0;dashed=1;rounded=0;fontSize=9;strokeWidth=1;" edge="1" parent="1" source="actor-service" target="actor-service">
           <mxGeometry width="100" relative="1" as="geometry">
             <mxPoint x="420" y="870" as="sourcePoint"/>
             <mxPoint x="520" y="870" as="targetPoint"/>

@@ -17,12 +17,12 @@
         </mxCell>
 
         <!-- ProduktInstanz (zentral) - Updated für UC2 -->
-        <mxCell id="class3" value="ProduktInstanz (UC10 + UC2)&#10;─────────────────────────────&#10;- ID: int (PK)&#10;- LebensmittelKatalogID: int (FK)&#10;- Menge: decimal&#10;- MindestbestandMenge: decimal (UC2)&#10;- Verfallsdatum: DateTime&#10;- Einkaufsdatum: DateTime&#10;- Lagerort: string&#10;- ErstelltAm: DateTime&#10;- LebensmittelKatalog: nav property&#10;─────────────────────────────" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=9;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#ffff99;strokeWidth=3;strokeColor:#ff0000;" vertex="1" parent="1">
-          <mxGeometry x="650" y="50" width="320" height="240" as="geometry"/>
+        <mxCell id="class3" value="ProduktInstanz (UC10 + UC2)&#10;─────────────────────────────&#10;- ID: int (PK)&#10;- LebensmittelKatalogID: int (FK)&#10;- Menge: decimal&#10;- MindestbestandMenge: decimal (UC2)&#10;- Verfallsdatum: DateTime&#10;- Einkaufsdatum: DateTime&#10;- LagerortID: int (FK)&#10;- ErstelltAm: DateTime&#10;- LebensmittelKatalog: nav property&#10;- Lagerort: nav property&#10;─────────────────────────────" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=9;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#ffff99;strokeWidth=3;strokeColor:#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="650" y="50" width="320" height="252" as="geometry"/>
         </mxCell>
 
         <!-- Lagerort -->
-        <mxCell id="class4" value="Lagerort&#10;─────────────────&#10;- ID: int (PK)&#10;- Name: string&#10;- Beschreibung: string [optional]&#10;─────────────────&#10;+ GetProduktInstanzen()&#10;+ Update(string)&#10;+ Delete()" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#e1d5e7;strokeWidth=2;strokeColor:#000000;" vertex="1" parent="1">
+        <mxCell id="class4" value="Lagerort&#10;─────────────────&#10;- ID: int (PK)&#10;- Name: string&#10;- CreatedAt: DateTime&#10;- IsArchived: bool&#10;─────────────────" style="shape=rectangle;rounded=0;whiteSpace=wrap;html=1;fontSize=11;fontFamily=Courier New;align=left;verticalAlign=top;fillColor=#e1d5e7;strokeWidth=2;strokeColor:#000000;" vertex="1" parent="1">
           <mxGeometry x="50" y="350" width="200" height="150" as="geometry"/>
         </mxCell>
 
@@ -87,7 +87,7 @@
         <mxCell id="rel2" value="hat viele" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0;entryY=0.2;exitX=1;exitY=0.2;strokeWidth=2;strokeColor=#000000;" edge="1" parent="1" source="class1" target="class3"/>
 
         <!-- Lagerort -> ProduktInstanz (1:N) -->
-        <mxCell id="rel3" value="enthält" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0.3;entryY=0;exitX=0.3;exitY=1;strokeWidth=2;strokeColor:#000000;" edge="1" parent="1" source="class4" target="class3"/>
+        <mxCell id="rel3" value="enthält (FK LagerortID)" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0.3;entryY=0;exitX=0.3;exitY=1;strokeWidth=2;strokeColor:#000000;" edge="1" parent="1" source="class4" target="class3"/>
 
         <!-- ProduktInstanz -> VerfallsdatumWarnung (1:1) -->
         <mxCell id="rel4" value="hat" style="endArrow=open;html=1;rounded=0;endSize=12;startSize=12;entryX=0;entryY=0.3;exitX=1;exitY=0.5;strokeWidth=2;strokeColor:#cc0000;" edge="1" parent="1" source="class3" target="class5"/>
