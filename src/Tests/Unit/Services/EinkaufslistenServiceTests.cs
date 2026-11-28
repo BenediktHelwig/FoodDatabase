@@ -77,7 +77,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 100,
                     Verfallsdatum = new DateTime(2026, 12, 31),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -111,7 +111,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 1000,
                     Verfallsdatum = new DateTime(2026, 7, 15),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Kühlschrank",
+                    LagerortId = 1,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -147,7 +147,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 500, // <= Boundary: Menge == Mindestbestand
                     Verfallsdatum = new DateTime(2027, 1, 1),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -183,7 +183,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 100,
                     Verfallsdatum = new DateTime(2028, 6, 30),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -217,7 +217,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 100,
                     Verfallsdatum = new DateTime(2026, 8, 15),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Kühlschrank",
+                    LagerortId = 1,
                     LebensmittelKatalog = lebensmittel
                 },
                 new ProduktInstanz
@@ -228,7 +228,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 100,
                     Verfallsdatum = new DateTime(2026, 9, 1),
                     Einkaufsdatum = new DateTime(2026, 7, 5),
-                    Lagerort = "Kühlschrank",
+                    LagerortId = 1,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -265,7 +265,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 100,
                     Verfallsdatum = new DateTime(2026, 8, 20),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Kühlschrank",
+                    LagerortId = 1,
                     LebensmittelKatalog = lebensmittel
                 },
                 new ProduktInstanz
@@ -276,7 +276,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 100,
                     Verfallsdatum = new DateTime(2026, 8, 25),
                     Einkaufsdatum = new DateTime(2026, 7, 5),
-                    Lagerort = "Kühlschrank",
+                    LagerortId = 1,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -316,7 +316,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 3,
                     Verfallsdatum = new DateTime(2026, 7, 12),
                     Einkaufsdatum = new DateTime(2026, 7, 5),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel1
                 },
                 new ProduktInstanz
@@ -327,7 +327,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 500,
                     Verfallsdatum = new DateTime(2026, 7, 15),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Kühlschrank",
+                    LagerortId = 1,
                     LebensmittelKatalog = lebensmittel2
                 }
             };
@@ -367,7 +367,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 5,
                     Verfallsdatum = new DateTime(2026, 7, 20),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel1
                 },
                 new ProduktInstanz
@@ -378,7 +378,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 5,
                     Verfallsdatum = new DateTime(2026, 7, 18),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel2
                 }
             };
@@ -414,7 +414,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 100,
                     Verfallsdatum = new DateTime(2026, 7, 14),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Kühlschrank",
+                    LagerortId = 1,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -449,7 +449,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 250,
                     Verfallsdatum = new DateTime(2026, 7, 25),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Kühlschrank",
+                    LagerortId = 1,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -484,7 +484,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 10,
                     Verfallsdatum = new DateTime(2026, 10, 1),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -514,7 +514,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 200,
                     Verfallsdatum = new DateTime(2026, 8, 30),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = null // null Navigation Property
                 }
             };
@@ -550,7 +550,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 0,
                     Verfallsdatum = new DateTime(2027, 12, 31),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel
                 }
             };
@@ -596,7 +596,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 100,
                     Verfallsdatum = new DateTime(2026, 7, 20),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel1
                 },
                 new ProduktInstanz
@@ -607,7 +607,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 50,
                     Verfallsdatum = new DateTime(2026, 7, 21),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel2
                 },
                 new ProduktInstanz
@@ -618,7 +618,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 100,
                     Verfallsdatum = new DateTime(2026, 7, 22),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel3
                 }
             };
@@ -655,7 +655,7 @@ namespace FoodDatabase.Tests.Unit.Services
                     MindestbestandMenge = 75,
                     Verfallsdatum = new DateTime(2027, 5, 15),
                     Einkaufsdatum = new DateTime(2026, 7, 1),
-                    Lagerort = "Pantry",
+                    LagerortId = 3,
                     LebensmittelKatalog = lebensmittel
                 }
             };
