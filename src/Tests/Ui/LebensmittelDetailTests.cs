@@ -769,6 +769,61 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
+        public void Sollte_Packungszeile_Den_Lagerort_Namen_Anzeigen()
+        {
+            // Arrange
+            LebensmittelKatalog lebensmittel = LebensmittelTestDataBuilder.CreateLebensmittel()
+                .WithId(1)
+                .WithName("Mehl")
+                .WithEinheit("g")
+                .Build();
+
+            Nährwert nährwert = new NährwertTestDataBuilder()
+                .WithId(1)
+                .WithLebensmittelId(1)
+                .Build();
+
+            List<ProduktInstanz> packungen = new List<ProduktInstanz>
+            {
+                new ProduktInstanz
+                {
+                    Id = 7,
+                    LebensmittelKatalogId = 1,
+                    Menge = 500,
+                    Verfallsdatum = DateTime.Today.AddDays(7),
+                    Einkaufsdatum = DateTime.Today,
+                    LagerortId = 9, Lagerort = new Lagerort { Id = 9, Name = "Keller" }
+                }
+            };
+
+            Mock<ILebensmittelService> lebensmittelMock = new();
+            lebensmittelMock.Setup(s => s.GetLebensmittelByIdAsync(1))
+                .ReturnsAsync(lebensmittel);
+
+            Mock<INährwertService> nährwertMock = new();
+            nährwertMock.Setup(s => s.GetNährwertByLebensmittelIdAsync(1))
+                .ReturnsAsync(nährwert);
+
+            Mock<IProduktInstanzService> produktInstanzMock = new();
+            produktInstanzMock.Setup(s => s.GetByLebensmittelAsync(1))
+                .ReturnsAsync(packungen);
+
+            Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<INährwertService>(nährwertMock.Object);
+            Services.AddSingleton<IProduktInstanzService>(produktInstanzMock.Object);
+
+            // Act
+            IRenderedComponent<LebensmittelDetail> cut = RenderComponent<LebensmittelDetail>(
+                parameters => parameters.Add(p => p.Id, 1));
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                Assert.Contains("Keller", cut.Find("[data-testid='zeile-packung-7']").TextContent);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
         public void Sollte_Packungsliste_Nach_Verfallsdatum_Sortieren()
         {
             // Arrange: unsortierte Liste zurückgeben, um zu sichern, dass UI sortiert
@@ -838,7 +893,7 @@ namespace FoodDatabase.Tests.Ui
             // Assert: Reihenfolge sollte nach Verfallsdatum sortiert sein (1, 2, 3)
             cut.WaitForAssertion(() =>
             {
-                var rows = cut.FindAll("[data-testid^='zeile-packung-']");
+                IReadOnlyList<IElement> rows = cut.FindAll("[data-testid^='zeile-packung-']");
                 Assert.Equal(3, rows.Count);
                 Assert.Contains("data-testid=\"zeile-packung-1\"", rows[0].OuterHtml);
                 Assert.Contains("data-testid=\"zeile-packung-2\"", rows[1].OuterHtml);

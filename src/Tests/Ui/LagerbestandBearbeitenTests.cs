@@ -882,5 +882,138 @@ namespace FoodDatabase.Tests.Ui
                 Assert.Contains("data-testid=\"zeile-1\"", rows[2].OuterHtml);
             }, TimeSpan.FromSeconds(2));
         }
+
+        // === UC9→UC10: Lagerort-Filter aus UC9, Filter nach Id, Name in der Zeile ===
+
+        [Fact]
+        public void LagerortFilter_Options_ComeFromLagerortServiceWithIdAsValueAndNameAsText()
+        {
+            // Arrange
+            Mock<ILagerortService> lagerortMock = new();
+            lagerortMock.Setup(s => s.GetAlleLagerorte())
+                .ReturnsAsync(new List<Lagerort>
+                {
+                    new Lagerort { Id = 9, Name = "Keller" },
+                    new Lagerort { Id = 4, Name = "Balkon" }
+                });
+
+            Mock<IProduktInstanzService> instanzMock = new();
+            instanzMock.Setup(s => s.GetNachVerfallsdatumSortiertAsync())
+                .ReturnsAsync(new List<ProduktInstanz>());
+
+            Mock<ILebensmittelService> lebensmittelMock = new();
+            lebensmittelMock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(new List<LebensmittelKatalog>());
+
+            Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(lagerortMock.Object);
+            Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+
+            // Act
+            IRenderedComponent<LagerbestandBearbeiten> cut = RenderComponent<LagerbestandBearbeiten>();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                List<(string Wert, string Text)> optionen = cut.FindAll("[data-testid='select-lagerort-filter'] option")
+                    .Select(o => (o.GetAttribute("value") ?? "", o.TextContent.Trim()))
+                    .ToList();
+                Assert.Equal(
+                    new List<(string, string)> { ("", "Alle Lagerorte"), ("4", "Balkon"), ("9", "Keller") },
+                    optionen);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void Row_ShowsTheNameOfTheLagerort()
+        {
+            // Arrange
+            List<ProduktInstanz> instanzen = new()
+            {
+                new ProduktInstanz
+                {
+                    Id = 1,
+                    LebensmittelKatalogId = 1,
+                    Menge = 500,
+                    Verfallsdatum = DateTime.Today.AddDays(7),
+                    Einkaufsdatum = DateTime.Today,
+                    LagerortId = 9, Lagerort = new Lagerort { Id = 9, Name = "Keller" }
+                }
+            };
+
+            Mock<IProduktInstanzService> instanzMock = new();
+            instanzMock.Setup(s => s.GetNachVerfallsdatumSortiertAsync())
+                .ReturnsAsync(instanzen);
+
+            Mock<ILebensmittelService> lebensmittelMock = new();
+            lebensmittelMock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(new List<LebensmittelKatalog>
+                {
+                    new LebensmittelKatalog { Id = 1, Name = "Mehl", Einheit = "g", Kategorie = "Getreide" }
+                });
+
+            Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
+            Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+
+            // Act
+            IRenderedComponent<LagerbestandBearbeiten> cut = RenderComponent<LagerbestandBearbeiten>();
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                Assert.Contains("Keller", cut.Find("[data-testid='zeile-1']").TextContent);
+            }, TimeSpan.FromSeconds(2));
+        }
+
+        [Fact]
+        public void LagerortFilter_WithoutStatusFilter_ShowsOnlyRowsOfTheChosenLagerort()
+        {
+            // Arrange: Der Service liefert für Id 3 nur die Pantry-Packung (Filter wirkt über die Id)
+            List<ProduktInstanz> pantryInstanzen = new()
+            {
+                new ProduktInstanz
+                {
+                    Id = 2,
+                    LebensmittelKatalogId = 2,
+                    Menge = 1000,
+                    Verfallsdatum = DateTime.Today.AddDays(30),
+                    Einkaufsdatum = DateTime.Today,
+                    LagerortId = 3, Lagerort = new Lagerort { Id = 3, Name = "Pantry" }
+                }
+            };
+
+            Mock<IProduktInstanzService> instanzMock = new();
+            instanzMock.Setup(s => s.GetNachVerfallsdatumSortiertAsync())
+                .ReturnsAsync(new List<ProduktInstanz>());
+            instanzMock.Setup(s => s.GetByLagerortAsync(3))
+                .ReturnsAsync(pantryInstanzen);
+
+            Mock<ILebensmittelService> lebensmittelMock = new();
+            lebensmittelMock.Setup(s => s.GetAllLebensmittelAsync())
+                .ReturnsAsync(new List<LebensmittelKatalog>
+                {
+                    new LebensmittelKatalog { Id = 2, Name = "Zucker", Einheit = "g", Kategorie = "Süßstoffe" }
+                });
+
+            Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
+            Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+
+            IRenderedComponent<LagerbestandBearbeiten> cut = RenderComponent<LagerbestandBearbeiten>();
+
+            // Act
+            cut.Find("[data-testid='select-lagerort-filter']").Change("3");
+
+            // Assert
+            cut.WaitForAssertion(() =>
+            {
+                IReadOnlyList<IElement> rows = cut.FindAll("[data-testid^='zeile-']");
+                Assert.Single(rows);
+                Assert.Contains("Pantry", rows[0].TextContent);
+            }, TimeSpan.FromSeconds(2));
+
+            instanzMock.Verify(s => s.GetByLagerortAsync(3), Times.Once);
+        }
     }
 }
