@@ -103,7 +103,7 @@ UI-Aufschlüsselung: UC1 51 · UC2 26 · UC6 10 · UC9 8 · UC10 21 · NavMenu 6
 
 ## 🎯 WORKFLOW
 
-**Agent-Orchester feature-crew** (Details in `CLAUDE.md`, Konventionen in `docs/PROJECT-PROFILE.md`): Hauptsession (opus, plant und gibt frei) · `implementer` (sonnet, Tests → Code → Doku) · `reviewer` (opus, ein Review über den ganzen Diff; bis zu 3 Versuche, dann User-Eskalation).
+**Agent-Orchester feature-crew** (Start: `cd feature-crew; claude` · Crew unverändert und englisch in `feature-crew/` · Projektregeln mit Vorrang in `CLAUDE.md`, Konventionen in `docs/PROJECT-PROFILE.md`): Hauptsession (opus, plant und gibt frei) · `implementer` (sonnet, Tests → Code → Doku) · `reviewer` (opus, ein Review über den ganzen Diff; bis zu 3 Versuche, dann User-Eskalation).
 
 **Wichtige Abweichung für UI-Arbeit**: Laut Schicht-Regel in `docs/PROJECT-PROFILE.md` gilt bei WP3–WP6 **Code zuerst, dann Tests** — `implementer`: Code-Commit → grüner Test-Commit → 4-Teil-Doku-Commit, danach `reviewer` → PR. TDD (Tests zuerst) gilt nur für die Service-Schicht. Der Plan nennt die geltende Schicht-Regel.
 
@@ -119,8 +119,6 @@ UI-Aufschlüsselung: UC1 51 · UC2 26 · UC6 10 · UC9 8 · UC10 21 · NavMenu 6
 
 **Prozess-Lehren**:
 - Scheitert ein roter Commit am Compiler, sind auch die neuen Tests nie gelaufen. Ein Fehler im Arrange fällt dann erst im grünen Commit auf, und die Korrektur verletzt die Unveränderlichkeit. Bei neuen Integrationstests den Arrange vorab gegen den alten Stand prüfen, soweit er kompiliert.
-- Der Agent `implementer` wird in Claude Code nicht geladen: Seine unquotierte `description` enthält `: `, das YAML ist ungültig. Bis zur Korrektur (der User macht sie auf anderem Weg) übernimmt ein `general-purpose`-Agent auf Sonnet, der `.claude/agents/implementer.md` als Rollenanweisung liest.
-
 ---
 
 ## ✅ VORLETZT FERTIGGESTELLT: WP5 Teil 2 — Zutaten-CRUD (27.11.2026, PR #17)
@@ -155,7 +153,7 @@ Abhängigkeit: Alle UI-Komponenten komplett.
 
 ## 📁 WICHTIGE DATEIEN
 
-**Steuerung**: `CLAUDE.md` (Orchester-Workflow) · `UI-PHASE-PLAN.md` (WP-Zuschnitt, UI-Reihenfolge) · `.claude/agents/*.md` (implementer, reviewer) · `docs/PROJECT-PROFILE.md` · `docs/QUALITY-BAR.md` · `docs/PLAN-FORMAT.md`
+**Steuerung**: `feature-crew/` (unveränderte Crew, englisch: `CLAUDE.md`, `.claude/agents/`, `docs/QUALITY-BAR.md`, `docs/PLAN-FORMAT.md`) · `CLAUDE.md` (Projektregeln, Vorrang) · `docs/PROJECT-PROFILE.md` · `UI-PHASE-PLAN.md` (WP-Zuschnitt, UI-Reihenfolge)
 
 **Dokumentation**: `docs/architecture-overview.html` (Master) · `docs/features/UC*.html` · `requirements/use-cases.drawio` (Status-Diagramm) · `requirements/analysis.md` (v1.0-Scope)
 
