@@ -266,7 +266,7 @@ Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
             <ul>
                 <li><strong>Service Tests:</strong> 34 Testfälle aus 29 Testmethoden (27 Fact + 2 Theory mit 7 InlineData-Fällen) ✅ (Backend: GetAlleLagerorte, Validation, Normalization, GetOrCreate, Autocomplete)</li>
                 <li><strong>SQLite-Integration:</strong> 1 Testfall ✅ (LagerortServiceSqliteTests.cs, Autocomplete gegen SQLite)</li>
-                <li><strong>FK-Beziehung zu ProduktInstanz:</strong> 3 weitere SQLite-Integrationstests (ProduktInstanzLagerortSqliteTests.cs) und die Formular-Tests sind in UC10 gezählt, nicht in diesen 43</li>
+                <li><strong>FK-Beziehung zu ProduktInstanz:</strong> 3 weitere SQLite-Integrationstests (ProduktInstanzLagerortSqliteTests.cs) und die 21 Formular-Tests (ProduktInstanzFormTests, gelistet und gezählt in UC2-Lagerbestand) sind nicht in diesen 43 enthalten</li>
                 <li><strong>UI Tests (Liste):</strong> 5 ✅ (Table rendering, columns, empty state, new-button, error handling)</li>
                 <li><strong>UI Tests (Form):</strong> 3 ✅ (Form rendering, service call, validation errors)</li>
                 <li><strong>Total Tests:</strong> 43 Testfälle (Service 34 + SQLite-Integration 1 + UI 8) ✅</li>
@@ -479,8 +479,8 @@ src/Tests/
 
             <h3>Abhängigkeiten (andere UCs)</h3>
             <ul>
-                <li>Erweitert: <strong>UC10: Produktinstanzen mit MHD</strong> (LagerortId FK ⏳ geplant)</li>
-                <li>Erweitert: <strong>UC2: Lagerbestand</strong> (AddToBestand mit Lagerort-Input ⏳ geplant)</li>
+                <li>Erweitert: <strong>UC10: Produktinstanzen mit MHD</strong> (LagerortId FK ✅ umgesetzt)</li>
+                <li>Erweitert: <strong>UC2: Lagerbestand</strong> (AddToBestand mit Lagerort-Input ✅ umgesetzt)</li>
                 <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong> (indirekt)</li>
             </ul>
 

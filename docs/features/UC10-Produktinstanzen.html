@@ -18,7 +18,7 @@
             <div class="meta">
                 Use-Case <strong>10</strong> |
                 Status: <span class="status-badge complete">✅ COMPLETE (Service + WP4 UI)</span> |
-                Tests: <strong>40 Service + 20 UI (bUnit) + 5 Unit + 3 SQLite-Integration PASSING</strong> |
+                Tests: <strong>40 Service + 21 UI (bUnit) + 5 Unit + 3 SQLite-Integration PASSING</strong> |
                 Code: <strong>Production Ready</strong>
             </div>
         </header>
@@ -510,7 +510,7 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
         </section>
 
         <section>
-            <h2>✅ Tests (40 Service Unit + 20 bUnit + 5 Unit + 3 SQLite-Integration = 68 PASSING ✅)</h2>
+            <h2>✅ Tests (40 Service Unit + 21 bUnit + 5 Unit + 3 SQLite-Integration = 69 PASSING ✅)</h2>
 
             <h3>CREATE Tests (8 Testfälle, 6 Methoden)</h3>
             <div class="checklist">
@@ -618,11 +618,11 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
                 </tr>
                 <tr>
                     <td><strong>Tests</strong></td>
-                    <td>✅ 68/68 PASSING (100%) — 40 Service Unit + 20 bUnit + 5 Unit + 3 SQLite-Integration</td>
+                    <td>✅ 69/69 PASSING (100%) — 40 Service Unit + 21 bUnit + 5 Unit + 3 SQLite-Integration</td>
                 </tr>
                 <tr>
                     <td><strong>Service</strong></td>
-                    <td>✅ ProduktInstanzService.cs (224 Zeilen, 9 Public Methods)</td>
+                    <td>✅ ProduktInstanzService.cs (229 Zeilen, 9 Public Methods)</td>
                 </tr>
                 <tr>
                     <td><strong>Interface</strong></td>
@@ -693,7 +693,7 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
         <section>
             <h2>⚙️ Implementierungs-Details</h2>
 
-            <h3>ProduktInstanzService.cs (224 Zeilen)</h3>
+            <h3>ProduktInstanzService.cs (229 Zeilen)</h3>
             <p><strong>Konstruktor:</strong> Dependency Injection von IRepository&lt;ProduktInstanz&gt; und IRepository&lt;Lagerort&gt; (zur Prüfung der LagerortId)</p>
             <p><strong>Konfiguration:</strong> Lagerort-Validierung gegen die UC9-Tabelle: Die Id muss &gt; 0 sein und zu einem nicht archivierten Lagerort gehören, sonst <code>ArgumentException</code></p>
 
@@ -861,7 +861,7 @@ Färbung: Zeile mit Klasse table-danger, wenn (Verfallsdatum &lt; DateTime.Today
 
         <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 0.9em;">
             <p>FoodDatabase | UC10 | Produktinstanzen mit MHD (ZENTRAL!)</p>
-            <p>Status: ✅ COMPLETE (68/68 Tests Passing) | Doc Version: 2.2 | Updated: 2026-11-28</p>
+            <p>Status: ✅ COMPLETE (69/69 Tests Passing) | Doc Version: 2.2 | Updated: 2026-11-28</p>
             <p><a href="../architecture-overview.html">← Zurück zur Übersicht</a></p>
         </footer>
     </div>
