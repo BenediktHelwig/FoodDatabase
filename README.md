@@ -101,29 +101,36 @@ Coverage Target: >80%
 
 ## 🎼 Agent-Orchester (feature-crew)
 
-Features entstehen über ein testgetriebenes Orchester aus Claude-Code-Agents. Die Methode ist fest:
-Tests zuerst (bei UI-Arbeit Code zuerst), dann die Implementierung, am Ende ein unabhängiges Review.
-Die Projektkonventionen stehen in [`docs/PROJECT-PROFILE.md`](docs/PROJECT-PROFILE.md).
+Features entstehen über die [`feature-crew`](feature-crew/), ein testgetriebenes Orchester aus
+Claude-Code-Agents. Sie liegt unverändert und englisch unter `feature-crew/` und wird nur als
+Ganzes aus ihrem Quellprojekt ersetzt. Die Methode ist fest: Tests zuerst (bei UI-Arbeit Code
+zuerst), dann die Implementierung, am Ende ein unabhängiges Review. Was dieses Projekt abweichend
+verlangt, steht in den Projektregeln [`CLAUDE.md`](CLAUDE.md) und im Profil
+[`docs/PROJECT-PROFILE.md`](docs/PROJECT-PROFILE.md) — beide haben Vorrang vor der Crew.
 
 ### Agents
 
 | Agent | Modell | Aufgabe |
 | --- | --- | --- |
-| Hauptsession ([`CLAUDE.md`](CLAUDE.md)) | opus | Spricht mit dir, plant, delegiert, gibt frei, öffnet die Pull Request |
+| Hauptsession ([`feature-crew/CLAUDE.md`](feature-crew/CLAUDE.md)) | opus | Spricht mit dir, plant, delegiert, gibt frei, öffnet die Pull Request |
 | `implementer` | sonnet | Tests → Code → Dokumentation, ein Commit pro Phase |
 | `reviewer` | opus | Ein Review der ganzen Änderung, nur lesend |
 
-Warum das Orchester so geschnitten ist — und welche Rollen bewusst wegfielen —, steht in
-[`docs/ORCHESTRATION-DESIGN.md`](docs/ORCHESTRATION-DESIGN.md). Der gemeinsame Maßstab ist
-[`docs/QUALITY-BAR.md`](docs/QUALITY-BAR.md), der Plan-Aufbau
-[`docs/PLAN-FORMAT.md`](docs/PLAN-FORMAT.md).
+Warum das Orchester so geschnitten ist, steht in
+[`feature-crew/docs/ORCHESTRATION-DESIGN.md`](feature-crew/docs/ORCHESTRATION-DESIGN.md). Der
+gemeinsame Maßstab ist [`feature-crew/docs/QUALITY-BAR.md`](feature-crew/docs/QUALITY-BAR.md), der
+Plan-Aufbau [`feature-crew/docs/PLAN-FORMAT.md`](feature-crew/docs/PLAN-FORMAT.md).
 
 ### Starten
 
 ```bash
-cd FoodDatabase
+cd FoodDatabase/feature-crew
 claude
 ```
+
+Die Sitzung lädt `feature-crew/CLAUDE.md` und die Projektregeln aus der Root-`CLAUDE.md`. Token-Hook
+und Freigaben für diese Sitzung stehen in der lokalen, nicht versionierten
+`feature-crew/.claude/settings.local.json`.
 
 Dann sagen, was gebaut werden soll:
 
@@ -164,7 +171,7 @@ einen Diff und mergst sie; Anmerkungen kommen als zusätzlicher Commit zurück.
 
 | Skill | Herkunft | Zweck |
 | --- | --- | --- |
-| `grill-me` | `.claude/skills/grill-me/` | Feature-Klärung durch die Hauptsession |
+| `grill-me` | `feature-crew/.claude/skills/grill-me/` | Feature-Klärung durch die Hauptsession |
 
 ### Naming Conventions
 - Branches: `feat/…`, `fix/…`, `docs/…`, `refactor/…`, `chore/…`

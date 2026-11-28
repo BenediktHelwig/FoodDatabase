@@ -1,8 +1,10 @@
 # Projekt-Profil: FoodDatabase
 
-Die verbindlichen Konventionen dieses Projekts für das Agent-Orchester. Die Methode steht in
-[`QUALITY-BAR.md`](QUALITY-BAR.md); dieses Profil liefert die konkreten Regeln. Bei Konventionen
-gewinnt das Profil, bei der Methode die Quality Bar. Korrekturen des Users sind maßgeblich.
+Die verbindlichen Konventionen dieses Projekts für die `feature-crew`. Die Methode steht in
+[`feature-crew/docs/QUALITY-BAR.md`](../feature-crew/docs/QUALITY-BAR.md); dieses Profil liefert
+die konkreten Regeln. Bei Konventionen gewinnt das Profil, bei der Methode die Quality Bar —
+**außer bei den „Abweichungen von der Methode“ unten, die der Quality Bar vorgehen**. Korrekturen
+des Users sind maßgeblich.
 
 ## Stack
 
@@ -34,8 +36,32 @@ gewinnt das Profil, bei der Methode die Quality Bar. Korrekturen des Users sind 
 | **Service-Schicht** (`src/App/Services/`, Models) | **TDD** — Tests zuerst | Roter Test-Commit vor jedem Produktivcode, wie in der Quality Bar §1 |
 | **UI-Schicht** (WP3–WP6, `src/App/Components/`, siehe `UI-PHASE-PLAN.md`) | **Code zuerst, dann Tests** | Code-Commit, danach ein Test-Commit, der **grün** ist. Ab dem Test-Commit gilt die Unveränderlichkeit der Tests genauso |
 
-Der Feature-Plan nennt im Abschnitt „Reihenfolge“ ausdrücklich, welche Regel gilt. Fehlt die
+Der Feature-Plan nennt im Abschnitt „Order of work“ ausdrücklich, welche Regel gilt. Fehlt die
 Angabe, gilt TDD.
+
+## Abweichungen von der Methode (Vorrang vor der Quality Bar)
+
+| Quality Bar | Gilt in diesem Projekt stattdessen |
+| --- | --- |
+| §1 „Tests first“ — überall | Nur in der **Service-Schicht**. In der **UI-Schicht** kommt der Code-Commit zuerst, danach ein **grüner** Test-Commit (Schicht-Regel oben). Alle übrigen Regeln aus §1 gelten; „red commit“ heißt dort „Test-Commit“, und die Unveränderlichkeit der Tests zählt ab ihm |
+| §4 „In the format the profile names“ | Dokumentiert ist ein Feature erst mit dem vollständigen **4-Teil-Check** (unten) |
+| §5 „Everything the crew writes is in English“ | Projekt-Doku, Pläne, PR-Text und Kommentare sind **deutsch** (Abschnitt „Sprache“) |
+| §5 Commits „tests (red), implementation (green)“ | Bei der UI-Regel: Implementierung, dann Tests (grün) |
+
+**Plan-Format bei der UI-Regel:** Im Abschnitt „Progress“ aus `feature-crew/docs/PLAN-FORMAT.md`
+tauschen die ersten beiden Zeilen Platz und Wortlaut; die Pläne selbst schreibt die Hauptsession
+deutsch:
+
+```markdown
+- [ ] Implementierung fertig, Build sauber (implementer)
+- [ ] Tests geschrieben, ganze Suite grün (implementer) — Test-Commit: <sha>
+```
+
+Der Abschnitt „Order of work“ beginnt mit `Schicht-Regel: <TDD | UI>`.
+
+**Reviewer bei der UI-Regel:** `git log` zeigt den Code-Commit vor dem Test-Commit, und der
+Test-Commit ist grün. `git diff <test-sha>..HEAD` über die Testdateien ist leer, außer ein
+`fix tests per review`-Commit beantwortet einen Mangel.
 
 ## Code-Konventionen (verbindlich)
 
@@ -91,8 +117,9 @@ Gestaltung:
 
 ## Sprache
 
-Alles, was das Orchester schreibt — Dokumentation, Pläne, Agent-Dateien, Kommentare, PR-Text — ist
-**deutsch**. Ausnahmen: Commit-Nachrichten (englisch, siehe oben) und bestehende Code-Bezeichner.
+Alles, was die Crew ins Projekt schreibt — Dokumentation, Pläne, Kommentare, PR-Text — ist
+**deutsch**. Ausnahmen: Commit-Nachrichten (englisch, siehe oben), bestehende Code-Bezeichner und
+die Dateien der Crew unter `feature-crew/` — die bleiben **englisch** und werden nie übersetzt.
 
 ## Tabu
 
@@ -101,3 +128,5 @@ Alles, was das Orchester schreibt — Dokumentation, Pläne, Agent-Dateien, Komm
   Features, siehe 4-Teil-Check) und historische Pläne (`UI-PHASE-PLAN.md`,
   `FIX-UI-TESTS-PLAN.md`, `docs/DOC-AGENT-PLAN.md`) — nicht umschreiben
 - `C:\Users\bened\.github-app\` — außerhalb des Repos, der Private Key wird nie gelesen
+- `feature-crew/` — die Crew selbst; nie ändern, nie übersetzen, nur als Ganzes aus dem
+  Quellprojekt ersetzen
