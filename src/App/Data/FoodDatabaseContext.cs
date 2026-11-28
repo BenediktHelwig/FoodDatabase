@@ -24,7 +24,7 @@ namespace FoodDatabase.App.Data
         /// <summary>DbSet für ProduktInstanzen (Packungen mit Verfallsdatum und Lagerort).</summary>
         public DbSet<ProduktInstanz> ProduktInstanzen { get; set; }
 
-        /// <summary>DbSet für Lagerorte (UC9: Dynamische Lagerverwaltung, wird in UC9-Dev-Phase integriert).</summary>
+        /// <summary>DbSet für Lagerorte (UC9: Dynamische Lagerverwaltung, Ziel des FK von ProduktInstanz).</summary>
         public DbSet<Lagerort> Lagerorte { get; set; }
 
         /// <summary>DbSet für Nährwerte (UC3: Nährwertinformationen pro Lebensmittel).</summary>
@@ -61,8 +61,12 @@ namespace FoodDatabase.App.Data
                 .HasForeignKey(p => p.LebensmittelKatalogId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ProduktInstanz → Lagerort Integration kommt in UC9-Dev-Phase
-            // Momentan wird Lagerort als string Feld in ProduktInstanz gespeichert
+            // ProduktInstanz → Lagerort (N:1). Restrict: Ein Lagerort mit Packungen ist nicht löschbar.
+            modelBuilder.Entity<ProduktInstanz>()
+                .HasOne(p => p.Lagerort)
+                .WithMany()
+                .HasForeignKey(p => p.LagerortId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Nährwert → LebensmittelKatalog (1:1)
             // Jedes Lebensmittel hat genau einen Nährwert-Eintrag
@@ -105,6 +109,10 @@ namespace FoodDatabase.App.Data
             // NICHT RezeptZutat.Rezept oder Rezept.Zutaten (Zyklus!)
             modelBuilder.Entity<ProduktInstanz>()
                 .Navigation(p => p.LebensmittelKatalog)
+                .AutoInclude();
+
+            modelBuilder.Entity<ProduktInstanz>()
+                .Navigation(p => p.Lagerort)
                 .AutoInclude();
 
             modelBuilder.Entity<RezeptZutat>()

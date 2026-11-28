@@ -33,14 +33,24 @@ namespace FoodDatabase.Tests.Integration
             }
         }
 
+        /// <summary>
+        /// Legt einen Katalog-Eintrag samt Nährwert an. Das Modell verlangt für LebensmittelKatalog einen
+        /// Nährwert (NährwertId, zirkulär zu Nährwert.LebensmittelId); den Zirkel löst der Test per SQL
+        /// mit ausgeschalteten Fremdschlüsseln, weil er hier nicht Gegenstand ist.
+        /// </summary>
         private async Task<int> LegeKatalogEintragAnAsync()
         {
             using (FoodDatabaseContext context = new FoodDatabaseContext(_dbContextOptions))
             {
-                LebensmittelKatalog katalog = new LebensmittelKatalog { Name = "Milch", Einheit = "ml" };
-                context.LebensmittelKatalog.Add(katalog);
-                await context.SaveChangesAsync();
-                return katalog.Id;
+                await context.Database.ExecuteSqlRawAsync("PRAGMA foreign_keys = OFF;");
+                await context.Database.ExecuteSqlRawAsync(
+                    "INSERT INTO Nährwerte (Id, LebensmittelId, Kalorien, Fett, GesättigteFettsäuren, Kohlenhydrate, Zucker, Ballaststoffe, Protein, Salz, StandardMengeEinheit, CreatedAt, IsArchived) " +
+                    "VALUES (1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'g', '2026-01-01 00:00:00', 0);");
+                await context.Database.ExecuteSqlRawAsync(
+                    "INSERT INTO LebensmittelKatalog (Id, Name, Einheit, Kategorie, ErstelltAm, NährwertId) " +
+                    "VALUES (1, 'Milch', 'ml', 'Milchprodukte', '2026-01-01 00:00:00', 1);");
+                await context.Database.ExecuteSqlRawAsync("PRAGMA foreign_keys = ON;");
+                return 1;
             }
         }
 

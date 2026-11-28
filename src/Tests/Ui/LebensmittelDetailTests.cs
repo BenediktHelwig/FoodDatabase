@@ -725,7 +725,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(7),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 },
                 new ProduktInstanz
                 {
@@ -734,7 +734,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 1000,
                     Verfallsdatum = DateTime.Today.AddDays(30),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Pantry"
+                    LagerortId = 3, Lagerort = new Lagerort { Id = 3, Name = "Pantry" }
                 }
             };
 
@@ -793,7 +793,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 300,
                     Verfallsdatum = DateTime.Today.AddDays(30),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Pantry"
+                    LagerortId = 3, Lagerort = new Lagerort { Id = 3, Name = "Pantry" }
                 },
                 new ProduktInstanz
                 {
@@ -802,7 +802,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(10),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 },
                 new ProduktInstanz
                 {
@@ -811,7 +811,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 1000,
                     Verfallsdatum = DateTime.Today.AddDays(20),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Pantry"
+                    LagerortId = 3, Lagerort = new Lagerort { Id = 3, Name = "Pantry" }
                 }
             };
 

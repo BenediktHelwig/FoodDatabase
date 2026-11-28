@@ -4,6 +4,7 @@
 @using FoodDatabase.App.Services.Interfaces
 @inject IProduktInstanzService ProduktInstanzService
 @inject ILebensmittelService LebensmittelService
+@inject ILagerortService LagerortService
 @inject NavigationManager NavigationManager
 
 <div class="container mt-4">
@@ -69,16 +70,16 @@
                     <div class="mb-3">
                         <label for="lagerort" class="form-label">Lagerort *</label>
                         <InputSelect id="lagerort"
-                                     @bind-Value="model.Lagerort"
+                                     @bind-Value="model.LagerortId"
                                      class="form-select"
                                      data-testid="select-lagerort">
-                            <option value="">-- Lagerort wählen --</option>
-                            <option value="Kühlschrank">Kühlschrank</option>
-                            <option value="Tiefkühler">Tiefkühler</option>
-                            <option value="Pantry">Pantry</option>
-                            <option value="Anderes">Anderes</option>
+                            <option value="0">-- Lagerort wählen --</option>
+                            @foreach (Lagerort lagerort in alleLagerorte)
+                            {
+                                <option value="@lagerort.Id">@lagerort.Name</option>
+                            }
                         </InputSelect>
-                        <ValidationMessage For="() => model.Lagerort" />
+                        <ValidationMessage For="() => model.LagerortId" />
                     </div>
 
                     <div class="d-flex gap-2">
@@ -104,12 +105,14 @@
 
     private ProduktInstanzFormModel model = new ProduktInstanzFormModel();
     private List<LebensmittelKatalog> alleLebensmittel = new();
+    private List<Lagerort> alleLagerorte = new();
     private string fehler = "";
     private bool lädt = false;
 
     protected override async Task OnInitializedAsync()
     {
         await LadeLebensmittel();
+        await LadeLagerorte();
 
         if (Id > 0)
         {
@@ -122,7 +125,7 @@
                     model.LebensmittelKatalogId = instanz.LebensmittelKatalogId;
                     model.Menge = instanz.Menge;
                     model.Verfallsdatum = instanz.Verfallsdatum;
-                    model.Lagerort = instanz.Lagerort;
+                    model.LagerortId = instanz.LagerortId;
                 }
             }
             catch (Exception ex)
@@ -149,6 +152,19 @@
         }
     }
 
+    private async Task LadeLagerorte()
+    {
+        try
+        {
+            IEnumerable<Lagerort> result = await LagerortService.GetAlleLagerorte();
+            alleLagerorte = result.OrderBy(l => l.Name).ToList();
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Laden der Lagerorte: {ex.Message}";
+        }
+    }
+
     private async Task SpeichernAsync()
     {
         lädt = true;
@@ -161,7 +177,7 @@
                     model.LebensmittelKatalogId,
                     model.Menge,
                     model.Verfallsdatum,
-                    model.Lagerort);
+                    model.LagerortId);
             }
             else
             {
@@ -169,7 +185,7 @@
                     Id,
                     model.Menge,
                     model.Verfallsdatum,
-                    model.Lagerort);
+                    model.LagerortId);
             }
 
             NavigationManager.NavigateTo("/lagerbestand");
@@ -191,6 +207,6 @@
         public int LebensmittelKatalogId { get; set; }
         public decimal Menge { get; set; }
         public DateTime Verfallsdatum { get; set; } = DateTime.Today.AddDays(30);
-        public string Lagerort { get; set; } = "";
+        public int LagerortId { get; set; }
     }
 }

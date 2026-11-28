@@ -13,7 +13,7 @@ namespace FoodDatabase.App.Services.Interfaces
     public interface IProduktInstanzService
     {
         /// <summary>Erstellt eine neue ProduktInstanz mit Validierungen.</summary>
-        Task<ProduktInstanz> CreateAsync(int lebensmittelKatalogId, decimal menge, DateTime verfallsdatum, string lagerort);
+        Task<ProduktInstanz> CreateAsync(int lebensmittelKatalogId, decimal menge, DateTime verfallsdatum, int lagerortId);
 
         /// <summary>Ruft eine ProduktInstanz anhand ihrer ID ab.</summary>
         Task<ProduktInstanz> GetByIdAsync(int id);
@@ -22,7 +22,7 @@ namespace FoodDatabase.App.Services.Interfaces
         Task<List<ProduktInstanz>> GetByLebensmittelAsync(int lebensmittelKatalogId);
 
         /// <summary>Ruft alle ProduktInstanzen für einen Lagerort ab.</summary>
-        Task<List<ProduktInstanz>> GetByLagerortAsync(string lagerort);
+        Task<List<ProduktInstanz>> GetByLagerortAsync(int lagerortId);
 
         /// <summary>Ruft alle Instanzen sortiert nach Verfallsdatum ab (FIFO-Reihenfolge: älteste zuerst).</summary>
         Task<List<ProduktInstanz>> GetNachVerfallsdatumSortiertAsync();
@@ -31,7 +31,7 @@ namespace FoodDatabase.App.Services.Interfaces
         Task<List<ProduktInstanz>> GetVerfallenenAsync(DateTime? standdatum = null);
 
         /// <summary>Aktualisiert eine bestehende ProduktInstanz mit Validierungen.</summary>
-        Task UpdateAsync(int id, decimal menge, DateTime verfallsdatum, string lagerort);
+        Task UpdateAsync(int id, decimal menge, DateTime verfallsdatum, int lagerortId);
 
         /// <summary>Löscht eine ProduktInstanz anhand ihrer ID.</summary>
         Task DeleteAsync(int id);

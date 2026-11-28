@@ -16,6 +16,19 @@ namespace FoodDatabase.Tests.Ui
             JSInterop.Mode = JSRuntimeMode.Loose;
         }
 
+        private static ILagerortService ErstelleLagerortService()
+        {
+            Mock<ILagerortService> lagerortMock = new();
+            lagerortMock.Setup(s => s.GetAlleLagerorte())
+                .ReturnsAsync(new List<Lagerort>
+                {
+                    new Lagerort { Id = 1, Name = "Kühlschrank" },
+                    new Lagerort { Id = 2, Name = "Tiefkühler" },
+                    new Lagerort { Id = 3, Name = "Pantry" }
+                });
+            return lagerortMock.Object;
+        }
+
         [Fact]
         public void RendersTable_WithAllProduktInstanzen()
         {
@@ -29,7 +42,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(7),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 },
                 new ProduktInstanz
                 {
@@ -38,7 +51,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 1000,
                     Verfallsdatum = DateTime.Today.AddDays(30),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Pantry"
+                    LagerortId = 3, Lagerort = new Lagerort { Id = 3, Name = "Pantry" }
                 }
             };
 
@@ -57,6 +70,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -85,6 +99,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(new List<LebensmittelKatalog>());
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -110,7 +125,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(-1),
                     Einkaufsdatum = DateTime.Today.AddDays(-10),
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -128,6 +143,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -154,7 +170,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(7),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -172,6 +188,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -198,6 +215,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(new List<LebensmittelKatalog>());
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -220,7 +238,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(-1),
                     Einkaufsdatum = DateTime.Today.AddDays(-10),
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -240,6 +258,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -272,7 +291,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(7),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -284,7 +303,7 @@ namespace FoodDatabase.Tests.Ui
             Mock<IProduktInstanzService> instanzMock = new();
             instanzMock.Setup(s => s.GetNachVerfallsdatumSortiertAsync())
                 .ReturnsAsync(new List<ProduktInstanz>());
-            instanzMock.Setup(s => s.GetByLagerortAsync("Kühlschrank"))
+            instanzMock.Setup(s => s.GetByLagerortAsync(1))
                 .ReturnsAsync(lagerortInstanzen);
 
             Mock<ILebensmittelService> lebensmittelMock = new();
@@ -292,13 +311,14 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
             IRenderedComponent<LagerbestandBearbeiten> cut = RenderComponent<LagerbestandBearbeiten>();
 
             IElement lagerortFilter = cut.Find("[data-testid='select-lagerort-filter']");
-            lagerortFilter.Change("Kühlschrank");
+            lagerortFilter.Change("1");
 
             // Assert
             cut.WaitForAssertion(() =>
@@ -308,7 +328,7 @@ namespace FoodDatabase.Tests.Ui
                 Assert.Contains("Mehl", rows[0].TextContent);
             }, TimeSpan.FromSeconds(2));
 
-            instanzMock.Verify(s => s.GetByLagerortAsync("Kühlschrank"), Times.Once);
+            instanzMock.Verify(s => s.GetByLagerortAsync(1), Times.Once);
         }
 
         [Fact]
@@ -324,7 +344,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today, // Heute ablaufend
                     Einkaufsdatum = DateTime.Today.AddDays(-10),
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -345,6 +365,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -376,7 +397,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 100,
                     Verfallsdatum = DateTime.Today.AddDays(30),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 },
                 new ProduktInstanz
                 {
@@ -385,7 +406,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(10),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 },
                 new ProduktInstanz
                 {
@@ -394,7 +415,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 250,
                     Verfallsdatum = DateTime.Today.AddDays(20),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -408,7 +429,7 @@ namespace FoodDatabase.Tests.Ui
             Mock<IProduktInstanzService> instanzMock = new();
             instanzMock.Setup(s => s.GetNachVerfallsdatumSortiertAsync())
                 .ReturnsAsync(new List<ProduktInstanz>());
-            instanzMock.Setup(s => s.GetByLagerortAsync("Kühlschrank"))
+            instanzMock.Setup(s => s.GetByLagerortAsync(1))
                 .ReturnsAsync(unsortierteLagerort); // Unsortiert zurückgeben
 
             Mock<ILebensmittelService> lebensmittelMock = new();
@@ -416,13 +437,14 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
             IRenderedComponent<LagerbestandBearbeiten> cut = RenderComponent<LagerbestandBearbeiten>();
 
             IElement lagerortFilter = cut.Find("[data-testid='select-lagerort-filter']");
-            lagerortFilter.Change("Kühlschrank");
+            lagerortFilter.Change("1");
 
             // Assert: Die Reihenfolge sollte aufsteigend nach Verfallsdatum sein
             cut.WaitForAssertion(() =>
@@ -449,7 +471,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(7),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -467,6 +489,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -496,7 +519,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(5),
                     Einkaufsdatum = DateTime.Today,
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -514,6 +537,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -539,7 +563,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(-3),
                     Einkaufsdatum = DateTime.Today.AddDays(-10),
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -557,6 +581,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -582,7 +607,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today,
                     Einkaufsdatum = DateTime.Today.AddDays(-10),
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 }
             };
 
@@ -600,6 +625,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -627,7 +653,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(-1),
                     Einkaufsdatum = DateTime.Today.AddDays(-10),
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 },
                 new ProduktInstanz
                 {
@@ -636,7 +662,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 1000,
                     Verfallsdatum = DateTime.Today.AddDays(-2),
                     Einkaufsdatum = DateTime.Today.AddDays(-10),
-                    Lagerort = "Pantry"
+                    LagerortId = 3, Lagerort = new Lagerort { Id = 3, Name = "Pantry" }
                 }
             };
 
@@ -657,6 +683,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -666,7 +693,7 @@ namespace FoodDatabase.Tests.Ui
             statusFilter.Change("expired");
 
             IElement lagerortFilter = cut.Find("[data-testid='select-lagerort-filter']");
-            lagerortFilter.Change("Kühlschrank");
+            lagerortFilter.Change("1");
 
             // Assert: Nur die Packung von Kühlschrank sollte angezeigt werden
             cut.WaitForAssertion(() =>
@@ -692,6 +719,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(new List<LebensmittelKatalog>());
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -713,10 +741,10 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
-        public void ExpiredFilter_IsCaseSensitiveForLagerort()
+        public void ExpiredFilter_FiltersByLagerortId()
         {
-            // Arrange: Zwei abgelaufene Packungen mit unterschiedlichem Case in Lagerort.
-            // Das ist wichtig, weil der Lagerort-Filter nur im Expired-Pfad case-sensitive verglichen wird.
+            // Arrange: Zwei abgelaufene Packungen an verschiedenen Lagerorten.
+            // Der Lagerort-Filter wirkt im Expired-Pfad als Nachfilter auf die LagerortId.
             List<ProduktInstanz> abgelaufeneAlle = new()
             {
                 new ProduktInstanz
@@ -726,7 +754,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(-2),
                     Einkaufsdatum = DateTime.Today.AddDays(-10),
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 },
                 new ProduktInstanz
                 {
@@ -735,7 +763,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 250,
                     Verfallsdatum = DateTime.Today.AddDays(-1),
                     Einkaufsdatum = DateTime.Today.AddDays(-10),
-                    Lagerort = "kühlschrank"  // Kleinbuchstabe
+                    LagerortId = 2, Lagerort = new Lagerort { Id = 2, Name = "Tiefkühler" }
                 }
             };
 
@@ -756,6 +784,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act
@@ -768,10 +797,10 @@ namespace FoodDatabase.Tests.Ui
 
             cut.WaitForAssertion(() =>
             {
-                lagerortFilter.Change("Kühlschrank");
+                lagerortFilter.Change("1");
             }, TimeSpan.FromSeconds(2));
 
-            // Assert: Mit case-sensitive Vergleich darf nur ID=1 angezeigt werden
+            // Assert: Nur die Packung mit LagerortId 1 darf angezeigt werden
             cut.WaitForAssertion(() =>
             {
                 IReadOnlyList<IElement> rows = cut.FindAll("[data-testid^='zeile-']");
@@ -794,7 +823,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 100,
                     Verfallsdatum = DateTime.Today.AddDays(-30),
                     Einkaufsdatum = DateTime.Today.AddDays(-40),
-                    Lagerort = "Pantry"
+                    LagerortId = 3, Lagerort = new Lagerort { Id = 3, Name = "Pantry" }
                 },
                 new ProduktInstanz
                 {
@@ -803,7 +832,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 500,
                     Verfallsdatum = DateTime.Today.AddDays(-10),
                     Einkaufsdatum = DateTime.Today.AddDays(-15),
-                    Lagerort = "Kühlschrank"
+                    LagerortId = 1, Lagerort = new Lagerort { Id = 1, Name = "Kühlschrank" }
                 },
                 new ProduktInstanz
                 {
@@ -812,7 +841,7 @@ namespace FoodDatabase.Tests.Ui
                     Menge = 250,
                     Verfallsdatum = DateTime.Today.AddDays(-15),
                     Einkaufsdatum = DateTime.Today.AddDays(-20),
-                    Lagerort = "Pantry"
+                    LagerortId = 3, Lagerort = new Lagerort { Id = 3, Name = "Pantry" }
                 }
             };
 
@@ -834,6 +863,7 @@ namespace FoodDatabase.Tests.Ui
                 .ReturnsAsync(lebensmittel);
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
 
             // Act

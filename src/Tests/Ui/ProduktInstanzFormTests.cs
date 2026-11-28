@@ -15,6 +15,19 @@ namespace FoodDatabase.Tests.Ui
             JSInterop.Mode = JSRuntimeMode.Loose;
         }
 
+        private static ILagerortService ErstelleLagerortService()
+        {
+            Mock<ILagerortService> lagerortMock = new();
+            lagerortMock.Setup(s => s.GetAlleLagerorte())
+                .ReturnsAsync(new List<Lagerort>
+                {
+                    new Lagerort { Id = 1, Name = "Kühlschrank" },
+                    new Lagerort { Id = 2, Name = "Tiefkühler" },
+                    new Lagerort { Id = 3, Name = "Pantry" }
+                });
+            return lagerortMock.Object;
+        }
+
         [Fact]
         public void RendersForm_WithNewMode()
         {
@@ -32,6 +45,7 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
 
             // Act
             IRenderedComponent<ProduktInstanzForm> cut = RenderComponent<ProduktInstanzForm>(parameters =>
@@ -62,7 +76,7 @@ namespace FoodDatabase.Tests.Ui
                 Menge = 500,
                 Verfallsdatum = DateTime.Today.AddDays(7),
                 Einkaufsdatum = DateTime.Today,
-                Lagerort = "Kühlschrank"
+                LagerortId = 1
             };
 
             var instanzMock = new Mock<IProduktInstanzService>();
@@ -75,6 +89,7 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
 
             // Act
             IRenderedComponent<ProduktInstanzForm> cut = RenderComponent<ProduktInstanzForm>(parameters =>
@@ -104,6 +119,7 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
 
             // Act
             IRenderedComponent<ProduktInstanzForm> cut = RenderComponent<ProduktInstanzForm>(parameters =>
@@ -120,7 +136,7 @@ namespace FoodDatabase.Tests.Ui
         }
 
         [Fact]
-        public void HasLagerortDropdown_WithAllValidOptions()
+        public void HasLagerortDropdown_WithOptionsFromService()
         {
             // Arrange
             var lebensmittel = new List<LebensmittelKatalog>
@@ -135,6 +151,7 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
 
             // Act
             IRenderedComponent<ProduktInstanzForm> cut = RenderComponent<ProduktInstanzForm>(parameters =>
@@ -148,7 +165,6 @@ namespace FoodDatabase.Tests.Ui
                 Assert.True(cut.Markup.Contains("Kühlschrank"));
                 Assert.True(cut.Markup.Contains("Tiefkühler"));
                 Assert.True(cut.Markup.Contains("Pantry"));
-                Assert.True(cut.Markup.Contains("Anderes"));
             }, TimeSpan.FromSeconds(2));
         }
 
@@ -168,6 +184,7 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
 
             // Act
             IRenderedComponent<ProduktInstanzForm> cut = RenderComponent<ProduktInstanzForm>(parameters =>
@@ -197,7 +214,7 @@ namespace FoodDatabase.Tests.Ui
                 Menge = 500,
                 Verfallsdatum = DateTime.Today.AddDays(7),
                 Einkaufsdatum = DateTime.Today,
-                Lagerort = "Kühlschrank"
+                LagerortId = 1
             };
 
             var instanzMock = new Mock<IProduktInstanzService>();
@@ -210,6 +227,7 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
 
             // Act
             IRenderedComponent<ProduktInstanzForm> cut = RenderComponent<ProduktInstanzForm>(parameters =>
@@ -239,6 +257,7 @@ namespace FoodDatabase.Tests.Ui
 
             Services.AddSingleton<IProduktInstanzService>(instanzMock.Object);
             Services.AddSingleton<ILebensmittelService>(lebensmittelMock.Object);
+            Services.AddSingleton<ILagerortService>(ErstelleLagerortService());
 
             // Act
             IRenderedComponent<ProduktInstanzForm> cut = RenderComponent<ProduktInstanzForm>(parameters =>

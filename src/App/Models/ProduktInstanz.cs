@@ -39,10 +39,10 @@ namespace FoodDatabase.App.Models
         public DateTime Einkaufsdatum { get; set; }
 
         /// <summary>
-        /// Lagerort der Packung (Konstante: Kühlschrank, Tiefkühler, Pantry, Anderes).
-        /// Wird für Bestandsverwaltung pro Lagerort und Raumabfrage verwendet.
+        /// Fremdschlüssel zum Lagerort der Packung (UC9). Lagerorte entstehen beim Anlegen von Packungen
+        /// über <c>ILagerortService.GetOrCreateAsync</c>. Wird für Bestandsverwaltung pro Lagerort verwendet.
         /// </summary>
-        public string Lagerort { get; set; }
+        public int LagerortId { get; set; }
 
         /// <summary>
         /// Zeitstempel, wann diese Instanz im System erstellt wurde.
@@ -52,5 +52,8 @@ namespace FoodDatabase.App.Models
 
         /// <summary>Navigation property: Referenz zum LebensmittelKatalog-Eintrag.</summary>
         public LebensmittelKatalog LebensmittelKatalog { get; set; }
+
+        /// <summary>Navigation property: Lagerort der Packung (wird automatisch mitgeladen).</summary>
+        public Lagerort Lagerort { get; set; }
     }
 }

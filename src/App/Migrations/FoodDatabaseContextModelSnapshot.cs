@@ -138,9 +138,8 @@ namespace FoodDatabase.App.Migrations
                     b.Property<DateTime>("ErstelltAm")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Lagerort")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("LagerortId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("LebensmittelKatalogId")
                         .HasColumnType("INTEGER");
@@ -155,6 +154,8 @@ namespace FoodDatabase.App.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LagerortId");
 
                     b.HasIndex("LebensmittelKatalogId");
 
@@ -266,11 +267,19 @@ namespace FoodDatabase.App.Migrations
 
             modelBuilder.Entity("FoodDatabase.App.Models.ProduktInstanz", b =>
                 {
+                    b.HasOne("FoodDatabase.App.Models.Lagerort", "Lagerort")
+                        .WithMany()
+                        .HasForeignKey("LagerortId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("FoodDatabase.App.Models.LebensmittelKatalog", "LebensmittelKatalog")
                         .WithMany()
                         .HasForeignKey("LebensmittelKatalogId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Lagerort");
 
                     b.Navigation("LebensmittelKatalog");
                 });

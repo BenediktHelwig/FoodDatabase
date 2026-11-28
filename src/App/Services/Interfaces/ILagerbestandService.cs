@@ -20,11 +20,11 @@ namespace FoodDatabase.App.Services.Interfaces
         /// <summary>Generiert eine Einkaufsliste: Alle Instanzen von Lebensmitteln mit Mindestbestand-Fehler.</summary>
         Task<List<ProduktInstanz>> GetEinkaufslistenEintraegeAsync();
 
-        /// <summary>Ruft alle Instanzen für einen bestimmten Lagerort ab (z.B. Kühlschrank).</summary>
-        Task<List<ProduktInstanz>> GetBestaendePorLagerortAsync(string lagerort);
+        /// <summary>Ruft alle Instanzen für einen bestimmten Lagerort ab (UC9).</summary>
+        Task<List<ProduktInstanz>> GetBestaendePorLagerortAsync(int lagerortId);
 
         /// <summary>Fügt eine neue ProduktInstanz zum Bestand hinzu (Einkauf einer neuen Packung).</summary>
-        Task<ProduktInstanz> AddToBestandAsync(int lebensmittelKatalogId, decimal menge, decimal mindestbestandMenge, DateTime verfallsdatum, string lagerort);
+        Task<ProduktInstanz> AddToBestandAsync(int lebensmittelKatalogId, decimal menge, decimal mindestbestandMenge, DateTime verfallsdatum, int lagerortId);
 
         /// <summary>Aktualisiert die Menge einer bestehenden ProduktInstanz (z.B. nach teilweisem Verbrauch).</summary>
         Task<ProduktInstanz> UpdateMengeAsync(int id, decimal newMenge);
