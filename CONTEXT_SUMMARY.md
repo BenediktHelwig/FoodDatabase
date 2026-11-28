@@ -1,26 +1,24 @@
 # FoodDatabase – Entwicklungs-Status & Kontext
 
-**Datum**: 2026-11-27  
+**Datum**: 2026-11-28  
 **Projekt**: C# / ASP.NET Core 8 / Blazor Server + SQLite (TrueNAS Docker)  
 **Status**: Agent-Orchester (feature-crew: Hauptsession · implementer · reviewer) mit Git-basiertem Workflow  
-**Aktueller Branch**: `feat/ui-rezepte-wp5-teil2` (PR offen zur Abnahme) · PR #16 (Orchester-Umbau) ist gemergt
+**Aktueller Branch**: `feat/uc9-uc10-lagerort-fk` (PR offen zur Abnahme) · PR #17 (WP5 Teil 2) ist gemergt
 
 ---
 
 ## ⏭️ NÄCHSTE SCHRITTE (in dieser Reihenfolge)
 
-Offen zur Abnahme: **PR WP5 Teil 2, Zutaten-CRUD** (`feat/ui-rezepte-wp5-teil2`). Damit ist WP5 (UC4/UC5) fertig. Nächstes Paket laut Roadmap wäre WP6 (Dashboard). UC8 braucht dafür aber zuerst einen Service, und WP6 setzt WP4 + WP5 komplett voraus. Die Punkte unten sind kleiner und entlasten vorher die Altlasten.
+Offen zur Abnahme: **PR UC9→UC10-Integration** (`feat/uc9-uc10-lagerort-fk`). **Nach dem Merge die lokale `fooddatabase.db` löschen und mit `dotnet ef database update --project src/App` neu aufbauen.** Die Migration `LagerortFremdschluessel` hat keinen Datenumzug (User-Entscheidung: DB fängt neu an). Nächstes Paket laut Roadmap wäre WP6 (Dashboard), UC8 braucht dafür aber zuerst einen Service. Die Punkte unten sind kleiner und bauen vorher Altlasten ab.
 
 **Korrektur zur Roadmap-Bezeichnung**: Bis 19.09.2026 stand hier „WP4 UC4". Laut `UI-PHASE-PLAN.md:156` besteht WP4 nur aus UC2/6/9/10 – **WP4 ist damit fertig** (UC3 blockiert). UC4 gehört zu **WP5** (`UI-PHASE-PLAN.md:164`).
 
-1. **UC9→UC10-Integration** (FK statt `string Lagerort`). `FoodDatabaseContext.cs:64-65` vermerkt sie als ausstehend. Solange sie fehlt, sind die unter `/lagerorte` angelegten Lagerorte funktionslos. Seit 16.10.2026 akzeptiert UC9 Umlaute – die UC10-Konstanten „Kühlschrank"/„Tiefkühler" sind damit gültige UC9-Namen, eine Umbenennung ist für die Integration nicht nötig. Schema-Änderung → TDD.
+1. **Zirkulärer FK zwischen `LebensmittelKatalog` und `Nährwert`** (gefunden 28.11.2026 beim SQLite-Integrationstest): In der DB verlangt `LebensmittelKatalog` eine `NährwertId`, und `Nährwert` verweist über `LebensmittelId` zurück. Gegen echtes SQLite lässt sich deshalb mit eingeschalteten Fremdschlüsseln kein Katalog-Eintrag anlegen. `ProduktInstanzLagerortSqliteTests` umgeht das mit `PRAGMA foreign_keys = OFF` im Arrange. Zuerst prüfen, ob die App auf einer frischen DB überhaupt Lebensmittel anlegen kann. Schema-Änderung → TDD.
 
-2. **Zwei Diagramme widersprechen dem Code** (gefunden im Doku-Review vom 16.10.2026, außerhalb des damaligen Scopes):
-   - `diagrams/database-schema.drawio`: ProduktInstanz-Tabelle zeigt die erfundenen Felder Einheit, MHD, KaufDatum, Barcode.
-   - `diagrams/architecture-class.drawio`: Lagerort-Klasse hat Beschreibung, `GetProduktInstanzen()` und `Delete()` – gibt es im Code nicht, Löschen ist laut UC9 ausdrücklich nicht erlaubt.
+2. **Zwei Diagramme sind kein gültiges XML** (vorbestehend, gefunden 28.11.2026): `diagrams/architecture-class-uc4.drawio` (`--` in einem Kommentar) und `diagrams/database-schema-uc4-update.drawio` (kaputte Umlaute). Gezielt reparieren, nicht neu schreiben.
 
 3. **Kleinere Überträge** aus den drei UC10-Gates, jeweils beim nächsten Anfassen der Datei:
-   - Tests: ein `var` in `LebensmittelDetailTests.cs:841`; zwei `WaitForAssertion`-Wrapper um reine Interaktionen; zwei Deckungslücken (eine Packungszeile vollständig prüfen, das Dropdown an `LagerortKonstanten.AlleWerte` binden).
+   - Tests: zwei `WaitForAssertion`-Wrapper um reine Interaktionen; eine Deckungslücke (eine Packungszeile vollständig prüfen).
    - Code: Filterleiste flackert beim Laden (`@if (!lädt)`); `GetMhdText(int)` statt `Formatiere(DateTime)` lässt die Tagesrechnung in beiden Views stehen.
    - Doku: UC3 bezeichnet im Repo zwei verschiedene Dinge („Nährwerte" fertig vs. „Lagerbestand Export" blockiert); einzelne Begründungen in der UC10-Filter-Sektion sind schwächer als die Aussage, die sie tragen.
 
@@ -43,7 +41,7 @@ Offen zur Abnahme: **PR WP5 Teil 2, Zutaten-CRUD** (`feat/ui-rezepte-wp5-teil2`)
 ✅ WP3: UI Lebensmittel
 ✅ WP4 UC1: Lebensmittel-Katalog (LebensmittelListe/Form/Detail)
 ✅ WP4 UC2: Lagerbestand (LagerbestandBearbeiten + ProduktInstanzForm)
-✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm) – nur Liste + Neu; Service kann kein Update/Delete – Doku vollständig seit 19.09.2026 · Umlaute + ß erlaubt seit 16.10.2026
+✅ WP4 UC9: Lagerorte (LagerortListe + LagerortForm) – nur Liste + Neu; Service kann kein Update/Delete – Doku vollständig seit 19.09.2026 · Umlaute + ß erlaubt seit 16.10.2026 · per FK an ProduktInstanz seit 28.11.2026
 ✅ WP4 UC6: Verbrauch ausbuchen (VerbrauchListe + VerbrauchZeile) – Doku vollständig seit 11.09.2026
 ✅ WP4 UC10: MHD-Sichten (Filterleiste + Packungsliste) – Doku vollständig seit 19.09.2026
 ⚠️ WP4 UC3:  Lagerbestand exportieren – BLOCKIERT, kein Export-Service.
@@ -53,15 +51,15 @@ Offen zur Abnahme: **PR WP5 Teil 2, Zutaten-CRUD** (`feat/ui-rezepte-wp5-teil2`)
 ⏳ WP6: UI Dashboard (UC7/UC8) – UC8-Service noch TODO
 ```
 
-### Test-Status (verifiziert 2026-11-27, `dotnet test` vom Repo-Root, gezählt in Testfällen)
+### Test-Status (verifiziert 2026-11-28, `dotnet test` vom Repo-Root, gezählt in Testfällen)
 ```
-Unit:          291 Testfälle ✅  (Services + Formatter)
-Integration:     3 Testfälle ✅  (2 EfRepository + 1 LagerortService/SQLite)
-UI (bUnit):    215 Testfälle ✅  (davon Rezept-UI 108)
+Unit:          303 Testfälle ✅  (Services + Formatter)
+Integration:     6 Testfälle ✅  (2 EfRepository + 1 LagerortService/SQLite + 3 ProduktInstanz-Lagerort/SQLite)
+UI (bUnit):    233 Testfälle ✅  (davon Rezept-UI 108)
 ────────────────────────────────────
-TOTAL:         509 Testfälle ✅  (0 rot)
+TOTAL:         542 Testfälle ✅  (0 rot)
 ```
-UI-Aufschlüsselung: UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6 · MainLayout 3 · Rezept-UI 108
+UI-Aufschlüsselung: UC1 51 · UC2 26 · UC6 10 · UC9 8 · UC10 21 · NavMenu 6 · MainLayout 3 · Rezept-UI 108
 
 ### Infrastruktur
 ```
@@ -113,19 +111,21 @@ UI-Aufschlüsselung: UC1 51 · UC2 12 · UC6 10 · UC9 8 · UC10 17 · NavMenu 6
 
 ---
 
-## ✅ ZULETZT FERTIGGESTELLT: WP5 Teil 2 — Zutaten-CRUD (27.11.2026)
+## ✅ ZULETZT FERTIGGESTELLT: UC9→UC10-Integration — Lagerort als Fremdschlüssel (28.11.2026)
 
-**Geliefert**: `/rezepte/{id}` hat einen Bearbeitungsmodus für Zutaten. Man fügt hinzu (Lebensmittel-Dropdown, Einheiten `g, ml, Stück, TL, EL, Tasse, Prise`), ändert Menge/Einheit/Notiz und entfernt Zeilen, alles lokal. „Speichern“ schreibt gesammelt in der festen Reihenfolge Add → Update (nur geänderte) → Delete, deshalb greift die Mindestens-1-Regel des Service nie. „Abbrechen“ verwirft alles. Wird mit leerer Liste gespeichert, fragt ein Modal nach und archiviert dann das Rezept (`DeleteRezeptAsync`), denn ein leeres Rezept ist kein Rezept (User-Entscheidung). Die Prüfung von Lebensmittel und Menge 0,01–10000 läuft lokal vor jedem Service-Aufruf. Die Nährwerte laden nach dem Speichern neu (`@key` mit Versionszähler, `@key="Id"` hätte nicht gereicht). `sequence-uc4-rezepte.drawio` ist neu aufgebaut und wieder gültiges XML. UC4 ist in allen vier Doku-Teilen fertig. **474 → 509 Tests.**
+**Geliefert**: `ProduktInstanz` verweist über `LagerortId` (FK, `Restrict`, `AutoInclude`) auf die UC9-Tabelle `Lagerorte`, der String und `LagerortKonstanten` sind weg. Migration `LagerortFremdschluessel` ohne Seed und ohne Datenumzug (User-Entscheidung: DB fängt neu an). `ProduktInstanzService` und `LagerbestandService` nehmen `int lagerortId`, unbekannte oder archivierte Lagerorte werfen `ArgumentException`. Das Packungs-Formular hat ein Dropdown mit den vorhandenen Lagerorten plus „Neuer Lagerort…“ (Textfeld, angelegt über `GetOrCreateAsync`). Ist die Liste leer, ist „Neu“ vorausgewählt. Lagerort-Fehler stehen am Feld und sperren den Speichern-Button nicht. Filter auf `/lagerbestand` und die Packungszeilen auf `/lebensmittel/{id}` nutzen die echten Lagerorte. Nebenbei bereinigt: `database-schema.drawio` und `architecture-class.drawio` zeigen die Code-Felder (alter Punkt 2). **509 → 542 Tests.**
 
-**Erster Lauf der feature-crew**: zwei Kaltstarts plus eine Korrekturrunde. Der reviewer fand im Versuch 1 zwei echte Lücken: Beim Neuaufbau des Sequenzdiagramms gingen zwei bestehende Szenarien verloren, während die Doku sie noch beschrieb, und drei Fehlerzweige hatten keinen Test. Versuch 2 war `PASS`. Reibung, die das Profil nicht abdeckt, gab es keine.
+**Lauf**: Versuch 1 lieferte vier Doku-Mängel (Status, Verweis, Testzahl, Zeilenzahl), Versuch 2 war `PASS`. Ein Formalverstoß blieb, vom User akzeptiert und in der PR benannt: Der neue SQLite-Test wurde zwischen rotem und grünem Commit im Arrange geändert (zirkulärer FK, siehe Nächste Schritte Punkt 1).
 
-**Prozess-Lehre**: Wer ein Diagramm „neu aufbaut“, muss im Auftrag ausdrücklich gesagt bekommen, dass bestehende Inhalte erhalten bleiben. Außerdem: Testzahlen im Plan gegen die Datei zählen. Der Plan nannte 28 bestehende Tests in `RezeptDetailTests.cs`, es waren 16.
+**Prozess-Lehren**:
+- Scheitert ein roter Commit am Compiler, sind auch die neuen Tests nie gelaufen. Ein Fehler im Arrange fällt dann erst im grünen Commit auf, und die Korrektur verletzt die Unveränderlichkeit. Bei neuen Integrationstests den Arrange vorab gegen den alten Stand prüfen, soweit er kompiliert.
+- Der Agent `implementer` wird in Claude Code nicht geladen: Seine unquotierte `description` enthält `: `, das YAML ist ungültig. Bis zur Korrektur (der User macht sie auf anderem Weg) übernimmt ein `general-purpose`-Agent auf Sonnet, der `.claude/agents/implementer.md` als Rollenanweisung liest.
 
 ---
 
-## ✅ VORLETZT FERTIGGESTELLT: Orchester-Umbau auf feature-crew (15.11.2026, PR #16)
+## ✅ VORLETZT FERTIGGESTELLT: WP5 Teil 2 — Zutaten-CRUD (27.11.2026, PR #17)
 
-Die fünf Agents sind durch zwei ersetzt: `implementer` (sonnet) und `reviewer` (opus, nur lesend). Die Hauptsession plant auf Opus und schreibt Plan, PR-Text und diese Datei selbst. Neu sind `docs/PROJECT-PROFILE.md`, `docs/QUALITY-BAR.md`, `docs/PLAN-FORMAT.md` und `docs/ORCHESTRATION-DESIGN.md`. Commit-Nachrichten bleiben englisch, mit dem Merge von PR #16 bestätigt. Historische Pläne und Berichte nennen noch die alten Agents, bewusst als Historie belassen.
+Bearbeitungsmodus für Zutaten auf `/rezepte/{id}`: lokal hinzufügen, ändern und entfernen, gesammelt speichern (Add → Update → Delete). Ein leeres Rezept wird nach Rückfrage archiviert. UC4 ist in allen vier Doku-Teilen fertig. **474 → 509 Tests.** Lehre: Wer ein Diagramm „neu aufbaut“, muss im Auftrag ausdrücklich gesagt bekommen, dass bestehende Inhalte erhalten bleiben.
 
 ---
 
