@@ -3,6 +3,7 @@
 @using FoodDatabase.App.Services.Interfaces
 @inject IProduktInstanzService ProduktInstanzService
 @inject ILebensmittelService LebensmittelService
+@inject ILagerortService LagerortService
 @inject NavigationManager NavigationManager
 
 <div class="container mt-4">
@@ -30,9 +31,9 @@
                 <label for="lagerortFilter" class="form-label">Lagerort</label>
                 <select id="lagerortFilter" @onchange="OnLagerortFilterChanged" value="@lagerortFilter" class="form-select" data-testid="select-lagerort-filter">
                     <option value="">Alle Lagerorte</option>
-                    @foreach (string lagerort in LagerortKonstanten.AlleWerte)
+                    @foreach (Lagerort lagerort in alleLagerorte)
                     {
-                        <option value="@lagerort">@lagerort</option>
+                        <option value="@lagerort.Id">@lagerort.Name</option>
                     }
                 </select>
             </div>
@@ -85,7 +86,7 @@
                         <td>@instanz.Menge @lebensmittel?.Einheit</td>
                         <td>@instanz.Verfallsdatum.ToString("dd.MM.yyyy")</td>
                         <td>@mhdText</td>
-                        <td>@instanz.Lagerort</td>
+                        <td>@instanz.Lagerort.Name</td>
                         <td>@instanz.Einkaufsdatum.ToString("dd.MM.yyyy")</td>
                         <td>
                             <a href="/lagerbestand/@instanz.Id/bearbeiten"
@@ -155,6 +156,10 @@
     private int zuLöschendeId = 0;
     private string statusFilter = StatusFilterAll;
     private string lagerortFilter = "";
+    private List<Lagerort> alleLagerorte = new();
+
+    /// <summary>Gewählter Lagerort-Filter als ID (0 = Alle Lagerorte).</summary>
+    private int lagerortFilterId => int.TryParse(lagerortFilter, out int id) ? id : 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -167,6 +172,10 @@
         fehler = "";
         try
         {
+            // Lagerorte für den Filter (auch neu angelegte erscheinen hier)
+            IEnumerable<Lagerort> lagerorte = await LagerortService.GetAlleLagerorte();
+            alleLagerorte = lagerorte.OrderBy(l => l.Name).ToList();
+
             // Abruf: Welcher Service-Aufruf je nach Filter
             List<ProduktInstanz> abgerufeneBestaende = new();
 
@@ -185,7 +194,7 @@
                 if (!string.IsNullOrEmpty(lagerortFilter))
                 {
                     abgerufeneBestaende = abgerufeneBestaende
-                        .Where(p => string.Equals(p.Lagerort, lagerortFilter, StringComparison.Ordinal))
+                        .Where(p => p.LagerortId == lagerortFilterId)
                         .ToList();
                 }
 
@@ -197,7 +206,7 @@
             else if (!string.IsNullOrEmpty(lagerortFilter))
             {
                 // Alle, aber nach Lagerort filtern
-                abgerufeneBestaende = await ProduktInstanzService.GetByLagerortAsync(lagerortFilter);
+                abgerufeneBestaende = await ProduktInstanzService.GetByLagerortAsync(lagerortFilterId);
 
                 // Sortieren nach Verfallsdatum
                 abgerufeneBestaende = abgerufeneBestaende

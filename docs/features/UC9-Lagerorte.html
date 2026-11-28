@@ -101,14 +101,14 @@ CREATE TABLE Lagerorte (
 );
             </pre>
 
-            <h3>Tabelle: ProduktInstanz (⏳ geplante Erweiterung)</h3>
-            <p><strong>⏳ Geplant (noch nicht umgesetzt):</strong> ProduktInstanz speichert den Lagerort aktuell als <code>string</code> (<code>ProduktInstanz.cs:45</code>); die FK-Anbindung ist in <code>FoodDatabaseContext.cs:64-65</code> als offen vermerkt.</p>
+            <h3>Tabelle: ProduktInstanz (FK auf Lagerorte, umgesetzt)</h3>
+            <p><strong>✅ Umgesetzt (UC9→UC10-Integration):</strong> <code>ProduktInstanz</code> hat <code>int LagerortId</code> und die Navigation <code>Lagerort</code> (AutoInclude); der frühere string und die festen Konstanten sind entfallen. Der FK ist in <code>FoodDatabaseContext.cs</code> mit <code>OnDelete(Restrict)</code> konfiguriert, die Migration <code>LagerortFremdschluessel</code> bildet ihn ab (ohne Seed, ohne Datenumzug). Lagerorte entstehen beim Anlegen von Packungen über <code>GetOrCreateAsync</code>.</p>
             <pre>
 ALTER TABLE ProduktInstanzen
-ADD COLUMN LagerortId INT NULLABLE,
+ADD COLUMN LagerortId INTEGER NOT NULL,
 ADD CONSTRAINT FK_ProduktInstanz_Lagerort
     FOREIGN KEY (LagerortId)
-    REFERENCES Lagerorte(Id) ON DELETE SET NULL;
+    REFERENCES Lagerorte(Id) ON DELETE RESTRICT;
             </pre>
         </section>
 
@@ -142,18 +142,20 @@ public interface ILagerortService
         <section>
             <h2>🔄 User Workflows</h2>
 
-            <h3>Workflow 1: Neuer Lagerort bei ProduktInstanz-Erstellung (UC10)</h3>
+            <h3>Workflow 1: Lagerort bei ProduktInstanz-Erstellung wählen oder neu anlegen (UC10)</h3>
             <pre>
-1. Benutzer öffnet "Produkt hinzufügen"
+1. Benutzer öffnet "Neue Packung" (/lagerbestand/neu)
 2. Füllt Lebensmittel, Menge, MHD aus
-3. Gibt Lagerort ein: "lagerA"
-4. System zeigt Auto-Complete: ["LagerA", "LagerB"]
-5. Benutzer wählt "LagerA" ODER gibt neuen Namen "lagerC" ein
-6. System normalisiert: "lagerC" → "LagerC"
+3. Lagerort-Dropdown zeigt alle aktiven Lagerorte (nach Name sortiert) plus "Neuer Lagerort…".
+   Gibt es noch keine Lagerorte, ist "Neuer Lagerort…" vorausgewählt.
+4. Dropdown: ["LagerA", "LagerB", "Neuer Lagerort…"]
+5. Benutzer wählt "LagerA" ODER wählt "Neuer Lagerort…" und tippt "lagerC" in das Textfeld
+6. Bei "Neu": GetOrCreateAsync("lagerC") validiert und normalisiert: "lagerC" → "LagerC"
+   (ungültiger Name, z.B. mit Ziffern: Fehlermeldung am Lagerort-Feld, keine Packung wird angelegt)
 7. System prüft: Existiert "LagerC" bereits?
    - Ja: Return existing Lagerort(Id=3)
    - Nein: Create new Lagerort(Name="LagerC") → Id=3
-8. ProduktInstanz wird mit LagerortId=3 erstellt (⏳ geplant — aktuell string-Feld)
+8. ProduktInstanz wird mit LagerortId=3 erstellt (FK auf Lagerorte)
 9. Bestätigung: "Produkt zu Lager C hinzugefügt"
             </pre>
 
@@ -162,8 +164,8 @@ public interface ILagerortService
 1. Benutzer öffnet "Lagerbestand aktualisieren"
 2. Wählt Lebensmittel
 3. Wählt "Zu anderen Lagerort buchen"
-4. Gibt Lagerort ein: "lagerb"
-5. System zeigt Auto-Complete
+4. Wählt einen Lagerort aus dem Dropdown oder "Neuer Lagerort…"
+5. (Auto-Complete steht als Service-Methode bereit, das Formular nutzt das Dropdown)
 6. Rest wie Workflow 1
             </pre>
 
@@ -264,6 +266,7 @@ Input: "xxx" → Result: [] (kein Match → neuer Lagerort möglich)
             <ul>
                 <li><strong>Service Tests:</strong> 34 Testfälle aus 29 Testmethoden (27 Fact + 2 Theory mit 7 InlineData-Fällen) ✅ (Backend: GetAlleLagerorte, Validation, Normalization, GetOrCreate, Autocomplete)</li>
                 <li><strong>SQLite-Integration:</strong> 1 Testfall ✅ (LagerortServiceSqliteTests.cs, Autocomplete gegen SQLite)</li>
+                <li><strong>FK-Beziehung zu ProduktInstanz:</strong> 3 weitere SQLite-Integrationstests (ProduktInstanzLagerortSqliteTests.cs) und die 21 Formular-Tests (ProduktInstanzFormTests, gelistet und gezählt in UC2-Lagerbestand) sind nicht in diesen 43 enthalten</li>
                 <li><strong>UI Tests (Liste):</strong> 5 ✅ (Table rendering, columns, empty state, new-button, error handling)</li>
                 <li><strong>UI Tests (Form):</strong> 3 ✅ (Form rendering, service call, validation errors)</li>
                 <li><strong>Total Tests:</strong> 43 Testfälle (Service 34 + SQLite-Integration 1 + UI 8) ✅</li>
@@ -476,8 +479,8 @@ src/Tests/
 
             <h3>Abhängigkeiten (andere UCs)</h3>
             <ul>
-                <li>Erweitert: <strong>UC10: Produktinstanzen mit MHD</strong> (LagerortId FK ⏳ geplant)</li>
-                <li>Erweitert: <strong>UC2: Lagerbestand</strong> (AddToBestand mit Lagerort-Input ⏳ geplant)</li>
+                <li>Erweitert: <strong>UC10: Produktinstanzen mit MHD</strong> (LagerortId FK ✅ umgesetzt)</li>
+                <li>Erweitert: <strong>UC2: Lagerbestand</strong> (AddToBestand mit Lagerort-Input ✅ umgesetzt)</li>
                 <li>Abhängt von: <strong>UC1: Lebensmittel-Katalog</strong> (indirekt)</li>
             </ul>
 

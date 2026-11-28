@@ -32,9 +32,9 @@ namespace FoodDatabase.Tests.Unit.Services
 
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(5), Lagerort = LagerortKonstanten.Pantry },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(20), Lagerort = LagerortKonstanten.Kühlschrank }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(10), LagerortId = 1 },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(5), LagerortId = 3 },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(20), LagerortId = 1 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -61,9 +61,9 @@ namespace FoodDatabase.Tests.Unit.Services
 
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 10, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(30), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 11, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(1), Lagerort = LagerortKonstanten.Pantry }, // Ältestes
-                new ProduktInstanz { Id = 12, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(15), Lagerort = LagerortKonstanten.Tiefkühler }
+                new ProduktInstanz { Id = 10, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(30), LagerortId = 1 },
+                new ProduktInstanz { Id = 11, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(1), LagerortId = 3 }, // Ältestes
+                new ProduktInstanz { Id = 12, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(15), LagerortId = 2 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -87,7 +87,7 @@ namespace FoodDatabase.Tests.Unit.Services
             var lebensmittelId = 7;
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 99, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank }
+                new ProduktInstanz { Id = 99, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = DateTime.Today.AddDays(10), LagerortId = 1 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -150,10 +150,10 @@ namespace FoodDatabase.Tests.Unit.Services
 
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 101, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(100), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 102, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(3), Lagerort = LagerortKonstanten.Kühlschrank },   // Ältestes
-                new ProduktInstanz { Id = 103, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(50), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 104, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(25), Lagerort = LagerortKonstanten.Kühlschrank }
+                new ProduktInstanz { Id = 101, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(100), LagerortId = 1 },
+                new ProduktInstanz { Id = 102, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(3), LagerortId = 1 },   // Ältestes
+                new ProduktInstanz { Id = 103, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(50), LagerortId = 1 },
+                new ProduktInstanz { Id = 104, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(25), LagerortId = 1 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -179,9 +179,9 @@ namespace FoodDatabase.Tests.Unit.Services
 
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 200, LebensmittelKatalogId = 99, Menge = 1000, Verfallsdatum = today.AddDays(1), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 201, LebensmittelKatalogId = targetLebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 202, LebensmittelKatalogId = 88, Menge = 1000, Verfallsdatum = today.AddDays(5), Lagerort = LagerortKonstanten.Kühlschrank }
+                new ProduktInstanz { Id = 200, LebensmittelKatalogId = 99, Menge = 1000, Verfallsdatum = today.AddDays(1), LagerortId = 1 },
+                new ProduktInstanz { Id = 201, LebensmittelKatalogId = targetLebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(10), LagerortId = 1 },
+                new ProduktInstanz { Id = 202, LebensmittelKatalogId = 88, Menge = 1000, Verfallsdatum = today.AddDays(5), LagerortId = 1 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -207,7 +207,7 @@ namespace FoodDatabase.Tests.Unit.Services
             var lebensmittelId = 30;
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 300, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank }
+                new ProduktInstanz { Id = 300, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = DateTime.Today.AddDays(10), LagerortId = 1 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -233,7 +233,7 @@ namespace FoodDatabase.Tests.Unit.Services
 
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 400, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(-5), Lagerort = LagerortKonstanten.Kühlschrank } // Verfallen
+                new ProduktInstanz { Id = 400, LebensmittelKatalogId = lebensmittelId, Menge = 1000, Verfallsdatum = today.AddDays(-5), LagerortId = 1 } // Verfallen
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())

@@ -12,16 +12,24 @@ namespace FoodDatabase.Tests.Unit.Services
 {
     public class ProduktInstanzServiceTests
     {
+        private const int ArchiviertLagerortId = 4;
+
         private readonly Mock<IRepository<ProduktInstanz>> _mockRepository;
+        private readonly Mock<IRepository<Lagerort>> _mockLagerortRepository;
         private readonly ProduktInstanzService _service;
 
         public ProduktInstanzServiceTests()
         {
             _mockRepository = new Mock<IRepository<ProduktInstanz>>();
-            _service = new ProduktInstanzService(_mockRepository.Object);
+            _mockLagerortRepository = new Mock<IRepository<Lagerort>>();
+            _mockLagerortRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(new Lagerort { Id = 1, Name = "Kühlschrank" });
+            _mockLagerortRepository.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(new Lagerort { Id = 2, Name = "Tiefkühler" });
+            _mockLagerortRepository.Setup(r => r.GetByIdAsync(3)).ReturnsAsync(new Lagerort { Id = 3, Name = "Pantry" });
+            _mockLagerortRepository.Setup(r => r.GetByIdAsync(ArchiviertLagerortId)).ReturnsAsync(new Lagerort { Id = ArchiviertLagerortId, Name = "Alt", IsArchived = true });
+            _service = new ProduktInstanzService(_mockRepository.Object, _mockLagerortRepository.Object);
         }
 
-        // === CREATE Tests (6) ===
+        // === CREATE Tests (8) ===
 
         [Fact]
         public async Task CreateAsync_WithValidData_ShouldReturnCreatedProduktInstanz()
@@ -32,20 +40,20 @@ namespace FoodDatabase.Tests.Unit.Services
                 LebensmittelKatalogId = 1,
                 Menge = 500,
                 Verfallsdatum = DateTime.Today.AddDays(10),
-                Lagerort = LagerortKonstanten.Kühlschrank
+                LagerortId = 1
             };
 
             _mockRepository.Setup(r => r.AddAsync(It.IsAny<ProduktInstanz>()))
                 .ReturnsAsync(produktInstanz);
 
             // Act
-            var result = await _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank);
+            var result = await _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), 1);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(1, result.LebensmittelKatalogId);
             Assert.Equal(500, result.Menge);
-            Assert.Equal(LagerortKonstanten.Kühlschrank, result.Lagerort);
+            Assert.Equal(1, result.LagerortId);
             _mockRepository.Verify(r => r.AddAsync(It.IsAny<ProduktInstanz>()), Times.Once);
         }
 
@@ -54,7 +62,7 @@ namespace FoodDatabase.Tests.Unit.Services
         {
             // Arrange & Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateAsync(0, 500, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank));
+                _service.CreateAsync(0, 500, DateTime.Today.AddDays(10), 1));
         }
 
         [Fact]
@@ -62,7 +70,7 @@ namespace FoodDatabase.Tests.Unit.Services
         {
             // Arrange & Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateAsync(1, -100, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank));
+                _service.CreateAsync(1, -100, DateTime.Today.AddDays(10), 1));
         }
 
         [Fact]
@@ -70,23 +78,28 @@ namespace FoodDatabase.Tests.Unit.Services
         {
             // Arrange & Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateAsync(1, 500, DateTime.Today.AddDays(-1), LagerortKonstanten.Kühlschrank));
+                _service.CreateAsync(1, 500, DateTime.Today.AddDays(-1), 1));
         }
 
-        [Fact]
-        public async Task CreateAsync_WithInvalidLagerort_ShouldThrowArgumentException()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        [InlineData(999)]
+        public async Task CreateAsync_WithInvalidLagerortId_ShouldThrowArgumentException(int lagerortId)
         {
             // Arrange & Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), "InvalidLagerort"));
+                _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), lagerortId));
+            _mockRepository.Verify(r => r.AddAsync(It.IsAny<ProduktInstanz>()), Times.Never);
         }
 
         [Fact]
-        public async Task CreateAsync_WithNullLagerort_ShouldThrowArgumentNullException()
+        public async Task CreateAsync_WithArchivedLagerort_ShouldThrowArgumentException()
         {
             // Arrange & Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), null));
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), ArchiviertLagerortId));
+            _mockRepository.Verify(r => r.AddAsync(It.IsAny<ProduktInstanz>()), Times.Never);
         }
 
         // === READ Tests (6) ===
@@ -101,7 +114,7 @@ namespace FoodDatabase.Tests.Unit.Services
                 LebensmittelKatalogId = 1,
                 Menge = 500,
                 Verfallsdatum = DateTime.Today.AddDays(10),
-                Lagerort = LagerortKonstanten.Kühlschrank
+                LagerortId = 1
             };
 
             _mockRepository.Setup(r => r.GetByIdAsync(1))
@@ -136,9 +149,9 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 1, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 2, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(15), Lagerort = LagerortKonstanten.Tiefkühler }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), LagerortId = 1 },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 1, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), LagerortId = 1 },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 2, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(15), LagerortId = 2 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -159,21 +172,21 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(15), Lagerort = LagerortKonstanten.Tiefkühler }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), LagerortId = 1 },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), LagerortId = 1 },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(15), LagerortId = 2 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
                 .ReturnsAsync(produktInstanzen);
 
             // Act
-            var result = await _service.GetByLagerortAsync(LagerortKonstanten.Kühlschrank);
+            var result = await _service.GetByLagerortAsync(1);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.Count);
-            Assert.All(result, p => Assert.Equal(LagerortKonstanten.Kühlschrank, p.Lagerort));
+            Assert.All(result, p => Assert.Equal(1, p.LagerortId));
         }
 
         [Fact]
@@ -182,9 +195,9 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(-5), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today, Lagerort = LagerortKonstanten.Tiefkühler }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(-5), LagerortId = 1 },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), LagerortId = 1 },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today, LagerortId = 2 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -205,9 +218,9 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(20), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Tiefkühler }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(20), LagerortId = 1 },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(5), LagerortId = 1 },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(10), LagerortId = 2 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -236,7 +249,7 @@ namespace FoodDatabase.Tests.Unit.Services
                 LebensmittelKatalogId = 1,
                 Menge = 500,
                 Verfallsdatum = DateTime.Today.AddDays(10),
-                Lagerort = LagerortKonstanten.Kühlschrank
+                LagerortId = 1
             };
 
             _mockRepository.Setup(r => r.GetByIdAsync(1))
@@ -245,7 +258,7 @@ namespace FoodDatabase.Tests.Unit.Services
                 .ReturnsAsync(existingInstanz);
 
             // Act
-            await _service.UpdateAsync(1, 600, DateTime.Today.AddDays(15), LagerortKonstanten.Tiefkühler);
+            await _service.UpdateAsync(1, 600, DateTime.Today.AddDays(15), 2);
 
             // Assert
             _mockRepository.Verify(r => r.GetByIdAsync(1), Times.Once);
@@ -257,15 +270,41 @@ namespace FoodDatabase.Tests.Unit.Services
         {
             // Arrange & Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.UpdateAsync(1, -100, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank));
+                _service.UpdateAsync(1, -100, DateTime.Today.AddDays(10), 1));
         }
 
-        [Fact]
-        public async Task UpdateAsync_WithInvalidLagerort_ShouldThrowArgumentException()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        [InlineData(999)]
+        public async Task UpdateAsync_WithInvalidLagerortId_ShouldThrowArgumentException(int lagerortId)
         {
             // Arrange & Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(() =>
-                _service.UpdateAsync(1, 500, DateTime.Today.AddDays(10), "InvalidLagerort"));
+                _service.UpdateAsync(1, 500, DateTime.Today.AddDays(10), lagerortId));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WithArchivedLagerort_ShouldThrowArgumentException()
+        {
+            // Arrange & Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.UpdateAsync(1, 500, DateTime.Today.AddDays(10), ArchiviertLagerortId));
+        }
+
+        [Fact]
+        public async Task UpdateAsync_WithValidData_ShouldSetNewLagerortId()
+        {
+            // Arrange
+            ProduktInstanz existingInstanz = new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), LagerortId = 1 };
+            _mockRepository.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(existingInstanz);
+            _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<ProduktInstanz>())).ReturnsAsync(existingInstanz);
+
+            // Act
+            await _service.UpdateAsync(1, 600, DateTime.Today.AddDays(15), 2);
+
+            // Assert
+            Assert.Equal(2, existingInstanz.LagerortId);
         }
 
         [Fact]
@@ -277,7 +316,7 @@ namespace FoodDatabase.Tests.Unit.Services
 
             // Act & Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(() =>
-                _service.UpdateAsync(999, 500, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank));
+                _service.UpdateAsync(999, 500, DateTime.Today.AddDays(10), 1));
         }
 
         // === DELETE Tests (3) ===
@@ -329,7 +368,7 @@ namespace FoodDatabase.Tests.Unit.Services
                 LebensmittelKatalogId = 1,
                 Menge = 500,
                 Verfallsdatum = DateTime.Today.AddDays(daysUntilExpiry),
-                Lagerort = LagerortKonstanten.Kühlschrank
+                LagerortId = 1
             };
 
             _mockRepository.Setup(r => r.GetByIdAsync(1))
@@ -349,9 +388,9 @@ namespace FoodDatabase.Tests.Unit.Services
             var customDate = DateTime.Today.AddDays(5);
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(3), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(7), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(5), Lagerort = LagerortKonstanten.Tiefkühler }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(3), LagerortId = 1 },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(7), LagerortId = 1 },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 3, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(5), LagerortId = 2 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -372,9 +411,9 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange - FIFO bedeutet, älteste zuerst (ascending order)
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 1, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(50), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 1, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(30), Lagerort = LagerortKonstanten.Kühlschrank }
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 1, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(50), LagerortId = 1 },
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today.AddDays(10), LagerortId = 1 },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 1, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(30), LagerortId = 1 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -399,14 +438,14 @@ namespace FoodDatabase.Tests.Unit.Services
                 LebensmittelKatalogId = 1,
                 Menge = 0,
                 Verfallsdatum = DateTime.Today.AddDays(10),
-                Lagerort = LagerortKonstanten.Kühlschrank
+                LagerortId = 1
             };
 
             _mockRepository.Setup(r => r.AddAsync(It.IsAny<ProduktInstanz>()))
                 .ReturnsAsync(produktInstanz);
 
             // Act
-            var result = await _service.CreateAsync(1, 0, DateTime.Today.AddDays(10), LagerortKonstanten.Kühlschrank);
+            var result = await _service.CreateAsync(1, 0, DateTime.Today.AddDays(10), 1);
 
             // Assert
             Assert.NotNull(result);
@@ -419,10 +458,10 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 5, Menge = 100, Verfallsdatum = DateTime.Today.AddDays(10), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 5, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(20), Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 5, Menge = 150, Verfallsdatum = DateTime.Today.AddDays(15), Lagerort = LagerortKonstanten.Tiefkühler },
-                new ProduktInstanz { Id = 4, LebensmittelKatalogId = 6, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(25), Lagerort = LagerortKonstanten.Kühlschrank }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 5, Menge = 100, Verfallsdatum = DateTime.Today.AddDays(10), LagerortId = 1 },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 5, Menge = 200, Verfallsdatum = DateTime.Today.AddDays(20), LagerortId = 1 },
+                new ProduktInstanz { Id = 3, LebensmittelKatalogId = 5, Menge = 150, Verfallsdatum = DateTime.Today.AddDays(15), LagerortId = 2 },
+                new ProduktInstanz { Id = 4, LebensmittelKatalogId = 6, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(25), LagerortId = 1 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -442,8 +481,8 @@ namespace FoodDatabase.Tests.Unit.Services
             // Arrange - Verfallsdatum = heute sollte als abgelaufen zählen
             var produktInstanzen = new List<ProduktInstanz>
             {
-                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today, Lagerort = LagerortKonstanten.Kühlschrank },
-                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(1), Lagerort = LagerortKonstanten.Kühlschrank }
+                new ProduktInstanz { Id = 1, LebensmittelKatalogId = 1, Menge = 500, Verfallsdatum = DateTime.Today, LagerortId = 1 },
+                new ProduktInstanz { Id = 2, LebensmittelKatalogId = 2, Menge = 300, Verfallsdatum = DateTime.Today.AddDays(1), LagerortId = 1 }
             };
 
             _mockRepository.Setup(r => r.GetAllAsync())
@@ -460,30 +499,24 @@ namespace FoodDatabase.Tests.Unit.Services
         // === VALIDATION Tests (Edge Cases) ===
 
         [Theory]
-        [InlineData(LagerortKonstanten.Kühlschrank)]
-        [InlineData(LagerortKonstanten.Tiefkühler)]
-        [InlineData(LagerortKonstanten.Pantry)]
-        [InlineData(LagerortKonstanten.Anderes)]
-        public async Task CreateAsync_WithAllValidLagerorte_ShouldSucceed(string lagerort)
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public async Task CreateAsync_WithAllExistingLagerorte_ShouldSucceed(int lagerortId)
         {
             // Arrange
-            var produktInstanz = new ProduktInstanz
-            {
-                LebensmittelKatalogId = 1,
-                Menge = 500,
-                Verfallsdatum = DateTime.Today.AddDays(10),
-                Lagerort = lagerort
-            };
-
+            ProduktInstanz gespeichert = null;
             _mockRepository.Setup(r => r.AddAsync(It.IsAny<ProduktInstanz>()))
-                .ReturnsAsync(produktInstanz);
+                .Callback<ProduktInstanz>(p => gespeichert = p)
+                .ReturnsAsync((ProduktInstanz p) => p);
 
             // Act
-            var result = await _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), lagerort);
+            var result = await _service.CreateAsync(1, 500, DateTime.Today.AddDays(10), lagerortId);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(lagerort, result.Lagerort);
+            Assert.Equal(lagerortId, result.LagerortId);
+            Assert.Equal(lagerortId, gespeichert.LagerortId);
         }
 
         [Fact]
@@ -495,26 +528,37 @@ namespace FoodDatabase.Tests.Unit.Services
                 LebensmittelKatalogId = 1,
                 Menge = 500,
                 Verfallsdatum = DateTime.Today,
-                Lagerort = LagerortKonstanten.Kühlschrank
+                LagerortId = 1
             };
 
             _mockRepository.Setup(r => r.AddAsync(It.IsAny<ProduktInstanz>()))
                 .ReturnsAsync(produktInstanz);
 
             // Act
-            var result = await _service.CreateAsync(1, 500, DateTime.Today, LagerortKonstanten.Kühlschrank);
+            var result = await _service.CreateAsync(1, 500, DateTime.Today, 1);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(DateTime.Today, result.Verfallsdatum);
         }
 
-        [Fact]
-        public async Task GetByLagerortAsync_WithEmptyLagerort_ShouldThrowArgumentNullException()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        [InlineData(999)]
+        public async Task GetByLagerortAsync_WithInvalidLagerortId_ShouldThrowArgumentException(int lagerortId)
         {
             // Arrange & Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() =>
-                _service.GetByLagerortAsync(""));
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.GetByLagerortAsync(lagerortId));
+        }
+
+        [Fact]
+        public async Task GetByLagerortAsync_WithArchivedLagerort_ShouldThrowArgumentException()
+        {
+            // Arrange & Act & Assert
+            await Assert.ThrowsAsync<ArgumentException>(() =>
+                _service.GetByLagerortAsync(ArchiviertLagerortId));
         }
 
         [Fact]

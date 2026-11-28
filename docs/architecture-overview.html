@@ -239,7 +239,7 @@
                 </tr>
                 <tr>
                     <td><strong>Lagerort</strong></td>
-                    <td>Dynamische Speicherorte (Kühlschrank, etc.)</td>
+                    <td>Dynamische Speicherorte (entstehen beim Anlegen von Packungen); Ziel des FK ProduktInstanz.LagerortId</td>
                     <td>✅ UC9</td>
                 </tr>
             </table>
@@ -337,10 +337,11 @@ cat CONTEXT_SUMMARY.md
                 <li>✅ UC6: Verbrauch ausbuchen (10 Service-Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ <strong>WP4 UC6: Verbrauch ausbuchen UI (10 bUnit-Tests + VerbrauchListe.razor + VerbrauchZeile.cs + 4-Teil-Dokumentation)</strong></li>
                 <li>✅ UC9: Lagerorte (34 Service-Testfälle + 1 SQLite-Integrationstest + Code + 4-Teil-Dokumentation)</li>
+                <li>✅ <strong>UC9→UC10-Integration: Lagerort als Fremdschlüssel</strong> (ProduktInstanz.LagerortId mit FK Restrict, Migration, Formular mit Dropdown + „Neuer Lagerort…“, Filter aus UC9; +33 Tests: 12 Service, 3 SQLite-Integration, 18 bUnit; LagerortKonstanten entfallen)</li>
                 <li>✅ <strong>WP4 UC9: Lagerorte UI (8 bUnit-Tests + LagerortListe.razor + LagerortForm.razor + 4-Teil-Dokumentation)</strong></li>
                 <li>✅ UC10: Produktinstanzen mit MHD (32 Service-Tests + Code + 4-Teil-Dokumentation)</li>
                 <li>✅ WP4 UC10: MHD-Sichten UI (17 bUnit + 5 Unit Tests + Filterleiste + Packungsliste + 4-Teil-Dokumentation)</li>
-                <li>✅ <strong>GESAMT: 509/509 Testfälle GRÜN ✅ (Unit: 291 | Integration: 3 | UI-Layer: 215 bUnit; gezählt gegen die Testdateien) — Stand 2026-11-27 (WP5 Teil 2)</strong></li>
+                <li>✅ <strong>GESAMT: 542/542 Testfälle GRÜN ✅ (Unit: 303 | Integration: 6 | UI-Layer: 233 bUnit; gezählt gegen die Testdateien) — Stand 2026-11-28 (UC9→UC10 Lagerort-FK)</strong></li>
                 <li>✅ Kontext-Dokumentation + Sequence-Diagramme + 4-Teil-Dokumentation für alle UCs</li>
                 <li>✅ Validierungs-Reports (UC1/UC2/UC3/UC4/UC6/UC9/UC10 Service + WP4 UI = Alle Tests grün)</li>
                 <li>✅ <strong>UI-Fix Phase 2 FERTIG: @onclick Event-Handler Bug-Fix (fehlender Namespace) — 351/351 Tests GRÜN (Stand vor WP4 UC6) ✅</strong></li>
@@ -358,6 +359,7 @@ cat CONTEXT_SUMMARY.md
                 <li>✅ <strong>WP4 UC6: Verbrauch ausbuchen UI</strong> – FERTIG! (10 bUnit-Tests + VerbrauchListe.razor)</li>
                 <li>✅ <strong>WP4 UC9: Lagerorte UI</strong> – FERTIG! (8 bUnit-Tests + Liste + Form)</li>
                 <li>✅ <strong>WP4 UC10: MHD-Sichten UI</strong> – FERTIG! (Filterleiste + Packungsliste)</li>
+                <li>✅ <strong>UC9→UC10: Lagerort als Fremdschlüssel</strong> – FERTIG! (Datenbank vor dem Start neu aufsetzen: <code>fooddatabase.db</code> löschen, <code>dotnet ef database update --project src/App</code>)</li>
                 <li>⚠️ <strong>WP4 UC3: Lagerbestand Export UI</strong> – BLOCKIERT (kein Export-Service in v1.0, Phase 2+)</li>
                 <li>⏳ WP6: UI-Komponenten UC7 und UC8</li>
                 <li>⏳ Integration Test Suite</li>

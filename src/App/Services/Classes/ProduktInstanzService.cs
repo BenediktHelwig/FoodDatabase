@@ -14,15 +14,18 @@ namespace FoodDatabase.App.Services.Classes
     public class ProduktInstanzService : IProduktInstanzService
     {
         private readonly IRepository<ProduktInstanz> _repository;
+        private readonly IRepository<Lagerort> _lagerortRepository;
 
         /// <summary>
         /// Initialisiert eine neue Instanz des ProduktInstanzService.
         /// </summary>
         /// <param name="repository">Repository für ProduktInstanz-Persistierung.</param>
-        /// <exception cref="ArgumentNullException">Wenn repository null ist.</exception>
-        public ProduktInstanzService(IRepository<ProduktInstanz> repository)
+        /// <param name="lagerortRepository">Repository für Lagerorte (zur Prüfung der LagerortId).</param>
+        /// <exception cref="ArgumentNullException">Wenn repository oder lagerortRepository null ist.</exception>
+        public ProduktInstanzService(IRepository<ProduktInstanz> repository, IRepository<Lagerort> lagerortRepository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _lagerortRepository = lagerortRepository ?? throw new ArgumentNullException(nameof(lagerortRepository));
         }
 
         /// <summary>
@@ -31,11 +34,10 @@ namespace FoodDatabase.App.Services.Classes
         /// <param name="lebensmittelKatalogId">ID des Lebensmittels aus dem Katalog. Muss > 0 sein.</param>
         /// <param name="menge">Menge/Gewicht der Packung (in Gramm oder Einheit). Darf nicht negativ sein.</param>
         /// <param name="verfallsdatum">Mindesthaltbarkeitsdatum der Packung. Darf nicht in der Vergangenheit liegen.</param>
-        /// <param name="lagerort">Lagerort-Konstante (z.B. Kühlschrank, Tiefkühler, Pantry). Muss valid sein.</param>
+        /// <param name="lagerortId">ID eines bestehenden, nicht archivierten Lagerorts (UC9).</param>
         /// <returns>Die neu erstellte ProduktInstanz mit ID, Einkaufsdatum und Erstellungsdatum.</returns>
-        /// <exception cref="ArgumentException">Wenn Validierung fehlschlägt (LebensmittelId <= 0, Menge < 0, Verfallsdatum in der Vergangenheit, oder Lagerort ungültig).</exception>
-        /// <exception cref="ArgumentNullException">Wenn Lagerort null oder leer ist.</exception>
-        public async Task<ProduktInstanz> CreateAsync(int lebensmittelKatalogId, decimal menge, DateTime verfallsdatum, string lagerort)
+        /// <exception cref="ArgumentException">Wenn Validierung fehlschlägt (LebensmittelId <= 0, Menge < 0, Verfallsdatum in der Vergangenheit, oder LagerortId <= 0 bzw. kein aktiver Lagerort).</exception>
+        public async Task<ProduktInstanz> CreateAsync(int lebensmittelKatalogId, decimal menge, DateTime verfallsdatum, int lagerortId)
         {
             // Validierungen: Alle Parameter werden überprüft, bevor Instanz erstellt wird
             if (lebensmittelKatalogId <= 0)
@@ -47,11 +49,7 @@ namespace FoodDatabase.App.Services.Classes
             if (verfallsdatum < DateTime.Today)
                 throw new ArgumentException("Verfallsdatum darf nicht in der Vergangenheit liegen.");
 
-            if (string.IsNullOrWhiteSpace(lagerort))
-                throw new ArgumentNullException(nameof(lagerort), "Lagerort darf nicht null oder leer sein.");
-
-            if (!LagerortKonstanten.IsValidLagerort(lagerort))
-                throw new ArgumentException($"Ungültiger Lagerort: {lagerort}");
+            await PruefeLagerortAsync(lagerortId);
 
             ProduktInstanz produktInstanz = new()
             {
@@ -59,7 +57,7 @@ namespace FoodDatabase.App.Services.Classes
                 Menge = menge,
                 Verfallsdatum = verfallsdatum,
                 Einkaufsdatum = DateTime.UtcNow,
-                Lagerort = lagerort,
+                LagerortId = lagerortId,
                 ErstelltAm = DateTime.UtcNow
             };
 
@@ -100,21 +98,16 @@ namespace FoodDatabase.App.Services.Classes
         /// <summary>
         /// Ruft alle ProduktInstanzen für einen bestimmten Lagerort ab.
         /// </summary>
-        /// <param name="lagerort">Der Lagerort (z.B. Kühlschrank). Muss valid und nicht leer sein.</param>
+        /// <param name="lagerortId">ID eines bestehenden, nicht archivierten Lagerorts (UC9).</param>
         /// <returns>Liste aller Instanzen an diesem Lagerort (kann leer sein).</returns>
-        /// <exception cref="ArgumentNullException">Wenn Lagerort null oder leer ist.</exception>
-        /// <exception cref="ArgumentException">Wenn Lagerort ungültig ist.</exception>
-        public async Task<List<ProduktInstanz>> GetByLagerortAsync(string lagerort)
+        /// <exception cref="ArgumentException">Wenn lagerortId <= 0 ist oder kein aktiver (nicht archivierter) Lagerort mit dieser ID existiert.</exception>
+        public async Task<List<ProduktInstanz>> GetByLagerortAsync(int lagerortId)
         {
-            if (string.IsNullOrWhiteSpace(lagerort))
-                throw new ArgumentNullException(nameof(lagerort), "Lagerort darf nicht null oder leer sein.");
-
-            if (!LagerortKonstanten.IsValidLagerort(lagerort))
-                throw new ArgumentException($"Ungültiger Lagerort: {lagerort}");
+            await PruefeLagerortAsync(lagerortId);
 
             var alle = await _repository.GetAllAsync();
             return alle
-                .Where(p => p.Lagerort == lagerort)
+                .Where(p => p.LagerortId == lagerortId)
                 .ToList();
         }
 
@@ -154,10 +147,10 @@ namespace FoodDatabase.App.Services.Classes
         /// <param name="id">ID der zu aktualisierenden ProduktInstanz. Muss > 0 sein.</param>
         /// <param name="menge">Neue Menge. Darf nicht negativ sein.</param>
         /// <param name="verfallsdatum">Neues Verfallsdatum. Darf nicht in der Vergangenheit liegen.</param>
-        /// <param name="lagerort">Neuer Lagerort. Muss valid sein.</param>
+        /// <param name="lagerortId">ID eines bestehenden, nicht archivierten Lagerorts (UC9).</param>
         /// <exception cref="ArgumentException">Wenn Validierung fehlschlägt oder ID <= 0.</exception>
         /// <exception cref="KeyNotFoundException">Wenn ProduktInstanz mit dieser ID nicht existiert.</exception>
-        public async Task UpdateAsync(int id, decimal menge, DateTime verfallsdatum, string lagerort)
+        public async Task UpdateAsync(int id, decimal menge, DateTime verfallsdatum, int lagerortId)
         {
             if (id <= 0)
                 throw new ArgumentException("ID muss größer als 0 sein.");
@@ -168,11 +161,7 @@ namespace FoodDatabase.App.Services.Classes
             if (verfallsdatum < DateTime.Today)
                 throw new ArgumentException("Verfallsdatum darf nicht in der Vergangenheit liegen.");
 
-            if (string.IsNullOrWhiteSpace(lagerort))
-                throw new ArgumentNullException(nameof(lagerort), "Lagerort darf nicht null oder leer sein.");
-
-            if (!LagerortKonstanten.IsValidLagerort(lagerort))
-                throw new ArgumentException($"Ungültiger Lagerort: {lagerort}");
+            await PruefeLagerortAsync(lagerortId);
 
             var instanz = await _repository.GetByIdAsync(id);
             if (instanz is null)
@@ -180,7 +169,7 @@ namespace FoodDatabase.App.Services.Classes
 
             instanz.Menge = menge;
             instanz.Verfallsdatum = verfallsdatum;
-            instanz.Lagerort = lagerort;
+            instanz.LagerortId = lagerortId;
 
             await _repository.UpdateAsync(instanz);
         }
@@ -219,6 +208,22 @@ namespace FoodDatabase.App.Services.Classes
 
             var tage = (instanz.Verfallsdatum - DateTime.Today).Days;
             return tage;
+        }
+
+        /// <summary>
+        /// Prüft, dass die LagerortId zu einem bestehenden, nicht archivierten Lagerort gehört.
+        /// Archivierte Lagerorte sind für neue Zuordnungen gesperrt (Soft-Delete aus UC9).
+        /// </summary>
+        /// <param name="lagerortId">Zu prüfende ID.</param>
+        /// <exception cref="ArgumentException">Wenn lagerortId <= 0 ist oder kein aktiver Lagerort existiert.</exception>
+        private async Task PruefeLagerortAsync(int lagerortId)
+        {
+            if (lagerortId <= 0)
+                throw new ArgumentException("LagerortId muss größer als 0 sein.", nameof(lagerortId));
+
+            Lagerort lagerort = await _lagerortRepository.GetByIdAsync(lagerortId);
+            if (lagerort is null || lagerort.IsArchived)
+                throw new ArgumentException($"Lagerort mit ID {lagerortId} existiert nicht oder ist archiviert.", nameof(lagerortId));
         }
     }
 }

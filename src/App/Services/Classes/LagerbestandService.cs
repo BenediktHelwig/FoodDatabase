@@ -109,13 +109,13 @@ namespace FoodDatabase.App.Services.Classes
         /// Ruft alle ProduktInstanzen für einen bestimmten Lagerort ab.
         /// Nützlich zur Anzeige des Lagerbestands nach Lagerort sortiert.
         /// </summary>
-        /// <param name="lagerort">Der Lagerort-Konstante (z.B. Kühlschrank, Tiefkühler).</param>
+        /// <param name="lagerortId">ID des Lagerorts (UC9). Muss größer als 0 sein.</param>
         /// <returns>Liste aller Instanzen an diesem Lagerort (kann leer sein).</returns>
-        /// <exception cref="ArgumentException">Wenn Lagerort null, leer oder ungültig ist.</exception>
-        public async Task<List<ProduktInstanz>> GetBestaendePorLagerortAsync(string lagerort)
+        /// <exception cref="ArgumentException">Wenn lagerortId <= 0 ist.</exception>
+        public async Task<List<ProduktInstanz>> GetBestaendePorLagerortAsync(int lagerortId)
         {
-            if (string.IsNullOrWhiteSpace(lagerort))
-                throw new ArgumentException("Lagerort darf nicht null oder leer sein.", nameof(lagerort));
+            if (lagerortId <= 0)
+                throw new ArgumentException("LagerortId muss größer als 0 sein.", nameof(lagerortId));
 
             var allInstanzen = await _repository.GetAllAsync();
             if (allInstanzen is null)
@@ -123,7 +123,7 @@ namespace FoodDatabase.App.Services.Classes
 
             // Filter: Alle Instanzen am gewünschten Lagerort
             return allInstanzen
-                .Where(x => x.Lagerort == lagerort)
+                .Where(x => x.LagerortId == lagerortId)
                 .ToList();
         }
 
@@ -135,16 +135,19 @@ namespace FoodDatabase.App.Services.Classes
         /// <param name="menge">Menge der neuen Packung (muss > 0 sein).</param>
         /// <param name="mindestbestandMenge">Mindestbestand für dieses Lebensmittel.</param>
         /// <param name="verfallsdatum">Verfallsdatum der Packung (darf nicht in Vergangenheit liegen).</param>
-        /// <param name="lagerort">Lagerort der Packung (z.B. Kühlschrank).</param>
+        /// <param name="lagerortId">ID des Lagerorts der Packung (UC9). Muss größer als 0 sein.</param>
         /// <returns>Die neu erstellte ProduktInstanz mit ID und Timestamps.</returns>
-        /// <exception cref="ArgumentException">Wenn Menge <= 0 oder Verfallsdatum in der Vergangenheit.</exception>
-        public async Task<ProduktInstanz> AddToBestandAsync(int lebensmittelKatalogId, decimal menge, decimal mindestbestandMenge, DateTime verfallsdatum, string lagerort)
+        /// <exception cref="ArgumentException">Wenn Menge <= 0, Verfallsdatum in der Vergangenheit oder lagerortId <= 0.</exception>
+        public async Task<ProduktInstanz> AddToBestandAsync(int lebensmittelKatalogId, decimal menge, decimal mindestbestandMenge, DateTime verfallsdatum, int lagerortId)
         {
             if (menge <= 0)
                 throw new ArgumentException("Menge muss größer als 0 sein.", nameof(menge));
 
             if (verfallsdatum < DateTime.Today)
                 throw new ArgumentException("Verfallsdatum darf nicht in der Vergangenheit liegen.", nameof(verfallsdatum));
+
+            if (lagerortId <= 0)
+                throw new ArgumentException("LagerortId muss größer als 0 sein.", nameof(lagerortId));
 
             ProduktInstanz newInstanz = new()
             {
@@ -153,7 +156,7 @@ namespace FoodDatabase.App.Services.Classes
                 MindestbestandMenge = mindestbestandMenge,
                 Verfallsdatum = verfallsdatum,
                 Einkaufsdatum = DateTime.Today,
-                Lagerort = lagerort,
+                LagerortId = lagerortId,
                 ErstelltAm = DateTime.UtcNow
             };
 

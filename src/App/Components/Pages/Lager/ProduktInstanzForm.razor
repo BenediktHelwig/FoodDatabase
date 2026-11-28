@@ -4,6 +4,7 @@
 @using FoodDatabase.App.Services.Interfaces
 @inject IProduktInstanzService ProduktInstanzService
 @inject ILebensmittelService LebensmittelService
+@inject ILagerortService LagerortService
 @inject NavigationManager NavigationManager
 
 <div class="container mt-4">
@@ -69,16 +70,28 @@
                     <div class="mb-3">
                         <label for="lagerort" class="form-label">Lagerort *</label>
                         <InputSelect id="lagerort"
-                                     @bind-Value="model.Lagerort"
+                                     @bind-Value="model.LagerortAuswahl"
                                      class="form-select"
                                      data-testid="select-lagerort">
                             <option value="">-- Lagerort wählen --</option>
-                            <option value="Kühlschrank">Kühlschrank</option>
-                            <option value="Tiefkühler">Tiefkühler</option>
-                            <option value="Pantry">Pantry</option>
-                            <option value="Anderes">Anderes</option>
+                            @foreach (Lagerort lagerort in alleLagerorte)
+                            {
+                                <option value="@lagerort.Id">@lagerort.Name</option>
+                            }
+                            <option value="@NeuerLagerortWert">Neuer Lagerort…</option>
                         </InputSelect>
-                        <ValidationMessage For="() => model.Lagerort" />
+                        @if (model.LagerortAuswahl == NeuerLagerortWert)
+                        {
+                            <InputText id="neuer-lagerort"
+                                       @bind-Value="model.NeuerLagerortName"
+                                       class="form-control mt-2"
+                                       placeholder="Name des neuen Lagerorts"
+                                       data-testid="input-neuer-lagerort" />
+                        }
+                        @if (!string.IsNullOrEmpty(lagerortFehler))
+                        {
+                            <div class="text-danger mt-1" data-testid="lagerort-fehler">@lagerortFehler</div>
+                        }
                     </div>
 
                     <div class="d-flex gap-2">
@@ -104,12 +117,22 @@
 
     private ProduktInstanzFormModel model = new ProduktInstanzFormModel();
     private List<LebensmittelKatalog> alleLebensmittel = new();
+    private List<Lagerort> alleLagerorte = new();
+    private const string NeuerLagerortWert = "neu";
     private string fehler = "";
+    private string lagerortFehler = "";
     private bool lädt = false;
 
     protected override async Task OnInitializedAsync()
     {
         await LadeLebensmittel();
+        await LadeLagerorte();
+
+        // Ohne vorhandene Lagerorte gibt es nichts zu wählen: Neu ist vorausgewählt
+        if (Id == 0 && !alleLagerorte.Any())
+        {
+            model.LagerortAuswahl = NeuerLagerortWert;
+        }
 
         if (Id > 0)
         {
@@ -122,7 +145,7 @@
                     model.LebensmittelKatalogId = instanz.LebensmittelKatalogId;
                     model.Menge = instanz.Menge;
                     model.Verfallsdatum = instanz.Verfallsdatum;
-                    model.Lagerort = instanz.Lagerort;
+                    model.LagerortAuswahl = instanz.LagerortId.ToString();
                 }
             }
             catch (Exception ex)
@@ -149,19 +172,40 @@
         }
     }
 
+    private async Task LadeLagerorte()
+    {
+        try
+        {
+            IEnumerable<Lagerort> result = await LagerortService.GetAlleLagerorte();
+            alleLagerorte = result.OrderBy(l => l.Name).ToList();
+        }
+        catch (Exception ex)
+        {
+            fehler = $"Fehler beim Laden der Lagerorte: {ex.Message}";
+        }
+    }
+
     private async Task SpeichernAsync()
     {
         lädt = true;
         fehler = "";
+        lagerortFehler = "";
         try
         {
+            int? lagerortId = await ErmittleLagerortIdAsync();
+            if (lagerortId is null)
+            {
+                lädt = false;
+                return;
+            }
+
             if (Id == 0)
             {
                 await ProduktInstanzService.CreateAsync(
                     model.LebensmittelKatalogId,
                     model.Menge,
                     model.Verfallsdatum,
-                    model.Lagerort);
+                    lagerortId.Value);
             }
             else
             {
@@ -169,7 +213,7 @@
                     Id,
                     model.Menge,
                     model.Verfallsdatum,
-                    model.Lagerort);
+                    lagerortId.Value);
             }
 
             NavigationManager.NavigateTo("/lagerbestand");
@@ -186,11 +230,61 @@
         }
     }
 
+    /// <summary>
+    /// Liefert die Id des gewählten Lagerorts. Bei „Neuer Lagerort…“ wird der Name über UC9
+    /// (GetOrCreateAsync) validiert, normalisiert und angelegt bzw. der bestehende Lagerort geliefert.
+    /// Eingabefehler landen am Lagerort-Feld (nicht im allgemeinen Fehler, der den Button sperrt);
+    /// dann ist das Ergebnis null.
+    /// </summary>
+    private async Task<int?> ErmittleLagerortIdAsync()
+    {
+        if (model.LagerortAuswahl == NeuerLagerortWert)
+        {
+            if (string.IsNullOrWhiteSpace(model.NeuerLagerortName))
+            {
+                lagerortFehler = "Bitte einen Namen für den neuen Lagerort eingeben.";
+                return null;
+            }
+
+            try
+            {
+                Lagerort lagerort = await LagerortService.GetOrCreateAsync(model.NeuerLagerortName);
+
+                // Der Lagerort existiert jetzt: Auswahl darauf umstellen, damit ein Wiederholen
+                // nach einem späteren Fehler keinen zweiten Anlegeversuch auslöst.
+                if (!alleLagerorte.Any(l => l.Id == lagerort.Id))
+                {
+                    alleLagerorte.Add(lagerort);
+                    alleLagerorte = alleLagerorte.OrderBy(l => l.Name).ToList();
+                }
+                model.LagerortAuswahl = lagerort.Id.ToString();
+                return lagerort.Id;
+            }
+            catch (ArgumentException ex)
+            {
+                lagerortFehler = ex.Message;
+                return null;
+            }
+        }
+
+        if (!int.TryParse(model.LagerortAuswahl, out int gewählteId) || gewählteId <= 0)
+        {
+            lagerortFehler = "Bitte einen Lagerort wählen.";
+            return null;
+        }
+
+        return gewählteId;
+    }
+
     private class ProduktInstanzFormModel
     {
         public int LebensmittelKatalogId { get; set; }
         public decimal Menge { get; set; }
         public DateTime Verfallsdatum { get; set; } = DateTime.Today.AddDays(30);
-        public string Lagerort { get; set; } = "";
+
+        /// <summary>Leer = keine Auswahl, sonst Lagerort-Id oder <c>neu</c> (= neuen Lagerort eintragen).</summary>
+        public string LagerortAuswahl { get; set; } = "";
+
+        public string NeuerLagerortName { get; set; } = "";
     }
 }

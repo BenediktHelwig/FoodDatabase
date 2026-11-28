@@ -29,7 +29,7 @@
             <h3>Hauptziele</h3>
             <ul>
                 <li>Menge von Produktinstanzen ändern</li>
-                <li>Lagerort zuordnen (z.B. Kühlschrank, Vorratsschrank)</li>
+                <li>Lagerort zuordnen (bestehenden Lagerort wählen oder neu anlegen, UC9)</li>
                 <li>Sofortige Aktualisierung im System</li>
             </ul>
 
@@ -76,7 +76,7 @@ public class ProduktInstanz
     // === UC2: Lagerbestand-Attribute ===
     public decimal Menge { get; set; }                       // Aktuelle Menge (z.B. 500g)
     public decimal MindestbestandMenge { get; set; }         // ⭐ UC2-NEW: Schwellenwert
-    public string Lagerort { get; set; }                     // ⭐ Speicherort (Kühlschrank, etc.)
+    public int LagerortId { get; set; }                      // ⭐ FK auf Lagerort (UC9), Navigation: Lagerort (AutoInclude)
 
     // === Dates ===
     public DateTime Verfallsdatum { get; set; }             // MHD
@@ -109,9 +109,9 @@ public class ProduktInstanz
                     <td style="padding: 10px; border: 1px solid #ddd;"><strong>WICHTIG ⭐</strong></td>
                 </tr>
                 <tr>
-                    <td style="padding: 10px; border: 1px solid #ddd;"><code>Lagerort</code></td>
-                    <td style="padding: 10px; border: 1px solid #ddd;">string</td>
-                    <td style="padding: 10px; border: 1px solid #ddd;">Speicherort (z.B. "Kühlschrank", "Vorratsschrank")</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>LagerortId</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">int (FK)</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">FK auf den UC9-Lagerort (Navigation <code>Lagerort</code> liefert den Namen, z.B. "Kühlschrank")</td>
                     <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC2-Feature</strong></td>
                 </tr>
                 <tr style="background-color: #f9f9f9;">
@@ -190,20 +190,20 @@ instanz.Menge = 300g  // GEÄNDERT
             </div>
 
             <div style="background-color: #f5f5f5; padding: 15px; border-left: 4px solid #2196F3; margin: 10px 0;">
-                <h4>4. GetBestaendePorLagerortAsync(lagerort: string)</h4>
+                <h4>4. GetBestaendePorLagerortAsync(lagerortId: int)</h4>
                 <p><strong>Rückgabe:</strong> List&lt;ProduktInstanz&gt;</p>
-                <p><strong>Beschreibung:</strong> Filtert ProduktInstanzen nach Lagerort (z.B. Kühlschrank, Vorratsschrank).</p>
-                <p><strong>Test-Coverage:</strong> 3 Tests (valid location, empty, null lagerort)</p>
-                <pre>var kühlschrank = await service.GetBestaendePorLagerortAsync("Kühlschrank");</pre>
+                <p><strong>Beschreibung:</strong> Filtert ProduktInstanzen nach Lagerort-Id (UC9). Eine Id &lt;= 0 wirft <code>ArgumentException</code>.</p>
+                <p><strong>Test-Coverage:</strong> 4 Tests (valid location, empty, ungültige Id 0 und -1)</p>
+                <pre>var kühlschrank = await service.GetBestaendePorLagerortAsync(kühlschrankId);</pre>
             </div>
 
             <div style="background-color: #fff8e1; padding: 15px; border-left: 4px solid #FFC107; margin: 10px 0;">
-                <h4>5. AddToBestandAsync(lebensmittelKatalogId, menge, mindestbestandMenge, verfallsdatum, lagerort)</h4>
+                <h4>5. AddToBestandAsync(lebensmittelKatalogId, menge, mindestbestandMenge, verfallsdatum, lagerortId)</h4>
                 <p><strong>Rückgabe:</strong> ProduktInstanz</p>
                 <p><strong>Beschreibung:</strong> Fügt neue Produktinstanz zum Bestand hinzu mit umfassender Validierung.</p>
-                <p><strong>Validierungen:</strong> menge > 0, verfallsdatum >= today</p>
-                <p><strong>Test-Coverage:</strong> 4 Tests (valid, negative menge, zero menge, past verfallsdatum)</p>
-                <pre>var new_item = await service.AddToBestandAsync(1, 500m, 100m, DateTime.Today.AddDays(10), "Kühlschrank");</pre>
+                <p><strong>Validierungen:</strong> menge > 0, verfallsdatum >= today, lagerortId > 0</p>
+                <p><strong>Test-Coverage:</strong> 7 Tests (valid, negative menge, zero menge, past verfallsdatum, setzt LagerortId, ungültige Id 0 und -1)</p>
+                <pre>var new_item = await service.AddToBestandAsync(1, 500m, 100m, DateTime.Today.AddDays(10), kühlschrankId);</pre>
             </div>
 
             <div style="background-color: #e8f5e9; padding: 15px; border-left: 4px solid #4CAF50; margin: 10px 0;">
@@ -246,7 +246,7 @@ instanz.Menge = 300g  // GEÄNDERT
                 <ul>
                     <li><strong>Menge:</strong> menge > 0</li>
                     <li><strong>Verfallsdatum:</strong> verfallsdatum >= DateTime.Today (nicht in der Vergangenheit)</li>
-                    <li><strong>Lagerort:</strong> Wird als string übernommen, muss nicht null sein</li>
+                    <li><strong>Lagerort:</strong> lagerortId > 0, sonst <code>ArgumentException</code> (die Existenzprüfung gegen UC9 macht <code>ProduktInstanzService</code> beim Anlegen/Ändern; die Datenbank sichert zusätzlich den FK)</li>
                 </ul>
             </div>
 
@@ -297,7 +297,7 @@ else return false;                               // Okay</pre>
                     <li><strong>Tabellen-Darstellung</strong>: Alle Produktinstanzen mit Lebensmittel-Name, Menge, Verfallsdatum, Lagerort, Einkaufdatum</li>
                     <li><strong>FIFO-Sortierung</strong>: Verfallsdatum aufsteigend (älteste zuerst) — aufgerufen durch Service: <code>GetNachVerfallsdatumSortiertAsync()</code></li>
                     <li><strong>Abgelaufen-Highlighting</strong>: Zeilen mit Verfallsdatum < heute werden rot markiert (CSS-Klasse: <code>table-danger</code>)</li>
-                    <li><strong>Lagerort-Display</strong>: Zeigt Speicherort (Kühlschrank, Tiefkühler, Pantry, Anderes)</li>
+                    <li><strong>Lagerort-Display</strong>: Zeigt <code>Lagerort.Name</code> des UC9-Lagerorts; der Lagerort-Filter listet alle aktiven Lagerorte aus <code>GetAlleLagerorte</code></li>
                     <li><strong>Aktions-Buttons</strong>:
                         <ul>
                             <li>🔧 <strong>Bearbeiten</strong>: Navigiert zu <code>/lagerbestand/{Id}/bearbeiten</code></li>
@@ -313,6 +313,9 @@ else return false;                               // Okay</pre>
                 <pre style="background-color: #f5f5f5; padding: 10px;">
 // OnInitializedAsync
 bestaende = await ProduktInstanzService.GetNachVerfallsdatumSortiertAsync();
+
+// Lagerorte für den Filter (Wert = Id, Text = Name)
+alleLagerorte = (await LagerortService.GetAlleLagerorte()).OrderBy(l => l.Name).ToList();
 
 // Lebensmittel-Mapping für Display
 alleLebensmittel = await LebensmittelService.GetAllLebensmittelAsync();
@@ -371,8 +374,8 @@ await AlleAbrufen(); // Refresh Tabelle
                             </li>
                             <li><strong>Lagerort *</strong> (Dropdown):
                                 <ul>
-                                    <li>Vordefinierte Optionen: Kühlschrank, Tiefkühler, Pantry, Anderes</li>
-                                    <li>Validierung: Muss gewählt werden</li>
+                                    <li>Optionen: alle aktiven Lagerorte aus UC9 (nach Name sortiert), danach „Neuer Lagerort…“ (Textfeld <code>input-neuer-lagerort</code>; ohne vorhandene Lagerorte ist „Neu“ vorausgewählt)</li>
+                                    <li>Validierung: Auswahl oder Name nötig; Fehler (leer, ungültiger Name) erscheinen am Lagerort-Feld (<code>lagerort-fehler</code>), nicht im allgemeinen Fehlerbalken. Der Name läuft über <code>ILagerortService.GetOrCreateAsync</code></li>
                                 </ul>
                             </li>
                         </ul>
@@ -386,8 +389,9 @@ await AlleAbrufen(); // Refresh Tabelle
                     </li>
                     <li><strong>Service-Integration</strong>:
                         <ul>
-                            <li><code>CreateAsync(lebensmittelId, menge, verfallsdatum, lagerort)</code> — Neue Packung</li>
-                            <li><code>UpdateAsync(id, menge, verfallsdatum, lagerort)</code> — Existierende Packung bearbeiten</li>
+                            <li><code>ILagerortService.GetAlleLagerorte()</code> — Dropdown-Optionen; bei „Neuer Lagerort…“ zuerst <code>GetOrCreateAsync(name)</code> (UC9), dessen Id geht an den Service</li>
+                            <li><code>CreateAsync(lebensmittelId, menge, verfallsdatum, lagerortId)</code> — Neue Packung</li>
+                            <li><code>UpdateAsync(id, menge, verfallsdatum, lagerortId)</code> — Existierende Packung bearbeiten (Dropdown ist mit der LagerortId der Packung vorbelegt)</li>
                             <li>Nach Erfolg: Rückleitung zu <code>/lagerbestand</code></li>
                         </ul>
                     </li>
@@ -509,7 +513,7 @@ Benutzer-Flow:
         </section>
 
         <section>
-            <h2>✅ Tests (29 Service + 12 UI = 41 Tests - All Green)</h2>
+            <h2>✅ Tests (33 Service + 26 UI = 59 Tests - All Green)</h2>
 
             <h3>Test-Datei: LagerbestandServiceTests.cs</h3>
             <p><strong>Framework:</strong> xUnit + Moq | <strong>Status:</strong> ✅ ALL PASSING</p>
@@ -544,21 +548,23 @@ Benutzer-Flow:
             </div>
 
             <div style="background-color: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50;">
-                <h4>Method 4: GetBestaendePorLagerortAsync (3 Tests)</h4>
+                <h4>Method 4: GetBestaendePorLagerortAsync (4 Tests)</h4>
                 <ol>
                     <li>✅ GetBestaendePorLagerortAsync_WithValidLagerort_ShouldReturnList</li>
                     <li>✅ GetBestaendePorLagerortAsync_WithEmptyLagerort_ShouldReturnEmpty</li>
-                    <li>✅ GetBestaendePorLagerortAsync_WithNullLagerort_ShouldThrowArgumentException</li>
+                    <li>✅ GetBestaendePorLagerortAsync_WithInvalidLagerortId_ShouldThrowArgumentException (Theory: 0, -1)</li>
                 </ol>
             </div>
 
             <div style="background-color: #e8f5e9; padding: 10px; margin: 10px 0; border-left: 4px solid #4CAF50;">
-                <h4>Method 5: AddToBestandAsync (4 Tests)</h4>
+                <h4>Method 5: AddToBestandAsync (7 Tests)</h4>
                 <ol>
                     <li>✅ AddToBestandAsync_WithValidData_ShouldReturnProduktInstanz</li>
                     <li>✅ AddToBestandAsync_WithNegativeMenge_ShouldThrowArgumentException</li>
                     <li>✅ AddToBestandAsync_WithZeroMenge_ShouldThrowArgumentException</li>
                     <li>✅ AddToBestandAsync_WithPastVerfallsdatum_ShouldThrowArgumentException</li>
+                    <li>✅ AddToBestandAsync_WithValidData_ShouldSetLagerortId</li>
+                    <li>✅ AddToBestandAsync_WithInvalidLagerortId_ShouldThrowArgumentException (Theory: 0, -1; kein AddAsync)</li>
                 </ol>
             </div>
 
@@ -616,12 +622,12 @@ Benutzer-Flow:
                 </tr>
                 <tr style="background-color: #f9f9f9;">
                     <td style="padding: 10px; border: 1px solid #ddd;">GetBestaendePorLagerortAsync</td>
-                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">3</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">4</td>
                     <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
                 </tr>
                 <tr>
                     <td style="padding: 10px; border: 1px solid #ddd;">AddToBestandAsync</td>
-                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">4</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">7</td>
                     <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
                 </tr>
                 <tr style="background-color: #e8f5e9;">
@@ -641,7 +647,7 @@ Benutzer-Flow:
                 </tr>
                 <tr style="background-color: #d4edda; font-weight: bold;">
                     <td style="padding: 10px; border: 1px solid #ddd;">SERVICE SUBTOTAL</td>
-                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">29</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">33</td>
                     <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ ALL PASS</td>
                 </tr>
             </table>
@@ -679,7 +685,7 @@ Benutzer-Flow:
                     <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
                 </tr>
                 <tr>
-                    <td style="padding: 10px; border: 1px solid #ddd;" rowspan="7"><strong>ProduktInstanzForm</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;" rowspan="21"><strong>ProduktInstanzForm</strong></td>
                     <td style="padding: 10px; border: 1px solid #ddd;">RendersForm_WithNewMode</td>
                     <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
                 </tr>
@@ -692,7 +698,7 @@ Benutzer-Flow:
                     <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
                 </tr>
                 <tr>
-                    <td style="padding: 10px; border: 1px solid #ddd;">HasLagerortDropdown_WithAllValidOptions</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">HasLagerortDropdown_WithOptionsFromService</td>
                     <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
                 </tr>
                 <tr>
@@ -707,14 +713,70 @@ Benutzer-Flow:
                     <td style="padding: 10px; border: 1px solid #ddd;">HasSpeichernButton</td>
                     <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
                 </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">LagerortDropdown_ListsLagerorteSortedByNameFollowedByNeu</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">NewMode_WithoutLagerorte_PreselectsNeuAndShowsTextfield</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">NewMode_WithLagerorte_PreselectsPlaceholderAndHidesTextfield</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">LagerortDropdown_SwitchingToNeuAndBack_TogglesTextfield</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Save_WithExistingLagerort_CallsCreateWithItsIdAndNotGetOrCreate</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Save_WithNeuAndName_CallsGetOrCreateThenCreateWithReturnedId</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Save_WithNeuAndExistingNameInOtherSpelling_UsesTheIdOfTheExistingLagerort</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Save_WithoutLagerortSelection_ShowsFieldErrorAndCallsNoService</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Save_WithNeuAndEmptyName_ShowsFieldErrorAndCallsNoService</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Save_WhenGetOrCreateRejectsName_ShowsFieldErrorKeepsButtonEnabledAndCreatesNothing</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Save_AfterCorrectingTheLagerortName_Succeeds</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">EditMode_PreselectsTheLagerortOfThePackung</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">EditMode_Save_CallsUpdateWithTheChosenLagerortId</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">EditMode_Save_WithNewLagerort_CallsGetOrCreateThenUpdateWithReturnedId</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; color: #28a745;">✅ PASS</td>
+                </tr>
                 <tr style="background-color: #d4edda; font-weight: bold;">
                     <td style="padding: 10px; border: 1px solid #ddd;">UI SUBTOTAL</td>
-                    <td style="padding: 10px; border: 1px solid #ddd;">12 Tests (6 + 7)</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">26 Tests (5 LagerbestandBearbeiten + 21 ProduktInstanzForm)</td>
                     <td style="padding: 10px; border: 1px solid #ddd; color: #28a745; font-weight: bold;">✅ ALL PASS</td>
                 </tr>
                 <tr style="background-color: #c8e6c9; font-weight: bold;">
                     <td style="padding: 10px; border: 1px solid #ddd;" colspan="2"><strong>UC2 GRAND TOTAL (Service + UI)</strong></td>
-                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center; color: #28a745; font-weight: bold;">41/41 ✅ ALL PASS</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center; color: #28a745; font-weight: bold;">59/59 ✅ ALL PASS</td>
                 </tr>
             </table>
 
@@ -722,7 +784,7 @@ Benutzer-Flow:
             <ul>
                 <li><strong>Pfad:</strong> <code>src/Tests/Unit/Services/LagerbestandServiceTests.cs</code></li>
                 <li><strong>Framework:</strong> xUnit 2.x + Moq 4.x</li>
-                <li><strong>Test Count:</strong> 29 Tests</li>
+                <li><strong>Test Count:</strong> 33 Tests (29 Fact + 2 Theory mit 4 Fällen)</li>
                 <li><strong>Coverage:</strong> 100% für ILagerbestandService Methoden</li>
                 <li><strong>Mocking:</strong> IRepository&lt;ProduktInstanz&gt; gemockt</li>
                 <li><strong>Status:</strong> ✅ ALL TESTS PASSING</li>
@@ -815,9 +877,9 @@ Benutzer-Flow:
                     <li>Service holt alle ProduktInstanzen für dieses Lebensmittel: <code>GetAllByLebensmittelIdAsync(7)</code></li>
                     <li>Repository gibt 3 Instanzen zurück:
                         <ul style="margin: 5px 0;">
-                            <li>Instanz 1: Menge=15g, Lagerort="Kühlschrank"</li>
-                            <li>Instanz 2: Menge=20g, Lagerort="Vorratsschrank"</li>
-                            <li>Instanz 3: Menge=10g, Lagerort="Gefrierfach"</li>
+                            <li>Instanz 1: Menge=15g, Lagerort=Kühlschrank (LagerortId 1)</li>
+                            <li>Instanz 2: Menge=20g, Lagerort=Vorratsschrank (LagerortId 2)</li>
+                            <li>Instanz 3: Menge=10g, Lagerort=Gefrierfach (LagerortId 3)</li>
                         </ul>
                     </li>
                     <li><strong>Service-Berechnung:</strong> Gesamtmenge = 15 + 20 + 10 = 45g</li>
@@ -843,7 +905,7 @@ Benutzer-Flow:
                 <strong>ProduktInstanz Properties (UC2):</strong>
                 <pre>- Menge: decimal           // Aktuelle Menge
 - MindestbestandMenge: decimal  // UC2: Schwellenwert
-- Lagerort: string          // Speicherort (Kühlschrank, etc.)
+- LagerortId: int (FK)      // UC9-Lagerort, Navigation: Lagerort
 - Verfallsdatum: DateTime   // MHD
 - Einkaufsdatum: DateTime   // Kaufdatum
 - ErstelltAm: DateTime      // Erstellungszeitstempel</pre>
